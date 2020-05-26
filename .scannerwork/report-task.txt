@@ -1,0 +1,7 @@
+organization=utopszkij-github
+projectKey=utopszkij_netpolgar
+serverUrl=https://sonarcloud.io
+serverVersion=8.0.0.1929
+dashboardUrl=https://sonarcloud.io/dashboard?id=utopszkij_netpolgar
+ceTaskId=AW38jwq14dFG5v2u0dMK
+ceTaskUrl=https://sonarcloud.io/api/ce/task?id=AW38jwq14dFG5v2u0dMK

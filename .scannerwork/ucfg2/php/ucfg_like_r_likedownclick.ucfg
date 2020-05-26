@@ -1,0 +1,26 @@
+
+likecontroller::likedownclick8
+,/var/www/html/netpolgar/controllers/like.phpË Ë("1*`
+2
+
+like.php"O
+8
+,/var/www/html/netpolgar/controllers/like.phpÍ Í(
+implicit return*Ñ
+18
+,/var/www/html/netpolgar/controllers/like.phpÌ Ì(3Œ‰
+8
+,/var/www/html/netpolgar/controllers/like.phpÌ Ì(2
+%1*
+likecontroller*
+
+
+$request*
+	'dislike'*
+
+'like'2
+likechange*
+2:
+
+$requestB
+likecontroller

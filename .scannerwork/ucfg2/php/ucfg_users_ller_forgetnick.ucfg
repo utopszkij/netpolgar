@@ -1,0 +1,52 @@
+
+userscontroller::forgetnick9
+-/var/www/html/netpolgar/controllers/users.php¢ ¢("1*b
+2
+	users.php"P
+9
+-/var/www/html/netpolgar/controllers/users.php¦ ¦(
+implicit return*Ü
+19
+-/var/www/html/netpolgar/controllers/users.php£ £()yw
+9
+-/var/www/html/netpolgar/controllers/users.php£
+ £((
+%1*
+userscontroller*
+
+
+$request*	
+'users'2initQ
+O
+9
+-/var/www/html/netpolgar/controllers/users.php£ £((
+$p"__id*
+
+%1~|
+9
+-/var/www/html/netpolgar/controllers/users.php¤ ¤((
+%2*
+userscontroller*
+
+
+$request*
+
+$p2createcsrtokenh
+f
+9
+-/var/www/html/netpolgar/controllers/users.php¥ ¥(
+%3"__id**
+userscontroller"
+view_]
+9
+-/var/www/html/netpolgar/controllers/users.php¥ ¥( 
+%4*
+
+%3*
+
+$p2
+forgetnick*
+2:
+
+$requestB
+userscontroller

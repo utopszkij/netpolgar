@@ -1,0 +1,42 @@
+
+adatkezelescontroller::show=
+3/var/www/html/netpolgar/controllers/adatkezeles.php ("1*l
+2
+adatkezeles.php"T
+=
+3/var/www/html/netpolgar/controllers/adatkezeles.php (
+implicit return*Å
+1=
+3/var/www/html/netpolgar/controllers/adatkezeles.php (.äá
+=
+3/var/www/html/netpolgar/controllers/adatkezeles.php
+ (-
+%1*
+adatkezelescontroller*
+
+
+$request*
+'adatkezeles'2initU
+S
+=
+3/var/www/html/netpolgar/controllers/adatkezeles.php (-
+$p"__id*
+
+%1r
+p
+=
+3/var/www/html/netpolgar/controllers/adatkezeles.php (
+%2"__id*#*!
+adatkezelescontroller"
+view`^
+=
+3/var/www/html/netpolgar/controllers/adatkezeles.php (
+%3*
+
+%2*
+
+$p2display*
+2:
+
+$requestB
+adatkezelescontroller

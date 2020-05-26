@@ -1,0 +1,79 @@
+
+defaultcontroller::default9
+//var/www/html/netpolgar/controllers/default.php ("1*d
+2
+default.php"P
+9
+//var/www/html/netpolgar/controllers/default.php (
+implicit return*Ÿ
+19
+//var/www/html/netpolgar/controllers/default.php ($pn
+9
+//var/www/html/netpolgar/controllers/default.php (#
+%1*
+
+
+$request*
+'sessionid'*
+'0'2setki
+9
+//var/www/html/netpolgar/controllers/default.php (
+%2*
+
+
+$request*	
+'lng'*
+'hu'2set}
+9
+//var/www/html/netpolgar/controllers/default.php
+ (+
+%3*
+defaultcontroller*
+
+
+$request*
+'frontpage'2initT
+R
+9
+//var/www/html/netpolgar/controllers/default.php (+
+$data"__id*
+
+%3us
+9
+//var/www/html/netpolgar/controllers/default.php	 	(5
+%4*
+
+
+$request*
+
+'option'*
+	'default'2input`
+^
+9
+//var/www/html/netpolgar/controllers/default.php	 	(5
+
+$data"
+option"__id*
+
+%4j
+h
+9
+//var/www/html/netpolgar/controllers/default.php
+ 
+(
+%5"__id**
+defaultcontroller"
+view_]
+9
+//var/www/html/netpolgar/controllers/default.php
+ 
+(
+%6*
+
+%5*	
+
+$data2display*
+2:
+
+$requestB
+defaultcontroller

@@ -1,0 +1,184 @@
+/* common */
+body {font-size:14px; font-family:roman; background-color:white; line-height:120%;
+   min-height:600px;}
+div {margin:0px; padding:0px; width:100% }
+h2,h3,h4 {text-align:left}
+form {text-align:left}
+blockquote {margin:1px 1px 1px 20px}  
+.clear {clear:both}
+label {display:inline-block; width:200px; text-align:right; padding:0px 5px 0px 0px}
+.is-invalid {background-color: #F8D7DA; border-color:red;}
+.alert-success {margin:30px; text-align:center;}
+.alert-danger {margin:30px; text-align:center;}
+.successMsg {height:400px; padding:20px; }   
+input {max-width:80%}
+textarea {max-width:80%}
+.formButtons {text-align:center;}
+button em {margin-right:5px}  
+.btn:hover {background-color:#d6c4c4; color: black}
+.browserPaginator button.paginatorTxt {background-color:transparent; color:black; border-style:none; cursor:default}
+.browserPaginator button.paginatorCurrent {background-color:transparent; color:black;}
+ 
+.table .tr0 {background-color:transparent;}
+.table .tr1 {background-color:#d0d0d0}
+#scope {padding:5px 10px 5px 10px; min-height:600px; text-align:center}   
+.specButtons {display:inline-block; margin-left:40px; width:auto}
+
+.nav-item {border-style:solid; border-color:silver; border-width:0px 1px 0px 0px;}
+.nav-item:hover {background-color:silver}
+.nav-item a {padding:15px 2px 2px 2px}
+.nav-item em {padding: 0px 5px 0px 0px}
+.nav-item img {height:32px}
+.homeMenuItem a {padding:8px 2px 2px 2px}
+.userMenuItem a {padding:8px 2px 2px 2px}
+.userMenuItem em {font-size:22px}
+.dropdown-menu {border-style:solid; border-width:0px 1px 1px 1px; border-radius: 0px 0px 10px 10px;
+	background-color: #C0C0C0; padding:3px;}
+.dropdown-item:hover {background-color:black; color:white;}
+.navbar-collapse li {text-align:left}
+.navbar-collapse li .fa {margin-right:5px}
+#loggedUser {display:block; background-color:#b79191; margin:0px; font-wight:bold}
+.parents {text-align:left}
+
+.subMenu {display:inline-block; width:auto; float:left; }
+.subMenu ul {border-style:solid; border-width:1px; border-color: black;  padding:0px}
+.subMenu li {display:block; border-style:solid; border-width:0px 0px 1px 0px}
+.subMenu li:hover {background-color:#d0d0d0}
+
+#popup {cursor: move; position:fixed; z-index:99; left:50px; top:50px;
+    width:500px; height:auto;
+    background-color:#F0F0F0; color:black; padding:1px; border-style:solid; border-width:1px;}
+#popup .popupCloseDiv {text-align:right; margin:0px; padding:0px;}
+#popup p {padding:20px; margin:20px; text-align:center}
+#popupButtons {padding:10px; text-align:center}  
+  
+#working {position:fixed; z-index:200; 
+    left:50%; top:150px; margin: 0px 0px 0px -64px; display:none;
+    background-image:url('working.gif'); background-color:transparent; 
+    text-align:center; margin:0px;
+    width:128px; height:128px; font-size:10px;}
+#working span {display:none}   
+
+#divLike {text-align:right; font-size:14pt; padding:2px 20px 2px 2px}
+#divLike label {width:auto;}
+#likeDetails {position: absolute; z-index:99; left:5px; top:5px; width: 90%; height:840px;
+  border-style:solid; border-width:1px; padding:3px; background-color:#d0d0d0}
+  
+#registForm {display:inline-block; width: 700px; min-height:600px; text-align:left; }
+#divRegmodSelect {padding:10px; display:inline-block; width:auto; float:right}  
+#webRegform {}
+#webRegform form {display:inline-block; text-align:left}
+#pAvatar {text-align:right; width:100%}
+#imgAvatar {width:100px}
+.registForm {padding: 20px; min-height:600px}
+
+#divProfileForm {min-height:600px;}
+#divProfileForm2 {display:inline-block; width:70%; float:right; text-align:center}
+
+#loginForm {display:inline-block; text-align:left;  width: 400px; min-height:600px; padding:10px;}
+#divUklogin {display:none; position:absolute; z-index:99; 
+	top:60px; left:20px;  width:920px; height:820px; padding:5px; 
+	border-style:solid; border-width:1px; 
+	background-color:white}
+.altLogin button, .altLogin a {width:260px; height:50px;}
+
+#forgetNick {display:inline-block; width:600px;}          
+
+#removeaccount {min-height:600px}
+
+#usersList .tdId {width: 50px; text-align:right}
+#usersList .odd {background-color:#cdcdcd}
+#usersList .even {background-color:transparent}
+#usersList tbody tr {cursor:pointer}
+
+#groupsList {min-height:600px; padding:10px;}
+#groupsList em {display:inline-block; width:12px;}
+#groupsList li {list-style:none; min-height:32px }
+#groupsList li var {border-style:none; border-width:1px; 
+	display: inline-block; min-width:150px; min-height:32px; font-size:16px; 
+	padding:1px; margin:1px; cursor:pointer}
+
+#groupsList .groupIcon {height:32px; min-width:32px; margin:0px 10px 0px 10px}
+
+#divGroupForm {min-height:600px; padding:10px;}
+#divGroupForm #imgAvatar {height:100px; margin:3px}
+
+#removeGroup {padding:10px; min-height:600px;}
+
+#scope .readme {text-align:left}
+
+#footer {background-color:#d6c4c4; color:white; padding:20px;}  
+
+.carousel-caption {width:70%; text-align:center;  
+   background-color:black; opacity:0.5; border-radius:20px;}
+.carousel-caption h5 {background-color:transparent; font-size:24px; font-weight:bolder}  
+.carousel-item .buttons {position:absolute; z-index:10; left:30%; top:20%; height:auto; width:auto;}
+.carousel-item .buttons a {display:inline-block; background-color:black; opacity:0.5; 
+	 width:180px; padding:15px; margin-right:50px;
+    color:white; font-size:20px; font-weight:bolder; 
+	border-style:solid; border-color:white; border-width:2px; border-radius:10px}
+.info {background-color:silver; color:black; padding:10px; text-align:center;}   
+
+/* recent-work and tema-wrap  */
+#suggest .suggest-item {display:inline-block; width:250px; height:250px; max-width:250px; max-height:250px;
+   margin:0px; padding:0px; background-size: cover}
+#suggest .suggest-item .popuptitle {margin:0px 0px 0px 0px; padding:10px; display:none; 
+	height:250px; float:left;  background-color: #d6c4c4}
+#suggest .suggest-item:hover .popuptitle {display:inline-block}  
+
+.tema-wrap {padding:10px;}
+.tema-wrap i {font-size:32px; padding:6px;
+	background-color:#00808B; color:white; width: 46px; height:46px; border-radius:23px;}
+.tema-wrap i.fa-child {padding: 6px 6px 6px 12px}	
+.tema-wrap i.fa-calendar {padding: 6px 6px 6px 8px}	
+.tema-wrap i.fa-folder-open-o {padding: 6px 6px 6px 8px}	
+.tema-wrap:hover {background-color:#B3CFD1}
+
+   
+/* phone */
+@media (max-width: 576px) {
+	.browserPaginator .paginatorDesctop {display:none} 
+    .browserPaginator .total {display:block} 
+    .browserPaginator .buttons {display:block; width:100%} 
+	form#formApp label {width:250px; text-align:left}
+	.carousel-inner .buttons {display:none}
+	form#formApp label {display:block; width:auto; text-align:left}
+	form#formAdminLogin label {display:block; width:auto; text-align:left}
+	input {width: 340px; max-width:340px}
+	textarea {width: 340px; max-width:340px}
+	.subMenu {padding:1px}
+	.subMenu button {padding:1px}
+}
+
+/* tablet */
+@media (min-width: 577px) and (max-width: 991px) {
+	.browserPaginator button.paginatorDesctop {display:inline} 
+    .browserPaginator .buttons {display:inline-block; width:auto} 
+	form#formApp label {width:250px; text-align:left}
+	.carousel-inner .buttons {display:none}
+	form#formApp label {display:block;width:auto; text-align:left}
+	form#formAdminLogin label {display:block; width:auto; text-align:left}
+	input {width: 520px; max-width:520px}
+	textarea {width: 520px; max-width:520px}
+	.subMenu {padding:2px}
+	.subMenu button {padding:2px}
+}
+
+/* desctop */
+@media (min-width: 992px) and (max-width: 1199px) {
+	.browserPaginator button.paginatorDesctop {display:inline} 
+    .browserPaginator .buttons {display:inline-block; width:auto} 
+	form#formApp label {width:250px; text-align:left}
+	input {width: 920px; max-width:920px}
+	textarea {width: 920px; max-width:920px}
+	.subMenu {padding:6px}
+	.subMenu button {padding:2px}
+}
+
+/* extra big */
+@media (min-width: 1200px) {
+	.browserPaginator button.paginatorDesctop {display:inline} 
+    .browserPaginator .buttons {display:inline-block; width:auto} 
+	.subMenu {padding:10px}
+	.subMenu button {padding:4px}
+}

@@ -1,0 +1,56 @@
+
+usersmodel::sendnickpswemal4
+(/var/www/html/netpolgar/models/users.phpû û(#"1*]
+2
+	users.php"K
+4
+(/var/www/html/netpolgar/models/users.phpƒ ƒ(
+implicit return*ê
+14
+(/var/www/html/netpolgar/models/users.phpü ü(3o
+m
+4
+(/var/www/html/netpolgar/models/users.phpü ü(2
+
+$subject"__id*#!
+'netpolgar bejelentkezesi info'è
+å
+4
+(/var/www/html/netpolgar/models/users.phpı (O
+%1"__concat*1/
+-'<h2>netpolgar rendszer belepesi adatok</h2>'*!
+'<p>BelÃ©pÃ©si nÃ©v:<strong>'*	
+
+$nick*
+'</strong></p>'*$"
+ '<p>Ideiglenes jelszÃ³:<strong>'*
+
+$psw*
+'</strong></p>'*
+'<p>&nbsp;</p>'*MK
+I'<p>KÃ©rjÃ¼k, hogy bejelentkezÃ©s utÃ¡n vÃ¡ltoztassa meg a jelszÃ³t!</p>'O
+M
+4
+(/var/www/html/netpolgar/models/users.phpı (O
+$body"__id*
+
+%1}{
+4
+(/var/www/html/netpolgar/models/users.php‚ ‚(0
+%2*
+
+usersmodel*
+
+
+$email*
+
+
+$subject*	
+
+$body2sendmail*
+2:
+$email:
+$nick:
+$pswB
+
+usersmodel

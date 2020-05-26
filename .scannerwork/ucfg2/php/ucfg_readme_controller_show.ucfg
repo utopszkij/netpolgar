@@ -1,0 +1,43 @@
+
+readmecontroller::show8
+./var/www/html/netpolgar/controllers/readme.php ("1*b
+2
+
+readme.php"O
+8
+./var/www/html/netpolgar/controllers/readme.php (
+implicit return*×
+18
+./var/www/html/netpolgar/controllers/readme.php (,zx
+8
+./var/www/html/netpolgar/controllers/readme.php (+
+%1*
+readmecontroller*
+
+
+$request*
+
+'readme'2initP
+N
+8
+./var/www/html/netpolgar/controllers/readme.php (+
+$p"__id*
+
+%1h
+f
+8
+./var/www/html/netpolgar/controllers/readme.php (
+%2"__id**
+readmecontroller"
+view[Y
+8
+./var/www/html/netpolgar/controllers/readme.php (
+%3*
+
+%2*
+
+$p2display*
+2:
+
+$requestB
+readmecontroller

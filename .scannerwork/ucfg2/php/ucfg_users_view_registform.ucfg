@@ -1,0 +1,48 @@
+
+usersview::registform3
+'/var/www/html/netpolgar/views/users.phpü ü("1*\
+2
+	users.php"J
+3
+'/var/www/html/netpolgar/views/users.php∆ ∆(
+implicit return*ê
+13
+'/var/www/html/netpolgar/views/users.php† †(ZX
+3
+'/var/www/html/netpolgar/views/users.php† †(
+%1*
+	usersview2echohtmlhead[Y
+3
+'/var/www/html/netpolgar/views/users.php§	 §(
+%2*
+	usersview2echohtmlpopup`^
+3
+'/var/www/html/netpolgar/views/users.php• •('
+%3*
+	usersview*
+
+$p2
+echonavbarb`
+3
+'/var/www/html/netpolgar/views/users.phpº º(+
+%4*
+	usersview*
+
+$p2echouserformXV
+3
+'/var/www/html/netpolgar/views/users.php¿
+ ¿(
+%5*
+	usersview2
+echofooterxv
+3
+'/var/www/html/netpolgar/views/users.php¬
+ ¬(2
+%6*
+	usersview*	
+'users'*
+
+$p2loadjavascriptangular*
+2:
+$pB
+	usersview

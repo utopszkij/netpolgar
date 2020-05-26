@@ -1,0 +1,4 @@
+
+Ez is egy js be illeszthető video chat
+
+https://janus.conf.meetecho.com/videocalltest.html

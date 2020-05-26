@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="hu">
+  <head>
+    <base href="{{MYDOMAIN}}/" target="_blank">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	 <meta charset="utf-8">
+    <meta name="title" content="Ügyfélkapus login rendszer">
+    <meta name="description" content="web szolgáltatás e-demokrácia programok számára. Regisztráció ügyfélkapus aláírás segitségével.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Netpolgar</title>
+	<link rel="shortcut icon" type="image/png" href="{{MYDOMAIN}}/favicon.png"> 
+	
+	<!--  jquery -->
+    <script src="{{MYDOMAIN}}/core/jquery-3.4.1.min.js"></script>
+    <script src="{{MYDOMAIN}}/core/jquery-ui.js"></script>
+	<link rel="stylesheet" href="{{MYDOMAIN}}/core/jquery-ui.css">
+    
+	 <!-- bootstrap -->
+	 <script src="{{MYDOMAIN}}/core/bootstrap.min.js"></script>
+	 <link rel="stylesheet" href="{{MYDOMAIN}}/core/bootstrap.min.css">
+	 <!--  script src="{{MYDOMAIN}}/core/popper.js"></script -->
+	 
+	 <!-- awesome font -->	
+	 <link rel="stylesheet" href="{{MYDOMAIN}}/core/fontawesome/css/all.css">
+
+ 	 <!-- main css -->
+     <link rel="stylesheet" href="{{MYDOMAIN}}/templates/default/style.css">
+     {{EXTRACSS}}
+
+	 <script>
+			var RESTRICTED = {};
+	 </script>
+
+    <script type="text/javascript">
+    var global = {};
+    global.alert = function(str) {
+        // window.alert(str);
+        $("#popupYes").hide();
+        $("#popupNo").hide();
+        $("#popupClose").show();
+        $("#popup p").html(str);
+        $("#popup").show();
+        $("#popupClose").click(function(){
+            $("#popup").hide();
+        });
+    };
+    global.confirm = function(str, yesfun, nofun) {
+        if (yesfun != undefined) {
+            $("#popupYes").mouseup(yesfun);
+        } else {
+            $("#popupYes").mouseup(function() {});
+        }
+        if (nofun != undefined) {
+            $("#popupNo").mouseup(nofun);
+        } else {
+            $("#popupNo").mouseup(function() {});
+        }
+        $("#popupYes").show();
+        $("#popupNo").show();
+        $("#popupClose").hide();
+        $("#popup p").html(str);
+        $("#popupNo").click(function(){
+            $("#popup").hide();
+        });
+            $("#popupYes").click(function(){
+                $("#popup").hide();
+            });
+                $("#popup").show();
+    };
+    global.working = function(show) {
+        if (show == undefined) {
+            $("#working").toggle();
+        } else if (show) {
+            $("#working").show();
+        } else {
+            $("#working").hide();
+        }
+    };
+    global.post = function(url, postData, successFun, failFun) {
+        if (failFun != undefined) {
+            $.post(url, postData, successFun)
+            .fail(failFun);
+        } else {
+            $.post(url, postData, successFun);
+        }
+    }
+    global.submit = function(formId) {
+		$('#'+formId).submit();    
+    }
+    </script>
