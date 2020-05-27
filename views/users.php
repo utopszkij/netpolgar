@@ -224,89 +224,24 @@ class UsersView  extends CommonView  {
 	 * @param Params $p
 	 */
 	public function loginForm(Params $p) {
-	    $ukloginUrl = 'https://uklogin.tk/openid/authorize';
+	    $ukloginUrl = 'https://uklogin.tk/openid/authorize/';
 	    $this->echoHtmlHead($p);
 	    ?>
         <body ng-app="app">
           <div ng-controller="ctrl" id="scope" style="display:none">
-			<?php $this->echoHtmlPopup(); ?>
-            <?php $this->echoNavbar($p); ?>
-          	
-          	<div id="loginForm">
-              <h2>{{txt('LOGIN')}}</h2>
-
-			  <div class="alert alert-danger" ng-if="msgs.length > 0">
-					<p ng-repeat="msg in msgs">{{txt(msg)}}</p>
-			  </div>
-
-              <form id="formLogin" method="post" target="_self"
-                    action="<?php echo MYDOMAIN?>/opt/users/dologin">
-              <input type="hidden" name="{{csrToken}}" value="1" />
-              <p>
-              	<label>{{txt('NICK')}}*</label> 
-              	<input type="text" name="nick" id="nick" />
-              </p>
-              <p>
-              	<label>{{txt('PSW')}}*</label>
-              	<input type="password" name="psw" />
-              </p>
-              <p>
-              	<button type="submit" class="btn btn-primary">
-              		<em class="fa fa-check"></em>&nbsp;
-              		{{txt('OK')}}
-              	</button>
-              </p>
-              <p class="loginLinkek">
-              	<ul>
-              		<li><a href="<?php echo MYDOMAIN;?>/opt/users/regist" target="_self">
-              				{{txt('REGIST')}}</a></li>
-              		<li><a href="#" target="_self" id="linkForgetPsw">{{txt('FORGET_MY_PASSWORD')}}</a></li>
-              		<li><a href="<?php echo MYDOMAIN?>/opt/users/forgetnick" target="_self"
-              		       id="forgetNick">{{txt('FORGET_MY_NICK')}}</a></li>
-              		<li><a href="#" target="_self" id="linkGetActivateEmail">{{txt('GET_ACTIVATE_EMAIL')}}</a></li>
-              	</ul>
-              </p>
-              <p class="altLogin">	
-              	<a class="btn btn-outline-secondary" target="ukloginFrm"
-              		onclick="$('#divUklogin').show()"
-              		href="<?php echo $ukloginUrl; ?>">
-			   	    <img src="images/uklogin.png" style="height:40px" />
-              		Belépés ügyfélkapuval
-              	</a>
-              </p>	
-              <p class="altLogin">	
-			   	<button type="button" class="btn btn-outline-secondary"  
-			   	     onclick="location='<?php echo config('MYDOMAIN'); ?>/opt/fblogin/authorize';">
-			   	     <img src="images/facebook.png" style="height:40px" />
-			   	 	 Belépés facebook -al
-			    </button>
-		  	  </p>          
-              <p class="altLogin">	
-			   	<button type="button" class="btn btn-outline-secondary"  
-			   	     onclick="location='<?php echo config('MYDOMAIN'); ?>/opt/googlelogin/authorize';">
-			   	     <img src="images/google.png" style="height:22px" />
-			   	 	 Belépés google -el
-			    </button>
-		  	  </p>          
-              </form>
-
-
-
-          </div><!-- .loginForm -->
-          
-          <div id="divUklogin">
-          		<p style="text-align:right">
-          			<button type="button" class="btn" onclick="$('#divUklogin').hide()">
-          				<em class="fa fa-times" title="{{LNG.CLOSE}}"></em>
-          			<button>
-          		</p>
-            	<iframe name="ukloginFrm" style="width:890px; height:750px; border-style:none" title="uklogin"></iframe>
-          </div>
-          
-            
-		  <div class="clear"></div>
-		  <?php $this->echoFooter(); ?>
-		  <?php $this->loadJavaScriptAngular('users',$p); ?>
+    			<?php $this->echoHtmlPopup(); ?>
+                <?php $this->echoNavbar($p); ?>
+	          	<div id="loginForm">
+                  	<iframe style="width:100%; height:750px; border-style:none" title="uklogin" 
+                  		src="<?php echo $ukloginUrl.
+                  		   '?client_id=34303833323833'.
+        	               '&nonce='.session_id().
+        	               '&scope='.urlencode('sub nickname audited'); ?>">
+                  	</iframe>
+    		    </div>
+			    <div class="clear"></div>
+    		    <?php $this->echoFooter(); ?>
+    		    <?php $this->loadJavaScriptAngular('users',$p); ?>
 	      </div><!-- #scope -->
         </body>
         </html>

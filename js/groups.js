@@ -11,7 +11,6 @@
 
   function groupsFun() {
 	  if ($('#formGroupForm').length) {
-		  
 		  // form init
 		  $('#name').focus();
 		  
@@ -81,7 +80,12 @@
 			  $('#formGroupForm').attr('action',$scope.MYADMIN + '/opt/groups/add/parentid/'+$scope.item.id);
 			  $('#formGroupForm').submit();
 		  });
-		  
+		  if ($scope.user == undefined) {
+			  $scope.user = {"id":0};
+		  }
+		  if ($scope.userMember == undefined) {
+			  $scope.userMember = false;
+		  }
 		  $('#reg_mode').val($scope.item.reg_mode);
 		  $('#state').val($scope.item.state);
 		  if ($scope.userGroupAdmin) {

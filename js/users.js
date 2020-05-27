@@ -166,7 +166,6 @@
 		    $('#nick').attr('disabled',false);
 			$('#nick').focus();	  
 			$('#btnUklogin').click(function() {
-				$('#ifrmUkloginLogin').attr('src', 'https://uklogin.tk/oauth2/loginform/client_id/12');
 				$('#loginForm').hide();
 				$('#divUkloginLogin').show();
 			});
@@ -180,7 +179,7 @@
 				$('#formLogin').submit();
 				return false;
 			});
-			
+			$('#btnUklogin').click();
 	  } // login formról van szó
 
 	  if ($('#divProfileForm').length) {

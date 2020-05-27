@@ -215,7 +215,12 @@ class UsersController extends CommonController {
 	    $p = $this->init($request, []);
 	    $p->msgs = [];
 	    $this->createCsrToken($request, $p);
-	    $this->view->loginForm($p);
+	    if ($_SERVER['REMOTE_ADDR'] == '192.168.0.12') {
+	        // local test
+	        redirectTo(config('MYDOMAIN').'/opt/users/accesstoken');
+	    } else {
+    	    $this->view->loginForm($p);
+	    }
 	}
 	
 	/**
@@ -428,6 +433,74 @@ class UsersController extends CommonController {
 	        $this->view->successMsg(['ACCOUNT_REMOVED'],$p->backUrl,txt('OK'),$p);
 	    } else {
 	        $this->view->errorMsg(['NOT_FOUND'],$p->backUrl,txt('OK'),$p);
+	    }
+	}
+	
+	/**
+	 * távoli URL hívás
+	 * @param string $url
+	 * @param array $post ["név" => "érték", ...]
+	 * @param array $headers
+	 * @return string
+	 */
+	protected function callCurl(string $url, array $post=array(), array $headers=array()):string {
+	    $return = '';
+	    $ch = curl_init($url);
+	    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+	    if(count($post)>0) {
+	        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($post));
+	    }
+	    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+	    $return = curl_exec($ch);
+	    return $return;
+	}
+	
+	/**
+	 * uklogin callback function
+	 * @request accesstoken, once, state
+	 */
+	public function accesstoken(Request $request) {
+	    $p = $this->init($request, ['token','nonce']);
+	    $token = $request->input('token');
+	    $url="https://uklogin.tk/userinfo";
+	    if ($_SERVER['REMOTE_ADDR'] == '192.168.0.12') {
+	        // local test
+	        $uklUser = JSON_decode('{"nickname":"admin", "sub":"123456"}');
+	    } else {
+	        $this->sessionChange($request->input('nonce'), $request);
+	        $uklUser = $this->apiRequest($url, ['access_token' => $token] );
+        }
+	    if (!isset($uklUser->error)) {
+	        // $user alapján bejelentkezik (ha még nincs user rekord létrehozza)
+	        // $user->nickname, ->audited ->postal_code ->loclity
+            $userRec = $this->model->getByNick($uklUser->nickname);
+            if ($userRec->id > 0) {
+                $request->sessionSet('loggedUser',$userRec);
+                redirectTo(config('MYDOMAIN'));
+            } else {
+                $userRec = new UserRecord();
+                $userRec->nick = $uklUser->nickname;
+                if (substr($uklUser->sub,0,2) == 'f_') {
+                    $userRec->reg_mode = 'facebook';
+                } else if (substr($uklUser->sub,0,2) == 'g_') {
+                    $userRec->reg_mode = 'google';
+                } else {
+                    $userRec->reg_mode = 'uklogin';
+                }
+                $userRec->email = 'none';
+                $userRec->name = $uklUser->nickname;
+                $userRec->avatar = 'gravatar';
+                $userRec->id = 0;
+                $msgs = $this->model->save($userRec);
+                if (count($msgs) == 0) {
+                    $request->sessionSet('loggedUser',$userRec);
+                    redirectTo(config('MYDOMAIN'));
+                } else {
+                    $this->view->errorMsg($msgs,'','',$p);
+                }
+            }
+	    } else {
+	        echo 'Fatal error in uklogin. wrong user data '.json_encode($uklUser); return;
 	    }
 	}
 	
