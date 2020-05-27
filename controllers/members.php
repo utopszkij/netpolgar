@@ -10,28 +10,28 @@ class MembersController extends CommonController {
 	 * -sessionba jöhet: user, offset, orderField, orderDir, filterStr, limit
 	 */
 	public function list(Request $request) {
-	    $p = $this->init($request,'groups');
+	    $p = $this->init($request,['type','objectid','groups']);
 	    $this->createCsrToken($request, $p);
 	    $p->type = $request->input('type','group');
 	    $p->objectId = $request->input('objectid','0');
-	    $p->typeId = $type.$objectId;
-	    if ($p->type = 'group') {
+	    $p->typeId = $p->type.$p->objectId;
+	    if ($p->type == 'group') {
 	        $groupModel = $this->getModel('groups');
-	        $p->group = $groupModel->getItem($p->objectId);
+	        $p->group = $groupModel->getRecord($p->objectId);
 	        $p->backUrl = MYDOMAIN.'/opt/groups/groupform/groupid/'.$p->objectId.'/'.$p->csrToken.'/1';
-	        $p->userGroupAdmin = $this->model->isUserGroupAdmin($p->user, $p->userAdmin, 'group');
+	        $p->userGroupAdmin = $this->model->isUserAdmin($p->type, $p->objectId, $p->loggedUser->id);
 	        $p->formTitle = txt('GROUP_MEMBERS');
 	    }
-	    $p->offset = $request->input('offset', $request->sessionGet($typeId.'MembersOffset',0));
-	    $p->limit = $request->input('limit', $request->sessionGet($typeId.'MembersLimit',20));
-	    $p->filterStr = $request->input('filterStr', $request->sessionGet($typeId.'MembersFilterStr',''));
-	    $p->orderField = $request->input('orderField', $request->sessionGet($typeId.'MembersOrderField','nick'));
-	    $p->orderDir = $request->input('orderDir', $request->sessionGet($typeId.'MembersOrderDir','ASC'));
-	    $request->sessionSet($typeId.'MembersOffset',$p->offset);
-	    $request->sessionSet($typeId.'MembersLimit',$p->limit);
-	    $request->sessionSet($typeId.'MembersOrderField',$p->orderField);
-	    $request->sessionSet($typeId.'MembersOrderDir',$p->orderDir);
-	    $request->sessionSet($typeId.'MembersFilterStr',$p->filterStr);
+	    $p->offset = $request->input('offset', $request->sessionGet($p->typeId.'MembersOffset',0));
+	    $p->limit = $request->input('limit', $request->sessionGet($p->typeId.'MembersLimit',20));
+	    $p->filterStr = $request->input('filterStr', $request->sessionGet($p->typeId.'MembersFilterStr',''));
+	    $p->orderField = $request->input('orderField', $request->sessionGet($p->typeId.'MembersOrderField','nick'));
+	    $p->orderDir = $request->input('orderDir', $request->sessionGet($p->typeId.'MembersOrderDir','ASC'));
+	    $request->sessionSet($p->typeId.'MembersOffset',$p->offset);
+	    $request->sessionSet($p->typeId.'MembersLimit',$p->limit);
+	    $request->sessionSet($p->typeId.'MembersOrderField',$p->orderField);
+	    $request->sessionSet($p->typeId.'MembersOrderDir',$p->orderDir);
+	    $request->sessionSet($p->typeId.'MembersFilterStr',$p->filterStr);
 	    $p->total = 0;
 	    $p->items = $this->model->getRecords($p, $p->total);
 	        
@@ -54,7 +54,7 @@ class MembersController extends CommonController {
 	 * session: user, csrToken
 	 */
 	public function form(Request $request) {
-	    $p = $this->init($request,'groups');
+	    $p = $this->init($request,['type', 'objectid', 'memberid', 'groups']);
 	    $this->checkCsrToken($request);
 	    $this->createCsrToken($request, $p);
 	    $p->type = $request->input('type','group');
@@ -62,7 +62,7 @@ class MembersController extends CommonController {
 	    $p->memberId = $request->input('memberid',0);
 	    if ($p->type = 'group') {
 	        $groupModel = $this->getModel('groups');
-	        $p->group = $groupModel->getItem($p->objectId);
+	        $p->group = $groupModel->getRecord($p->objectId);
 	        $p->backUrl = MYDOMAIN.'/opt/groups/groupform/groupid/'.$p->objectId.'/'.$p->csrToken.'/1';
 	        $p->userGroupAdmin = $this->model->isUserGroupAdmin($p->user, $p->userAdmin, 'group');
 	        $p->formTitle = txt('GROUP_MEMBER');

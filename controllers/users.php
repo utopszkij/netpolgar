@@ -217,7 +217,7 @@ class UsersController extends CommonController {
 	    $this->createCsrToken($request, $p);
 	    if ($_SERVER['REMOTE_ADDR'] == '192.168.0.12') {
 	        // local test
-	        redirectTo(config('MYDOMAIN').'/opt/users/accesstoken');
+	        redirectTo(config('MYDOMAIN').'/opt/users/accesstoken/?nick='.$request->input('nick','admin'));
 	    } else {
     	    $this->view->loginForm($p);
 	    }
@@ -457,15 +457,17 @@ class UsersController extends CommonController {
 	
 	/**
 	 * uklogin callback function
-	 * @request accesstoken, once, state
+	 * @request accesstoken, once, state, nick
+	 *   nick csak localis testnél érkezik
 	 */
 	public function accesstoken(Request $request) {
-	    $p = $this->init($request, ['token','nonce']);
+	    $p = $this->init($request, ['token','nonce','ninck']);
+	    $p->nick = $request->input('nick','admin');
 	    $token = $request->input('token');
 	    $url="https://uklogin.tk/userinfo";
 	    if ($_SERVER['REMOTE_ADDR'] == '192.168.0.12') {
 	        // local test
-	        $uklUser = JSON_decode('{"nickname":"admin", "sub":"123456"}');
+	        $uklUser = JSON_decode('{"nickname":"'.$p->nick.'", "sub":"123456"}');
 	    } else {
 	        $this->sessionChange($request->input('nonce'), $request);
 	        $uklUser = $this->apiRequest($url, ['access_token' => $token] );

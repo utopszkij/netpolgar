@@ -28,6 +28,11 @@ class MembersModel {
         return false;
     }
     
+    public function isUserAdmin(string $type, int $id, int $user_id): bool {
+        return false;
+    }
+    
+    
     public function getMemberCount(string $type, int $id): int {
         return 0;
     }

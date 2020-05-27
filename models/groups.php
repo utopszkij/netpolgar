@@ -194,7 +194,7 @@ class GroupsModel {
      * @param int $total
      * @param int $userId
      */
-    protected function getItem($item, array & $result, int & $total, int $userId) {
+    public function getItem($item, array & $result, int & $total, int $userId) {
         if ($item->avatar == '') {
             $icon = '<img class="groupIcon" src="templates/'.config('TEMPLATE').'/no-image.png" />';
         } else {
