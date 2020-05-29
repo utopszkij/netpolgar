@@ -7,7 +7,7 @@ class MembersController extends CommonController {
 	 * members böngésző 
 	 * ha userGroupAdmin akkor van "add" és "invite" gomb is, 
 	 * @param Request $request type, objectid
-	 * -sessionba jöhet: user, offset, orderField, orderDir, filterStr, limit
+	 * -sessionba jöhet: user, offset, order, order_dir, searchstr, limit
 	 */
 	public function list(Request $request) {
 	    $p = $this->init($request,['type','objectid','groups']);
@@ -15,6 +15,7 @@ class MembersController extends CommonController {
 	    $p->type = $request->input('type','group');
 	    $p->objectId = $request->input('objectid','0');
 	    $p->typeId = $p->type.$p->objectId;
+	    $p->memberState = $this->model->getState($p->type, $p->loggedUser->id); 
 	    if ($p->type == 'group') {
 	        $groupModel = $this->getModel('groups');
 	        $p->group = $groupModel->getRecord($p->objectId);
@@ -24,14 +25,17 @@ class MembersController extends CommonController {
 	    }
 	    $p->offset = $request->input('offset', $request->sessionGet($p->typeId.'MembersOffset',0));
 	    $p->limit = $request->input('limit', $request->sessionGet($p->typeId.'MembersLimit',20));
-	    $p->filterStr = $request->input('filterStr', $request->sessionGet($p->typeId.'MembersFilterStr',''));
-	    $p->orderField = $request->input('orderField', $request->sessionGet($p->typeId.'MembersOrderField','nick'));
-	    $p->orderDir = $request->input('orderDir', $request->sessionGet($p->typeId.'MembersOrderDir','ASC'));
+	    $p->searchstr = $request->input('searchstr', $request->sessionGet($p->typeId.'MembersSearchstr',''));
+	    $p->order = $request->input('order', $request->sessionGet($p->typeId.'MembersOrder','nick'));
+	    $p->order_dir = $request->input('order_dir', $request->sessionGet($p->typeId.'MembersOrder_dir','ASC'));
+	    $p->formIcon = 'fa-user';
+	    $p->itemTask = 'form';
+	    $p->addUrl = config('MYDOMAIN').'/opt/members/add';
 	    $request->sessionSet($p->typeId.'MembersOffset',$p->offset);
 	    $request->sessionSet($p->typeId.'MembersLimit',$p->limit);
-	    $request->sessionSet($p->typeId.'MembersOrderField',$p->orderField);
-	    $request->sessionSet($p->typeId.'MembersOrderDir',$p->orderDir);
-	    $request->sessionSet($p->typeId.'MembersFilterStr',$p->filterStr);
+	    $request->sessionSet($p->typeId.'MembersOrder',$p->order);
+	    $request->sessionSet($p->typeId.'MembersOrder_dir',$p->order_dir);
+	    $request->sessionSet($p->typeId.'MembersSearchstr',$p->searchstr);
 	    $p->total = 0;
 	    $p->items = $this->model->getRecords($p, $p->total);
 	        
@@ -73,34 +77,164 @@ class MembersController extends CommonController {
 	}
 	
     /**
-     * új tag felvitel, meghívó küldés csak userGroupAdmin használhatja 
-     * ez egy user böngésző, rejtett mezőben a type, typeid, state
-     * a névre kattintás hatása: rejtett memberid beállítása és "save"
-     * @param Request $request csrtoken, type, objectid, limit, offset, 
-     * filterStr, state='active'|'invited'
-     * sessionban: csrToken, user
+     * insert new tag state=aspire
+     * @param Request $request - csrToken, type, id, userid  
      */
-	public function add(Request $request, string $state = 'invite') {
-	    echo 'nincs kész';
-	}
-	
-    /**
-     * memberForm tárolása (felvitel vagy update) csak userGroupAdmin használhatja
-     * ha invite statust visz fel akkor emailt is küld
-     * @param Request $request - csrtoken, type, objectid, memberid
-     * session: user, csrToken
-     */
-	public function save(Request $request) {
-	    echo 'nincs kész';
+	public function aspire(Request $request) {
+	    $p = $this->init($request,['type', 'id', 'userid']);
+	    $this->checkCsrToken($request);
+	    $this->createCsrToken($request, $p);
+	    $url = '';
+	    $msgs = $this->model->addMember($p->type, $p->id, $p->userid, 'aspire');
+	    if (count($msgs) == 0) {
+	        if ($p->type == 'group') {
+	            $url = config('MYDOMAIN').'/opt/groups/groupform/groupid/'.$p->id.'/'.$p->csrToken.'/1';
+	        }
+	        if ($p->type == 'project') {
+	            $url = config('MYDOMAIN').'/opt/projects/projectform/projectid/'.$p->id.'/'.$p->csrToken.'/1';
+	        }
+	        if ($url != '') {
+	            redirectTo($url);
+	        } else {
+	            $this->view->successMsg($msgs,'','',true,$p);
+	        }
+	    } else {
+	        $this->view->errorMsg($msgs,'','',true,$p);
+	    }
 	}
 	
 	/**
-	 * member rekord törlés végrehajtása csak userGroupAdmin használhatja
-	 * @param Request $request - type, objectid, rekord mezői
-	 * session: user
+	 * delete aspre meber record
+	 * @param Request $request - csrToken, type, id, userid
 	 */
-	public function remove(Request $request) {
-	    echo 'nincs kész';
+	public function notaspire(Request $request) {
+	    $p = $this->init($request,['type', 'id', 'userid']);
+	    $this->checkCsrToken($request);
+	    $this->createCsrToken($request, $p);
+	    $state = $this->model->getState($p->type, $p->id, $p->userid);
+	    if ($state == 'aspire') {
+	        $msgs = $this->model->deleteMember($p->type, $p->id, $p->userid);
+	    } else {
+	        $msgs = [txt('NOT_FOUND')];
+	        $this->view->errorMsg($msgs,'','',true,$p);
+	    }
+	    if (count($msgs) == 0) {
+	        if ($p->type == 'group') {
+	            $url = config('MYDOMAIN').'/opt/groups/groupform/groupid/'.$p->id.'/'.$p->csrToken.'/1';
+	        }
+	        if ($p->type == 'project') {
+	            $url = config('MYDOMAIN').'/opt/projects/projectform/projectid/'.$p->id.'/'.$p->csrToken.'/1';
+	        }
+	        if ($url != '') {
+	            redirectTo($url);
+	        } else {
+	            $this->view->successMsg($msgs,'','',true,$p);
+	        }
+	    } else {
+	        $this->view->errorMsg($msgs,'','',true,$p);
+	    }
 	}
+	
+	/**
+	 * member quit from object
+	 * @param Request $request - csrToke, type, id, userid
+	 */
+	public function quit(Request $request) {
+	    $p = $this->init($request,['type', 'id', 'userid']);
+	    $this->checkCsrToken($request);
+	    $this->createCsrToken($request, $p);
+	    $state = $this->model->getState($p->type, $p->id, $p->userid);
+	    if ($state == 'asmin') {
+	        $msgs = [txt('ADMIN_CAN_NOT_QUIT')];
+	        $this->view->errorMsg($msgs,'','',true,$p);
+	        return;
+	    }
+	    if ($state != 'none') {
+	        $msgs = $this->model->deleteMember($p->type, $p->id, $p->userid);
+	    } else {
+	        $msgs = [txt('NOT_FOUND')];
+	        $this->view->errorMsg($msgs,'','',true,$p);
+	    }
+	    if (count($msgs) == 0) {
+	        if ($p->type == 'group') {
+	            $url = config('MYDOMAIN').'/opt/groups/groupform/groupid/'.$p->id.'/'.$p->csrToken.'/1';
+	        }
+	        if ($p->type == 'project') {
+	            $url = config('MYDOMAIN').'/opt/projects/projectform/projectid/'.$p->id.'/'.$p->csrToken.'/1';
+	        }
+	        if ($url != '') {
+	            redirectTo($url);
+	        } else {
+	            $this->view->successMsg($msgs,'','',true,$p);
+	        }
+	    } else {
+	        $this->view->errorMsg($msgs,'','',true,$p);
+	    }
+	}
+	
+	/**
+	 * member update state active to pause
+	 * @param Request $request - csrToke, type, id, userid
+	 */
+	public function pause(Request $request) {
+	    $p = $this->init($request,['type', 'id', 'userid']);
+	    $this->checkCsrToken($request);
+	    $this->createCsrToken($request, $p);
+	    $state = $this->model->getState($p->type, $p->id, $p->userid);
+	    if ($state == 'active') {
+	        $msgs = $this->model->updateMember($p->type, $p->id, $p->userid, 'pause');
+	    } else {
+	        $msgs = [txt('NOT_FOUND')];
+	        $this->view->errorMsg($msgs,'','',true,$p);
+	    }
+	    if (count($msgs) == 0) {
+	        if ($p->type == 'group') {
+	            $url = config('MYDOMAIN').'/opt/groups/groupform/groupid/'.$p->id.'/'.$p->csrToken.'/1';
+	        }
+	        if ($p->type == 'project') {
+	            $url = config('MYDOMAIN').'/opt/projects/projectform/projectid/'.$p->id.'/'.$p->csrToken.'/1';
+	        }
+	        if ($url != '') {
+	            redirectTo($url);
+	        } else {
+	            $this->view->successMsg($msgs,'','',true,$p);
+	        }
+	    } else {
+	        $this->view->errorMsg($msgs,'','',true,$p);
+	    }
+	}
+	
+	/**
+	 * member update state pause to active
+	 * @param Request $request - csrToke, type, id, userid
+	 */
+	public function active(Request $request) {
+	    $p = $this->init($request,['type', 'id', 'userid']);
+	    $this->checkCsrToken($request);
+	    $this->createCsrToken($request, $p);
+	    $state = $this->model->getState($p->type, $p->id, $p->userid);
+	    if ($state == 'pause') {
+	        $msgs = $this->model->updateMember($p->type, $p->id, $p->userid, 'active');
+	    } else {
+	        $msgs = [txt('NOT_FOUND')];
+	        $this->view->errorMsg($msgs,'','',true,$p);
+	    }
+	    if (count($msgs) == 0) {
+	        if ($p->type == 'group') {
+	            $url = config('MYDOMAIN').'/opt/groups/groupform/groupid/'.$p->id.'/'.$p->csrToken.'/1';
+	        }
+	        if ($p->type == 'project') {
+	            $url = config('MYDOMAIN').'/opt/projects/projectform/projectid/'.$p->id.'/'.$p->csrToken.'/1';
+	        }
+	        if ($url != '') {
+	            redirectTo($url);
+	        } else {
+	            $this->view->successMsg($msgs,'','',true,$p);
+	        }
+	    } else {
+	        $this->view->errorMsg($msgs,'','',true,$p);
+	    }
+	}
+	
 }
 ?>

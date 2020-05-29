@@ -36,6 +36,9 @@ class CommonController extends Controller {
         } else {
             $this->view = new View();
         }
+        if ($user->avatar == '') {
+            $user->avatar = './images/noavatar.png';
+        }
         $p->loggedUser = $user;
         if ($name == 'user') {
             $p->userAdmin = $this->model->isAdmin($p->loggedUser->id);

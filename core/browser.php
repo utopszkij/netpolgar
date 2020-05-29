@@ -25,7 +25,7 @@ class BrowserView extends CommonView {
       * @param int $offset
       * @param int $limit
       */
-     protected function echoPaginator(int $total, int $offset, int $limit) {
+     public function echoPaginator(int $total, int $offset, int $limit) {
          $offsetPrev = $offset - $limit;
          $offsetLast = 0;
          if ($offsetPrev < 0) {
@@ -166,8 +166,9 @@ class BrowserView extends CommonView {
 	  *                    items, total, offset, order, order_dir, searchstr, csrToken
 	  */
      public function browserForm(Params $p) {
-			$this->echoHtmlHeader($p);
-			echo "<body>\n";
+			$this->echoHtmlHead($p);
+			echo '<body ng-app="app">
+                    <div ng-controller="ctrl" id="scope" style="display:block">\n';
 			$this->echoNavBar($p);
 			$this->echoHtmlPopup($p);
 			?>
@@ -177,8 +178,7 @@ class BrowserView extends CommonView {
 			<?php endif; ?>
 			<div class="page" id="page">
 				<div class="pageBody <?php echo $p->option; ?>" id="pageBody">
-					<p><em class="fa <?php echo $p->formIcon; ?>"></em></p>
-					<h3><?php echo $p->formTitle; ?></h3>				
+					<h3><em class="fa <?php echo $p->formIcon; ?>"></em>&nbsp;<?php echo $p->formTitle; ?></h3>				
 					<?php if (isset($p->formHelp)) : ?>
 					<p><?php echo $p->formHelp; ?></p>
 					<?php endif; ?>
@@ -202,16 +202,16 @@ class BrowserView extends CommonView {
 									<em class="fa fa-search"></em>
 								</button>	
 								<button type="button" id="delSearchBtn" onclick="delSearchClick()" class="btn btn-danger">
-									<em class="fa fa-remove"></em>
+									<em class="fa fa-times"></em>
 								</button>	
 							</div>					
 						</div> 
 						<?php $this->echoBrowsertable($p->items, $p->offset, $p->limit, $p->order, $p->order_dir); ?>
 						<?php if (isset($p->addUrl)) : ?>
 						<div class="browserButtons">
-						<button type="button" id="addBtn" class="btn btn-primary">
+						<a class="btn btn-primary" href="<?php echo $p->addUrl; ?>">
 							<em class="fa fa-plus-circle"></em>&nbsp;<?php echo txt('ADD'); ?>
-						</button> 	
+						</a> 	
 						</div>
 						<?php endif; ?>
 						<?php $this->echoPaginator($p->total, $p->offset, $p->limit); ?>
@@ -226,7 +226,9 @@ class BrowserView extends CommonView {
 			</div>
 			<?php
 			$this->echoFooter($p);
-			echo "</body>
+			$this->loadJavaScriptAngular($p->option,$p); 
+			echo "</div>
+            </body>
 			</html>\n"; 
 						
      }

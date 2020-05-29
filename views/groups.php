@@ -101,10 +101,42 @@ class GroupsView  extends CommonView  {
                 <?php endif; ?>
                 <p>
               		<label>{{txt('NAME')}} *:</label>
-              		<input id="name" name="name" type="text" value="{{item.name}}"  size="80" />
+                    <div class="memberButtons">
+                  		<input id="name" name="name" type="text" value="{{item.name}}"  size="80" />
+                  		<br />                 
+                  		<var ng-if="loggedUser.id > 0">{{txt('USERSTATE')}}: {{txt(userState)}}</var>
+     					<a href="{{LNG.MYDOMAIN}}/opt/members/aspire/type/group/id/{{groupId}}/userid/{{loggedUser.id}}/{{csrToken}}/1" 
+        					     class="btn btn-secondary btn-member" target="_self"
+        					     ng-if="((userState == 'none') || (userState == 'exiting'))  && (loggedUser.id > 0)">
+        					   	 <em class="fa fa-sign-in-alt"></em>&nbsp;{{txt('ASPIRE')}}
+        				</a>
+     					<a href="{{LNG.MYDOMAIN}}/opt/members/activate/type/group/id/{{groupId}}/userid/{{loggedUser.id}}/{{csrToken}}/1" 
+        					     class="btn btn-secondary btn-member" target="_self"
+        					     ng-if="(userState == 'pause')  && (loggedUser.id > 0)">
+        					   	 <em class="fa fa-sign-in-alt"></em>&nbsp;{{txt('ACTIVATE')}}
+        				</a>
+     					<a href="{{LNG.MYDOMAIN}}/opt/members/quit/type/group/id/{{groupId}}/userid/{{loggedUser.id}}/{{csrToken}}/1" 
+        					     class="btn btn-secondary btn-member" target="_self" 
+        					     ng-if="(userState == 'active') && (loggedUser.id > 0)">
+        					   	 <em class="fa fa-sign-out-alt"></em>&nbsp;{{txt('QUIT')}}
+        				</a>
+     					<a href="{{LNG.MYDOMAIN}}/opt/members/notaspire/type/group/id/{{groupId}}/userid/{{loggedUser.id}}/{{csrToken}}/1" 
+        					     class="btn btn-secondary btn-member" target="_self" 
+        					     ng-if="(userState == 'active') && (loggedUser.id > 0)">
+        					   	 <em class="fa fa-times"></em>&nbsp;{{txt('NOTASPIRE')}}
+        				</a>
+     					<a href="{{LNG.MYDOMAIN}}/opt/members/pause/type/group/id/{{groupId}}/userid/{{loggedUser.id}}/{{csrToken}}/1" 
+        					     class="btn btn-secondary btn-member" target="_self" 
+        					     ng-if="(userState == 'active') && (loggedUser.id > 0)">
+        					   	 <em class="fa fa-clock"></em>&nbsp;{{txt('PAUSE')}}
+        				</a>
+    				</div>
               	</p>
               	<p>
-              		<label>{{txt('DESCRIPTION')}} *:</label>
+              		 <label>
+              		   {{txt('DESCRIPTION')}} *:
+              		 </label>
+
               		<textarea id="description" name="description" cols="80" rows="10">{{item.description}}</textarea>
               	</p>
                 <p>
@@ -190,6 +222,7 @@ class GroupsView  extends CommonView  {
      *    $p->userid, $p->filterUser
      */
 	public function form(Params $p) {
+	    
 	    $this->echoHtmlHead($p);
         ?>	
         <body ng-app="app">

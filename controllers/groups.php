@@ -74,6 +74,15 @@ class GroupsController extends CommonController {
        */
       public function groupform(Request $request) {
           $p = $this->init($request,[]);
+          
+          //TEST
+          $p->loggedUser->id = 2;
+          $p->loggedUser->nick = 'user1';
+          $p->loggedUser->email = '';
+          $p->loggedUser->avatar = '';
+          $p->avatarUrl = './images/noavatar.png';
+          
+          
           $this->createCsrToken($request, $p);
           $backUrl = MYDOMAIN.'/opt/groups/list';
           $p->groupId = $request->input('groupid',0);
@@ -81,8 +90,7 @@ class GroupsController extends CommonController {
           $p->userGroupAdmin = $this->isUserAdmin($p->loggedUser, $p->userAdmin, $p->groupId);
           
           $membersModel = $this->getModel('members');
-          $p->userMember = $membersModel->isMember('group', $p->groupId, $p->loggedUser->id);
-          
+          $p->userState = $membersModel->getState('group', $p->groupId, $p->loggedUser->id);
           $p->formTitle = 'GROUP';
           $p->msgs = [];
           if ($p->groupId > 0) {
