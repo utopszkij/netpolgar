@@ -1,0 +1,15 @@
+*~
+tests/sonar.sh
+.htaccess
+.config.php
+.project
+node_modules
+node_modules/
+.scannerwork
+.scannerwork/
+.settings
+.settings/
+vendor
+vendor/
+eles-config.php
+

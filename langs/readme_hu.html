@@ -1,0 +1,171 @@
+<div ng-controller="ctrl" id="scope" class="readme" style="display:block;">
+  <h1>NETPOLGAR Egyenrangú, autonom egyének együttműködését támogató WEB rendszer</h1>
+  
+  <h2 id="attekintes">Áttekintés</h2>
+  <p>Funkciók: </p>
+  <ul>
+  	<li>Csoport szervezés,</li>
+  	<li>Projekt menedzselés,</li>
+  	<li>Virtuális piactér,</li>
+  	<li>Esemény szervezés,</li>
+  	<li>Eszmecserék, viták lebonyolítása,</li>
+  	<li>Szavazások lebonyolítása,</li>
+  	<li>Privár üzenetek</li>
+  </ul>
+  
+  <h3>Felhasználók kezelése</h3>
+  <blockquote>
+  	<p>Falhasználók regisztrálhatnak "uklogin" vagy hagyományos email aktiválásos módszerrel, 
+  	facebook vagy google fiokjuk használatával.
+  	A hagyományos web -es, facebook-os és google -ös regisztrációk alapesetben "nem hiteles" jelzésüek,
+  	a rendszer adminisztrátorok ezeket is hitelesíthetik.
+  	Adatok:</p>
+  	<ul>
+   		<li>automatikus azonosító szám</li>
+   		<li>becenév</li>
+   		<li>Jelszó hash</li>
+   		<li>engedélyezett (I/N)</li>
+   		<li>hibás login kisérlet számláló</li>
+   		<li>ekkor lett limitet tullépő hibás kisérlet miatt blokkolva</li>
+   		<li>valós név</li>
+   		<li>user e-mail címe</li>
+   		<li>rendszer adminisztrátor (I/N)</li>
+   		<li>avatar img-re mutató url vagy üres</li>
+   		<li>reg.mód: 'uklogin' | 'web' | 'adalogin'</li>
+   		<li>hitelesített (I/N)</li>
+   		<li>jelszó eddig érvényes ha üres akkor nincs érvényességi határidő</li>
+  	</ul>
+  	<p>A felhasználók regisztrálás után bejelentkezhetnek a programba, kijelentkezhetnek, jelszót változtathatnak, tárolt adataikat megnézhetik, módosíthatják, törölhetik a fiokjukat.
+  	Elfelejtett jelszónál emailbe érkező ideiglenes jelszó kérhető.</p>
+  </blockquote>
+
+  <h3>Témakörök</h3>
+  <blockquote>
+  	<p>A rendszer adminisztrátorok fa sturktúrába rendezett témakör (cimke vagy kulcsszó) rendszert alakíthatnak ki.
+  	Ezek a cimkék a különböző információk keresésénél lehetnek hasznosak.</p>
+  </blockquote>
+  
+  <h3>Csoport szervezés</h3>
+  <blockquote>
+	  <p>Fa struktúrába szervezett csoportok definiálhatóak.
+	  Minden csoportnak van legalább egy csoport adminisztrátora.
+	  A csoport struktúra legfelső szintét a rendszer adminisztrátorok tudják felvinni, modosítani.
+	  A lejebb lévő alcsoportokat a befoglaló csoport "csoport adminisztrátorai" kezelik.
+	  A csoport adminisztrátorok vehetnek fel a csoportba tagokat,
+	  törölhetnek, modosíthatnak tagokat, tagságra vonatkozó meghívókat küldhetnek ki.
+	  Ugyanők vehetnek fel alcsoportokat, modosíthatják és törölhetik azokat.
+	  A csoportok témakörökhöz rendelhetőek.
+	  A csoprt beállítása szerint a regisztrált felhasználók tagnak jelentkezhetnek a csoportokba, vagy a tagok meghívókat
+	  küldhetnek a regisztrált felhasználóknak, és a meghívott az ebben lévő linkre kattintva jelentkezhet tagnak.
+	  A jelentkezést csoport adminisztrátornak kell jóvá hagynia. 
+	  A csoport tagok kiléphetnek a csoportból.
+	  A csoport tagok megfelelő többsége szavazással kizárhatnak tagokat a csoportból.
+	  Új csoport felvitelekor a felvivó lesz az adminisztrátor, később további adminisztrátorokat is kijelölhet a tagok közül. 
+	  </p>
+	  
+  </blockquote>
+  
+  <h3>Projekt menedzselés</h3>
+  <blockquote>
+	  <p>A rendszer adminisztrátorok, csoport adminisztrátorok projekteket indithatnak.
+	  A projektek egy csoporthoz is kapcsolódhatnak.
+	  A projektek témakörökhöz rendelhetőek.
+	  Minden projektnek van legalább egy projekt adminisztrátora.
+	  A projekt adminisztrátorok résztvevőket vehetnek fel/modosíthatnak/törölhetnek, meghívókat küldhetnek.
+	  A regisztrált felhasználók résztvevőnek jelentkezhetnek a projektbe.
+	  A jelentkezést projekt adminisztrátornak kell jóvá hagynia.
+	  A projekt tagok bármikor kiléphetnek a projektből. 
+	  A projekt adminisztrátorok feladatokat (taszkokat) definiálhatnak a projektbe, határidőt,
+	  Felelőst adhatnak meg a feladathoz. Modosithatják a feladat állapotát.
+	  A projekt adminisztrátorok lezárhatják, felfüggeszthetik a projektet.
+	  A projekt felvitelekor a felvivó lesz az adminisztrátor, később további adminisztrátorokat is kijelölhet a résztvevők közül. 
+	  A rendszer adminisztrátor törölhet projekteket.</p>
+  </blockquote>
+  
+  <h3>Virtuális piactér</h3>
+  <blockquote>
+	  <p>A projekt adminisztrátorok, csoport adminisztrátorok, regisztrált
+	  felhasználók keresleteket/kinálatokat vihetnek fel.
+	  A keresletek/kinálatok témakörökhöz rendelhetőek.
+	  A keresletek/kinálatok csoporthoz vagy projekthez kapcsolódhatnak.
+	  A felhasználások (tranzakciók) virtuális pénzben történő elszámolással vihetők fel a rendszerbe.
+	  Készlet változások kezelése, felhasználói értékelési rendszer, hibajegy rendszert is tartalmaz ez a modul.
+	  Mivel a netpolgar rendszer a kölcsönös bizalmon alapul egy a közösség által megállapított keret összegig a felhasználók
+	  egyenlege negatív is lehet. A virtuális pénzben vezetett folyószámla egyenlegek nyilvánosak.
+	  </p>
+  </blockquote>
+  
+  <h3>Esemény szervezés</h3>
+  <blockquote>
+	  <p>A projekt adminisztrátorok, csoport adminisztrátorok, regisztrált felhasználók eseményeket vihetnek fel.
+	  Az események témakörökhöz rendelhetőek.
+	  Az események csoporthoz vagy projekthez kapcsolódhatnak.
+	  Az esemény szervező email-ben meghívókat küldhet ki.
+	  A regisztrált felhasználók jelentkezhetnek az eseményre.
+	  Az esemény felvitelekor a felvivó lesz az adminisztrátor, később további adminisztrátorokat is kijelölhet.
+	  Szükség esetén az eseményen történő tényleges részvétel (beleértve a virtuális részvételt is) is adminisztrálható. 
+	  </p>
+  </blockquote>
+  
+  <h3>Eszmecserék, viták lebonyolítása</h3>
+  <blockquote>
+	  <p>A projekt adminisztrátorok, csoport adminisztrátorok, regisztrált felhasználók eszmecseréket vihetnek fel.
+	  Az eszmecserék témakörökhöz rendelhetőek.
+	  Az eszmecserék csoporthoz vagy projekthez kapcsolódhatnak.
+	  Minden eszmecserének van legalább egy moderátora.
+	  A moderátorok email-ben meghívókat küldhetnek ki.
+	  A regisztrált felhasználók hozzászólásokat irhatnak.
+	  Az eszmecsere inditásakor a felvivó lesz a moderátor, később további moderátorokat is kijelölhet. 
+	  Az eszmecsere moderátor a döntéshez szavazást indithat.
+	  Szavazás tipusok: Igen/nem, egy választható, több választható, preferenciális, határozatképességi</p>
+  </blockquote>
+  
+  <h3>Szavazások lebonyolítása</h3>
+  <blockquote>
+	  <p>A szavazás inditó definiálja a szavazás kezdő és záró időpontját 
+	  valamint a szavazásra jogosultak körét (csoport tagjai, projekt résztvevői, eseményre jelentkezettek, egyedi lista, minden regisztrált tag).
+	  A szavazás lehet titkos vagy nyilt.
+	  Szavazás eredményének táblázatos és grafikus formábaj jeleníthető meg.</p>
+	  <p>Minden szavazási kérdés, és a szavazás eredménye publikus</p>	
+  </blockquote>
+  
+  <h3>Privár üzenetek</h3>
+  <blockquote>
+	  <p>A regisztrált felhasználók privát üzenetet küldhetnek egy vagy több másik felhasználónak.
+	  Az üzenetre lehet válaszolni (minden cimzettnek, vagy csak a feladónak).</p>
+  </blockquote>
+  
+  <h2 id="programnyelvek">Programnyelvek</h2>
+  <p>
+   PHP, MYSQL, JQUERY, bootstrap
+  </p>
+  <h3>Szoftver jellemzők</h3>
+  <ul>
+  	<li>kliens - szerver architektúra (kliens: web böngésző)</li>
+  	<li>MVC struktúra</li>
+  	<li>Többnyelvüség támogatása</li>
+  </ul>
+  
+  <h2 id="licensz">Licensz</h2>
+  <p>
+   GNU/GPL
+  </p>
+
+
+  <h2 id="programozo">
+   Programozó
+  </h2>
+  <p>
+   Fogler Tibor (Utopszkij)
+  </p>
+  <p>
+   <a href="mailto:tibor.fogler@gmail.com">
+    tibor.fogler@gmail.com
+   </a>
+  </p>
+  <p>
+   <a href="https://github.com/netpolgar">
+    https://github.com/netpolgar
+   </a>
+  </p>
+</div><!-- #scope -->

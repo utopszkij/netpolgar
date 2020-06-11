@@ -1,0 +1,36 @@
+<script src="https://meet.jit.si/external_api.js"></script>
+<script type="text/javascript">
+				// a videoChat iframe tipusa a css -ben   
+				// #jitsiConferenceFrame0 selectorral állítható be
+				// Ha lenyiló/becsukható megoldást akarunk akkor ezt kell megjeleniteni/elrejteni
+				// jquery -ben:  $('#jitsiConferenceFrame0').toggle()
+				//
+        		//+ =================== ezt itt aktualizálni kell =================
+        		var housename = "{{houseName}}";
+        		var houseHrsz = "{{houseHrsz}}";
+        		var agentaName = "{{agentaName}}";
+        		var userName = "{{currentUser.displayName}}";
+        		var userAvatar = "{{currentUser.avatar}}";
+        		//- =================== ezt itt aktualizálni kell =================
+        		
+        		var roomName = houseHrsz+agentaName;
+        		roomName = roomname.replace(/[_\W]+/g,'');
+            var domain = "meet.jit.si";
+            var options = {
+                roomName: roomName,
+                width: 0.9*screen.width,
+                height: 0.5*screen.height,
+                parentNode: undefined,      // document.getElementById('...'), ez esetben ennek a css -e is müködik
+                configOverwrite: {},
+                interfaceConfigOverwrite: {
+                    filmStripOnly: true
+                },
+                onload: function() {
+                	  api.executeCommand('subject', houseName+' - '+agentaName);
+                    api.executeCommand('displayName', userName);
+                    api.executeCommand('avatarUrl', userAvatar);
+                }
+            }
+            var api = new JitsiMeetExternalAPI(domain, options);
+</script>
+

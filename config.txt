@@ -1,0 +1,36 @@
+<?php
+   
+error_reporting(E_ALL);
+define('MYDOMAIN','http://robitc/netpolgar');
+define('MYPATH','/var/www/html/netpolgar');
+define('DEFLNG','hu');
+function config(string $token): string {
+	$values = new stdClass();
+	$values->TEMPLATE = 'default';
+	$values->MYSQLHOST = 'localhost';
+	$values->MYSQLUSER = 'root';
+	$values->MYSQLPSW = '???';
+	$values->MYSQLDB = 'netpolgar';
+	$values->MYSQLLOG = false;
+
+	$values->falseLoginLimit = 10;  // hibás bejelentkezési kisérlet limit
+	$values->blockExpired = 60000;  // user blokkolás lejárati ideje 10 óra
+	
+	$values->GITHUB_REPO = 'netpolgar';
+	$values->GITHUB_USER = 'utopszkij';
+	$values->GITHUB_PSW = '????';
+	
+	$values->smtpHost = 'smtp.gmail.com';
+	$values->smtpUser = '????';
+	$values->smtpPsw = '????';
+	$values->smtpSecure = 'tls';
+	$values->smtpPort = '587';
+	
+	$result = '';
+	if (isset($values->$token)) {
+		$result = $values->$token;	
+	}
+	return $result;
+}
+
+?>
