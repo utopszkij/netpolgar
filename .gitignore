@@ -11,5 +11,7 @@ node_modules/
 .settings/
 vendor
 vendor/
+sonar
+sonar/
 eles-config.php
 
