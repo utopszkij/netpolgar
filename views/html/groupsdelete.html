@@ -1,0 +1,19 @@
+			<div ng-include="templates.navbar"></div>
+			<div ng-include="templates.popup"></div>
+        	<div id="removeGroup">  
+        		<form action="{{MYDOMAIN}}/opt/groups/doremovegroup" 
+        		    method="post" target="_self">
+        		    <input type="hidden" name="{{csrToken}}" value="1" />
+        		    <input type="hidden" name="backUrl" value="{{backUrl}}" />
+        		    <input type="hidden" name="groupId" value="{{item.id}}" />
+            		<h2>{{txt('REMOVE_GROUP')}}</h2>
+            		<p><strong>{{item.name}}</strong></p>
+            		<p>{{txt('SURE_REMOVE_GROUP')}}</p>
+            		<p>
+            			<button type="submit" class="btn btn-danger">{{txt('YES')}}</button>&nbsp;
+            			<a href="{{backUrl}}" target="_self" class="btn btn-secondary">{{txt('NO')}}</a>
+            		</p>  
+        		</form>
+			</div>    
+			<div ng-include="templates.footer"></div>
+			

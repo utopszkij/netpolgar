@@ -1,0 +1,50 @@
+      	<div id="footer">  
+	      	<p>
+				<a href="{{LNG.MYDOMAIN}}/opt/impresszum/show" target="_self">
+					<em class="fa fa-pencil"></em>&nbsp;{{txt('IMPRESSUM')}}</a>&nbsp;&nbsp;&nbsp;      
+				<a href="{{LNG.MYDOMAIN}}/opt/policy/show" target="_self">
+					<em class="fa fa-lock"></em>&nbsp;{{txt('DATAPROCESS')}}</a>&nbsp;&nbsp;&nbsp;      
+				<a href="http://gnu.hu/gpl.html" target="_self">
+					<em class="fa fa-copyright"></em>&nbsp;{{txt('LICENCE')}}: GNU/GPL</a>&nbsp;&nbsp;&nbsp;      
+				<a href="https://github.com/utopszkij/netpolgar" target="_self">
+					<em class="fa fa-code"></em>&nbsp;{{txt('SOURCE')}}</a>&nbsp;&nbsp;&nbsp;   
+				<a href="{{LNG.MYDOMAIN}}/opt/issu/form" target="_self">
+					<em class="fa fa-bug"></em>&nbsp;{{txt('BUGMSG')}}</a>&nbsp;&nbsp;&nbsp;   
+	      	</p>   
+			<p>{{txt('SWRESOURCE')}}:			
+					<a href="https://www.php.net/manual/en/index.php" target="_self">php</a>&nbsp;
+					<a href="https://fontawesome.com/icons?d=gallery" target="_self">fontAwesome</a>&nbsp;
+					<a href="https://www.w3schools.com/css/" target="_self">css</a>&nbsp;
+					<a href="https://getbootstrap.com/" target="_self">bootstrap</a>&nbsp;
+					<a href="https://jquery.com/" target="_self">Jquery</a>&nbsp;
+					<a href="https://angularjs.org/" target="_self">AngularJs</a>&nbsp;
+					<a href="https://www.fpdf.org" target="_self">fpdf</a>&nbsp;
+					<a href="https://github.com/smalot/pdfparser" target="_self">smalot</a>&nbsp;
+					<a href="https://github.com/tan-tan-kanarek/github-php-client">
+						tan-tan-kanarek_github_kliens
+					</a>&nbsp;
+					<a href="https://github.com/jonmiles/bootstrap-treeview" target="_self">
+						bootsrap-treeview
+					</a>
+					<a href="https://pixabay.com/hu/" target="self">pixabay</a>
+			</p>
+			<p>Teszteléshez: phpunit&nbsp;mocha&nbsp;sonar-cloud&nbsp;</p>
+		</div>
+		<div id="cookieEnable" ng-if="cookieEnabled == false">
+             	<p style="margin:0px; padding:0px; text-align:right">A rendszer használatához engedélyeznie kell egy munkamenet cookie használatát.
+                 	&nbsp;Lásd: <a href="index.php/opt/adatkezeles/show" target="_new">Adatkezelési leírás</a>
+    				<a class="btn btn-primary" target="_self"
+    				  href="index.php?cookieenabled=1">Engedélyezem
+    				</a>
+				</p>
+        </div>
+		<div id="cookieDisable" ng-if="cookieEnabled == true">
+             	<p style="margin:0px; padding:0px; text-align:right">A rendszer használatához engedélyezte egy munkamenet cookie használatát.
+                 	&nbsp;Lásd: <a href="index.php/opt/adatkezeles/show" target="_new">Adatkezelési leírás</a>
+    				<a class="btn btn-primary" target="_self"
+    				  href="index.php?cookieenabled=0">Letiltom
+    				</a>
+				</p>
+        </div>
+        
+		

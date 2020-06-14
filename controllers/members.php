@@ -45,7 +45,7 @@ class MembersController extends CommonController {
 	        $p->group = $groupModel->getRecord($p->objectId);
 	        $p->backUrl = MYDOMAIN.'/opt/groups/groupform/groupid/'.$p->objectId.'/'.$p->csrToken.'/1';
 	        $p->userGroupAdmin = ($this->model->getState($p->type, $p->objectId, $p->loggedUser->id) == 'admin');
-	        $p->formTitle = txt('GROUP_MEMBERS');
+	        $p->formTitle = $p->group->name.' '.txt('GROUP_MEMBERS');
 	    }
 	    $p->offset = $request->input('offset', $request->sessionGet($p->typeId.'MembersOffset',0));
 	    $p->limit = $request->input('limit', $request->sessionGet($p->typeId.'MembersLimit',20));
@@ -69,7 +69,7 @@ class MembersController extends CommonController {
 	
 	/**
 	 * member adatform userGroupAdmin modosithat, törölhet, mások csak nézhetik
-	 * @param Request $request - csrtoken, type, objectid, id="group.objectid,id"
+	 * @param Request $request - csrtoken, type, objectid, id
 	 * session: user, csrToken
 	 */
 	public function form(Request $request) {
@@ -82,16 +82,21 @@ class MembersController extends CommonController {
 	    if (!$memberRec) {
 	        $memberRec = new MemberRecord();
 	    }
+	    //$likeModel = $this->getModel('likes');
+	    //$p->like = $likeModel->get('members', $p->memberId);
+	    $p->like = JSON_decode('{"total":{"up":0, "down":0}, "member":{"up":0, "down":0}}');
+	    
 	    if ($p->type = 'group') {
 	        $groupModel = $this->getModel('groups');
 	        $p->group = $groupModel->getRecord($p->objectId);
+	        $p->groupAvatar = $p->group->avatar;
+	        $p->groupName = $p->group->name;
 	        $p->backUrl = MYDOMAIN.'/opt/groups/groupform/groupid/'.$p->objectId.'/'.$p->csrToken.'/1';
-	        $p->loggedState = $this->model->getState($p->type, $p->objectid, $p->loggedUser->id);
-	        $p->formTitle = txt('GROUP_MEMBER');
-	        $userModel = $this->getModel('users');
-	        $p->user = $userModel->getById($memberRec->user_id);
-            $p->userState = $this->model->getState($p->type, $p->objectid, $memberRec->user_id);
 	    }
+	    $userModel = $this->getModel('users');
+	    $p->loggedState = $this->model->getState($p->type, $p->objectid, $p->loggedUser->id);
+	    $p->user = $userModel->getById($memberRec->user_id);
+	    $p->userState = $this->model->getState($p->type, $p->objectid, $memberRec->user_id);
 	    $this->view->form($p);
 	}
 	

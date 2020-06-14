@@ -96,40 +96,47 @@ class Model {
  * View osztály   megjelenítés
  */
 class View {
-    /**
-     * echo javascript code, inject params
-     * @param string $jsName javascript file full path
-     * @param array $params  {"name":value, ....}
-     * @return void
-     */
-    protected function loadJavaScript(string $jsName, Params $params) {
-    	echo "\n".'<script type="text/javascript">'."\n";
-    	echo '// params from controller'."\n";
-    	foreach ($params as $fn => $fv) {
-    		if ($fn != '') {
-    			if (is_array($fv)) {
-    				echo "var $fn = ".JSON_encode($fv).";\n";
-    			} else if (is_object($fv)) {
-    				echo "var $fn = ".JSON_encode($fv).";\n";
-    			} else if (is_bool($fv)) {
-    			    echo "var $fn = ".JSON_encode($fv).";\n";
-    			} else if (is_string($fv)) {
-    				$fv = str_replace("'", "\\'", $fv);
-    				$fv = str_replace("\n", "\\n", $fv);
-    				$fv = str_replace("\r", "\\r", $fv);
-    				$fv = str_replace("\t", "\\t", $fv);
-    				echo "var $fn = '$fv';\n";
-    			}	else {
-    				echo "var $fn = $fv;\n";
-    			}
-    		}
-    	}
-    	echo 'var sid = "'.session_id().'";'."\n";
-    	include_once './js/'.$jsName.'.js';
-    	echo '$("#working").hide()'."\n";
-    	echo "\n".'</script>'."\n";
+    
+    public function echoHtmlPage(string $name, Params $p, string $jsName = '') {
+        $this->echoHtmlHead($p);
+        if ($jsName == '') {
+            $jsName = $name;
+        }
+        if (file_exists('./templates/'.config('TEMPLATE').'/html/'.$name.'.html')) {
+            $htmlName = './templates/'.config('TEMPLATE').'/html/'.$name.'.html';
+        } else {
+            $htmlName = './views/html/'.$name.'.html';
+        }
+        ?>
+        <body ng-app="app">
+         	<div ng-controller="ctrl" id="scope" style="display:none">
+         		<div ng-include="'<?php echo $htmlName; ?>'"></div>
+         	</div>
+         	<?php $this->loadJavaScriptAngular($jsName, $p); ?>
+        </body>
+        <?php
+        $this->echoHtmlEnd();
     }
-
+    
+    /**
+     * templates elérési utvonalak betétele a $->templaes -be
+     * @param Params $p
+     * @param array $names
+     */
+    public function setTemplates(Params & $p, array $names = []) {
+        $names[] = 'navbar';
+        $names[] = 'footer';
+        $names[] = 'popupr';
+        $p->templates = new stdClass();
+        foreach ($names as $name) {
+            if (file_exists(config('MYPATH').'/templates/'.$p->TEMPLATE.'/html/'.$name.'.html')) {
+                $p->templates->$name = config('MYDOMAIN').'/templates/'.$p->TEMPLATE.'/html/'.$name.'.html';
+            } else {
+                $p->templates->$name = config('MYDOMAIN').'/views/html/'.$name.'.html';
+            }
+        }
+    }
+    
     /**
      * echo javascript code, inject params and language constanses
      * must in html:  <body ng-app="app">
@@ -143,58 +150,67 @@ class View {
      * @return void
      */
     public function loadJavaScriptAngular(string $jsName, $params) {
+        global $REQUEST;
+        $languages = get_defined_constants(true);
+        
+        function adjust($fv): string {
+            $result = $fv;
+            if (is_array($fv)) {
+                $result = JSON_encode($fv);
+            } else if (is_object($fv)) {
+                $result = JSON_encode($fv);
+            } else if (is_bool($fv)) {
+                $result = JSON_encode($fv);
+            } else if (is_string($fv)) {
+                $fv = str_replace("'", "\\'", $fv);
+                $fv = str_replace("\n", "\\n", $fv);
+                $fv = str_replace("\r", "\\r", $fv);
+                $fv = str_replace("\t", "\\t", $fv);
+                $fv = str_replace('"', '\"', $fv);
+                $result = '"'.$fv.'"';
+            }	else {
+                $result = $fv;
+            }
+            if ($result == '') {
+                $result = '""';
+            }
+            return $result;
+        }
         ?>
         <script src="https://code.angularjs.org/1.7.8/angular.js"></script>
         <script type="text/javascript">
         angular.module("app", []).controller("ctrl", function($scope) {
-            <?php
-            $languages = get_defined_constants(true);
-            echo '$scope.LNG = [];'."\n";
-            foreach ($languages['user'] as $fn => $fv) {
-                if (substr($fn,0,5) != 'MYSQL') {
-                    echo '$scope.LNG["'.$fn.'"] = '.JSON_encode($fv).';'."\n";
-                }
+        $scope.MYDOMAIN = "<?php echo config('MYDOMAIN'); ?>";
+        $scope.cookieEnabled = "<?php echo $REQUEST->sessionGet('cookieEnabled'); ?>"
+        $scope.LNG = {};
+        $scope.txt = function(token) {
+            if ($scope.LNG[token] == undefined) {
+                return token;
+            } else {
+                return $scope.LNG[token];
             }
-            echo '$scope.txt = function(token) {
-                if ($scope.LNG[token] == undefined) {
-                    return token;
-                } else {
-                    return $scope.LNG[token];
-                }
-            };
-            ';
-            foreach ($params as $fn => $fv) {
-                if ($fn != '') {
-                    if (is_array($fv)) {
-                        echo '$scope.'."$fn = ".JSON_encode($fv).";\n";
-                    } else if (is_object($fv)) {
-                        echo '$scope.'."$fn = ".JSON_encode($fv).";\n";
-                    } else if (is_bool($fv)) {
-                        echo '$scope.'."$fn = ".JSON_encode($fv).";\n";
-                    } else if (is_string($fv)) {
-                        $fv = str_replace("'", "\\'", $fv);
-                        $fv = str_replace("\n", "\\n", $fv);
-                        $fv = str_replace("\r", "\\r", $fv);
-                        $fv = str_replace("\t", "\\t", $fv);
-                        echo '$scope.'."$fn = '$fv';\n";
-                    }	else {
-                        echo '$scope.'."$fn = $fv;\n";
-                    }
-                }
-            }
-            echo '$scope.sid = "'.session_id().'";'."\n";
-            include_once './js/'.$jsName.'.js';
-            ?>
-            $("#scope").show();
-            $("#working").hide();
+        };
+        <?php foreach ($languages['user'] as $fn => $fv) : ?>
+            <?php if (substr($fn,0,5) != 'MYSQL')  : ?>
+                  $scope.LNG.<?php echo $fn; ?> = <?php echo JSON_encode($fv); ?>;
+            <?php endif; ?>
+        <?php endforeach; ?> 
+        <?php foreach ($params as $fn => $fv) : ?>
+        	<?php if ($fn != '') : ?>
+        		$scope.<?php echo $fn; ?> = <?php echo adjust($fv); ?>;
+        	<?php endif ?>
+        <?php endforeach; ?>
+        $scope.sid = "<?php session_id(); ?>";
+        <?php include_once './js/'.$jsName.'.js'; ?>
+        $("#scope").show();
+        $("#working").hide();
         }); // controller function
         </script>
-
         <?php
     }
 
     /**
-     * return hTML head
+     * echo hTML head
      *    include javascript global.alert, global.confirm, global.post, globa.working functions
      * figyelem használni kell a htmlPopup() hívást a HTML body -ban
      * A ./templates/.TEMPLATE.'/htmlhead.html' -t használja
@@ -218,7 +234,7 @@ class View {
     }
 
     /**
-    * json header
+    * echo json header
     */
     public function echoJsonHead() {
         if (!headers_sent()) {
@@ -231,31 +247,6 @@ class View {
      */
     public function echoHtmlEnd() {
         echo '</html>'."\n";
-    }
-
-
-    /**
-     * echo popup html code (use this HTML global.alert, global.confirm functions in htmlHead)
-     * @return void
-     */
-    public function echoHtmlPopup() {
-        echo '
-        <div id="popup" style="display:none">
-            <p class="alert alert-danger"></p>
-            <div id="popupButtons">
-                <button type="button" id="popupYes" class="btn btn-primary">
-                    <em class="fa fa-check"></em>
-                    '.txt('YES').'
-                </button>
-    			<button type="button" id="popupNo" class="btn btn-danger">
-                    <em class="fa fa-ban"></em>
-                    '.txt('NO').'
-                </button>
-    			<button type="button" id="popupClose">'.txt('CLOSE').'</button>
-    		</div>
-        </div>
-        <div id="working"><span>'.txt('WORKING').'...</span></div>
-    	';
     }
 
     /**
@@ -274,19 +265,44 @@ class View {
 			echo '<p>'.$htmlName.' html file not found.</p>';
     	}
     }
-
+    
     /**
-     * Nyelvi konstansok átadása a JS .nek
-     * @param array $tokens átadandó tokenek
+     * make paginator object 
+     * @param int $toal
+     * @param int $offset
+     * @param int $limit
+     * @return [{offset, paegNo, enabled}, ...]
      */
-    public function echoJsLngDefs(array $tokens) {
-        echo "\n<!-- language constaints -->\n";
-        echo '<script type="text/javascript">'."\n";
-        echo '  global.LNG = {};'."\n";
-        foreach ($tokens as $token) {
-            echo '  global.LNG.'.$token.' = "'.txt($token).'";'."\n";
+    public function makePaginators(int $total, int $offset, int $limit=20): array {
+        $result = [];
+        $offsetLast = 0;
+        $p = 1; // pageNo
+        $n = 1; // enyyi elemet ír ki az aktuális körül
+        $prevPageNo = '';
+        if ($offset < (2*$limit)) {
+            $n = 3;
         }
-        echo '</script>'."\n";
+        if ($offset > ($total - (2*$limit))) {
+            $n = 3;
+        }
+        for ($o = 0; $o < $total; $o = $o + $limit) {
+            if (($o == 0) |
+                (($o >= ($offset - ($n*$limit))) & ($o <= ($offset + ($n*$limit)))) |
+                ($o >= ($total - $limit))) {
+                    if ($o == $offset) {
+                        $result[] = JSON_decode('{"offset":'.$o.', "pageNo":'.$p.', "enabled":false}');
+                    } else {
+                        $result[] = JSON_decode('{"offset":'.$o.', "pageNo":'.$p.', "enabled":true}');
+                    }
+                    $offsetLast = $o;
+                    $prevPageNo = $p;
+                } else if ($prevPageNo != '...') {
+                        $result[] = JSON_decode('{"offset":'.$o.', "pageNo":"...", "enabled":false}');
+                        $prevPageNo = '...';
+                }
+                $p = $p + 1;
+        }
+        return $result;
     }
 
 } // class View

@@ -1,0 +1,74 @@
+        <nav class="navbar navbar-expand-lg navbar-light bg-light subMenu"
+            id="userSubmenu" ng-if="id > 0">
+            <button class="navbar-toggler" type="button" data-toggle="collapse"
+                data-target="#userSubmenuContent"
+                aria-controls="userSubmenuContent"
+                aria-expanded="false" aria-label="Toggle navigation">
+                <em class="fa fa-ellipsis-v"></em>
+            </button>
+
+            <div class="collapse navbar-collapse" id="userSubmenuContent">
+                 <ul>
+                     <li>
+                        <a class="nav-link" target="_self"
+                            href="{{MYDOMAIN}}/opt/users/rights/userid/{{id}}">
+                            <span class="fa fa-key"></span>{{txt('USER_RIGHTS')}}
+                         </a>
+                     </li>
+                     <li>
+                         <a class="nav-link" target="_self"
+                             href="{{MYDOMAIN}}/opt/groups/list/userid/{{id}}">
+                             <span class="fa fa-sitemap"></span>{{txt('GROUPS')}}
+                         </a>
+                     </li>
+                     <li>
+                         <a class="nav-link" target="_self"
+                              href="{{MYDOMAIN}}/opt/projects/list/userid/{{id}}">
+                              <span class="fa fa-cogs"></span>{{txt('PROJECTS')}}
+                         </a>
+                     </li>
+                     <li>
+                         <a class="nav-link" target="_self"
+                               href="{{MYDOMAIN}}/opt/market/list/userid/{{id}}">
+                               <span class="fa fa-shopping-basket"></span>{{txt('MARKET')}}
+                         </a>
+                     </li>
+                     <li>
+                         <a class="nav-link" target="_self"
+                                href="{{MYDOMAIN}}/opt/market/transactions/userid/{{id}}">
+                                <span class="fa fa-truck"></span>{{txt('TRANSACTIONS')}}
+                         </a>
+                     </li>
+                     <li>
+                         <a class="nav-link" target="_self"
+                                 href="{{MYDOMAIN}}/opt/files/list/userid/{{id}}">
+                                 <span class="fa fa-file"></span>{{txt('DOCS')}}
+                         </a>
+                     </li>
+                     <li>
+                         <a class="nav-link" target="_self"
+                                 href="{{MYDOMAIN}}/opt/chats/list/userid/{{id}}">
+                                 <span class="fa fa-comments"></span>{{txt('CHATS')}}
+                         </a>
+                      </li>
+                      <li>
+                         <a class="nav-link" target="_self"
+                              href="{{MYDOMAIN}}/opt/voks/list/userid/{{id}}">
+                              <span class="fa fa-balance-scale"></span>{{txt('POLLS')}}
+                         </a>
+                      </li>
+                      <li>
+                         <a class="nav-link" target="_self"
+                                  href="{{MYDOMAIN}}/opt/events/list/userid/{{id}}">
+                                  <span class="fa fa-calendar"></span>{{txt('EVENTS')}}
+                         </a>
+                      </li>
+                      <li>
+                         <a class="nav-link" target="_self"
+                                   href="{{MYDOMAIN}}/opt/messages/list/userid/{{id}}">
+                                   <span class="fa fa-comment"></span>{{txt('MESSAGES')}}
+                         </a>
+                      </li>
+                 </ul>
+            </div>
+      </nav>

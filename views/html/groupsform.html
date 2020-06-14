@@ -1,0 +1,138 @@
+			<div ng-include="templates.navbar"></div>
+			<div ng-include="templates.popup"></div>
+          	<div id="divGroupForm">
+              	<div class="parents">
+              		<span ng-repeat="parent in parents | orderBy:'-'">
+              	    <em class="fa fa-caret-right"></em>&nbsp;
+                    <a href="{{MYDOMAIN}}/opt/groups/groupform/groupid/{{parent.id]]" target="_self">
+                            {{parent.name}}
+                    </a>
+                    </span>
+              	</div>
+                <h2><em class="fa fa-users"></em>&nbsp;&nbsp;&nbsp;{{txt(formTitle)}}</h2>
+    			<div class="alert alert-danger" ng-if="msgs.length > 0">
+    				<p ng-repeat="msg in msgs">{{txt(msg)}}</p>
+    			</div>
+				<div ng-include="templates.groupssubmenu"></div>
+                <form class="form-row" id="formGroupForm"
+              	action="{{MYDOMAIN}}/opt/groups/save"
+              	target="_self" method="post">
+              	<input type="hidden" name="{{csrToken}}" value="1" />
+              	<input type="hidden" name="groupid" id="id" value="{{item.id}}" />
+              	<input type="hidden" name="id" id="id" value="{{item.id}}" />
+              	<input type="hidden" name="parent" id="parent" value="{{item.parent}}" />
+        		<input type="hidden" name="backUrl" id="backUrl" value="{{backUrl}}" />
+                <img id="imgAvatar" src="{{item.avatar}}" alt="avatar" ng-if="item.avatar != ''" />
+                <p>
+              		<label>{{txt('NAME')}} *:</label>
+                    <div class="memberButtons">
+                  		<input id="name" name="name" type="text" value="{{item.name}}"  size="80" />
+                  		<br />                 
+                  		<var ng-if="loggedUser.id > 0">{{txt('USERSTATE')}}: {{txt(userState)}}</var>
+     					<a href="{{MYDOMAIN}}/opt/members/aspire/type/group/id/{{groupId}}/userid/{{loggedUser.id}}/{{csrToken}}/1" 
+        					     class="btn btn-secondary btn-member" target="_self"
+        					     ng-if="(item.state == 'active') && ((userState == 'none') || (userState == 'exiting'))  && (loggedUser.id > 0)">
+        					   	 <em class="fa fa-sign-in-alt"></em>&nbsp;{{txt('ASPIRE')}}
+        				</a>
+     					<a href="{{MYDOMAIN}}/opt/members/activate/type/group/id/{{groupId}}/userid/{{loggedUser.id}}/{{csrToken}}/1" 
+        					     class="btn btn-secondary btn-member" target="_self"
+        					     ng-if="(item.state == 'active') && (userState == 'pause')  && (loggedUser.id > 0)">
+        					   	 <em class="fa fa-sign-in-alt"></em>&nbsp;{{txt('ACTIVATE')}}
+        				</a>
+     					<a href="{{MYDOMAIN}}/opt/members/quit/type/group/id/{{groupId}}/userid/{{loggedUser.id}}/{{csrToken}}/1" 
+        					     class="btn btn-secondary btn-member" target="_self" 
+        					     ng-if="(item.state == 'active') && (userState == 'active') && (loggedUser.id > 0)">
+        					   	 <em class="fa fa-sign-out-alt"></em>&nbsp;{{txt('QUIT')}}
+        				</a>
+     					<a href="{{MYDOMAIN}}/opt/members/notaspire/type/group/id/{{groupId}}/userid/{{loggedUser.id}}/{{csrToken}}/1" 
+        					     class="btn btn-secondary btn-member" target="_self" 
+        					     ng-if="(item.state == 'active') && (userState == 'active') && (loggedUser.id > 0)">
+        					   	 <em class="fa fa-times"></em>&nbsp;{{txt('NOTASPIRE')}}
+        				</a>
+     					<a href="{{MYDOMAIN}}/opt/members/pause/type/group/id/{{groupId}}/userid/{{loggedUser.id}}/{{csrToken}}/1" 
+        					     class="btn btn-secondary btn-member" target="_self" 
+        					     ng-if="(item.state == 'active') && (userState == 'active') && (loggedUser.id > 0)">
+        					   	 <em class="fa fa-clock"></em>&nbsp;{{txt('PAUSE')}}
+        				</a>
+    				</div>
+              	</p>
+              	<p>
+              		 <label>
+              		   {{txt('DESCRIPTION')}} *:
+              		 </label>
+
+              		<textarea id="description" name="description" cols="80" rows="10">{{item.description}}</textarea>
+              	</p>
+                <p>
+                	<div style="display:inline-block">
+              		<label>{{txt('STATE')}} *:</label>
+              		<select id="state" name="state">
+              			<option value="proposal">{{txt('PROPOSAL')}}</option>
+              			<option value="active">{{txt('ACTIVE')}}</option>
+              			<option value="closed">{{txt('CLOSED')}}</option>
+              		</select>
+              		</div>
+              		&nbsp;
+                	<div style="display:inline-block">
+              		<label>{{txt('REG_MODE')}} *:</label>
+              		<select id="reg_mode" name="reg_mode">
+              			<option value="invite">{{txt('REG_MODE_INVITE')}}</option>
+              			<option value="admin">{{txt('REG_MODE_ADMIN')}}</option>
+              			<option value="self">{{txt('REG_MODE_SELF')}}</option>
+              			<option value="candidate">{{txt('REG_MODE_CANDIDATE')}}</option>
+              		</select>
+              		</div>
+              	</p>
+              	
+              	<div>
+              		<label>{{txt('GROUP_TO_ACTIVE')}} *:</label>
+              		<input type="text" id="group_to_active" name="group_to_active" min="0" max="100" value="{{item.group_to_active}}" />
+              	</div>
+              	<div>
+              		<label>{{txt('GROUP_TO_CLOSE')}} *:</label>
+              		<input type="text" id="group_to_close" name="group_to_close" min="0" max="100" value="{{item.group_to_close}}" />
+              	</div>
+
+              	<div>
+              		<label>{{txt('MEMBER_TO_ACTIVE')}} *:</label>
+              		<input type="text" id="member_to_active" name="member_to_active" min="0" max="100" value="{{item.member_to_active}}" />
+              	</div>
+              	<div>
+              		<label>{{txt('MEMBER_TO_EXCLUDE')}} *:</label>
+              		<input type="text" id="member_to_exclude" name="member_to_exclude" min="0" max="100" value="{{item.member_to_exclude}}" />
+              	</div>
+              	
+              	<p>
+              		<label>{{txt('AVATAR')}}:</label>
+              		<input id="avatar" name="avatar" type="text" value="{{item.avatar}}"  size="50" />
+              	</p>
+				<div ng-include="templates.likebar" ng-if="id > 0"></div>
+              	<div class="buttons" ng-if="loggedUser.id > 0">
+              		<br />
+              		<button type="button" id="btnOK" class="btn btn-primary" ng-if="userState == 'admin'">
+              			<em class="fa fa-check"></em>{{txt('OK')}}</button>
+              		&nbsp;
+              		<button type="button" id="btnCancel" class="btn btn-secondary" ng-if="userState == 'admin'"> 
+              			<em class="fa fa-reply"></em>{{txt('CANCEL')}}</button>
+              		&nbsp;
+               		<button type="button" id="btnCandidate" class="btn btn-secondary" 
+               		  ng-if="(userState != 'active') && (userState != 'admin') && (userState != 'excluded')">
+               			<em class="fa fa-sign-in-alt"></em>{{txt('CANDIDATE')}}</button>
+               		&nbsp;
+              		<button type="button" id="btnExit" class="btn btn-secondary" ng-if="userState == 'active'">
+              			<em class="fa fa-sign-out"></em>{{txt('EXIT_FROM_GROUP')}}</button>
+              		&nbsp;	
+               		<button type="button" id="btnAdd" class="btn btn-secondary" 
+               		        ng-if="(userState == 'active') || (userState == 'admin')">
+                  			<em class="fa fa-plus-circle"></em>{{txt('ADD_SUB_GROUP')}}</button>
+               		&nbsp;	
+               		<button type="button" id="btnRemove" class="btn btn-danger"
+               		        ng-if="userState == 'admin'">
+                  			<em class="fa fa-ban"></em>{{txt('REMOVE_GROUP')}}</button>
+              		<br />	
+              		<br />	
+              	</div>
+                </form>
+            </div><!-- #divGroupForm -->  
+		    <div class="clear"></div>
+			<div ng-include="templates.footer"></div>;

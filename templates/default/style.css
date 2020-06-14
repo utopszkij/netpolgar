@@ -1,4 +1,3 @@
-/* common */
 body {font-size:14px; font-family:roman; background-color:white; line-height:120%;
    min-height:600px;}
 div {margin:0px; padding:0px; width:100% }
@@ -18,6 +17,9 @@ button em {margin-right:5px}
 .btn:hover {background-color:#d6c4c4; color: black}
 .browserPaginator button.paginatorTxt {background-color:transparent; color:black; border-style:none; cursor:default}
 .browserPaginator button.paginatorCurrent {background-color:transparent; color:black;}
+#cookieEnable {position:fixed; z-index:99; width:100%; height:auto; 
+	left:0px; bottom:0px; background-color:#c0f0c0; opacity: 0.8; padding:2px; margin:0px;}
+#cookieDisable {width:100%; height:auto; background-color:#c0f0c0; padding:2px; margin:0px;}
  
 .table .tr0 {background-color:transparent;}
 .table .tr1 {background-color:#d3efd5}
@@ -72,6 +74,8 @@ button em {margin-right:5px}
 .paginator li {list-styla: none; display: inline-block; margin: 1px 2px 1px 2px;}
 .paginator .paginator-total .page-link {border-style:none;}
 .paginator .paginator-total var {margin: 1px 10px 1px 1px;}
+.paginator .active {font-weight:bolder; color:green}
+.paginator a:hover {text-decoration:none}
    
 #registForm {display:inline-block; width: 700px; min-height:600px; text-align:left; }
 #divRegmodSelect {padding:10px; display:inline-block; width:auto; float:right}  

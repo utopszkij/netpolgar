@@ -1,24 +1,21 @@
+//le kell tiltani, hogy ugyanaz az em click rutin rövid időn belül kétszer fusson
+// erre szolgál ez a változó
+global.disabledId = '';
   
-  // params for controller	  
-  // param1  requed	
-  // sid string requed
-  
-  // jquery page onload --- must this function !
+// jquery page onload --- kötelező ez a funkció !
+// here $scope is not valid. 
+function pageOnLoad() {
+}	
 
-  // here $scope is not valid. 
-  function pageOnLoad() {
-  }	
 
-  function groupsFun() {
+// a képernyő inicializálása
+function groupsFun() {
 	  if ($('#formGroupForm').length) {
-		  // form init
 		  $('#name').focus();
-		  
 		  global.invalidNumber = function(fieldName) {
 			  $('#'+fieldName).addClass('is-invalid');
 			  return $scope.txt('INVALID_NUMBER')+"<br />";
 		  };
-		  
 		  $('#btnOK').click(function() {
 			  var msgs = '';
 			  $('#name').removeClass('is-invalid');
@@ -127,23 +124,123 @@
 				  $('#btnCandidate').hide();
 			  }
 		  }
+		  // userState szerint a like/dislike események kezelése 
+		  // (#divLike em.fa-thumbs-up) és (#divLike em.fa-thumbs-up) style="cursor:pointer" és
+		  // eseménykezelő hozzá likeUpClick('group',group.id, loggedUser.id, userState)
+		  //                     likeDownClick('group',group.id, loggedUser.id, userState)
 	  } // form 
 	  
 	  if ($('#groupsList').length) {
 		  if (!$scope.userGroupAdmin) {
 			  $('#addSubGroup').hide();
 		  }
+		  $scope.treeInit();
 	  } // groupList 
 	  
 	  $('#scope').show();
 	  return 'groups';
-  }
+ } // groupsFun
   
-  // jquery pageOnLoad
-  $(function() {
-  	pageOnLoad();
-  });	
+/**
+* a subgroup nem biztos, hogy be van olvasva (elöször csak egy üres ul kerül kialakitásra)
+* tehát lehet, hogy be kell olvasni az adatbázisból AJAX hívással
+* @param JqueryUlObject subGroup
+* @param int parentId 
+* @param function() success function
+*/
+ $scope.loadSubGroup = function(subGroup, parentId, successFun) {
+	 // be van már olvasva?
+     if (subGroup[0].childElementCount <= 0) {
+	        global.working(true);
+	        // ajax server result: {parentId:###, items:[{id,name,childs:bool}..... ]}
+	        // ajaxhivás(parentId, function(result) {
+	        var url = '<?php echo MYDOMAIN?>/opt/groups/loadsubgroup';
+	        var data = {"parentId": parentId};
+	        global.post(url, data,  function(res) {
+		        		//  res.items elemekkel az ul feltöltése
+						var parentId = res.parentId;
+						var ul = $('#i_'+parentId+' ul:first');
+						for (var i=0; i < res.items.length; i++) {
+							if (res.items[i].childs) {
+								var newLi = $('<li id="i_'+res.items[i].id+'">'+
+										'<em class="fa fa-plus-square" style="cursor:pointer"></em>'+
+										'<var>'+
+										'<img class="groupIcon" src="'+res.items[i].avatar+'" />'+
+										res.items[i].name+
+										'</var></li>');
+								ul.append(newLi);
+								var newUl = '<ul style="display:none"></ul>';
+								$('#i_'+res.items[i].id).append(newUl);
+							} else {
+								var newLi = $('<li id="i_'+res.items[i].id+'">'+
+										'<em></em>'+
+										'<var>'+
+										'<img class="groupIcon" src="'+res.items[i].avatar+'" />'+
+										res.items[i].name+
+										'</var></li>');
+								ul.append(newLi);
+							}
+						}
+	    		        global.working(false);
+	    		        $scope.treeInit('i_'+parentId);
+	    		        successFun();
+	        });
+      } else {
+	        successFun();
+	  }
+};
 
-  // angular pageOnLoad
-  groupsFun();
+$scope.treeInit = function(parentId) {
+		if (parentId == undefined) {
+			parentId = 'groupsTree';
+		}
+		// em click rutin
+		$('#'+parentId+' em').click(function() {
+			var itemId = this.parentNode.id;
+			if ((itemId == '') | (itemId == undefined) | (itemId == global.disabledId)) {
+				return;
+			}
+			global.disabledId = itemId; 
+			var item = $('#'+itemId);
+			var subgroup = item.find('ul:first');
+			var em = item.find('em:first');
+			if (subgroup.is(':hidden')) {
+				$scope.loadSubGroup(subgroup, itemId.substr(2,100), function() {
+				     subgroup.show();
+				     em.removeClass('fa-plus-square');		
+				     em.addClass('fa-minus-square');		
+				});
+				subgroup.show();
+				em.removeClass('fa-plus-square');		
+				em.addClass('fa-minus-square');		
+			} else {				
+				subgroup.hide();
+				em.removeClass('fa-minus-square');		
+				em.addClass('fa-plus-square');		
+			}
+			window.setTimeout('global.disabledId="";',500);			
+		});
+
+		// name click rutin
+		$('#'+parentId+' var').click(function() {
+			var itemId = this.parentNode.id.substr(2,100);
+			window.location='<?php echo MYDOMAIN; ?>/opt/groups/groupform/groupid/'+itemId+
+			'/<?php echo $p->csrToken; ?>/1';
+		});
+		
+}; // treeInit
   
+	
+$(function() {
+    // jquery pageOnLoad
+  	pageOnLoad();
+});	
+  
+// az items ciklus minden sorának kiirása után hívódik.
+// a $last = true jelti, hogy ez volt az utolsó elem
+$scope.itemLoad = function($last) {
+	if ($last) {
+		groupsFun();
+	}
+	return '';
+}

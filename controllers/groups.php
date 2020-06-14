@@ -138,6 +138,11 @@ class GroupsController extends CommonController {
               $this->adjustMembers($p->item, $memberCount);
               $this->adjustSubgroups($p->item, $memberCount);
               $p->id = $p->groupid;
+              
+              //$likeModel = $this->getModel('likes');
+              //$p->like = $likeModel->get('groups', $p->group->id);
+              $p->like = JSON_decode('{"total":{"up":0, "down":0}, "member":{"up":0, "down":0}}');
+              
               if ($p->item->id > 0) {
                   $this->view->form($p);
               } else {
@@ -145,6 +150,7 @@ class GroupsController extends CommonController {
               }
           } else {
               $p->parents = [];
+              $p->like = JSON_decode('{"total":{"up":0, "down":0}, "member":{"up":0, "down":0}}');
               $p->item = new GroupRecord();
               $p->item->name = txt('GROUPS_ROOT');
               $p->item->reg_mode = 'admin';

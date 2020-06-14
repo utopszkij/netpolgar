@@ -206,41 +206,40 @@ class GroupsModel {
     }
     
     /**
-     * A paraméterként kapott itemet és gyermekeit beirja a result XML -be
+     * A paraméterként kapott itemet és gyermekeit beirja a result -ba
      * filter userId, modositja a total értékét is.
      * @param GroupRecord $item
-     * @param array $result xml string <li id="i_'id'"<em><em><var class="'state'">'name'</var>
-     *                                     <ul>.....</ul> 
-     *                                 </li>
+     * @param array $result [{id, state, avatar, name , childs},...]
      * @param int $total
      * @param int $userId
      */
     public function getItem($item, array & $result, int & $total, int $userId) {
-        if ($item->avatar == '') {
-            $icon = '<img class="groupIcon" src="templates/'.config('TEMPLATE').'/no-image.png" />';
-        } else {
-            $icon = '<img class="groupIcon" src="'.$item->avatar.'" />';
-        }
-        $result[] = '<li id="i_'.$item->id.'"><em></em>'.
-          '<var  class="'.$item->state.'">'.$icon.$item->name.'</var>';
         $total = $total + 1;
+        $result[] = new stdClass();
         $itemI = count($result) - 1;
-        $totalI = $total;
+        $result[$itemI]->id = $item->id;
+        $result[$itemI]->state = $item->state;
+        $result[$itemI]->name = $item->name;
+        if ($item->avatar == '') {
+            $result[$itemI]->avatar = 'templates/'.config('TEMPLATE').'/no-image.png';
+        } else {
+            $result[$itemI]->avatar = $item->avatar;
+        }
         $this->getSubItems($item->id, $result, $total, $userId);
-        $result[] = '</li>';
     }
     
     /**
-     * a paraméterként kapott parent gyermek rekordjait beirja a result XML -be,
-     * filter UserId, modosítja a total értékét is
+     * ha a legfelső szinten hivták (total==0) akkor a paraméterként kapott parent gyermek 
+     *     rekordjait beirja a result tömbbe,
+     * ha nem a legfeéső szinten (total > 0) és vannak gyermek rekordok akkor az 
+     *      utolsó elem child értékét modosítja    
      * @param int $parent
      * @param array $result
      * @param int $total
      * @param int $userId
      */
     protected function getSubItems(int $parent, array & $result, int & $total, int $userId) {
-        // a legfelső szinten beolvassuk az alrekordokat, máshol csak
-        // az "<ul></ul>" -el jelezzük, hogy vannak alrekordok
+        $itemI = count($result) - 1;
         $table = new Table('groups');
         $table->where(['parent','=', $parent]);
         if ($total > 0) {
@@ -249,16 +248,14 @@ class GroupsModel {
         $items = $table->get();
         if (count($items) > 0) {
             if ($total == 0) {
-                $result[] = '<ul>';
-            } else {
-                $result[] = '<ul style="display:none">';
-            }
-            if ($total == 0) {
                 foreach ($items as $item) {
                     $this->getItem($item, $result, $total, $userId);
                 }
+            } else {
+                $result[$itemI]->childs = [];
             }
-            $result[] = '</ul>';
+        } else {
+            $result[$itemI]->childs = false;
         }
     }
     
@@ -278,7 +275,7 @@ class GroupsModel {
         }
         $result[] = new GroupRecord();
         $result[count($result) - 1]->id = -1;
-        $result[count($result) - 1]->name = '<span class="fa fa-home"></span>&nbsp;'.txt('GROUPS_ROOT');
+        $result[count($result) - 1]->name = txt('GROUPS_ROOT');
         return $result;
     }
         
@@ -287,24 +284,16 @@ class GroupsModel {
      * ha $->userid adott akkor csak azon groupok jelennek meg amelyiknek tagja vagy adminisztrátora
      * @param object $p   userid, parentId 
      * @param int $total
-     * @return xml string
-     *  <ul>
-     *      <li id="i_###"><em></em><var class="xxx">xxxxxxxxx</var></li>
-     *      ......
-     *      <li id="i_###"><em></em><var class="xxx">xxxxxxxxx</var>
-     *          <ul>......</ul>
-     *      </li>
-     *      ....
-     *  </ul> 
+     * @return [ {id,state,avatar,name, childs}, ....]
+     *   childs = false ha nincsenek alrekordok
+     *   chhilds = [{id,state,avatar,name, childs}...] a legfelső szinten, ha vannak alrekordok
+     *   chhilds = [] az alsóbb szinteken, ha vannak alrekordok
      */
-    public function getRecords($p, int & $total): string {
+    public function getRecords($p, int & $total): array {
         $result = [];
         $total = 0;
-        $this->getSubItems($p->parentId, $result, $total, $p->userId);
-        if ($total == 0) {
-            $result[] = '<li class="alert alert-warning">'.txt('GROUPS_NOT_FOUND').'</li>';
-        }
-        return implode("\n",$result);
+        $this->getSubItems($p->parentId, $result, $total, $p->loggedUser->id);
+        return $result;
     }
     
     /**

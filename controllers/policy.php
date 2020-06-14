@@ -1,13 +1,13 @@
 <?php
 include_once './controllers/common.php';
-class AdatkezelesController extends CommonController {
+class PolicyController extends CommonController {
     
     function __construct() {
-        $this->cName = 'adatkezeles';
+        $this->cName = 'policy';
     }
     
 	public function show(Request $request) {
-	    $p = $this->init($request,['adatkezeles']);
+	    $p = $this->init($request,[]);
 	    $this->view->display($p);
 	}
 }

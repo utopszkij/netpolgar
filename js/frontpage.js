@@ -13,6 +13,7 @@
 	  $('.carousel').carousel();
 	  $('#scope').show();
 	  return 'frontpage';
+	  
   }
   
   // jquery pageOnLoad

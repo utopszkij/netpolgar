@@ -1,0 +1,14 @@
+        <div ng-include="templates.navbar"></div>
+   	    <h2 class="alert alert-danger">
+    			<p ng-repeat="msg in msgs"> 
+    				{{msg}}
+    			</p>	
+   	    </h2>
+   	    <p style="text-align:center" ng-if="backLink != ''">
+    	    	<a class="btn btn-primary" href="{{$backLink}}" target="_self">
+    	    		{{txt(backStr)}}
+    	    	</a>
+   	    </p>	
+       	<div ng-include="templates.popup"></div>
+	    <div ng-include="templates.footer"></div>
+    	    

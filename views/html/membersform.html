@@ -1,0 +1,38 @@
+		 	<div ng-include="templates.navbar"></div>
+		 	<div ng-include="templates.popup"></div>
+          	<div id="memberForm">
+          	    <h2><img src="{{groupAvatar}}" />&nbsp;{{groupName}}</h2>
+                <h3>{{txt('active')}}</h3>
+        		<div class="alert alert-danger" ng-if="msgs.length > 0">
+        			<p ng-repeat="msg in msgs">{{txt(msg)}}</p>
+        		</div>
+                <div id="memberForm2">
+                	<img src="{{user.avatar}}" />
+                	<h3>{{user.nick}}</h3>
+                	<p>{{txt(userState)}}</p>
+                	<p class="buttons">
+                		<a class="btn btn-secondary"  target="_self"
+                		    href="{{MYDOMAIN}}/opt/members/setadmin/type/{{type}}/objectid/{{objectId}}/userid/{{user.id}}"
+                		    ng-if="(userState == 'active') && (loggedState == 'admin') && (user.id != loggedUser.id)">
+                			<em class="fa fa-chess-king"></em>
+                			{{txt('SET_MANAGER')}}
+                		</a>	
+                		<a class="btn btn-secondary"  target="_self"
+                		    href="{{MYDOMAIN}}/opt/members/setnotadmin/type/{{type}}/objectid/{{objectId}}/userid/{{user.id}}"
+                		    ng-if="(userState == 'admin') && (loggedState == 'admin') && (user.id != loggedUser.id)">
+                			<em class="fa fa-chess-pawn"></em>
+                			{{txt('SET_NO_MANAGER')}}
+                		</a>
+                		&nbsp;
+                		<a class="btn btn-secondary" target="_self"
+                		    href="{{MYDOMAIN}}/opt/members/list/type/{{type}}/objectid/{{objectId}}">
+                			<em class="fa fa-reply"></em>{{txt('BACK')}}
+                		</a>
+                		
+                	</p>
+                	<div ng-include="templates.likebar"></div>
+              	</div><!-- #memberForm2 -->  
+			 	<div class="clear"></div>
+			</div><!--  #memberForm --> 	
+		 	<div ng-include="templates.footer" ng-onload="onload()"></div>
+			

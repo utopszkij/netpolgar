@@ -22,6 +22,8 @@ DEFINE('ADMIN','System adminisztrátor');
 DEFINE('APPTITLE','Projektek, csoportok, piactér, dokumentumok, események, viták, szavazások, üzenetek');
 DEFINE('APPINFO','Szabad Emberek Szabad Társulása');
 DEFINE('LIKE','Tetszik, támogatom');
+DEFINE('DISLIKE','Nem tetszik, ellenzem');
+DEFINE('LIKEINFO','(Összes/tag)');
 DEFINE('INVALID_NUMBER','Nem megfelelő szám adat');
 // man menu
 DEFINE('MAINMENU','Főmenű');

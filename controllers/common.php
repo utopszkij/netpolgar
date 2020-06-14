@@ -11,8 +11,12 @@ class CommonController extends Controller {
      */
     public function objToUserRecord($obj): UserRecord {
         $result = new UserRecord();
-        foreach ($obj as $fn => $fv) {
-            $result->$fn = $fv;
+        foreach ($result as $fn => $fv) {
+            if (isset($obj->$fn)) {
+                $result->$fn = $obj->$fn;
+            } else {
+                $result->$fn = $fv;
+            }
         }
         return $result;
     }

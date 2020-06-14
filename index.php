@@ -7,13 +7,6 @@ if (isset($_POST['sid'])) {
 }
 session_start();
 
-// iframe cross ower hack
-if (isset($_GET['url'])) {
-    $lines = file($_GET['url']);
-    echo implode('',$lines);
-    exit();
-}
-
 include_once './.config.php';
 include_once './core/database.php';
 include_once './core/framework.php';
@@ -52,7 +45,6 @@ foreach ($_GET as $name => $value) {
 	$request->set($name,$value);
 }
 
-// cokkie engedélyezés/tiltás kattintások kezelése
 if (isset($_GET['cookieenabled'])) {
     if ($_GET['cookieenabled'] == 1) {
         $request->sessionSet('cookieEnabled',true);
@@ -60,6 +52,8 @@ if (isset($_GET['cookieenabled'])) {
         $request->sessionSet('cookieEnabled',false);
     }
 }
+$request->sessionSet('cookieEnabled', $request->sessionGet('cookieEnabled'));
+
 
 // bejelentjkezett user sessionban
 $user = $request->sessionGet('user',new UserRecord());

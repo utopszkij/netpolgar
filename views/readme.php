@@ -12,19 +12,18 @@ class ReadmeView  extends CommonView  {
 	* @return void
 	*/
 	public function display(Params $p) {
-	    $this->echoHtmlHead($p);
-	    ?>
-	    <body ng-app="app">
-         <div ng-controller="ctrl" id="scope" style="display:none">
-			<?php $this->echoHtmlPopup(); ?>
-	    	<?php $this->echoNavbar($p); ?>
-			<?php $this->echoLngHtml('readme',$p); ?>
-			<?php $this->echoFooter(); ?>
-			<?php $this->loadJavaScriptAngular('readme',$p); ?>
-		  </div>	
-	    </body>
-	    </html>	
-	    <?php 
+	    global $REQUEST;
+	    $lng = $REQUEST->sessionget('lng','hu');
+	    $htmlName = 'readme';
+	    if (file_exists('langs/'.$htmlName.'_'.$lng.'.html')) {
+	        $p->filePath = './langs/'.$htmlName.'_'.$lng.'.html';
+	    } else if (file_exists('langs/'.$htmlName.'.html')) {
+	        $p->filePath = './langs/'.$htmlName.'.html';
+	    } else {
+	        echo '<p>'.$htmlName.' html file not found.</p>'; exit();
+	    }
+	    $this->setTemplates($p,[]);
+	    $this->echoHtmlPage('readme',$p);
 	}
 	
 }
