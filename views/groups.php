@@ -23,7 +23,7 @@ class GroupsView  extends CommonView  {
 	
 	public function browser(Params $p) {
 	    $this->setTemplates($p,[]);
-	    $this->echoHtmlPage('groupsbrowse',$p, 'groups');
+	    $this->echoHtmlPage('groupslist',$p, 'groups');
 	}
 	
 }

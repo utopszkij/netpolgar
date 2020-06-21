@@ -22,7 +22,7 @@ class UsersModel {
                 ['email','VARCHAR',80,false],
                 ['avatar','VARCHAR',80,false],
                 ['reg_mode','VARCHAR',32,false],
-                ['admin', INT,1,false]
+                ['admin', 'INT',1,false]
             ],
             ['nick','email']
         );

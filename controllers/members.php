@@ -27,7 +27,7 @@ class MembersController extends CommonController {
 	 * -sessionba jöhet: user, offset, order, order_dir, searchstr, filterState, limit
 	 */
 	public function list(Request $request, $msg = '', $msgClass = '') {
-	    $p = $this->init($request,['type','objectid','groups']);
+	    $p = $this->init($request,['type','id','member_id']);
 	    if ($msg != '') {
 	        $p->msgs = [$msg];
 	    }
@@ -35,17 +35,15 @@ class MembersController extends CommonController {
 	        $p->msgClass = $msgClass;
 	    }
 	    $this->createCsrToken($request, $p);
-	    $p->type = $request->input('type','group');
-	    $p->objectId = $request->input('objectid','0');
-	    $p->id = $p->objectId;
-	    $p->typeId = $p->type.$p->objectId;
-	    $p->memberState = $this->model->getState($p->type, (int)$p->objectId, $p->loggedUser->id); 
-	    if ($p->type == 'group') {
+	    $p->type = $request->input('type','groups');
+	    $p->typeId = $p->type.$p->id;
+	    $p->memberState = $this->model->getState($p->type, (int)$p->id, $p->loggedUser->id); 
+	    if ($p->type == 'groups') {
 	        $groupModel = $this->getModel('groups');
-	        $p->group = $groupModel->getRecord($p->objectId);
-	        $p->backUrl = MYDOMAIN.'/opt/groups/groupform/groupid/'.$p->objectId.'/'.$p->csrToken.'/1';
-	        $p->userGroupAdmin = ($this->model->getState($p->type, $p->objectId, $p->loggedUser->id) == 'admin');
-	        $p->formTitle = $p->group->name.' '.txt('GROUP_MEMBERS');
+	        $p->group = $groupModel->getRecord($p->id);
+	        $p->backUrl = MYDOMAIN.'/opt/groups/form/id/'.$p->id.'/'.$p->csrToken.'/1';
+	        $p->userGroupAdmin = ($this->model->getState($p->type, $p->id, $p->loggedUser->id) == 'admin');
+	        $p->formTitle = '"'.$p->group->name.'" '.txt('GROUP_MEMBERS');
 	    }
 	    $p->offset = $request->input('offset', $request->sessionGet($p->typeId.'MembersOffset',0));
 	    $p->limit = $request->input('limit', $request->sessionGet($p->typeId.'MembersLimit',20));
@@ -55,6 +53,7 @@ class MembersController extends CommonController {
 	    $p->order_dir = $request->input('order_dir', $request->sessionGet($p->typeId.'MembersOrder_dir','ASC'));
 	    $p->formIcon = 'fa-user';
 	    $p->itemTask = 'form';
+	    $p->addTask = 'add';
 	    $p->addUrl = ''; // not add button
 	    $request->sessionSet($p->typeId.'MembersOffset',$p->offset);
 	    $request->sessionSet($p->typeId.'MembersLimit',$p->limit);
@@ -63,273 +62,239 @@ class MembersController extends CommonController {
 	    $request->sessionSet($p->typeId.'MembersSearchstr',$p->searchstr);
 	    $request->sessionSet($p->typeId.'MembersFilterState',$p->filterState);
 	    $p->total = 0;
-	    $p->items = $this->model->getRecords($p, $p->total);
-	    $this->view->browser($p);
+	    $p->items = $this->model->getMemberRecords($p, $p->total);
+        $this->view->browser($p);
 	}
 	
 	/**
 	 * member adatform userGroupAdmin modosithat, törölhet, mások csak nézhetik
-	 * @param Request $request - csrtoken, type, objectid, id
+	 * @param Request $request - csrtoken, type, id, id, member_id
 	 * session: user, csrToken
 	 */
-	public function form(Request $request) {
-	    $p = $this->init($request,['type', 'objectid', 'id']);
+	public function form(Request $request, array  $msgs=[], string $msgClass='info') {
+	    $p = $this->init($request,['type', 'type', 'id', 'member_id']);
+	    $p->msgs = $msgs;
+	    $p->msgClass = $msgClass;
 	    $this->createCsrToken($request, $p);
-	    $p->type = $request->input('type','group');
-	    $p->objectId = $request->input('objectid','0');
-	    $p->memberId = $request->input('id',0);
-	    $memberRec = $this->model->getRecord($p->memberId);
-	    if (!$memberRec) {
-	        $memberRec = new MemberRecord();
+	    $p->type = $request->input('type','groups');
+	    $p->objectId = $request->input('id','0'); // group vagy project id
+	    $p->memberId = $request->input('member_id',0); // member record id
+	    $p->item = $this->model->getRecord((int)$p->memberId); // memebers record
+	    if (!$p->item) {
+	        $p->item = new MemberRecord();
 	    }
-	    //$likeModel = $this->getModel('likes');
-	    //$p->like = $likeModel->get('members', $p->memberId);
-	    $p->like = JSON_decode('{"total":{"up":0, "down":0}, "member":{"up":0, "down":0}}');
+	    $likeModel = $this->getModel('likes');
+	    $p->like = $likeModel->getCounts('members', $p->memberId, $p->loggedUser->id);
 	    
-	    if ($p->type = 'group') {
+	    if ($p->type = 'groups') {
 	        $groupModel = $this->getModel('groups');
-	        $p->group = $groupModel->getRecord($p->objectId);
+	        $p->group = $groupModel->getRecord($p->id);
 	        $p->groupAvatar = $p->group->avatar;
 	        $p->groupName = $p->group->name;
-	        $p->backUrl = MYDOMAIN.'/opt/groups/groupform/groupid/'.$p->objectId.'/'.$p->csrToken.'/1';
+	        $p->backUrl = MYDOMAIN.'/opt/groups/form/id/'.$p->id.'/'.$p->csrToken.'/1';
 	    }
 	    $userModel = $this->getModel('users');
-	    $p->loggedState = $this->model->getState($p->type, $p->objectid, $p->loggedUser->id);
-	    $p->user = $userModel->getById($memberRec->user_id);
-	    $p->userState = $this->model->getState($p->type, $p->objectid, $memberRec->user_id);
+	    $p->loggedState = $this->model->getState($p->type, $p->id, $p->loggedUser->id);
+	    $p->user = $userModel->getById($p->item->user_id);
+	    $p->userState = $this->model->getState($p->type, $p->objectId, $p->user->id);
 	    $this->view->form($p);
 	}
 	
-    /**
-     * insert new tag state=aspirant
-     * @param Request $request - csrToken, type, id, userid  
-     */
-	public function aspire(Request $request) {
-	    $p = $this->init($request,['type', 'id', 'userid']);
-	    if ($this->getObjectState($p->type, $p->id) != 'active') {
-	        return;
-	    }
-	    $this->createCsrToken($request, $p);
-	    $url = '';
-	    $msgs = $this->model->addMember($p->type, $p->id, $p->userid, 'aspirant');
-	    if (count($msgs) == 0) {
-	        if ($p->type == 'group') {
-	            $url = config('MYDOMAIN').'/opt/groups/groupform/groupid/'.$p->id.'/'.$p->csrToken.'/1';
-	        }
-	        if ($p->type == 'project') {
-	            $url = config('MYDOMAIN').'/opt/projects/projectform/projectid/'.$p->id.'/'.$p->csrToken.'/1';
-	        }
-	        if ($url != '') {
-	            redirectTo($url);
-	        } else {
-	            $this->view->successMsg($msgs,'','',$p);
-	        }
-	    } else {
-	        $this->view->errorMsg($msgs,'','',$p);
-	    }
-	}
-	
 	/**
-	 * delete aspirant member record
-	 * @param Request $request - csrToken, type, id, userid
-	 */
-	public function notaspire(Request $request) {
-	    $p = $this->init($request,['type', 'id', 'userid']);
-	    if ($this->getObjectState($p->type, $p->id) != 'active') {
-	        return;
-	    }
-	    $this->checkCsrToken($request);
-	    $this->createCsrToken($request, $p);
-	    $state = $this->model->getState($p->type, $p->id, $p->userid);
-	    if ($state == 'aspirant') {
-	        $msgs = $this->model->deleteMember($p->type, $p->id, $p->userid);
-	    } else {
-	        $msgs = [txt('NOT_FOUND')];
-	        $this->view->errorMsg($msgs,'','',true,$p);
-	    }
-	    if (count($msgs) == 0) {
-	        if ($p->type == 'group') {
-	            $url = config('MYDOMAIN').'/opt/groups/groupform/groupid/'.$p->id.'/'.$p->csrToken.'/1';
-	        }
-	        if ($p->type == 'project') {
-	            $url = config('MYDOMAIN').'/opt/projects/projectform/projectid/'.$p->id.'/'.$p->csrToken.'/1';
-	        }
-	        if ($url != '') {
-	            redirectTo($url);
-	        } else {
-	            $this->view->successMsg($msgs,'','',$p);
-	        }
-	    } else {
-	        $this->view->errorMsg($msgs,'','',$p);
-	    }
-	}
-	
-	/**
-	 * member quit from object
-	 * @param Request $request - csrToke, type, id, userid
-	 */
-	public function quit(Request $request) {
-	    $p = $this->init($request,['type', 'id', 'userid']);
-	    if ($this->getObjectState($p->type, $p->id) != 'active') {
-	        return;
-	    }
-	    $this->checkCsrToken($request);
-	    $this->createCsrToken($request, $p);
-	    $state = $this->model->getState($p->type, $p->id, $p->userid);
-	    if ($state == 'admin') {
-	        $msgs = [txt('ADMIN_CAN_NOT_QUIT')];
-	        $this->view->errorMsg($msgs,'','',$p);
-	        return;
-	    }
-	    if ($state != 'none') {
-	        $msgs = $this->model->deleteMember($p->type, $p->id, $p->userid);
-	        $this->model->updateMember($p->type, $p->id, $p->userid, 'exited');
-	    } else {
-	        $msgs = [txt('NOT_FOUND')];
-	        $this->view->errorMsg($msgs,'','',$p);
-	    }
-	    if (count($msgs) == 0) {
-	        if ($p->type == 'group') {
-	            $url = config('MYDOMAIN').'/opt/groups/groupform/groupid/'.$p->id.'/'.$p->csrToken.'/1';
-	        }
-	        if ($p->type == 'project') {
-	            $url = config('MYDOMAIN').'/opt/projects/projectform/projectid/'.$p->id.'/'.$p->csrToken.'/1';
-	        }
-	        if ($url != '') {
-	            redirectTo($url);
-	        } else {
-	            $this->view->successMsg($msgs,'','',$p);
-	        }
-	    } else {
-	        $this->view->errorMsg($msgs,'','',$p);
-	    }
-	}
-	
-	/**
-	 * member update state active to pause
-	 * @param Request $request - csrToke, type, id, userid
-	 */
-	public function pause(Request $request) {
-	    $p = $this->init($request,['type', 'id', 'userid']);
-	    if ($this->getObjectState($p->type, $p->id) != 'active') {
-	        return;
-	    }
-	    $this->checkCsrToken($request);
-	    $this->createCsrToken($request, $p);
-	    $state = $this->model->getState($p->type, $p->id, $p->userid);
-	    if ($state == 'active') {
-	        $msgs = $this->model->updateMember($p->type, $p->id, $p->userid, 'pause');
-	    } else {
-	        $msgs = [txt('NOT_FOUND')];
-	        $this->view->errorMsg($msgs,'','',$p);
-	    }
-	    if (count($msgs) == 0) {
-	        if ($p->type == 'group') {
-	            $url = config('MYDOMAIN').'/opt/groups/groupform/groupid/'.$p->id.'/'.$p->csrToken.'/1';
-	        }
-	        if ($p->type == 'project') {
-	            $url = config('MYDOMAIN').'/opt/projects/projectform/projectid/'.$p->id.'/'.$p->csrToken.'/1';
-	        }
-	        if ($url != '') {
-	            redirectTo($url);
-	        } else {
-	            $this->view->successMsg($msgs,'','',$p);
-	        }
-	    } else {
-	        $this->view->errorMsg($msgs,'','',$p);
-	    }
-	}
-	
-	/**
-	 * member update state pause to active
-	 * @param Request $request - csrToke, type, id, userid
-	 */
-	public function active(Request $request) {
-	    $p = $this->init($request,['type', 'id', 'userid']);
-	    if ($this->getObjectState($p->type, $p->id) != 'active') {
-	        return;
-	    }
-	    $this->checkCsrToken($request);
-	    $this->createCsrToken($request, $p);
-	    $state = $this->model->getState($p->type, $p->id, $p->userid);
-	    if ($state == 'pause') {
-	        $msgs = $this->model->updateMember($p->type, $p->id, $p->userid, 'active');
-	    } else {
-	        $msgs = [txt('NOT_FOUND')];
-	        $this->view->errorMsg($msgs,'','',$p);
-	    }
-	    if (count($msgs) == 0) {
-	        if ($p->type == 'group') {
-	            $url = config('MYDOMAIN').'/opt/groups/groupform/groupid/'.$p->id.'/'.$p->csrToken.'/1';
-	        }
-	        if ($p->type == 'project') {
-	            $url = config('MYDOMAIN').'/opt/projects/projectform/projectid/'.$p->id.'/'.$p->csrToken.'/1';
-	        }
-	        if ($url != '') {
-	            redirectTo($url);
-	        } else {
-	            $this->view->successMsg($msgs,'','',$p);
-	        }
-	    } else {
-	        $this->view->errorMsg($msgs,'','', $p);
-	    }
-	}
-	
-    /**
-     * update state in members record
-     * @param Request $request
-     * @param string $oldState
-     * @param string $newState
-     */
-	protected function updateState(Request $request, string $oldState, string $newState) {
-	    $p = $this->init($request,['type', 'id', 'userid']);
-	    if ($this->getObjectState($p->type, $p->id) != 'active') {
-	        return;
-	    }
-	    $this->createCsrToken($request, $p);
-	    $msgs = [];
-	    $loggedState = $this->model->getState($p->type, $p->objectid, $p->loggedUser->id);
-	    // check logged user admin?
-	    if ($loggedState != 'admin') {
-	        $msgs[] = 'ACCES_VIOLATION';
-	    } else {
-	        // check loggeduser != user
-	        if ($p->loggedUser->id == $p->userid) {
-	            $msgs[] = 'SELF_UPDATE_DISABLED';
-	        } else {
-	            // check user state == $oldState ?
-	            $userState = $this->model->getState($p->type, $p->objectid, $p->userid);
-	            if ($userState != $oldState) {
-	                $msgs[] = 'ACCES_VIOLATION';
-	            } else {
-	                // execute
-	                $msgs = $this->model->updateMember($p->type, $p->objectid, $p->userid, $newState);
-	            }
-	        }
-	    }
-	    if (count($msgs) != 0) {
-	        $this->view->errorMsg($msgs, '', '', $p);
-	    } else {
-	        // redirect to member list
-	        $this->list($request, txt('STATE_UPDATED'), 'info');
-	    }
-	}
-	
-	/**
-	 * set meber to state=admin
-	 * @param Request $request - type, objectid, userid, loggedUser
+	 * set user to admin
+	 * @param Request $request - type, id, member_id, csrToken, sessionban loggedUser, csrToken
 	 */
 	public function setadmin(Request $request) {
-	    $this->updateState($request, 'active', 'admin');
+	    $p = $this->init($request, ['type','id','member_id']);
+	    $this->checkCsrToken($request);
+	    $this->createCsrToken($request, $p);
+	    $msgs = [];
+        $memberRec = $this->model->getRecord($p->member_id);
+        $p->loggedState = $this->model->getState($p->type, $p->id, $p->loggedUser->id);
+        if ($memberRec) {
+            if (($memberRec->state == 'active') & 
+                ($p->loggedState == 'admin') &
+                ($memberRec->user_id != $p->loggedUser->id)) {
+                $memberRec->state = 'admin';
+                if (!$this->model->save($memberRec)) {
+                    $msgs = [$this->model->getErrorMsg()];
+                }
+                } else {
+                 $msgs[] = txt('ACCESS_VIOLATION');
+            }
+        } else {
+            $msgs[] = txt('NOT_FOUND');
+        }
+        if (count($msgs) == 0) {
+            $this->form($request,[txt('DATA_SAVED')],'success');
+        } else {
+            $this->form($request,$msgs,'danger');
+        }
 	}
 	
+	/**
+	 * set user state admin to active
+	 * @param Request $request - type, id, user_id, csrToken, sessionban loggedUser, csrToken
+	 */
+	public function setnoadmin(Request $request) {
+	    $p = $this->init($request, ['type','id','member_id']);
+	    $this->checkCsrToken($request);
+	    $this->createCsrToken($request, $p);
+	    $msgs = [];
+	    $memberRec = $this->model->getRecord($p->member_id);
+	    $p->loggedState = $this->model->getState($p->type, $p->id, $p->loggedUser->id);
+	    if ($memberRec) {
+	        if (($memberRec->state == 'admin') &
+	            ($p->loggedState == 'admin') &
+	            ($memberRec->user_id != $p->loggedUser->id)) {
+	                $memberRec->state = 'active';
+	                if (!$this->model->save($memberRec)) {
+	                    $msgs = [$this->model->getErrorMsg()];
+	                }
+	            } else {
+	                $msgs[] = txt('ACCESS_VIOLATION');
+	            }
+	    } else {
+	        $msgs[] = txt('NOT_FOUND');
+	    }
+	    if (count($msgs) == 0) {
+	        $this->form($request,[txt('DATA_SAVED')],'success');
+	    } else {
+	        $this->form($request,$msgs,'danger');
+	    }
+	}
 	
 	/**
-	 * set meber to state=active
-	 * @param Request $request - type, objectid, userid, loggedUser
+	 * tag státusz modosítása csak a logged user saját magát modosíthatja.
+	 * ha $newState == 'none' akkor meglévő member rekord törlése
+	 * ha $oldState == 'none' akkor új member rekord felvitele
+	 * egyébként meglévő member rekord modosítása
+	 * @param Params $p - type,id , user_id, loggedUser
+	 * @param string $oldState
+	 * @param string $newStatet
+	 * @return array
 	 */
-	public function setnotadmin(Request $request) {
-	    $this->updateState($request, 'admin', 'active');
+	public function updateMemberState(Params $p,
+	    string $oldState, string $newStatet): array {
+	    $msgs = [];
+	    if (($p->loggedUser->id > 0) & ($p->loggedUser->id == $p->user_id)) {
+	        $objectModel = $this->getModel($p->type);
+	        if ($objectModel) {
+	            $object = $objectModel->getRecord($p->id);
+	            if ($object) {
+	                $memberRec = $this->model->getRecordBy($p->type, $p->id, $p->user_id);
+	                if ($memberRec->state == $oldState) {
+	                    $memberRec->type = $p->type;
+	                    $memberRec->objectid = $p->id;
+	                    $memberRec->user_id = $p->user_id;
+	                    $memberRec->state = $newState;
+	                    if ($newState == 'none') {
+	                        if (!$this->model->delete($memberRec->id)) {
+	                            $msgs[] = $this->model->getErrorMsg();
+	                        }
+	                    } else {
+	                        if (!$this->model->save($memberRec)) {
+	                            $msgs[] = $this->model->getErrorMsg();
+	                        }
+	                    }
+	                } else {
+	                    $msgs[] = txt('ACCESS_VIOLATION').' (2)';
+	                }
+	            } else {
+	                $msgs[] = $p->type.' '.$p->id.' '.txt('NOT_FOUND');
+	            }
+	        } else {
+	            echo 'Fatal error model not fount '.$p->type; exit();
+	        }
+	    } else {
+	        $msgs[] = txt('ACCESS_VIOLATION').' (1)';
+	    }
+	    return $msgs;
+	}
+	
+	/**
+	 * új jelentkező egy csoportba vagy projektbe
+	 * @param Request $request - type, id, user_id, csrToken
+	 */
+	public function aspire(Request $request) {
+	    $p = $this->init($request,['type','id','user_id']);
+	    $this->checkCsrToken($request);
+	    $this->createCsrToken($request, $p);
+	    $msgs = $this->updateMemberState($p, 'none', 'aspire');
+	    if (count($msgs) == 0) {
+	        $url = config('MYDOMAIN').'/opt/'.$p->type.'/form/id/'.$p->id.'/'.$p->csrToken.'/1';
+	        $this->redirectTo($url);
+	    } else {
+	        $this->view->errorMsg($msgs, $url, txt('BACK'), $p);
+	    }
+	}
+
+	/**
+	 * tag kilép egy csoportból vagy projektből
+	 * @param Request $request - type, id, user_id, csrToken
+	 */
+	public function quit(Request $request) {
+	    $p = $this->init($request,['type','id','user_id']);
+	    $this->checkCsrToken($request);
+	    $this->createCsrToken($request, $p);
+	    $msgs = $this->updateMemberState($p, 'active', 'none');
+	    if (count($msgs) == 0) {
+	        $url = config('MYDOMAIN').'/opt/'.$p->type.'/form/id/'.$p->id.'/'.$p->csrToken.'/1';
+	        $this->redirectTo($url);
+	    } else {
+	        $this->view->errorMsg($msgs, $url, txt('BACK'), $p);
+	    }
+	}
+	
+	/**
+	 * jelentkező visszavonja jelentkezését egy csoportból vagy projektből
+	 * @param Request $request - type, id, user_id, csrToken
+	 */
+	public function notaspire(Request $request) {
+	    $p = $this->init($request,['type','id','user_id']);
+	    $this->checkCsrToken($request);
+	    $this->createCsrToken($request, $p);
+	    $msgs = $this->updateMemberState($p, 'aspire', 'none');
+	    if (count($msgs) == 0) {
+	        $url = config('MYDOMAIN').'/opt/'.$p->type.'/form/id/'.$p->id.'/'.$p->csrToken.'/1';
+	        $this->redirectTo($url);
+	    } else {
+	        $this->view->errorMsg($msgs, $url, txt('BACK'), $p);
+	    }
+	}
+	
+	/**
+	 * tag szünetelteti a tagságát
+	 * @param Request $request - type, id, user_id, csrToken
+	 */
+	public function pause(Request $request) {
+	    $p = $this->init($request,['type','id','user_id']);
+	    $this->checkCsrToken($request);
+	    $this->createCsrToken($request, $p);
+	    $msgs = $this->updateMemberState($p, 'active', 'pause');
+	    if (count($msgs) == 0) {
+	        $url = config('MYDOMAIN').'/opt/'.$p->type.'/form/id/'.$p->id.'/'.$p->csrToken.'/1';
+	        $this->redirectTo($url);
+	    } else {
+	        $this->view->errorMsg($msgs, $url, txt('BACK'), $p);
+	    }
+	}
+	
+	/**
+	 * szüneteltetett tag újra aktiválja magát
+	 * @param Request $request - type, id, user_id, csrToken
+	 */
+	public function activate(Request $request) {
+	    $p = $this->init($request,['type','id','user_id']);
+	    $this->checkCsrToken($request);
+	    $this->createCsrToken($request, $p);
+	    $msgs = $this->updateMemberState($p, 'pause', 'active');
+	    if (count($msgs) == 0) {
+	        $url = config('MYDOMAIN').'/opt/'.$p->type.'/form/id/'.$p->id.'/'.$p->csrToken.'/1';
+	        $this->redirectTo($url);
+	    } else {
+	        $this->view->errorMsg($msgs, $url, txt('BACK'), $p);
+	    }
 	}
 }
 ?>

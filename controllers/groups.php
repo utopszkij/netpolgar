@@ -7,7 +7,7 @@ class GroupsController extends CommonController {
         $this->cName = 'groups';
     }
     
-    protected function isUserAdmin(UserRecord $user, bool $userAdmin, int $groupId): bool {
+    protected function isUserAdmin($user, bool $userAdmin, int $groupId): bool {
         $memberModel = $this->getModel('members');
         $state = $memberModel->getState('group', $groupId, $user->id);
         if (($state == 'admin') | ($userAdmin)) {
@@ -92,7 +92,7 @@ class GroupsController extends CommonController {
 	    $p->filterStr = $request->input('filterStr', $request->sessionGet('groupsFilterStr',''));
 	    $p->orderField = $request->input('orderField', $request->sessionGet('groupsOrderField','tree'));
 	    $p->orderDir = $request->input('orderDir', $request->sessionGet('groupsOrderDir','ASC'));
-	    $p->userGroupAdmin = $this->isUserAdmin($p->loggedUser, $p->userAdmin, $p->parentId);
+	    $p->userGroupAdmin = $this->isUserAdmin($p->loggedUser, $p->loggedUser->admin, $p->parentId);
 	    $request->sessionSet('groupsOffset',$p->offset);
 	    $request->sessionSet('groupsLimit',$p->limit);
 	    $request->sessionSet('grouspOrderField',$p->orderField);
@@ -117,31 +117,71 @@ class GroupsController extends CommonController {
       } // list task
       
       /**
+       * csoport lista azon csoportokról, amelyeknek a user tagja
+       * @param Request $request - user_id, + browse paraméterek
+       */
+      public function list_by_member(Request $request, array $msgs = []) {
+          $p = $this->init($request,['user_id','offset','limit','order','order_dir','filter_str']);
+          $p->msgs = $msgs;
+          $p->user_id = $request->input('user_id', $request->sessionGet('groupsUser_id',0));
+          if ($p->user_id > 0) {
+              $userModel = $this->getModel('users');
+              $p->filterUser = $userModel->getById($p->user_id);
+          }
+          $p->offset = $request->input('offset', $request->sessionGet('gropsOffset',0));
+          $p->limit = $request->input('limit', $request->sessionGet('groupsLimit',20));
+          $p->filte_str = $request->input('filter_str', $request->sessionGet('groupsFilter_str',''));
+          $p->order = $request->input('order', $request->sessionGet('groupsOrder','g.id'));
+          $p->order_dir = $request->input('order_dir', $request->sessionGet('groupsOrder_dir','ASC'));
+          $request->sessionSet('groupsOffset',$p->offset);
+          $request->sessionSet('groupsLimit',$p->limit);
+          $request->sessionSet('grouspOrder',$p->order);
+          $request->sessionSet('groupsOrder_dirr',$p->order_dir);
+          $request->sessionSet('groupsFilter_str',$p->filter_str);
+          $request->sessionSet('groupsUser_id',$p->user_id);
+          $p->total = 0;
+          $p->items = $this->model->getRecords_by_user($p->offset, $p->limit, $p->filter_str, 
+              $p->order, $p->order_dir, $p->user_id, $p->total);
+          $p->formTitle = 'GROUPS_LIST';
+          $this->createCsrToken($request, $p);
+          $p->paginators = $this->view->makePaginators($p->total, $p->offset);
+          $this->view->echoHtmlPage('groupslistbyuser',$p,'groups');
+      } // list_by_user
+      
+      /**
        * group adatképernyő
-       * @param Request $request {userAdmin, user, avatarUrl, groupid}
+       * @param Request $request {userAdmin, user, avatarUrl, id}
        * -sessionba jöhet: groupsOffset, groupsOrderField, groupsOrderDir, groupsFilterStr,
        *                   groupsLimit, groupsUserid
        */
-      public function groupform(Request $request) {
-          $p = $this->init($request,['userAdmin','user','avatarUrl','groupid']);
+      public function form(Request $request) {
+          $p = $this->init($request,['userAdmin','user','avatarUrl','id']);
           $this->createCsrToken($request, $p);
           $backUrl = MYDOMAIN.'/opt/groups/list';
-          $p->userGroupAdmin = $this->isUserAdmin($p->loggedUser, $p->userAdmin, $p->groupid);
+          $p->userGroupAdmin = $this->isUserAdmin($p->loggedUser, $p->userAdmin, $p->id);
           $membersModel = $this->getModel('members');
-          $p->userState = $membersModel->getState('group', $p->groupid, $p->loggedUser->id);
+          $p->userState = $membersModel->getState('groups', $p->id, $p->loggedUser->id);
           $p->formTitle = 'GROUP';
           $p->msgs = [];
-          if ($p->groupid > 0) {
-              $p->parents = $this->model->getGroupPath($p->groupid);
-              $p->item = $this->model->getRecord($p->groupid);
-              $memberCount = $membersModel->getMemberCount('group', $p->groupid);
+          if ($p->id > 0) {
+              $p->parents = $this->model->getGroupPath($p->id);
+              $p->item = $this->model->getRecord($p->id);
+              $memberCount = $membersModel->getMemberCount('group', $p->id);
               $this->adjustMembers($p->item, $memberCount);
               $this->adjustSubgroups($p->item, $memberCount);
-              $p->id = $p->groupid;
               
-              //$likeModel = $this->getModel('likes');
-              //$p->like = $likeModel->get('groups', $p->group->id);
-              $p->like = JSON_decode('{"total":{"up":0, "down":0}, "member":{"up":0, "down":0}}');
+              $likeModel = $this->getModel('likes');
+              $p->likeCount = $likeModel->getCounts('groups', $p->id);
+              
+              //$commentModel = $this->getModel('comments');
+              //$p->commentCount = $commentModel->getCounts('groups', $p->id);
+              $p->commentCount = JSON_decode('{"total":12, "new":3}');
+              
+              $p->pollCount = JSON_decode('{"total":13, "new":2}'); // aktiv szavazások ahol még nem szavazott, és szavazhat
+              
+              $p->eventCount = JSON_decode('{"total":45, "new":3}'); // jövőbeli események
+              
+              $p->messageCount = JSON_decode('{"total":22, "new":2}'); // olvasatlan privát üzenetek
               
               if ($p->item->id > 0) {
                   $this->view->form($p);
@@ -161,31 +201,22 @@ class GroupsController extends CommonController {
       
       /**
        * új group felvitele
-       * @param Request $request {userAdmin, user, avatarUrl, parent}
+       * @param Request $request {userAdmin, user, avatarUrl, parentid}
        * -sessionba jöhet: groupsOffset, groupsOrderField, groupsOrderDir, groupsFilterStr,
        *                   groupsLimit, groupsUserid
        */
       public function add(Request $request) {
-          $p = $this->init($request, ['userAdmin','loggedUser','avatarUrl','parent']);
+          $p = $this->init($request, ['userAdmin','loggedUser','avatarUrl','parentid']);
+          $p->parentId = $request->input('parentid',0);
           $this->checkCsrToken($request);
           $backUrl = MYDOMAIN.'/opt/groups/list';
           $this->createCsrToken($request, $p);
-          $p->parentId = $request->input('parentid',0);
-          $p->userGroupAdmin = $this->isUserAdmin($p->loggedUser, $p->userAdmin, $p->parentId);
-          if ($p->userGroupAdmin) {
-              $p->userAdmin = true;
-          }
+          $membersModel = $this->getModel('members');
+          $p->userState = $membersModel->getState('groups', $p->parentId, $p->loggedUser->id);
+          $p->userState = 'admin'; // a létrehozó adminja lesz az új csoportnak
           $p->parents = $this->model->getGroupPath($p->parentId);
           $p->parent = $this->model->getRecord($p->parentId);
-          // group rott ?
-          if ($p->parentId == 0) {
-              $p->parent->sate = 'active';
-          }
-          // sysadmin? 
-          if ($p->loggedUser->id == 0) {
-            $p->userAdmin = true;               
-          }
-          if (($p->userAdmin) & ($p->parent->state == 'active')) {
+          if ((($p->userState == 'active') | ($p->userState == 'admin')) & ($p->parent->state == 'active')) {
               $p->item = new GroupRecord();
               $p->item->id = 0;
               $p->item->name = '';
@@ -198,15 +229,19 @@ class GroupsController extends CommonController {
 ' A csoport adminisztrátorok módosíthatják a csoport adatait, státuszát, alcsoportokat tagokat'.
 ' vehetnek fel, kezelhetnek';               ;
               $p->item->reg_mode = 'self';
-              $p->item->state = 'active';
+              $p->item->state = 'proposal';
               $p->item->parent = $p->parentId;
               $p->item->group_to_active = 10;
               $p->item->group_to_close = 80;
               $p->item->member_to_active = 2;
               $p->item->member_to_exclude = 90;
               $p->formTitle = 'ADD_SUB_GROUP';
-              $p->groupid = 0;
+              $p->item->id = 0;
               $p->id = 0;
+              $p->userState = 'admin'; // a létrehozó admin lesz az új csoportban.
+              $likeModel = $this->getModel('likes');
+              $p->likeCount = $likeModel->getCounts('groups', $p->id);
+              
               $this->view->form($p);
           } else {
               $this->view->errorMsg(['ACCESS_VIOLATION'],$backUrl, txt('OK'), $p);
@@ -257,6 +292,12 @@ class GroupsController extends CommonController {
         foreach ($item as $fn => $fv) {
             $item->$fn = $request->input($fn, $fv);
         }
+        
+        // ellenörzések:
+        // state active --> close csak akkor megengedett ha nincs subgroup vagy
+        //     mindegyik lezárt.
+        // state active --> proposal nem megengedett
+        
         $p->userGroupAdmin = $this->isUserAdmin($p->loggedUser, $p->userAdmin, $item->id);
         $p->userParentGroupAdmin = $this->isUserAdmin($p->loggedUser, $p->userAdmin, $item->parent);
         $this->createCsrToken($request, $p);

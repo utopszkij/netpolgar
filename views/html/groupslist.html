@@ -10,18 +10,18 @@
         		    <input type="hidden" name="orderDir" id="orderDir" value="{{orderDir}}" />
         		    
         		    <div class="parents">
-                  	<p ng-repeat="parent in parents"> 
+                  	<span ng-repeat="parent in parents | orderBy:'-'"> 
                   	    <span class="fa fa-caret-right"></span>&nbsp;
-                        <a href="{{MYDOMAIN}}/opt/groups/groupform/groupid/{{parent.id}}" target="_self">
+                        <a href="{{MYDOMAIN}}/opt/groups/form/id/{{parent.id}}" target="_self">
                             {{parent.name}}
                         </a>
-                    </p>          
+                    </span>          
                   	</div>
         		    
             		<h2><em class="fa fa-users"></em>&nbsp;&nbsp;&nbsp;{{txt(formTitle)}}</h2>
             		<h3>{{txt(formSubTitle)}}</h2>
     				
-    				<div class="alert alert-success" ng-if="msgs.length > 0">
+    				<div class="alert alert-{{msgClass}}" ng-if="msgs.length > 0">
     					<p ng-repeat="msg in msgs">{{txt(msg)}}</p>
     				</div>
 

@@ -25,9 +25,8 @@ button em {margin-right:5px}
 .table .tr1 {background-color:#d3efd5}
 #scope {padding:5px 10px 5px 10px; min-height:600px; text-align:center}   
 .specButtons {display:inline-block; margin-left:40px; width:auto}
-
 .nav-item {border-style:solid; border-color:silver; border-width:0px 1px 0px 0px;}
-.nav-item:hover {background-color:silver}
+.nav-item:hover {background-color:#d6c4c4}
 .nav-item a {padding:15px 2px 2px 2px}
 .nav-item em {padding: 0px 5px 0px 0px}
 .nav-item img {height:32px}
@@ -35,7 +34,7 @@ button em {margin-right:5px}
 .userMenuItem a {padding:8px 2px 2px 2px}
 .userMenuItem em {font-size:22px}
 .dropdown-menu {border-style:solid; border-width:0px 1px 1px 1px; border-radius: 0px 0px 10px 10px;
-	background-color: #C0C0C0; padding:3px;}
+	background-color: #d6c4c4; padding:3px;}
 .dropdown-item:hover {background-color:black; color:white;}
 .navbar-collapse li {text-align:left}
 .navbar-collapse li .fa {margin-right:5px}

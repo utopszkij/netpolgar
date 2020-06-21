@@ -141,7 +141,18 @@ class GroupsModel {
         $msgs = [];
         $table = new table('groups');
         if ($data->id == 0) {
-            $table->insert($data);
+            if ($table->insert($data)) {
+                $data->id = $table->getInsertedId();
+                // members rekord létrehozása
+                $table1 = new Table('members');
+                $rec = new stdClass();
+                $rec->id = 0;
+                $rec->type = 'groups';
+                $rec->object_id = $data->id;
+                $rec->user_id = $user->id;
+                $rec->state = 'admin';
+                $table1->insert($rec);
+            }
         } else {
             unset($data->nick); // nick nem módosítható
             $table->where(['id','=',$data->id]);
@@ -149,10 +160,6 @@ class GroupsModel {
         }
         if ($table->getErrorNum() != 0) {
             $msgs[] = $table->getErrorMsg();
-        } else {
-            // új felvitelnél a group admin beállítása ....
-            // ha új state == 'closed' akkor az alcsoportokban  is state = 'closed'
-            // ha új state == 'proposal' akkor az alcsoportokban  is state = 'proposal'
         }
         return $msgs;
     }
@@ -255,7 +262,9 @@ class GroupsModel {
                 $result[$itemI]->childs = [];
             }
         } else {
-            $result[$itemI]->childs = false;
+            if ($itemI >= 0) {
+                $result[$itemI]->childs = false;
+            }
         }
     }
     
@@ -330,6 +339,24 @@ class GroupsModel {
         }
         return $result. ']}';
     }
+    
+    public function getRecords_by_user(int $offset, int $limit, string $filterStr,
+        string $orderField, string $orderDir, int $userId, int &$total): array {
+        $filter = new Filter('members','m');
+        $filter->join('LEFT OUTER JOIN','groups','g','m.object_id = g.id');
+        $filter->where(['m.type','=','groups']);
+        $filter->where(['m.user_id','=',$userId]);
+        if ($filterStr != '') {
+            $filter->where(['m.name','like','%'.$filterStr.'%']);
+        }
+        $filter->setColumns('distinct g.id, g.name, g.state, m.state userstate');
+        $filter->offset($offset);
+        $filter->limit($limit);
+        $filter->order($orderField.' '.$orderDir);
+        $total = $filter->count();
+        return $filter->get();
+    }
+    
     
 } // class
 ?>

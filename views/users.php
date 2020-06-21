@@ -7,33 +7,6 @@ include_once './views/common.php';
 /** user kezelés viewer osztály */
 class UsersView  extends CommonView  {
 
-
-	/**
-	 * Bejelentkezés képernyő
-	 * @param Params $p
-	 */
-	public function loginForm(Params $p) {
-	    // local test
-	    if ($_SERVER['REMOTE_ADDR'] == '192.168.0.12') {
-	        global $REQUEST;
-	        $user = new UserRecord();
-	        $user->id = 1;
-	        $user->nick = 'admin';
-	        $REQUEST->sessionSet('loggedUser', $user);
-	        redirectTo(config('MYDOMAIN'));
-	        return;
-	    }
-	    
-	    $ukloginUrl = 'https://uklogin.tk/openid/authorize/'.
-	   	'?client_id='.urlencode(config('MYDOMAIN').'/opt/users/accesstoken/').
-	    '&nonce='.session_id().
-	    '&redirect_uri='.urlencode(config('MYDOMAIN').'/opt/users/accesstoken/').
-	    '&policy='.urlencode(config('MYDOMAIN').'opt/policy/show').
-	    '&scope='.urlencode('sub nickname audited');
-	    redirectTo($ukloginUrl);
-	}
-
-
 	/**
 	 * profil form megjelenitése
 	 * @param object $p - loggedUser, userData, backUrl

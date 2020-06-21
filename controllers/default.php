@@ -13,13 +13,11 @@ class DefaultController extends CommonController {
      */
 	public function default(Request $request) {
       // echo frontpage
-	    $request->set('sessionid','0');
+	    // $request->set('sessionid','0');
 	    $request->set('lng','hu');
 	    $request->set('option','frontpage');
 	    $p = $this->init($request,[]); 
 	    $p->cookieEnabled = $request->sessionGet('cookieEnabled',false);
-	    
-	    	    
 		$this->view->display($p);
 	}
 }

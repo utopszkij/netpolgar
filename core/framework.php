@@ -10,6 +10,7 @@
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
+use Zend\Filter\StringToLower;
 
 /** global Request object */
 global $REQUEST;
@@ -55,6 +56,7 @@ class GetRecordsResult {
     public $errorMsg = '';
 }
 
+
 /**
  * adatmodell osztály
  */
@@ -63,7 +65,17 @@ class Model {
     protected $tableName = '';
     /** filterStr megadása esetén ebben a mezőben keres */
     protected $filterField = '';
-
+    /** utolsó akció hibaüzenete **/
+    protected $errorMsg = '';
+    
+    /**
+     * utolsó akció hibaüzenete 
+     * @return string
+     */
+    public function getErrorMsg(): string {
+        return $this->errorMsg;
+    }
+    
     /**
      * Rekord készlet olvasása gyakran átirandó ennek a mintájára
      * @param int $offset
@@ -87,9 +99,58 @@ class Model {
             $result = new GetRecordsResult();
             $result->total = $filter->count();
             $result->items = $filter->get();
+            $this->errorMsg = $filter->getErrorMsg();
             $result->errorMsg = $filter->getErrorMsg();
             return $result;
     }
+    
+    /**
+     * get one record
+     * @param int $int
+     * @return object|false
+     */
+    public function getRecord(int $id) {
+        $this->errorMsg = '';
+        $table = new Table($this->tableName);
+        $table->where(['id','=',$id]);
+        $res = $table->first();
+        $this->errorMsg = $table->getErrorMsg();
+        return $res;
+    }
+    
+    /**
+     * update or insert one record, if insert then set record.id
+     * @param object $record
+     * @return bool
+     */
+    public function save(& $record): bool {
+        $this->errorMsg = '';
+        $table = new Table($this->tableName);
+        if ($record->id == 0) {
+            $table->insert($record);
+            $record->id = $table->getInsertedId();
+        } else {
+            $table->where(['id','=',$record->id]);
+            $table->update($record);
+        }
+        $this->errorMsg = $table->getErrorMsg();
+        return ($this->errorMsg == '');
+    }
+    
+    /**
+     * delete one record
+     * @param int $int
+     * @return bool
+     */
+    public function delete(int $id) {
+        $this->errorMsg = '';
+        $table = new Table($this->tableName);
+        $table->where(['id','=',$id]);
+        $res = $table->delete();
+        $this->errorMsg = $table->getErrorMsg();
+        return $res;
+    }
+        
 }
 
 /**
@@ -106,6 +167,9 @@ class View {
             $htmlName = './templates/'.config('TEMPLATE').'/html/'.$name.'.html';
         } else {
             $htmlName = './views/html/'.$name.'.html';
+        }
+        if (!file_exists($htmlName)) {
+            echo 'Fatal error html template not found '.$htmlName; exit();
         }
         ?>
         <body ng-app="app">
@@ -128,6 +192,7 @@ class View {
         $names[] = 'footer';
         $names[] = 'popupr';
         $p->templates = new stdClass();
+        $p->TEMPLATE = config('TEMPLATE');
         foreach ($names as $name) {
             if (file_exists(config('MYPATH').'/templates/'.$p->TEMPLATE.'/html/'.$name.'.html')) {
                 $p->templates->$name = config('MYDOMAIN').'/templates/'.$p->TEMPLATE.'/html/'.$name.'.html';
@@ -345,8 +410,13 @@ class Controller {
                 $result->$name = '';
             }
         }
-        $result->loggedUser = $request->sessionGet('loggedUser', false);
+        $result->loggedUser = new UserRecord();
+        foreach ($request->sessionGet('loggedUser', new UserRecord()) as $fn => $fv) {
+            $result->loggedUser->$fn = $fv;
+        }
         $result->access_token = $request->sessionGet('access_token', '');
+        $result->msgs = [];
+        $result->msgClass = 'danger';
         return $result;
     }
 
@@ -402,6 +472,10 @@ class Controller {
      * @return void
      */
     protected function checkCsrToken(&$request) {
+        if ($_SERVER['REMOTE_ADDR'] == '192.168.0.12') {
+            // local test
+            return;
+        }
         if ($request->input($request->sessionGet('csrToken','?'),'nincs') != 1) {
             echo '<p>invalid csr token</p> sessionban csrToken='.$request->sessionGet('csrToken','?').
             ' inputban='.$request->input($request->sessionGet('csrToken','?'),'nincs').' '.__FILE__;
@@ -475,6 +549,87 @@ class Controller {
         $request->sessionSet($p->option.'Searchstr', $p->searchstr);
         $this->view->listForm($p);
     }
+    
+    /**
+     * átirányítás URL -re
+     * @param string $url
+     */
+    public function redirectTo(string $url) {
+        if (!headers_sent()) {
+            header('Location: '.$url);
+        } else {
+            echo '<script type="text/javascript">location="'.$url.'";</script>';
+        }
+    }
+    
+    /**
+     * move uploaded file to target
+     * @param string $postName
+     * @param string $target
+     * @return string - fileName in target or '';
+     */
+    public function getUploadedFile(string $postName, string $target): string {
+        if (isset($_FILES[$postName])) {
+            $fileName = $_FILES[$postName]['name'];
+            if (move_uploaded_file($_FILES[$postName]["tmp_name"], $target.'/'.$fileName)) {
+                $result = $fileName;
+            } else {
+                $result = '';
+            }
+        } else {
+            $result = '';
+        }
+        return $result;
+    }
+    /**
+     * Hash képzése
+     * @param string $alg
+     * @param string $s
+     * @return string
+     */
+    public function myHash(string $alg, string $s) {
+        return hash($alg, $s);
+    }
+    
+    /**
+     * email küldése config -ban beállított smtp kiszolgálóval
+     * @param string $to
+     * @param string $subject
+     * @param string $body
+     * @return bool
+     */
+    public function sendEmail(string $to, string $subject, string $body): bool {
+        $mail = new PHPMailer(true);
+        $result = true;
+        // Passing `true` enables exceptions
+        try {
+            //Server settings
+            $mail->isSMTP();                                      // Set mailer to use SMTP
+            $mail->Host = config('SMTPHOST');  // Specify main and backup SMTP servers
+            $mail->SMTPAuth = true;                               // Enable SMTP authentication
+            $mail->Username = config('SMTPUSER');                 // SMTP username
+            $mail->Password = config('SMTPPSW');                  // SMTP password
+            $mail->SMTPSecure = config('SMTPSECURE');             // Enable TLS encryption, `ssl` also accepted
+            $mail->SMTPPort = config('SMTPPORT');                 // Port
+            $mail->CharSet = 'utf-8';
+            $mail->SMTPAuth = true;
+            //Recipients
+            $mail->setFrom(config('SMTPSENDER'));
+            $mail->addAddress($to);     // Add a recipient
+            
+            //Content
+            $mail->isHTML(true); // Set email format to HTML
+            $mail->Subject = $subject;
+            $mail->Body    = $body;
+            
+            $mail->send();
+        } catch (Exception $e) {
+            echo Json_encode($mail).' '.JSON_encode($e);
+            $result = false;
+        }
+        return $result;
+    }
+    
 } // class Controller
 
 
@@ -485,11 +640,12 @@ class Request {
     /** paraméterek */
     public $params = array();
     /** session változók */
-	protected $sessions = array();
+	protected $sessions = false;
 
 	/** konstruktor */
 	function __construct() {
 	    global $REQUEST;
+	    $this->sessions = new stdClass();
 	    $REQUEST = $this;
 	}
 
@@ -500,6 +656,7 @@ class Request {
 	 * @return mixed
 	 */
 	public function input(string $name, $default = '') {
+	    $name = Strtolower($name);
 		$result = $default;
 		if (isset($this->params[$name])) {
 			$result = $this->params[$name];
@@ -514,7 +671,7 @@ class Request {
 	 * @return void
 	 */
 	public function set(string $name, $value) {
-		$this->params[$name] = $value;
+		$this->params[strtolower($name)] = $value;
 	}
 
 	/**
@@ -525,10 +682,8 @@ class Request {
 	 */
 	public function sessionGet(string $name, $default='') {
 	    $result = $default;
-	    $sessionId = session_id();
-	    $this->session_init($sessionId);
-	    if (isset($this->sessions->$name)) {
-	        $result = $this->sessions->$name;
+	    if (isset($_SESSION[$name])) {
+	        $result = JSON_decode($_SESSION[$name]);
 	    }
 	    return $result;
 	}
@@ -540,83 +695,9 @@ class Request {
 	 * @return void
 	 */
 	public function sessionSet(string $name, $value) {
-	    $sessionId = session_id();
-	    $this->session_init($sessionId);
-	    if (is_object($this->sessions)) {
-	    	$this->sessions->$name = $value;
-	    	$this->session_save($sessionId);
-	    }	else {
-         $this->sessions = new stdClass();
-	    	$this->sessions->$name = $value;
-	    	$this->session_save($sessionId);
-	    }
+	    $_SESSION[$name] = JSON_encode($value);
 	}
 
-	/**
-	 * session_start - open sessions record from database or create new
-	 * @param string $sessionId
-	 * @return void
-	 */
-	protected function session_init(string $sessionId) {
-	    $maxlifetime = ini_get("session.gc_maxlifetime");
-	    if (count($this->sessions) <= 0) {
-	        $this->sessions = new stdClass();
-	        $db = new DB();
-	        $db->statement('CREATE TABLE IF NOT EXISTS sessions (id varchar(256), data text, time datetime)');
-	        $table = DB::table('sessions');
-	        $table->where(array('time','<', date('Y-m-d H:i:s', (time() - $maxlifetime))))->delete();
-	        $table = DB::table('sessions');
-	        $res = $table->where(array('id',$sessionId))->first();
-	        if ($res) {
-	            $this->sessions = JSON_decode($res->data);
-	            $record = new stdClass();
-	            $record->time = date('Y-m-d H:i:s');
-	            $table->where(array('id',$sessionId))->update($record);
-	        } else {
-	            $this->sessions = new stdClass();
-	            $record = new stdClass();
-	            $record->id = $sessionId;
-	            $record->data = JSON_encode($this->sessions);
-	            $record->time = date('Y-m-d H:i:s');
-	            $table->insert($record);
-	        }
-	    } else {
-	        $table = DB::table('sessions');
-	        $record = new stdClass();
-	        $record->time = date('Y-m-d H:i:s');
-	        $table->where(array('id',$sessionId))->update($record);
-	        $table->where(array('time','<', date('Y-m-d H:i:s', (time() - $maxlifetime))))->delete();
-	    }
-	}
-
-	/**
-	 * save session into database
-	 * @param string $sessionId
-	 * @return void
-	 */
-	protected function session_save(string $sessionId) {
-	    $maxlifetime = ini_get("session.gc_maxlifetime");
-	    $db = new DB();
-	    $db->statement('CREATE TABLE IF NOT EXISTS sessions (id varchar(256), data text, time datetime)');
-	    $table = DB::table('sessions');
-	    $record = new stdClass();
-	    $record->data = JSON_encode($this->sessions);
-	    $record->time = date('Y-m-d H:i:s');
-	    $table->where(array('id',$sessionId))->update($record);
-	    $table = DB::table('sessions');
-	    $table->where(array('time','<', date('Y-m-d H:i:s', (time() - $maxlifetime))))->delete();
-	}
-
-	/**
-	 * count of active sessions
-	 * @return integer
-	 */
-	public function session_count(): int {
-	    $sessionId = session_id();
-	    $table = DB::table('sessions');
-	    $table->where(['id','=',$sessionId]);
-	    return $table->count();
-	}
 } // Request
 
 /**
@@ -665,87 +746,6 @@ function txt(string $s): string {
     } else {
         $result = '<a style="color:red" target="_new"
             href="'.MYDOMAIN.'/opt/txt/add/?token='.urlencode($s).'">'.$s.'</a>';
-    }
-    return $result;
-}
-
-/**
- * move uploaded file to target
- * @param string $postName
- * @param string $target
- * @return string - fileName in target or '';
- */
-function getUploadedFile(string $postName, string $target): string {
-    if (isset($_FILES[$postName])) {
-        $fileName = $_FILES[$postName]['name'];
-        if (move_uploaded_file($_FILES[$postName]["tmp_name"], $target.'/'.$fileName)) {
-            $result = $fileName;
-        } else {
-            $result = '';
-        }
-    } else {
-        $result = '';
-    }
-    return $result;
-}
-
-/**
- * átirányítás URL -re
- * @param string $url
- */
-function redirectTo(string $url) {
-    if (!headers_sent()) {
-        header('Location: '.$url);
-    } else {
-        echo '<script type="text/javascript">location="'.$url.'";</script>';
-    }
-}
-
-/**
- * Hash képzése
- * @param string $alg
- * @param string $s
- * @return string
- */
-function myHash(string $alg, string $s) {
-    return hash($alg, $s);
-}
-
-/**
- * email küldése config -ban beállított smtp kiszolgálóval
- * @param string $to
- * @param string $subject
- * @param string $body
- * @return bool
- */
-function sendEmail(string $to, string $subject, string $body): bool {
-    $mail = new PHPMailer(true);
-    $result = true;
-    // Passing `true` enables exceptions
-    try {
-        //Server settings
-        $mail->isSMTP();                                      // Set mailer to use SMTP
-        $mail->Host = config('SMTPHOST');  // Specify main and backup SMTP servers
-        $mail->SMTPAuth = true;                               // Enable SMTP authentication
-        $mail->Username = config('SMTPUSER');                 // SMTP username
-        $mail->Password = config('SMTPPSW');                  // SMTP password
-        $mail->SMTPSecure = config('SMTPSECURE');             // Enable TLS encryption, `ssl` also accepted
-        $mail->SMTPPort = config('SMTPPORT');                 // Port
-        $mail->CharSet = 'utf-8';
-        $mail->SMTPAuth = true;
-        //Recipients
-        $mail->setFrom(config('SMTPSENDER'));
-        $mail->addAddress($to);     // Add a recipient
-
-        //Content
-        $mail->isHTML(true); // Set email format to HTML
-        $mail->Subject = $subject;
-        $mail->Body    = $body;
-
-        $mail->send();
-    } catch (Exception $e) {
-        echo Json_encode($mail).' '.JSON_encode($e);
-        $result = false;
     }
     return $result;
 }

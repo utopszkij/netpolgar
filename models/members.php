@@ -5,11 +5,12 @@ class MemberRecord {
     public $type = '';      // objektum tipus ('group',....)
     public $object_id = 0;  // objektum id
     public $user_id = 0;    // user id
-    public $state = '';     // 'aspirant', 'active', 'pause', 'excluded', 'exited', 'admin'
+    public $state = 'none';     // 'aspirant', 'active', 'pause', 'excluded', 'exited', 'admin'
 }
 
-class MembersModel {
+class MembersModel extends Model {
     function __construct() {
+        $this->tableName = 'members';
         $db = new DB();
         $db->createTable('members',
             [['id','INT',11,true],
@@ -66,35 +67,38 @@ class MembersModel {
     }
     
     /**
-     * set member state
+     * egy rekord olvasása type, id, user_id alapján 
      * @param string $type
-     * @param int $objectId
-     * @param int $userId
-     * @param string $state
+     * @param int $id
+     * @param int $user_id
+     * @return memberRecord
      */
-    public function setMemberState(string $type, int $objectId, int $userId, string $state) {
-        $this->updateMember($type, $objectId, $userId, $state);
-            
+    public function getRecordBy(string $type,int $id, int $user_id): memberRecord {
+        $result = new MemberRecord;
+        $table = new Table('members');
+        $table->where(['type','=',$type]);
+        $table->where(['object_id','=',$id]);
+        $table->where(['user_id','=',$user_id]);
+        $rec =$table->first();
+        $this->errorMsg = $table->getErrorMsg();
+        if ($rec) {
+            foreach ($rec as $fn => $fv) {
+                $result->$fn = $fv;
+            }
+        }
+        return $result;
     }
     
     /**
-     * get user state in type object
+     * tag státusz olvasása type,id, user_id alapján
      * @param string $type
      * @param int $id
      * @param int $user_id
      * @return string  // member state or 'none'
      */
     public function getState(string $type, int $object_id, int $user_id): string {
-        $table = new Table('members');
-        $table->where(['type','=',$type]);
-        $table->where(['object_id','=',$object_id]);
-        $table->where(['user_id','=',$user_id]);
-        $rec =$table->first();
-        if ($rec) {
-            $result = $rec->state;
-        } else {
-            $result = 'none';
-        }
+        $rec =$this->getRecordBy($type, $object_id, $user_id);
+        $result = $rec->state;
         return $result;
     }
     
@@ -125,38 +129,20 @@ class MembersModel {
         }
         return $result;
     }
-    
-    public function updateMember(string $type, int $object_id, int $userId, string $state): array {
-        $msgs= [];
-        $table = new Table('members');
-        $table->where(['type','=',$type]);
-        $table->where(['object_id','=',$object_id]);
-        $table->where(['user_id','=',$userId]);
-        $memberRec = new MemberRecord();
-        $memberRec->type = $type;
-        $memberRec->object_id = $object_id;
-        $memberRec->user_id = $userId;
-        $memberRec->state = $state;
-        $table->update($memberRec);
-        if ($table->getErrorMsg() != '') {
-            $msgs[] = $table->getErrorMsg();
-        }
-        return $msgs;
-    }
-    
+   
     /**
      * get rekord set
      * @param object $p - type, objectId, offset, limit, oderField, orderDir, searchStr, filterState
      * @param int $total
      * @return array
      */
-    public function getRecords($p, int &$total): array {
+    public function getMemberRecords($p, int &$total): array {
         $total = 0;
         $filter = new Filter('members','m');
         $filter->setColumns('m.id, m.user_id, u.avatar, u.nick,  m.state');
         $filter->join('left outer join','users','u','u.id = m.user_id');
         $filter->where(['m.type','=',$p->type]);
-        $filter->where(['m.object_id','=',$p->objectId]);
+        $filter->where(['m.object_id','=',$p->id]);
         if ($p->searchstr != '') {
             $filter->where(['u.nick','like','%'.$p->searchstr.'%']);
         }
@@ -169,7 +155,7 @@ class MembersModel {
         $total = $filter->count();
         return $filter->get();
     }
-    
+        
     /**
      * get member record by id
      * @param int $id

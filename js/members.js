@@ -4,8 +4,6 @@
   // sid string requed
   
   // jquery page onload --- must this function !
-
-  // here $scope is not valid. 
   function pageOnLoad() {
   }	
 
@@ -48,10 +46,10 @@
 		  	}
 		  	return $scope.trClass;
 		  }
-		  $('#browserForm tr').click(function() {
-			  var id = this.id.substring(3,100);
+		  $('#browserForm tbody tr').click(function() {
+			  var member_id = this.id.substring(3,100);
 			  $('#task').val('form');
-			  $('#id').val(id);
+			  $('#member_id').val(member_id);
 			  $('#browserForm').submit();
 		  });
 	  } // browserForm
@@ -66,10 +64,15 @@
   	pageOnLoad();
   });	
 
-  // angular pageOnLoad
-  $scope.onload = function($last) {
+  $scope.onload = function() {
+	  membersFun();
+	  return '';
+  };
+
+  $scope.itemLoad = function($last) {
 	  if ($last) {
 		  membersFun();
 	  }
+	  return '';
   }
   

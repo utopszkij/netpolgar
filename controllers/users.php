@@ -66,19 +66,29 @@ class UsersController extends CommonController {
 	       $p->msgs = $msgs;
 	       $this->recallForm($data,$request,$p);
 	   }
-	   redirectTo(config('MYDOMAIN'));
+	   $this->redirectTo(config('MYDOMAIN'));
 	}
 
 	public function login(Request $request) {
-	    $p = $this->init($request, []);
-	    $p->msgs = [];
-	    $this->createCsrToken($request, $p);
-	    if ($_SERVER['REMOTE_ADDR'] == '__192.168.0.12') {
-	        // local test
-	        redirectTo(config('MYDOMAIN').'/opt/users/accesstoken/?nick='.$request->input('nick','admin'));
-	    } else {
-    	    $this->view->loginForm($p);
+	    // local test
+	    if ($_SERVER['REMOTE_ADDR'] == '192.168.0.12') {
+	        global $REQUEST;
+	        $user = new UserRecord();
+	        $user->id = 1;
+	        $user->nick = 'admin';
+	        $user->admin = 1;
+	        $REQUEST->sessionSet('loggedUser', $user);
+	        $this->redirectTo(config('MYDOMAIN'));
+	        return;
 	    }
+	    
+	    $ukloginUrl = 'https://uklogin.tk/openid/authorize/'.
+	   	    '?client_id='.urlencode(config('MYDOMAIN').'/opt/users/accesstoken/').
+	   	    '&nonce='.session_id().
+	   	    '&redirect_uri='.urlencode(config('MYDOMAIN').'/opt/users/accesstoken/').
+	   	    '&policy='.urlencode(config('MYDOMAIN').'opt/policy/show').
+	   	    '&scope='.urlencode('sub nickname audited');
+	    $this->redirectTo($ukloginUrl);
 	}
 
 	/**
@@ -87,7 +97,7 @@ class UsersController extends CommonController {
 	 */
 	public function logout(Request $request) {
 	    $request->sessionSet('loggedUser', new UserRecord());
-	    redirectTo(MYDOMAIN);
+	    $this->redirectTo(MYDOMAIN);
 	}
 
 	/**
@@ -201,7 +211,7 @@ class UsersController extends CommonController {
             $userRec = $this->model->getByNick($uklUser->nickname);
             if ($userRec->id > 0) {
                 $request->sessionSet('loggedUser',$userRec);
-                redirectTo(config('MYDOMAIN'));
+                $this->redirectTo(config('MYDOMAIN'));
             } else {
                 $userRec = new UserRecord();
                 $userRec->nick = $uklUser->nickname;
@@ -219,7 +229,7 @@ class UsersController extends CommonController {
                 $msgs = $this->model->save($userRec);
                 if (count($msgs) == 0) {
                     $request->sessionSet('loggedUser',$userRec);
-                    redirectTo(config('MYDOMAIN'));
+                    $this->redirectTo(config('MYDOMAIN'));
                 } else {
         	        echo 'Fatal error in uklogin. wrong user data '.JSON_encode($msgs); return;
                 }
@@ -272,6 +282,16 @@ class UsersController extends CommonController {
 	    } else {
 	        $this->view->errorMsg(['ACCESS_VIOLATION'],'','',$p);
 	    }
+	}
+	
+	/**
+	 * publikus user profil
+	 * @param Request $request - user_id
+	 */
+	public function public_profile(Request $request) {
+	    $p = $this->init($request,['user_id']);
+	    $this->view->setTemplates($p,['navbar','footer']);
+	    $this->view->echoHtmlPage('working', $p);
 	}
 }
 ?>

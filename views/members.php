@@ -9,12 +9,9 @@ class MembersView  extends CommonView  {
 
      
     public function browser(Params $p) {
-        // echo '<div id="membersList">'."\n";
-        // $this->browserForm($p);
-        // echo '</div>'."\n";
         $this->setTemplates($p,[]);
         $p->paginators = $this->makePaginators($p->total, $p->offset, $p->limit);
-        $this->echoHtmlPage('membersbrowse',$p, 'members');
+        $this->echoHtmlPage('memberslist',$p, 'members');
     }
     
     /**
@@ -23,7 +20,7 @@ class MembersView  extends CommonView  {
      * @param Params $p
      */
     public function form(Params $p) {
-        $this->setTemplates($p,['likebar']);
+        $this->setTemplates($p,['id']);
         $this->echoHtmlPage('membersform',$p, 'members');
     }
 	

@@ -52,12 +52,12 @@ if (isset($_GET['cookieenabled'])) {
         $request->sessionSet('cookieEnabled',false);
     }
 }
-$request->sessionSet('cookieEnabled', $request->sessionGet('cookieEnabled'));
+// $request->sessionSet('cookieEnabled', $request->sessionGet('cookieEnabled'));
 
 
 // bejelentjkezett user sessionban
-$user = $request->sessionGet('user',new UserRecord());
-$request->sessionSet('user',$user);
+// $user = $request->sessionGet('loggedUser',new UserRecord());
+// $request->sessionSet('loggedUser',$user);
 
 // option szerint  nyelvi fájlok betöltése, task végrehajtása 
 $option = $request->input('option','default');

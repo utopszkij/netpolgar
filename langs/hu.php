@@ -25,6 +25,7 @@ DEFINE('LIKE','Tetszik, támogatom');
 DEFINE('DISLIKE','Nem tetszik, ellenzem');
 DEFINE('LIKEINFO','(Összes/tag)');
 DEFINE('INVALID_NUMBER','Nem megfelelő szám adat');
+DEFINE('DATA_SAVED','Adat tárolva');
 // man menu
 DEFINE('MAINMENU','Főmenű');
 DEFINE('HOME','Kezdőlap');
@@ -70,6 +71,8 @@ DEFINE('LIKE_TYPE_like','Támogatja');
 
 // comment
 DEFINE('COMMENTS','Beszélgetés, vélemények');
+DEFINE('WALL','Üzenő fal');
+DEFINE('SEND_MESSAGE','Üzenet neki');
 
 // footer
 DEFINE('IMPRESSUM','Impresszum');
