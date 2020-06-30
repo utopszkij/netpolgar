@@ -19,9 +19,9 @@ paginátor:  $scope.paginators=[{"offset":#, "pageNo":#, "enabled":true|false}, 
 	<div class="pageBody members" id="pageBody">
 		<h3><em class="fa fa-user"></em>&nbsp;{{formTitle}}</h3>				
 		<form id="browserForm" method="get" action="{{MYDOMAIN}}" target="_self">
-			<input type="hidden" id="option" name="option" value="members" /> 
+			<input type="hidden" id="option" name="option" value="projects" /> 
 			<input type="hidden" id="task" name="task" value="list" /> 
-			<input type="hidden" id="type" name="type" value="groups" />
+			<input type="hidden" id="type" name="type" value="projects" />
 			<input type="hidden" id="id" name="id" value="{{id}}" />
 			<input type="hidden" id="member_id" name="member_id" value="{{member_id}}" />
 			<input type="hidden" name="{{crsToken}}" value="1" /> 
@@ -33,10 +33,11 @@ paginátor:  $scope.paginators=[{"offset":#, "pageNo":#, "enabled":true|false}, 
             	<input type="text" name="searchstr" id="searchstr" value="{{searchstr}}" />
 	            <select name="filterstate" id="filterState" class="selectpicker">
 	             	<option value=""{{filterStateSelected('',filterstate)}}>{{txt('ALLSTATE')}}</option>
-	             	<option value="aspirant"{{filterStateSelected('aspirant',filterstate)}}>{{txt('aspirant')}}</option>
+	             	<option value="proposal"{{filterStateSelected('proposal',filterstate)}}>{{txt('proposal')}}</option>
 	             	<option value="active"{{filterStateSelected('active',filterstate)}}>{{txt('active')}}</option>
-	             	<option value="excluded"{{filterStateSelected('excluded',filterstate)}}>{{txt('excluded')}}</option>
-	             	<option value="admin"{{filterStateSelected('admin',filterstate)}}>{{txt('admin')}}</option>
+	             	<option value="closed"{{filterStateSelected('closed',filterstate)}}>{{txt('closed')}}</option>
+	             	<option value="draft"{{filterStateSelected('draft',filterstate)}}>{{txt('draft')}}</option>
+	             	<option value="waiting"{{filterStateSelected('waiting',filterstate)}}>{{txt('waiting')}}</option>
 	            </select>
 	            <div style="display:inline-block; width:auto">
 	                 <button type="button" id="searchBtn" class="btn btn-primary">
@@ -50,31 +51,37 @@ paginátor:  $scope.paginators=[{"offset":#, "pageNo":#, "enabled":true|false}, 
             <table class="table table-bordered">
 			<thead class="thead-dark">
 		  		<tr>
-			  	 	<th id="th_m.id" class="user_id {{thClass('m.id', order, order_dir)}}" style="cursor:pointer"> 
+			  	 	<th id="th_p.id" class="project_id {{thClass('p.id', order, order_dir)}}" style="cursor:pointer"> 
 			  	 	    {{txt('id')}}&nbsp;
-			  	 	    <em class="fa {{titleIcon('m.id', order, order_dir)}}"></em>		  	 	
+			  	 	    <em class="fa {{titleIcon('p.id', order, order_dir)}}"></em>		  	 	
 			  	 	</th>
 			  	 	<th>&nbsp;</th>
-			  	 	<th id="th_u.nick" class="nick {{thClass('u.nick', order, order_dir)}}" style="cursor:pointer"> 
-			  	 	    {{txt('nick')}}&nbsp;
-			  	 	    <em class="fa {{titleIcon('u.nick', order, order_dir)}}"></em>		  	 	
+			  	 	<th id="th_p.name" class="nick {{thClass('p.name', order, order_dir)}}" style="cursor:pointer"> 
+			  	 	    {{txt('name')}}&nbsp;
+			  	 	    <em class="fa {{titleIcon('p.name', order, order_dir)}}"></em>		  	 	
 	            	</th>
-			  	 	<th id="th_m.state"  class="state {{thClass('m.state', order, order_dir)}}" style="cursor:pointer"> 
+			  	 	<th id="th_p.state"  class="state {{thClass('p.state', order, order_dir)}}" style="cursor:pointer"> 
 			  	 	    {{txt('state')}}&nbsp;		  	 	
-			  	 	    <em class="fa {{titleIcon('m.state', order, order_dir)}}"></em>		  	 	
+			  	 	    <em class="fa {{titleIcon('p.state', order, order_dir)}}"></em>		  	 	
+			  	 	</th>
+			  	 	<th id="th_p.deadline"  class="deadline {{thClass('p.deadline', order, order_dir)}}" style="cursor:pointer"> 
+			  	 	    {{txt('deadline')}}&nbsp;		  	 	
+			  	 	    <em class="fa {{titleIcon('p.deadline', order, order_dir)}}"></em>		  	 	
 			  	 	</th>
 		  		</tr>
 			</thead>
 			<tbody>
 				<tr ng-repeat="item in items" ng-init="itemLoad($last)" 
 				    class="{{trClass()}}" style="cursor:pointer" id="tr_{{item.id}}">
-					<td class="td_user_id">{{item.id}}</td>
+					<td class="td_id">{{item.id}}</td>
 					<td class="td_avatar"><img src="{{item.avatar}}" style="height:30px"/></td>
-					<td class="td_nick">{{item.nick}}</td>
+					<td class="td_name">{{item.name}}</td>
 					<td class="td_state">{{txt(item.state)}}</td>
+					<td class="td_deadline">{{txt(item.deadline)}}</td>
 				</tr>
 			</tbody>        
         	</table>
+        	{{onload()}}
 	        <ul class="paginator">
 	        	<li class="paginator-total">{{txt('TOTAL')}}:<var>{{total}}</var> {{txt('PAGES')}}</li> 
 	        	<li ng-repeat="paginator in paginators" class="page-link {{paginatorClass(paginator, offset, total)}}">
@@ -86,7 +93,12 @@ paginátor:  $scope.paginators=[{"offset":#, "pageNo":#, "enabled":true|false}, 
 	        			class="active">{{paginator.pageNo}}</span>
 	        	</li>
 	        </ul>
+	        <div class="buttons" ng-if="loggedUser.id > 0">
+	        	<button type="button" class="btn btn-primary" id="btnAdd">
+	        		<em class="fa fa-plus-circle"></em>{{txt('ADD')}}
+	        	</button>
+	        </div>
         </form>
 	</div><!--  #pageBody --> 						
-</div><!--  #page -->			
+</div><!--  #page -->
 <div ng-include="templates.footer"></div>

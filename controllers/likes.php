@@ -2,7 +2,7 @@
 use PhpParser\Node\Expr\BinaryOp\Identical;
 
 include_once './controllers/common.php';
-class LikeController extends CommonController {
+class LikesController extends CommonController {
     
     function __construct() {
         $this->cName = 'like';
@@ -14,7 +14,7 @@ class LikeController extends CommonController {
      * @param int $id objektum Id (groupId, groupId.userId ,projectId, productId,...)
      * @param string $label szöveg a képernyőre
      * @param string $help szöveg a képernyőre
-     */
+     *
     public function show(string $type, int $id, string $label, string $help) {
         global $REQUEST;
         $this->init($REQUEST,[]);
@@ -110,11 +110,11 @@ class LikeController extends CommonController {
         <?php 
 	}
 		
-	/**
+	/ **
 	 * like részletek böngésző csak admin használhatja
 	 * @param Request $request {type, id}
 	 * -sessionba jöhet: offset, limit
-	 */
+	 * /
 	public function list(Request $request) {
 	    $p = $this->init($request,[]);
 	    $this->model = $this->getModel('list');
@@ -153,12 +153,12 @@ class LikeController extends CommonController {
         $this->view->list($p);
 	}
 	
-	/**
+	/ **
 	 * AJAX backend  like adatok kiolvasása az adatbázisból
 	 * @param Request - type, id,  
 	 *   sessionban user
 	 * echo json string {upTotal, downTotal, upMember, downMember}    
-	 */
+	 * /
 	public function likeshow(Request $request) {
 	    if (!headers_sent()) {
 	        header("Content-type: application/json; charset=utf-8");
@@ -171,12 +171,12 @@ class LikeController extends CommonController {
 	    echo JSON_encode($this->model->getCounts($type, $id));
 	}
 	
-	/**
+	/ **
 	 * like click kezelés segédrutinja
 	 * @param Request $request
 	 * @param string $name1 'like'|'unlike' erre kattintott
 	 * @param string $name2 'like'|'unlike' nem erre kattintott
-	 */
+	 * /
 	protected function likeChange(Request $request, string $name1, string $name2) {
 	    $p = $this->init($request,[]);
 	    $this->model = $this->getModel('list');
@@ -192,6 +192,10 @@ class LikeController extends CommonController {
 	            $this->model->remove($type, $id, $name2, $user->id);
 	        }
 	    }
+	    // $type, $id, state autoUpdate like counts alapjám
+	    $model = $this->getModel($type);
+	    $model->autoUpdate($id);
+	    
 	    $this->likeshow($request);
 	}
 	
@@ -200,16 +204,33 @@ class LikeController extends CommonController {
 	 * @param Request $request - type, Identical
 	 *    sessionban bejelentkezett user, userMember
 	 */
-	public function likeupclick(Request $request) {
-	    $this->likeChange($request, 'like','dislike');
+	public function setlike(Request $request) {
+	    $p = $this->init($request,[]);
+	    $this->model->saveLike($p->type, $p->id, $p->loggedUser->id, 'like');
+	    // $type, $id, state autoUpdate like counts alapjám
+	    $model = $this->getModel($p->type);
+	    $model->autoUpdate($p->id);
+	    $result = $this->model->getCounts($p->type, $p->id);
+	    $obj = $model->getRecord($p->id);
+	    $result->state = $obj->state;
+	    echo JSON_encode($result);
 	}
+	
 	/**
 	 * AJAX backend  - down ikonra kattintás
 	 * @param Request $request - type, Identical
 	 *    sessionban bejelentkezett user, userMember
 	 */
-	public function likedownclick(Request $request) {
-	    $this->likeChange($request, 'dislike','like');
+	public function setdislike(Request $request) {
+	    $p = $this->init($request,[]);
+	    $this->model->saveLike($p->type, $p->id, $p->loggedUser->id, 'dislike');
+	    // $type, $id, state autoUpdate like counts alapjám
+	    $model = $this->getModel($p->type);
+	    $model->autoUpdate($p->id);
+	    $result = $this->model->getCounts($p->type, $p->id);
+	    $obj = $model->getRecord($p->id);
+	    $result->state = $obj->state;
+	    echo JSON_encode($result);
 	}
 		
 }

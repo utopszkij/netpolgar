@@ -174,5 +174,66 @@ class MembersModel extends Model {
         return $result;
     }
     
+    /**
+     * member statusz automatikus modositása a like számok alapján
+     * @param int $id
+     */
+    public function autoUpdate(int $id) {
+        $member = $this->getRecord($id);
+        if (!member) {
+            echo 'Fatal error member '.$id.' not fiund'; exit();
+        }
+        $parentTable = new Table($member->type);
+        $parentType->where(['id','=',$member->id]);
+        $group = $table->first();
+        if (!$group) {
+            echo 'Fatal error '.$member->type.' '.$member->id.' not fiund'; exit();
+        }
+        if (($group->id > 0) & (($group->state == 'proposal') | ($group->state == 'active'))) {
+            $table = new Table('memebrs');
+            $table->where(['type','==',$parentType->type]);
+            $table->where(['object_id','==',$id]);
+            $table->where(['state','==','active']);
+            $memberCount = $table->count();
+            $table = new Table('memebrs');
+            $table->where(['type','==',$parentType->type]);
+            $table->where(['object_id','==',$id]);
+            $table->where(['state','==','admin']);
+            $memberCount = $memberCount + $table->count();
+            
+            $table = new Table('likes');
+            $table->where(['type','==',$parentType->type]);
+            $table->where(['object_id','==',$id]);
+            $table->where(['like_type','==','like']);
+            $likeCount = $table->count();
+            
+            $table = new Table('likes');
+            $table->where(['type','==',$parentType->type]);
+            $table->where(['object_id','==',$id]);
+            $table->where(['like_type','==','dislike']);
+            $dislikeCount = $table->count();
+            
+            if (($member->state == 'aspirantl') &
+                ((($likeCount - $dislikeCount) >= $group->member_to_active) |
+                    ($likeCount >= $memberCount)
+                    )
+                ) {
+                    $member->state = 'active';
+                    $table = new table('members');
+                    $tebal->update($member);
+            }
+            if (($member->state == 'active') &
+                    ((($dislikeCount - $likeCount) >= ($memberCount * $group->member_to_exclude / 100)) |
+                        ($dislikeCount >= $memberCount)
+                        )
+                    ) {
+                        $member->state = 'exclude';
+                        $table = new table('members');
+                        $tebal->update($member);
+            }
+        }
+    }
+    
+    
 } // class
 ?>

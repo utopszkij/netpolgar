@@ -7,8 +7,8 @@
   function pageOnLoad() {
   }	
 
-  function membersFun() {
-	  if ('#browseForm'.length) {
+  function projectsFun() {
+	  if ('#browserForm'.length) {
 		  $scope.trClass = 'tr1';
 		  $scope.filterStateSelected = function(s,filterstate) {
 		  	//result: '' or ' "selected"="selected"
@@ -82,9 +82,13 @@
 				   $('#searchBtn').click();
 			  }			  
 		  });
+		  $('#btnAdd').click(function() {
+			  var url = $scope.MYDOMAIN+'/opt/projects/add/';
+			  location = url;
+		  });
 	  } // browserForm
 	  
-	  if ('#memberForm'.length) {
+	  if ('#projectForm'.length) {
 		  $('#likeUpBtn').click( function() {
 			  if ($('#likeUpBtn').attr('disabled') != 'disabled') {
 				  $('#likeUpBtn').attr('disabled','disabled');
@@ -138,10 +142,11 @@
 		  };
 		  $scope.likeAdjust();
 		  
+		  $('state').val($scope.item.state);
 
 	  } // memberForm	  
 	  $('#scope').show();
-	  return 'members';
+	  return 'projects';
   }
  
   // jquery pageOnLoad
@@ -150,13 +155,13 @@
   });	
 
   $scope.onload = function() {
-	  membersFun();
+	  projectsFun();
 	  return '';
   };
 
   $scope.itemLoad = function($last) {
 	  if ($last) {
-		  membersFun();
+		  projectsFun();
 	  }
 	  return '';
   }

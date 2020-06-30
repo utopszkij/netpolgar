@@ -87,6 +87,29 @@ class LikesModel extends Model {
         return $result;
     }
     
+    public function saveLike(string $type, int $id, int $userId, string $likeType) {
+        $table = new Table('likes');
+        $table->where(['type','=',$type]);
+        $table->where(['id','=',$id]);
+        $table->where(['user_id','=',$userId]);
+        $res = $table->first();
+        if ($res) {
+            if ($res->like_type == $likeType) {
+                $table->delete();
+            } else {
+                $res->like_type = $likeType;
+                $table->update($res);
+            }
+        } else {
+            $res = new LikeRecord();
+            $res->type = $type;
+            $res->id = $id;
+            $res->user_id = $userId;
+            $res->like_type = $likeType;
+            $table->insert($res);
+        }
+    }
+    
     
 } // class
 ?>

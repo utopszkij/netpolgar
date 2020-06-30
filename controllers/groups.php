@@ -130,20 +130,21 @@ class GroupsController extends CommonController {
           }
           $p->offset = $request->input('offset', $request->sessionGet('gropsOffset',0));
           $p->limit = $request->input('limit', $request->sessionGet('groupsLimit',20));
-          $p->filte_str = $request->input('filter_str', $request->sessionGet('groupsFilter_str',''));
+          $p->search_str = $request->input('search_str', $request->sessionGet('groupsSearch_str',''));
           $p->order = $request->input('order', $request->sessionGet('groupsOrder','g.id'));
           $p->order_dir = $request->input('order_dir', $request->sessionGet('groupsOrder_dir','ASC'));
           $request->sessionSet('groupsOffset',$p->offset);
           $request->sessionSet('groupsLimit',$p->limit);
           $request->sessionSet('grouspOrder',$p->order);
           $request->sessionSet('groupsOrder_dirr',$p->order_dir);
-          $request->sessionSet('groupsFilter_str',$p->filter_str);
+          $request->sessionSet('groupsSearch_str',$p->search_str);
           $request->sessionSet('groupsUser_id',$p->user_id);
           $p->total = 0;
-          $p->items = $this->model->getRecords_by_user($p->offset, $p->limit, $p->filter_str, 
+          $p->items = $this->model->getRecords_by_user($p->offset, $p->limit, $p->search_str, 
               $p->order, $p->order_dir, $p->user_id, $p->total);
-          $p->formTitle = 'GROUPS_LIST';
+          $p->formTitle = txt('GROUPS_BY_USER').' '.$p->filterUser->nick;
           $this->createCsrToken($request, $p);
+          $this->view->setTemplates($p,[]);
           $p->paginators = $this->view->makePaginators($p->total, $p->offset);
           $this->view->echoHtmlPage('groupslistbyuser',$p,'groups');
       } // list_by_user
@@ -175,7 +176,8 @@ class GroupsController extends CommonController {
               
               //$commentModel = $this->getModel('comments');
               //$p->commentCount = $commentModel->getCounts('groups', $p->id);
-              $p->commentCount = JSON_decode('{"total":12, "new":3}');
+//!!! NINCS KÉSZ !!!              
+              $p->commentCount = JSON_decode('{"total":13, "new":2}'); // aktiv szavazások ahol még nem szavazott, és szavazhat
               
               $p->pollCount = JSON_decode('{"total":13, "new":2}'); // aktiv szavazások ahol még nem szavazott, és szavazhat
               

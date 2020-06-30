@@ -37,7 +37,7 @@ class MembersController extends CommonController {
 	    $this->createCsrToken($request, $p);
 	    $p->type = $request->input('type','groups');
 	    $p->typeId = $p->type.$p->id;
-	    $p->memberState = $this->model->getState($p->type, (int)$p->id, $p->loggedUser->id); 
+	    $p->memberState = $this->model->getState((string)$p->type, (int)$p->id, (int)$p->loggedUser->id); 
 	    if ($p->type == 'groups') {
 	        $groupModel = $this->getModel('groups');
 	        $p->group = $groupModel->getRecord($p->id);
@@ -45,11 +45,17 @@ class MembersController extends CommonController {
 	        $p->userGroupAdmin = ($this->model->getState($p->type, $p->id, $p->loggedUser->id) == 'admin');
 	        $p->formTitle = '"'.$p->group->name.'" '.txt('GROUP_MEMBERS');
 	    }
-	    $p->offset = $request->input('offset', $request->sessionGet($p->typeId.'MembersOffset',0));
-	    $p->limit = $request->input('limit', $request->sessionGet($p->typeId.'MembersLimit',20));
+	    $p->offset = (int)$request->input('offset', $request->sessionGet($p->typeId.'MembersOffset',0));
+	    if ($p->offset == '') {
+	        $p->offset = 0;
+	    }
+	    $p->limit = (int)$request->input('limit', $request->sessionGet($p->typeId.'MembersLimit',20));
 	    $p->searchstr = $request->input('searchstr', $request->sessionGet($p->typeId.'MembersSearchstr',''));
 	    $p->filterState = $request->input('filterstate', $request->sessionGet($p->typeId.'MembersFilterState',''));
-	    $p->order = $request->input('order', $request->sessionGet($p->typeId.'MembersOrder','nick'));
+	    $p->order = $request->input('order', $request->sessionGet($p->typeId.'MembersOrder','u.nick'));
+	    if ($p->order == '') {
+	        $p->order = 'u.nick';
+	    }
 	    $p->order_dir = $request->input('order_dir', $request->sessionGet($p->typeId.'MembersOrder_dir','ASC'));
 	    $p->formIcon = 'fa-user';
 	    $p->itemTask = 'form';
@@ -84,7 +90,10 @@ class MembersController extends CommonController {
 	        $p->item = new MemberRecord();
 	    }
 	    $likeModel = $this->getModel('likes');
-	    $p->like = $likeModel->getCounts('members', $p->memberId, $p->loggedUser->id);
+	    $p->likeCount = $likeModel->getCounts('members', $p->memberId, $p->loggedUser->id);
+// !!! NINCS KÉSZ !!!
+	    $p->commentCount = JSON_decode('{"total":12, "new":3}');
+	    $p->messageCount = JSON_decode('{"total":22, "new":2}'); // olvasatlan privát üzenetek
 	    
 	    if ($p->type = 'groups') {
 	        $groupModel = $this->getModel('groups');

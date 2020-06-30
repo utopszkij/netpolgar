@@ -1,0 +1,143 @@
+		 	<div ng-include="templates.navbar"></div>
+		 	<div ng-include="templates.popup"></div>
+          	<div id="projectForm">
+        		<div class="alert alert-{{msgClass}}" ng-if="msgs.length > 0">
+        			<p ng-repeat="msg in msgs">{{msg}}</p>
+        		</div>
+        		
+			    <nav class="navbar navbar-expand-lg navbar-light bg-light subMenu"
+			            id="projectSubmenu">
+			            <button class="navbar-toggler" type="button" data-toggle="collapse"
+			                data-target="#memberSubmenuContent"
+			                aria-controls="memberSubmenuContent"
+			                aria-expanded="false" aria-label="Toggle navigation">
+			                <em class="fa fa-ellipsis-v"></em>
+			            </button>
+			                     
+			            <div class="collapse navbar-collapse" id="memberSubmenuContent">
+			                 <ul>
+			                     <li>
+			                        <a class="nav-link" target="_self"
+			                            href="{{MYDOMAIN}}/opt/projects/tasks/id/{{item.id}}">
+			                            <em class="fa fa-hammer"></em>{{txt('TASKS')}}
+			                         </a>
+			                     </li>
+			                     <li>
+			                        <a class="nav-link" target="_self"
+			                            href="{{MYDOMAIN}}/opt/members/list/type/projects{{item.id}}">
+			                            <em class="fa fa-users"></em>{{txt('MEMBERS')}}
+			                         </a>
+			                     </li>
+			                     <li>
+			                         <a class="nav-link" target="_self"
+			                              href="{{MYDOMAIN}}/opt/files/list/type/projects/id/{{item.id}}">
+			                              <span class="fa fa-file"></span>{{txt('DOCS')}}
+			                         </a>
+			                     </li>
+			                     <li>
+			                         <a class="nav-link" target="_self"
+			                              href="{{MYDOMAIN}}/opt/comments/list/type/projects/id/{{item.id}}">
+			                              <em class="fa fa-comments"></em>{{txt('WALL')}}
+			                              {{commentCount.total}}<span ng-if="commentCount.new > 0">/<strong>{{commentCount.new}}</strong></span>                        
+			                         </a>
+			                     </li>
+			                  </ul>   
+			             </div>     
+				</nav>        		
+        		
+                <div id="projectForm2">
+                	<h3>{{txt('PROJECT')}}</h3>
+				    <form method="post" id="projectForm" action="{{MYDOMAIN}}" target="_self">
+				    	<input type="hidden" name="option" value="projects" />	
+				    	<input type="hidden" name="task" value="save" />	
+				    	<input type="hidden" name="id" value="{{item.id}}" />	
+					    <div class="form-group">
+							    <label>{{txt('NAME')}}</label>
+							    <input type="text" class="form-control" id="name"
+							     name="name" value="{{item.name}}" />
+						</div>
+						<div class="form-group">
+							    <label>{{txt('state')}}</label>
+							    <select class="form-control" id="state">
+							      <option value="proposal">{{txt('proposal')}}</option>
+							      <option value="active">{{txt('active')}}</option>
+							      <option value="ended">{{txt('ended')}}</option>
+							      <option value="closed">{{txt('closed')}}</option>
+							      <option value="draft">{{txt('draft')}}</option>
+							      <option value="waiting">{{txt('waiting')}}</option>
+							    </select>
+						</div>
+					    <div class="form-group">
+							    <label>{{txt('DESCRIPTION')}}</label>
+							    <textarea cols="80" rows="5" class="form-control" id="description" 
+							          name="description">{{item.description}}</textarea>
+						</div>
+					    <div class="form-group">
+							    <label>{{txt('AVATAR')}}</label>
+							    <input type="text" class="form-control" id="avatar" 
+							    	name="avatar" value="{{item.avatar}}" />
+						</div>
+					    <div class="form-group">
+							    <label>{{txt('DEADLINE')}}</label>
+							    <input type="date" class="form-control" id="deadline" 
+							    	name="deadline" value="{{item.deadline}}" />
+						</div>
+					    <div class="form-group">
+							    <label>{{txt('PROJECT_TO_ACTIVE')}}</label>
+							    <input type="number" class="form-control" id="project_to_active" 
+							    	name="project_to_active" value="{{item.project_to_active}}" />
+						</div>
+					    <div class="form-group">
+							    <label>{{txt('PROJECT_TO_CLOSE')}}</label>
+							    <input type="number" class="form-control" id="project_to_close" 
+							    	name="project_to_close" value="{{item.project_to_close}}" />
+						</div>
+					    <div class="form-group">
+							    <label>{{txt('MEMBER_TO_ACTIVE')}}</label>
+							    <input type="number" class="form-control" id="member_to_active" 
+							    	name="member_to_active" value="{{item.member_to_active}}" />
+						</div>
+					    <div class="form-group">
+							    <label>{{txt('MEMBER_TO_EXCLUDE')}}</label>
+							    <input type="number" class="form-control" id="member_to_exclude" 
+							    	name="member_to_exclude" value="{{item.member_to_exclude}}" />
+						</div>
+				        <p class="buttons">
+				                		<button class="btn btn-primary" type="submit"
+				                		    ng-if="(loggedState == 'admin')">
+				                			<em class="fa fa-check"></em>
+				                			{{txt('OK')}}
+				                		</button>	
+				                		&nbsp;
+				                		<a class="btn btn-secondary" target="_self"
+				                		    href="{{MYDOMAIN}}/opt/members/list/type/{{type}}/id/{{id}}">
+				                			<em class="fa fa-reply"></em>{{txt('BACK')}}
+				                		</a>
+				                		
+				        </p>
+						
+					</form>            	
+                	
+                	
+					<div id="divLike" ng-if="(item.id > 0) && 
+						((userState == 'active') || (userState == 'aspirant') || (userState == 'admin'))">
+					<button id="likeUpBtn" type="button" class="btn btn-info">
+						{{txt('LIKE')}}
+						<em class="fa fa-thumbs-up"></em>
+						<em class="fa fa-check"></em>
+						&nbsp;<var>{{likeCount.up}}</var>
+					</button>
+					<button id="likeDownBtn" type="button" class="btn btn-info">
+						<span>{{txt('DISLIKE')}}</span>
+						<em class="fa fa-thumbs-down"></em>
+						<em class="fa fa-check"></em>
+						&nbsp;<var>{{likeCount.down}}</var>
+					</button>	
+					</div>				
+                	
+              	</div><!-- #projectForm -->  
+			 	<div class="clear"></div>
+			</div><!--  #memberForm --> 	
+		 	<div ng-include="templates.footer"></div>
+		 	{{onload()}}
+			

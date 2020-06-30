@@ -50,13 +50,15 @@
 			                     <li>
 			                         <a class="nav-link" target="_self"
 			                              href="{{MYDOMAIN}}/opt/comments/list/type/users/id/{{item.user_id}}">
-			                              <em class="fa fa-comments"></em>{{txt('WALL')}}                        
+			                              <em class="fa fa-comments"></em>{{txt('WALL')}}
+			                              {{commentCount.total}}<span ng-if="commentCount.new > 0">/<strong>{{commentCount.new}}</strong></span>                        
 			                         </a>
 			                     </li>
 			                      <li>
 			                         <a class="nav-link" target="_self" title="total/new"
 			                              href="{{MYDOMAIN}}/opt/messages/send/to/{{item.user_id}}">
 			                              <em class="fa fa-comment"></em>{{txt('SEND_MESSAGE')}}
+			                              {{messageCount.total}}<span ng-if="messageCount.new > 0">/<strong>{{messageCount.new}}</strong></span>                        
 			                         </a>
 			                      </li>
 			                     
@@ -68,7 +70,7 @@
                 <div id="memberForm2">
                 	<img src="{{user.avatar}}" />
                 	<h3>{{user.nick}}</h3>
-                	<p>{{txt(userState)}}</p>
+                	<p id="userState">{{txt(userState)}}</p>
                 	
 					<div id="divLike" ng-if="(item.id > 0) && 
 						((userState == 'active') || (userState == 'aspirant') || (userState == 'admin'))">

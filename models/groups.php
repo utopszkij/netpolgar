@@ -347,7 +347,7 @@ class GroupsModel {
         $filter->where(['m.type','=','groups']);
         $filter->where(['m.user_id','=',$userId]);
         if ($filterStr != '') {
-            $filter->where(['m.name','like','%'.$filterStr.'%']);
+            $filter->where(['g.name','like','%'.$filterStr.'%']);
         }
         $filter->setColumns('distinct g.id, g.name, g.state, m.state userstate');
         $filter->offset($offset);
@@ -357,6 +357,56 @@ class GroupsModel {
         return $filter->get();
     }
     
+    /**
+     * csoport statusz automatikus modositása a like számok alapján
+     * @param int $id
+     */
+    public function autoUpdate(int $id) {
+        $group = $this->getRecord($id);
+        if (($group->id > 0) & (($group->state == 'proposal') | ($group->state == 'active'))) {
+            $table = new Table('memebrs');
+            $table->where(['type','==','groups']);
+            $table->where(['object_id','==',$id]);
+            $table->where(['state','==','active']);
+            $memberCount = $table->count();
+            $table = new Table('memebrs');
+            $table->where(['type','==','groups']);
+            $table->where(['object_id','==',$id]);
+            $table->where(['state','==','admin']);
+            $memberCount = $memberCount + $table->count();
+            
+            $table = new Table('likes');
+            $table->where(['type','==','groups']);
+            $table->where(['object_id','==',$id]);
+            $table->where(['like_type','==','like']);
+            $likeCount = $table->count();
+            
+            $table = new Table('likes');
+            $table->where(['type','==','groups']);
+            $table->where(['object_id','==',$id]);
+            $table->where(['like_type','==','dislike']);
+            $dislikeCount = $table->count();
+            
+            if (($group->state == 'proposal') &
+                ((($likeCount - $dislikeCount) >= $group->mgroup_to_active) |
+                    ($likeCount >= $memberCount)
+                    )
+                ) {
+                    $group->state = 'active';
+                    $table = new table('groups');
+                    $table->update($grop);
+            }
+            if (($group->state == 'active') &
+                    ((($dislikeCount - $likeCount) >= ($memberCount * $group->group_to_close / 100)) |
+                        ($dislikeCount >= $memberCount)
+                        )
+               ) {
+                    $group->state = 'closed';
+                    $table = new table('groups');
+                    $table->update($grop);
+            }
+        }
+    }
     
 } // class
 ?>

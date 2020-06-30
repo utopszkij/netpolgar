@@ -82,6 +82,7 @@ $scope.onload = function() {
 		  
 		  // like gombok és értékek inicializálása, like btnclick -ek success eljátrása is hivja 
 		  $scope.likeAdjust = function() {
+			  $scope.userMember = (($scope.userState == 'active') || ($scope.userState == 'admin'));
 			  if ($scope.userMember && 
 				  (($scope.item.state == 'active') || ($scope.item.state == 'proposal'))) {
 				  $('#likeUpBtn').attr('disabled',false);
@@ -120,11 +121,14 @@ $scope.onload = function() {
 		  
 		  // click esemény kezelők
 		  $('#likeUpBtn').click( function() {
-			  console.log($scope.like.upChecked);
 			  if ($('#likeUpBtn').attr('disabled') != 'disabled') {
 				  $('#likeUpBtn').attr('disabled','disabled');
-				  var url = $scope.MYADMIN+'/opt/likes/setlike/type/group/id/'+$scope.id;
+				  var url = $scope.MYDOMAIN+'/opt/likes/setlike/type/groups/id/'+$scope.id;
 				  $.get(url, function(result) {
+					  // '{up, down, upChecked, downChecked, state}'
+					  $scope.likeCount = JSON.parse(result);
+					  $scope.state = $scope.likeCount.state;
+					  $('#state').val($scope.state);
 					  window.setTimeout($scope.likeAdjust,500);
 				  });
 			  }  
@@ -132,8 +136,12 @@ $scope.onload = function() {
 		  $('#likeDownBtn').click( function() {
 			  if ($('#likeDownBtn').attr('disabled') != 'disabled') {
 				  $('#likeDownBtn').attr('disabled','disabled');
-				  var url = $scope.MYADMIN+'/opt/likes/setdislike/type/group/id/'+$scope.id;
+				  var url = $scope.MYDOMAIN+'/opt/likes/setdislike/type/groups/id/'+$scope.id;
 				  $.get(url, function(result) {
+					  // '{up, down, upChecked, downChecked, state}'
+					  $scope.likeCount = JSON.parse(result);
+					  $scope.state = $scope.likeCount.state;
+					  $('#state').val($scope.state);
 					  window.setTimeout($scope.likeAdjust,500);
 				  });
 			  }  
@@ -212,14 +220,25 @@ $scope.onload = function() {
 		  if (!$scope.userGroupAdmin) {
 			  $('#addSubGroup').hide();
 		  }
+		  $('#groupsListByUser tbody tr').click(function() {
+			  var group_id = this.id.substring(3,100);
+			  var url = $scope.MYDOMAIN + '/opt/groups/form/id/' + group_id;
+			  window.location = url;
+		  });
+		  //+ browser
 		  $('#searchBtn').click(function() {
 			  $('#offset').val(0);
-			  $('#groupsListByUser').submit();
+			  $('#listForm').submit();
 		  });
 		  $('#delSearchBtn').click(function() {
 			  $('#filter_str').val('');
 			  $('#offset').val(0);
-			  $('#groupsListByUser').submit();
+			  $('#listForm').submit();
+		  });
+		  $('#search_str').keyup(function(event) {
+			  if ( event.which == 13 ) {
+				   $('#listForm').click();
+			  }			  
 		  });
 		  $scope.thClass = function(s, order, order_dir)  {
 			  	//result 'unorder' or 'order'
@@ -240,29 +259,38 @@ $scope.onload = function() {
 			  	}
 			  	return result;
 		  };
+		  $scope.trClassStr = 'tr0';
 		  $scope.trClass = function() {
 			  	//result 'tr0' or 'tr1'
-			  	if ($scope.trClass == 'tr1') {
-			  		$scope.trClass = 'tr0';
+			  	if ($scope.trClassStr == 'tr1') {
+			  		$scope.trClassStr = 'tr0';
 			  	} else {
-			  		$scope.trClass = 'tr1';
+			  		$scope.trClassStr = 'tr1';
 			  	}
-			  	return $scope.trClass;
+			  	return $scope.trClassStr;
 		  };
-		  $('#groupsListByUser tbody tr').click(function() {
-				  var group_id = this.id.substring(3,100);
-				  alert('item click '+group_id);
+		  $('#listForm thead th').click(function() {
+			  var name = this.id.substring(3,100);
+			  if (name == $scope.order) {
+				  if ($scope.order_dir == 'ASC') {
+					  $('#order_dir').val('DESC');
+				  } else {
+					  $('#order_dir').val('ASC');
+				  }
+			  } else {
+				  $('#order').val(name);
+				  $('#order_dir').val('ASC');
+			  }
+			  $('#offset').val(0);
+			  $('#listForm').submit();
 		  });
-
+		  //- browser
 	  } // groupsListByUser
 	  $('#scope').show();
 	  return 'groups';
  }; // groupsFun
 
- function titleClick(name,order,order_dir) {
-	 
- }
- 
+  
  
 /**
 * a subgroup nem biztos, hogy be van olvasva (elöször csak egy üres ul kerül kialakitásra)

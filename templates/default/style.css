@@ -1,4 +1,4 @@
-body {font-size:14px; font-family:roman; background-color:white; line-height:120%;
+body {font-size:14px; background-color:white; line-height:120%;
    min-height:600px;}
 div {margin:0px; padding:0px; width:100% }
 h2,h3,h4 {text-align:left}
@@ -23,6 +23,8 @@ button em {margin-right:5px}
  
 .table .tr0 {background-color:transparent;}
 .table .tr1 {background-color:#d3efd5}
+.table .thead-dark th.order {color:orange}
+.table .thead-dark th.unorder {color: white}
 #scope {padding:5px 10px 5px 10px; min-height:600px; text-align:center}   
 .specButtons {display:inline-block; margin-left:40px; width:auto}
 .nav-item {border-style:solid; border-color:silver; border-width:0px 1px 0px 0px;}
@@ -121,6 +123,12 @@ button em {margin-right:5px}
 #divGroupForm .memberButtons {display:inline-block; width:auto; height:auto}
 #divGroupForm .btn-member {width:auto; margin:2px 1px 1px 1px;}
 #removeGroup {padding:10px; min-height:600px;}
+
+#projectForm {min-height:600px;}
+#projectForm2 {display:inline-block; width:70%; float:right; text-align:center}
+#projectForm2 input {width:400px; display:inline-block}
+#projectForm2 select {width:400px; display:inline-block}
+#projectForm2 textarea {width:400px; display:inline-block}
 
 #scope .readme {text-align:left}
 
