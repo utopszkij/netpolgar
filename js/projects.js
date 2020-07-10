@@ -1,15 +1,14 @@
   
   // params for controller	  
-  // param1  requed	
-  // sid string requed
-  
+  // param1 requested
+  // sid string requested
+
   // jquery page onload --- must this function !
   function pageOnLoad() {
   }	
 
   function projectsFun() {
-	  if ('#browserForm'.length) {
-		  $scope.trClass = 'tr1';
+	  if ($('#browserForm').length > 0) {
 		  $scope.filterStateSelected = function(s,filterstate) {
 		  	//result: '' or ' "selected"="selected"
 			var result = '';
@@ -17,7 +16,7 @@
 				result = ' selected="selected"';
 			}
 			return result;  
-		  }
+		  };
 		  $scope.thClass = function(s, order, order_dir)  {
 		  	//result 'unorder' or 'order'
 		  	var result = 'unorder';
@@ -25,7 +24,7 @@
 		  		result = 'order';
 		  	}
 		  	return result;
-		  }
+		  };
 		  $scope.titleIcon = function(s, order, order_dir) {
 		  	//result '' or 'fa-caret-up' or 'fa-caret-down'
 		  	var result = '';
@@ -37,20 +36,10 @@
 		  	}
 		  	return result;
 		  }
-		  $scope.trClassStr = 'tr0'; 
-		  $scope.trClass = function() {
-		  	//result 'tr0' or 'tr1'
-		  	if ($scope.trClassStr == 'tr1') {
-		  		$scope.trClassStr = 'tr0';
-		  	} else {
-		  		$scope.trClassStr = 'tr1';
-		  	}
-		  	return $scope.trClassStr;
-		  }
 		  $('#browserForm tbody tr').click(function() {
-			  var member_id = this.id.substring(3,100);
+			  var id = this.id.substring(3,100);
 			  $('#task').val('form');
-			  $('#member_id').val(member_id);
+			  $('#id').val(id);
 			  $('#browserForm').submit();
 		  });
 		  $('#browserForm thead th').click(function() {
@@ -83,16 +72,96 @@
 			  }			  
 		  });
 		  $('#btnAdd').click(function() {
-			  var url = $scope.MYDOMAIN+'/opt/projects/add/';
-			  location = url;
+			location = $scope.MYDOMAIN+'/opt/projects/add';
 		  });
+		  if ($scope.loggedUser.id <= 0) {
+			  $('#btnAdd').hide();
+		  }
 	  } // browserForm
 	  
-	  if ('#projectForm'.length) {
+	  if ($('#projectForm').length > 0) {
+
+		  // form inicializálása, select elenek beállítása
+		  $('#state').val($scope.item.state);
+		  if ($scope.loggedUser == undefined) {
+			  $scope.loggedUser = {"id":0};
+		  }
+		  
+		  // process ENTER key put
+		  $('#projectForm').keyup(function (event) {
+			  if ( event.which == 13 ) {
+				   $('#btnOK').click();
+			  }			  
+		  });
+
+		  // csak project admin modosithat, 
+		  // csak bejelentkezett user vihet fel
+		  // lezárt projekt nem modosítható
+		  if ((($scope.loggedState != 'admin') && ($scope.item.id > 0)) || 
+			  ($scope.loggedUser.id <= 0) ||
+			  ($scope.state == 'closed')
+			 ) {
+			$('#name').attr('disabled','disabled');
+			$('#description').attr('disabled','disabled');
+			$('#state').attr('disabled','disabled');
+			$('#avatar').attr('disabled','disabled');
+			$('#deadline').attr('disabled','disabled');
+			$('#project_to_active').attr('disabled','disabled');
+			$('#project_to_close').attr('disabled','disabled');
+			$('#member_to_active').attr('disabled','disabled');
+			$('#member_to_exclude').attr('disabled','disabled');
+			$('#btnOk').hide();  
+		  } else {
+			// focus cursor
+			$('#name').focus();
+		  }
+		  
+		  $scope.isValidDate = function(s) {
+			  var bits = s.split('-');
+			  var d = new Date(bits[0] + '-' + bits[1] + '-' + bits[2]);
+			  return !!(d && (d.getMonth() + 1) == bits[1] && d.getDate() == Number(bits[2]));
+		  };	
+		  
+		  $('#btnOk').click(function() {
+			  // ellenörzések
+			  var msgs = '';
+			  if ($('#name').val() == '') {
+				  msgs += $scope.txt('NAME_REQUESTED')+"<br />";
+				  $('#name').addClass('is-invalid');
+			  }
+			  var s = $('#deadline').val();
+			  if (!$scope.isValidDate(s)) {
+				  msgs += $scope.txt('DATE_INVALID')+"<br />";
+				  $('#deadline').addClass('is-invalid');
+			  }
+			  if (isNaN($('#project_to_active').val())) {
+				  msgs += $scope.txt('INVALID_NUMBER')+"<br />";
+				  $('#project_to_acitive').addClass('is-invalid');
+			  }
+			  if (isNaN($('#project_to_close').val())) {
+				  msgs += $scope.txt('INVALID_NUMBER')+"<br />";
+				  $('#project_to_close').addClass('is-invalid');
+			  }
+			  if (isNaN($('#member_to_active').val())) {
+				  msgs += $scope.txt('INVALID_NUMBER')+"<br />";
+				  $('#member_to_active').addClass('is-invalid');
+			  }
+			  if (isNaN($('#member_to_exclude').val())) {
+				  msgs += $scope.txt('INVALID_NUMBER')+"<br />";
+				  $('#member_to_exclude').addClass('is-invalid');
+			  }
+			  if (msgs == '') {
+				  console.log('OK');
+				  console.log($('#projectForm3'));
+				  $('#projectForm3').submit();
+			  } else {
+				  global.alert(msgs);
+			  }	  
+		  });
 		  $('#likeUpBtn').click( function() {
 			  if ($('#likeUpBtn').attr('disabled') != 'disabled') {
 				  $('#likeUpBtn').attr('disabled','disabled');
-				  var url = $scope.MYDOMAIN+'/opt/likes/setlike/type/members/id/'+$scope.id;
+				  var url = $scope.MYDOMAIN+'/opt/likes/setlike/type/projects/id/'+$scope.item.id;
 				  $.get(url, function(result) {
 					  // '{up, down, upChecked, downChecked, state}'
 					  $scope.likeCount = JSON.parse(result);
@@ -105,7 +174,7 @@
 		  $('#likeDownBtn').click( function() {
 			  if ($('#likeDownBtn').attr('disabled') != 'disabled') {
 				  $('#likeDownBtn').attr('disabled','disabled');
-				  var url = $scope.MYDOMAIN+'/opt/likes/setdislike/type/members/id/'+$scope.id;
+				  var url = $scope.MYDOMAIN+'/opt/likes/setdislike/type/projects/id/'+$scope.item.id;
 				  $.get(url, function(result) {
 					  // '{up, down, upChecked, downChecked, state}'
 					  $scope.likeCount = JSON.parse(result);
@@ -116,9 +185,9 @@
 			  }  
 		  });
 
-		  // like gombok és értékek inicializálása, like btnclick -ek success eljátrása is hivja 
+		  // like gombok és értékek inicializálása, like btnclick -ek success eljárása is hivja 
 		  $scope.likeAdjust = function() {
-			  $scope.userMember = (($scope.userState == 'active') || ($scope.userState == 'admin'));
+			  $scope.userMember = (($scope.loggedState == 'active') || ($scope.loggedState == 'admin'));
 			  if ($scope.userMember && 
 				  (($scope.item.state == 'active') || ($scope.item.state == 'proposal'))) {
 				  $('#likeUpBtn').attr('disabled',false);
@@ -142,13 +211,11 @@
 		  };
 		  $scope.likeAdjust();
 		  
-		  $('state').val($scope.item.state);
-
-	  } // memberForm	  
+	  } // projectForm	  
 	  $('#scope').show();
 	  return 'projects';
   }
- 
+
   // jquery pageOnLoad
   $(function() {
   	pageOnLoad();
@@ -165,4 +232,8 @@
 	  }
 	  return '';
   }
+    
+  
+  
+
   

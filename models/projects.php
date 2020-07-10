@@ -94,9 +94,6 @@ class ProjectsModel extends Model {
         $filter->order($p->order.' '.$p->order_dir);
         $filter->offset($p->offset);
         $filter->limit($p->limit);
-        
-echo $filter->getSql();        
-        
         $total = $filter->count();
         return $filter->get();
     }
@@ -107,7 +104,7 @@ echo $filter->getSql();
      */
     public function autoUpdate(int $id) {
         $project = $this->getRecord($id);
-        if (!project) {
+        if (!$project) {
             echo 'Fatal error project '.$id.' not fiund'; exit();
         }
         if (($project->id > 0) & (($project->state == 'proposal') | ($project->state == 'active'))) {
@@ -120,7 +117,7 @@ echo $filter->getSql();
             $table->where(['type','==','projects']);
             $table->where(['object_id','==',$id]);
             $table->where(['state','==','admin']);
-            $memberCount = $projectCount + $table->count();
+            $memberCount = $memberCount + $table->count();
             
             $table = new Table('likes');
             $table->where(['type','==','projects']);
@@ -154,28 +151,6 @@ echo $filter->getSql();
             }
         }
     }
-    
-    /**
-     * Őj project rekord tárolása 'proposal' státusszal,
-     * és a létrehozó user tárolása a mebers táblába 'admin' státusszal
-     * @param ProjectRecord $record
-     * @param int $admin_id
-     */
-    public function doInsert(ProjectRecord $record, int $admin_id) {
-        $record->id = 0;
-        $record->state = 'proposal';
-        if ($this->save($record)) {
-            $table = new Table('members');
-            $memberRec = new stdClass();
-            $memberRec->id = 0;
-            $memberRec->type = 'projects';
-            $memberRec->object_id = $record->id;
-            $memberRec->user_id = $admin_id;
-            $memberRec->state = 'admin';
-            $table->insert($memberRec);
-        }
-    }
-    
     
 } // class
 ?>

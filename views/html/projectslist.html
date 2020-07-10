@@ -17,7 +17,7 @@ paginátor:  $scope.paginators=[{"offset":#, "pageNo":#, "enabled":true|false}, 
 </div>
 <div class="page" id="page">
 	<div class="pageBody members" id="pageBody">
-		<h3><em class="fa fa-user"></em>&nbsp;{{formTitle}}</h3>				
+		<h3><em class="fa fa-wrench"></em>&nbsp;{{formTitle}}</h3>				
 		<form id="browserForm" method="get" action="{{MYDOMAIN}}" target="_self">
 			<input type="hidden" id="option" name="option" value="projects" /> 
 			<input type="hidden" id="task" name="task" value="list" /> 
@@ -38,6 +38,7 @@ paginátor:  $scope.paginators=[{"offset":#, "pageNo":#, "enabled":true|false}, 
 	             	<option value="closed"{{filterStateSelected('closed',filterstate)}}>{{txt('closed')}}</option>
 	             	<option value="draft"{{filterStateSelected('draft',filterstate)}}>{{txt('draft')}}</option>
 	             	<option value="waiting"{{filterStateSelected('waiting',filterstate)}}>{{txt('waiting')}}</option>
+	             	<option value="waiting"{{filterStateSelected('ended',filterstate)}}>{{txt('ended')}}</option>
 	            </select>
 	            <div style="display:inline-block; width:auto">
 	                 <button type="button" id="searchBtn" class="btn btn-primary">
@@ -48,7 +49,7 @@ paginátor:  $scope.paginators=[{"offset":#, "pageNo":#, "enabled":true|false}, 
 	                 </button>
 	            </div>
             </div>
-            <table class="table table-bordered">
+            <table class="table table-bordered table-striped">
 			<thead class="thead-dark">
 		  		<tr>
 			  	 	<th id="th_p.id" class="project_id {{thClass('p.id', order, order_dir)}}" style="cursor:pointer"> 
@@ -72,7 +73,7 @@ paginátor:  $scope.paginators=[{"offset":#, "pageNo":#, "enabled":true|false}, 
 			</thead>
 			<tbody>
 				<tr ng-repeat="item in items" ng-init="itemLoad($last)" 
-				    class="{{trClass()}}" style="cursor:pointer" id="tr_{{item.id}}">
+				    style="cursor:pointer" id="tr_{{item.id}}">
 					<td class="td_id">{{item.id}}</td>
 					<td class="td_avatar"><img src="{{item.avatar}}" style="height:30px"/></td>
 					<td class="td_name">{{item.name}}</td>
@@ -81,7 +82,6 @@ paginátor:  $scope.paginators=[{"offset":#, "pageNo":#, "enabled":true|false}, 
 				</tr>
 			</tbody>        
         	</table>
-        	{{onload()}}
 	        <ul class="paginator">
 	        	<li class="paginator-total">{{txt('TOTAL')}}:<var>{{total}}</var> {{txt('PAGES')}}</li> 
 	        	<li ng-repeat="paginator in paginators" class="page-link {{paginatorClass(paginator, offset, total)}}">
@@ -93,7 +93,7 @@ paginátor:  $scope.paginators=[{"offset":#, "pageNo":#, "enabled":true|false}, 
 	        			class="active">{{paginator.pageNo}}</span>
 	        	</li>
 	        </ul>
-	        <div class="buttons" ng-if="loggedUser.id > 0">
+	        <div class="buttons">
 	        	<button type="button" class="btn btn-primary" id="btnAdd">
 	        		<em class="fa fa-plus-circle"></em>{{txt('ADD')}}
 	        	</button>
@@ -101,4 +101,4 @@ paginátor:  $scope.paginators=[{"offset":#, "pageNo":#, "enabled":true|false}, 
         </form>
 	</div><!--  #pageBody --> 						
 </div><!--  #page -->
-<div ng-include="templates.footer"></div>
+<div ng-include="templates.footer" ng-init="onload()"></div>

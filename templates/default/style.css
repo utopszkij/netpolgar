@@ -21,8 +21,6 @@ button em {margin-right:5px}
 	left:0px; bottom:0px; background-color:#c0f0c0; opacity: 0.8; padding:2px; margin:0px;}
 #cookieDisable {width:100%; height:auto; background-color:#c0f0c0; padding:2px; margin:0px;}
  
-.table .tr0 {background-color:transparent;}
-.table .tr1 {background-color:#d3efd5}
 .table .thead-dark th.order {color:orange}
 .table .thead-dark th.unorder {color: white}
 #scope {padding:5px 10px 5px 10px; min-height:600px; text-align:center}   
@@ -125,6 +123,7 @@ button em {margin-right:5px}
 #removeGroup {padding:10px; min-height:600px;}
 
 #projectForm {min-height:600px;}
+#projectForm img {width:150px}
 #projectForm2 {display:inline-block; width:70%; float:right; text-align:center}
 #projectForm2 input {width:400px; display:inline-block}
 #projectForm2 select {width:400px; display:inline-block}
@@ -132,7 +131,7 @@ button em {margin-right:5px}
 
 #scope .readme {text-align:left}
 
-#footer {background-color:#d6c4c4; color:white; padding:20px;}  
+#footer {background-color:#d6c4c4; color:white; padding:20px; margin-top:10px}  
 
 .carousel-caption {width:70%; text-align:center;  
    background-color:black; opacity:0.5; border-radius:20px;}

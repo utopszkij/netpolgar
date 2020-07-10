@@ -23,7 +23,10 @@ class CommonView extends View {
 	 * @param object $p {user, userAdmin, avatarUrl,....}
 	 * @return void
 	 */
-	public function errorMsg(array $msgs, string $backLink='', string $backStr='', $p) {
+	public function errorMsg(array $msgs, string $backLink='', string $backStr='', $p='') {
+	    if ($p == '') {
+	        $p = new Params();
+	    }
 	    $p->backStr = $backStr;
 	    $p->backLink = $backLink;
 	    $p->msgs = $msgs;

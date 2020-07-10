@@ -45,6 +45,13 @@ class MembersController extends CommonController {
 	        $p->userGroupAdmin = ($this->model->getState($p->type, $p->id, $p->loggedUser->id) == 'admin');
 	        $p->formTitle = '"'.$p->group->name.'" '.txt('GROUP_MEMBERS');
 	    }
+	    if ($p->type == 'projects') {
+	        $projectModel = $this->getModel('projects');
+	        $p->project = $projectModel->getRecord($p->id);
+	        $p->backUrl = MYDOMAIN.'/opt/projects/form/id/'.$p->id.'/'.$p->csrToken.'/1';
+	        $p->userGroupAdmin = ($this->model->getState($p->type, $p->id, $p->loggedUser->id) == 'admin');
+	        $p->formTitle = '"'.$p->project->name.'" '.txt('PROJECT_MEMBERS');
+	    }
 	    $p->offset = (int)$request->input('offset', $request->sessionGet($p->typeId.'MembersOffset',0));
 	    if ($p->offset == '') {
 	        $p->offset = 0;

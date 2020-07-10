@@ -47,7 +47,7 @@ paginátor:  $scope.paginators=[{"offset":#, "pageNo":#, "enabled":true|false}, 
 	                 </button>
 	            </div>
             </div>
-            <table class="table table-bordered">
+            <table class="table table-bordered table-striped">
 			<thead class="thead-dark">
 		  		<tr>
 			  	 	<th id="th_m.id" class="user_id {{thClass('m.id', order, order_dir)}}" style="cursor:pointer"> 
@@ -67,7 +67,7 @@ paginátor:  $scope.paginators=[{"offset":#, "pageNo":#, "enabled":true|false}, 
 			</thead>
 			<tbody>
 				<tr ng-repeat="item in items" ng-init="itemLoad($last)" 
-				    class="{{trClass()}}" style="cursor:pointer" id="tr_{{item.id}}">
+				    style="cursor:pointer" id="tr_{{item.id}}">
 					<td class="td_user_id">{{item.id}}</td>
 					<td class="td_avatar"><img src="{{item.avatar}}" style="height:30px"/></td>
 					<td class="td_nick">{{item.nick}}</td>
@@ -86,6 +86,11 @@ paginátor:  $scope.paginators=[{"offset":#, "pageNo":#, "enabled":true|false}, 
 	        			class="active">{{paginator.pageNo}}</span>
 	        	</li>
 	        </ul>
+	        <div class="buttons">
+	        	<a class="btn btn-secondary" href="{{backUrl}}" target="_self">
+	        		{{txt('PRIOR')+' '+txt('PAGE')}}
+	        	</a>
+	        </div>
         </form>
 	</div><!--  #pageBody --> 						
 </div><!--  #page -->			

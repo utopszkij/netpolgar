@@ -12,6 +12,7 @@ DEFINE('PRIOR','elöző');
 DEFINE('FIRST','első');
 DEFINE('LAST','utolsó');
 DEFINE('PAGES','oldalak');
+DEFINE('PAGE','oldal');
 DEFINE('TOTAL','össesen');
 DEFINE('NEXTSTEP','Tovább');
 DEFINE('PLEAS_SELECT','Válaszd ki!');

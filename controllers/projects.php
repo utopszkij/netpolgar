@@ -13,22 +13,24 @@ class ProjectsController extends CommonController {
 	 * @param Request $request  - opcionálisan member_id
 	 * -sessionba jöhet: loggedUser, offset, order, order_dir, searchstr, filterState, limit
 	 */
-	public function list(Request $request, $msg = '', $msgClass = '') {
+	public function list(Request $request, $msgs = [], $msgClass = 'danger') {
+	    // task inicializálás, feltétlen szükséges request elemek felsorolása
 	    $p = $this->init($request,['id','member_id']);
-	    if ($msg != '') {
-	        $p->msgs = [$msg];
-	    }
-	    if ($msgClass != '') {
-	        $p->msgClass = $msgClass;
-	    }
+        $p->msgs = $msgs;
+        $p->msgClass = $msgClass;
 	    $this->createCsrToken($request, $p);
 	    $p->backUrl = MYDOMAIN;
-        $p->formTitle = txt('PROJECTS');
-        if ($p->member_id != '') {
-            $userModel = $this->getModel('users');
-            $p->member = $userModel->getRecord($p->member_id);
-            $p->formTitle .= ' '.txt('IN_MEMBER').' '.$p->member->nick;
-        }
+	    
+	    // formTitle és form ikon beállítása
+	    $p->formTitle = txt('PROJECTS');
+	    if ($p->member_id != '') {
+	        $userModel = $this->getModel('users');
+	        $p->member = $userModel->getRecord($p->member_id);
+	        $p->formTitle .= ' '.txt('IN_MEMBER').' '.$p->member->nick;
+	    }
+	    $p->formIcon = 'fa-wrench';
+	    
+        // sztendert browser paraméterek beállítása
 	    $p->offset = (int)$request->input('offset', $request->sessionGet('ProjectsOffset',0));
 	    if ($p->offset == '') {
 	        $p->offset = 0;
@@ -41,11 +43,9 @@ class ProjectsController extends CommonController {
 	        $p->order = 'p.name';
 	    }
 	    $p->order_dir = $request->input('order_dir', $request->sessionGet('ProjectsOrder_dir','ASC'));
-	    $p->formIcon = 'fa-user';
 	    $p->itemTask = 'form';
 	    $p->addTask = 'add';
 	    $p->addUrl = config('MYDOMAIN').'/opt/projects/add';
-	    
 	    $request->sessionSet('ProjectsOffset',$p->offset);
 	    $request->sessionSet('ProjectsLimit',$p->limit);
 	    $request->sessionSet('ProjectsOrder',$p->order);
@@ -54,6 +54,14 @@ class ProjectsController extends CommonController {
 	    $request->sessionSet('ProjectsFilterState',$p->filterState);
 	    $p->total = 0;
 	    $p->items = $this->model->getProjectRecords($p, $p->total);
+
+	    // items elemek szépítése
+	    for ($i=0; $i < count($p->items); $i++) {
+	        if ($p->items[$i]->avatar == '') {
+	            $p->items[$i]->avatar = './images/noimage.png';
+	        }
+	    }
+	    
         $this->view->browser($p);
 	}
 	
@@ -90,23 +98,32 @@ class ProjectsController extends CommonController {
 	 * session: user, csrToken
 	 */
 	public function form(Request $request, array  $msgs=[], string $msgClass='info') {
+	    // task inicializálás, feltétlen szükséges request elemek felsorolása
 	    $p = $this->init($request,['type', 'type', 'id']);
 	    $p->msgs = $msgs;
 	    $p->msgClass = $msgClass;
 	    $this->createCsrToken($request, $p);
+	    $p->backUrl = MYDOMAIN.'/opt/projects/list/'.$p->csrToken.'/1';
+	    
+	    // formTitle és form ikon beállítása
+	    $p->formTitle = txt('PROJECT');
+	    $p->formIcon = 'fa-wrench';
+	    
+	    // item beolvasása, dátumok átalakítása a megjelenítés érdekében
 	    $p->item = $this->model->getRecord((int)$p->id); // project record
 	    if (!$p->item) {
 	        $p->item = new ProjectRecord();
 	    }
-	    $p->formTitle = txt('PROJECT');
-//	    $likeModel = $this->getModel('likes');
-//	    $p->likeCount = $likeModel->getCounts('projects', $p->memberId, $p->loggedUser->id);
+	    if ($p->item->avatar == '') {
+	        $p->item->avatar = './images/noimage.png';
+	    }
+	    $p->item->deadline = str_replace('.','-',$p->item->deadline,); // html -nek yyyy-mm-dd forma kell
+	    $likeModel = $this->getModel('likes');
+	    $p->likeCount = $likeModel->getCounts('projects', $p->id, $p->loggedUser->id);
 // !!! NINCS KÉSZ !!!
-	    $p->likeCount = JSON_decode('{"up":12, "down":3, "upChecked":false, "downChecked":false}');
 	    $p->commentCount = JSON_decode('{"total":12, "new":3}');
 	    $p->messageCount = JSON_decode('{"total":22, "new":2}'); // olvasatlan privát üzenetek
 	    
-        $p->backUrl = MYDOMAIN.'/opt/projects/list/'.$p->csrToken.'/1';
         $memberModel = $this->getModel('members');
         $p->loggedState = $memberModel->getState($p->type, $p->id, $p->loggedUser->id);
 	    $this->view->form($p);
@@ -117,6 +134,7 @@ class ProjectsController extends CommonController {
 	 * @param Request $request - sessionban loggedUser
 	 */
 	public function add(Request $request, array  $msgs=[], string $msgClass='info') {
+	    // task inicializálás, feltétlen szükséges request elemek felsorolása
 	    $p = $this->init($request,['type', 'type', 'id']);
 	    if ($p->loggedUser->id <= 0) {
 	        $this->view->errorMsg([txt('ACCESS_VIOLATION')]);
@@ -125,14 +143,27 @@ class ProjectsController extends CommonController {
 	    $p->msgs = $msgs;
 	    $p->msgClass = $msgClass;
 	    $this->createCsrToken($request, $p);
-	    $p->item = new ProjectRecord();
+	    $p->backUrl = MYDOMAIN.'/opt/projects/list/'.$p->csrToken.'/1';
+	    
+	    // formTitle és form ikon beállítása
 	    $p->formTitle = txt('NEW_PROJECT');
+	    $p->formIcon = 'fa-wrench';
+	    
+	    // új item előkészítése
+	    $p->item = new ProjectRecord();
+	    $p->item->deadline = date('Y-m-d', time() + (10*24*60*60)); // a html -nek ilyen formátum kell!
+	    $p->item->avatar = './images/noimage.png';
 	    $p->likeCount = JSON_decode('{"up":0, "down":0, "upChecked":false, "downChecked":false}');
 	    $p->commentCount = JSON_decode('{"total":0, "new":0}');
 	    $p->messageCount = JSON_decode('{"total":0, "new":0}'); 
-	    $p->backUrl = MYDOMAIN.'/opt/projects/list/'.$p->csrToken.'/1';
 	    $p->loggedState = 'admin';
 	    $this->view->form($p);
+	}
+	
+	protected function validateDate($date, $format = 'Y-m-d') {
+	    $d = DateTime::createFromFormat($format, $date);
+	    // The Y ( 4 digits year ) returns TRUE for any integer with any number of digits so changing the comparison from == to === fixes the issue.
+	    return $d && $d->format($format) === $date;
 	}
 	
 	/**
@@ -141,35 +172,76 @@ class ProjectsController extends CommonController {
 	 */
 	public function save(Request $request) {
 	    $p = $this->init($request,['type', 'type', 'id']);
+	    
+	    // csak regisztrált tag vihet fel
 	    if ($p->loggedUser->id <= 0) {
 	        $this->view->errorMsg([txt('ACCESS_VIOLATION')]);
 	        return;
 	    }
-	    $p->msgs = $msgs;
-	    $p->msgClass = $msgClass;
+	    
+	    // csak projekt adminisztrátor modosíthat
+	    
 	    if ($p->id > 0) {
 	        $memberModel = $this->getModel('members');
-	        $p->loggedState = $memberModel->getState($p->type, $p->id, $p->loggedUser->id);
-	        if ($p->loggedState != 'asmin') {
+	        $p->loggedState = $memberModel->getState('projects', $p->id, $p->loggedUser->id);
+	        if ($p->loggedState != 'admin') {
 	            $this->view->errorMsg([txt('ACCESS_VIOLATION')]);
 	            return;
 	        }
 	    }
+	    
+	    // rekord kialakítása a $request -ből
 	    $project = new ProjectRecord();
         foreach ($project as $fn => $fv) {
-            if (isset($p->$fn)) {
-                $project->$fn = $p->$fn;
-            }
+           $project->$fn = $request->input($fn);
         }
-        // check record
-        if ($p->name == 0) {
-            $p->msgs[] = txt('NAME_REQUESTED');
+        
+        // dátumok átalakítása html által kivánt formáról a magyar dátum formára
+        $project->deadline = str_replace(' ','',$project->deadline);
+        $project->deadline = str_replace('-','.',$project->deadline);
+       
+        // record ellenörzése, ha jó tárolása és browser képernyő hívása,
+        // ha nem jó akkor form visszahívás hibaüzenettel
+        if ($project->name == '') {
+            $p->msgs[] = txt('NAME_REQUESTED'). JSON_encode($project);
         }
+        if (($project->state != 'proposal') &
+            ($project->state != 'active') &
+            ($project->state != 'ended') &
+            ($project->state != 'closed') &
+            ($project->state != 'draft') &
+            ($project->state != 'waiting')
+           ) {
+               $p->msgs[] = txt('STATE_INVALID').'('.$project->state.')';
+         }
+         if (!$this->validateDate($project->deadline, 'Y.m.d')) {
+             $p->msgs[] = txt('DATE_INVALID').'('.$project->deadline.')';
+         }
+         if (!is_numeric($project->project_to_active)) {
+             $p->msgs[] = txt('INVALID_NUMBER');
+         }
+         if (!is_numeric($project->project_to_close)) {
+             $p->msgs[] = txt('INVALID_NUMBER');
+         }
+         if (!is_numeric($project->member_to_active)) {
+             $p->msgs[] = txt('INVALID_NUMBER');
+         }
+         if (!is_numeric($project->member_to_exclude)) {
+             $p->msgs[] = txt('INVALID_NUMBER');
+         }
+         
         if (count($p->msgs) == 0) {
-            if ($this->model->save($project)) {
-                $this->list($request, txt('PROJECT_SAVED'), 'success');
+            if ($project->id == 0) {
+                $this->model->save($project);
+                $memberModel = $this->getModel('members'); 
+                $memberModel->addMember('projects', $project->id, $p->loggedUser->id, 'admin');
             } else {
-                $this->errorMsg([$this->model->getErrorMsg()]);
+                $this->model->save($project);
+            }
+            if ($this->model->getErrorMsg() == '') {
+                $this->list($request, [txt('PROJECT_SAVED')], 'success');
+            } else {
+                $this->view->errorMsg([$this->model->getErrorMsg()]);
             }
         } else {
             if ($p->id == 0) {

@@ -1,6 +1,7 @@
 <?php
 // members
 DEFINE('GROUP_MEMBERS','Csoport tagjai');
+DEFINE('PROJECT_MEMBERS','Project tagjai');
 DEFINE('MEMBER_FORM','Tagja');
 DEFINE('ADD','Tag felvitele');
 DEFINE('ASPIRE','Jelentkezek tagnak');

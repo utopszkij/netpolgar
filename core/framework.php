@@ -190,7 +190,7 @@ class View {
     public function setTemplates(Params & $p, array $names = []) {
         $names[] = 'navbar';
         $names[] = 'footer';
-        $names[] = 'popupr';
+        $names[] = 'popup';
         $p->templates = new stdClass();
         $p->TEMPLATE = config('TEMPLATE');
         foreach ($names as $name) {
@@ -744,8 +744,7 @@ function txt(string $s): string {
     if (defined($s)) {
         $result = constant($s);
     } else {
-        $result = '<a style="color:red" target="_new"
-            href="'.MYDOMAIN.'/opt/txt/add/?token='.urlencode($s).'">'.$s.'</a>';
+        $result = $s;
     }
     return $result;
 }
