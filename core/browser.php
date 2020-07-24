@@ -32,7 +32,7 @@ class BrowserView extends CommonView {
              $offsetPrev = 0;
          }
          echo '<ul class="paginator">';
-         echo '<li class="paginator-total"><a class="page-link disabled">'.txt('TOTAL').': '.$total.' '.txt('PAGES').':</a></li>';
+         echo '<li class="paginator-total"><a class="page-link disabled">'.txt('TOTAL').': <var>'.$total.'</var> '.txt('PAGES').':</a></li>';
          if ($offset > 0) {
              echo '<li class="paginator-item" paginatr-first><a href="#" class="page-link" onclick="paginatorClick(0)">
                 <em class="fa fa-backward" title="'.txt('FIRST').'"></em>
@@ -122,7 +122,7 @@ class BrowserView extends CommonView {
      * @return void
      */
      protected function echoTableRow($item, $trClass) {
-     		echo '<tr onclick="itemClick('.$item->id.')" class="'.$trClass.'" style="cursor:pointer">'."\n";
+     		echo '<tr onclick="itemClick('."'$item->id'".')" class="'.$trClass.'" style="cursor:pointer">'."\n";
      		foreach ($item as $fn => $fv) {
 				echo '<td class="td_'.$fn.'">'.$fv.'</td>'."\n";     		
      		}
@@ -160,7 +160,23 @@ class BrowserView extends CommonView {
         <?php	
      }
      
-	  /**
+     protected function echoSearch(Params $p) {
+         ?>
+         <div class="search">
+             <input type="text" name="searchstr" id="searchstr" value="<?php echo $p->searchstr; ?>" />
+             <div style="display:inline-block; width:auto">
+                 <button type="button" id="searchBtn" onclick="searchClick()" class="btn btn-primary">
+                 <em class="fa fa-search"></em>
+                 </button>
+                 <button type="button" id="delSearchBtn" onclick="delSearchClick()" class="btn btn-danger">
+                 <em class="fa fa-times"></em>
+                 </button>
+             </div>
+         </div>
+         <?php
+     }
+     
+     /**
 	  * browser form
 	  * @param Params $p - formTitle, formHelp, formIcon option, itemTask,
 	  *                    items, total, offset, order, order_dir, searchstr, csrToken
@@ -171,7 +187,15 @@ class BrowserView extends CommonView {
                     <div ng-controller="ctrl" id="scope" style="display:block">\n';
 			$this->echoNavBar($p);
 			$this->echoHtmlPopup($p);
+			if (!isset($p->msgClass)) {
+			    $p->msgClass = 'danger';
+			}
 			?>
+			
+			<div class="alert alert-<?php echo $p->msgClass; ?>" ng-if="msgs.length > 0">
+			<p ng-repeat="msg in msgs">{{txt(msg)}}</p>
+			</div>
+			
 			<script type="text/javascript" src="<?php echo config('MYDOMAIN'); ?>/core/browser.js"></script>
 			<?php if(file_exists(config('MYPATH').'/views/'.$p->option.'.js')) : ?>
 			<script type="text/javascript" src="<?php echo config('MYDOMAIN'); ?>/views/<?php echo $p->option; ?>.js"></script>
@@ -188,26 +212,18 @@ class BrowserView extends CommonView {
 					<form id="browserForm" method="get" action="<?php echo config('MYDOMAIN'); ?>" target="_self">
 						<input type="hidden" id="option" name="option" value="<?php echo $p->option; ?>" /> 
 						<input type="hidden" id="task" name="task" value="list" /> 
+						<input type="hidden" id="type" name="type" value="<?php echo $p->type; ?>" />
+						<input type="hidden" id="objectid" name="objectid" value="<?php echo $p->objectId; ?>" />
+						<input type="hidden" id="id" name="id" value="" />
 						<input type="hidden" id="itemTask" name="itemTask" value="<?php echo $p->itemTask; ?>" /> 
 						<input type="hidden" name="<?php echo $p->csrToken; ?>" value="1" /> 
 						<input type="hidden" id="offset" name="offset" value="<?php echo $p->offset; ?>" /> 
 						<input type="hidden" id="limit" name="limit" value="<?php echo $p->limit; ?>" /> 
 						<input type="hidden" id="order" name="order" value="<?php echo $p->order; ?>" /> 
 						<input type="hidden" id="order_dir" name="order_dir" value="<?php echo $p->order_dir; ?>" />
-						<input type="hidden" id="id" name="id" value="" />
-						<div class="search">
-							<input type="text" name="searchstr" id="searchstr" value="<?php echo $p->searchstr; ?>" />
-							<div style="display:inline-block; width:auto">
-								<button type="button" id="searchBtn" onclick="searchClick()" class="btn btn-primary">
-									<em class="fa fa-search"></em>
-								</button>	
-								<button type="button" id="delSearchBtn" onclick="delSearchClick()" class="btn btn-danger">
-									<em class="fa fa-times"></em>
-								</button>	
-							</div>					
-						</div> 
+						<?php echo $this->echoSearch($p); ?>
 						<?php $this->echoBrowsertable($p->items, $p->offset, $p->limit, $p->order, $p->order_dir); ?>
-						<?php if (isset($p->addUrl)) : ?>
+						<?php if (isset($p->addUrl) & ($p->addUrl != '')) : ?>
 						<div class="browserButtons">
 						<a class="btn btn-primary" href="<?php echo $p->addUrl; ?>">
 							<em class="fa fa-plus-circle"></em>&nbsp;<?php echo txt('ADD'); ?>

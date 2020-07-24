@@ -27,6 +27,7 @@ DEFINE('GROUP_TO_ACTIVE','Csoport javaslat aktiválási feltétel [támogatás d
 DEFINE('GROUP_TO_CLOSE','Csoport lezárási feltétel [csoport tagság ennyi százaláka ellenzi]');
 DEFINE('MEMBER_TO_ACTIVE','Tag javaslat és jelentkező aktiválási feltétel [csoport tag támogatás darab]');
 DEFINE('MEMBER_TO_EXCLUDE','Tag kizárási feltétel [csoport tagság ennyi százaléka negativan értékeli]');
+DEFINE('SUGGEST_CLOSING','Zárjuk le!');
 
 DEFINE('GROUPS_NOT_FOUND','nincsenek csoportok');
 DEFINE('GROUP_SAVED','Csoport adatai tárolva');
@@ -43,6 +44,7 @@ DEFINE('NOTASPIRE','Visszavonom a jelentkezésem');
 DEFINE('PAUSE','Szüneteltetés');
 DEFINE('ACTIVATE','Aktiválás');
 DEFINE('USERSTATE','tagságod állapota');
+
 DEFINE('proposal','Javasolt');
 DEFINE('invited','Meghívott');
 DEFINE('candidate','Jelentkező');
@@ -52,4 +54,16 @@ DEFINE('exited','kizárt');
 DEFINE('none','nem vagy tag');
 DEFINE('active','tag vagy');
 DEFINE('admin','menedzser');
+
+DEFINE('GROUPSTATE_active','aktív');
+DEFINE('GROUPSTATE_closed','lezárt');
+DEFINE('GROUPSTATE_proposal','javaslat');
+
+DEFINE('HD_USERSTATE','Felhasználó stárusza');
+DEFINE('USERSTATE_aspirant','jelentkező');
+DEFINE('USERSTATE_active','tag');
+DEFINE('USERSTATE_admin','menedzser');
+DEFINE('USERSTATE_excluded','kizárt');
+
+DEFINE('GROUPS_BY_USER','Csoportok amiknek a tagja ');
 ?>

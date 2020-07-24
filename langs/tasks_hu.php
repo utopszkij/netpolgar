@@ -1,0 +1,40 @@
+<?php
+DEFINE('TASK','Feladat');
+DEFINE('DELETE','Törlés');
+DEFINE('DESCRIPTION_REQUESTED','Leírást meg kell adni');
+DEFINE('DATE_INVALID','Nem megfelelő dátum');
+DEFINE('NEW_TASK','Új feladat');
+DEFINE('STATE_INVALID','Nem megfelelő státusz');
+DEFINE('TASKTYPE_INVALID','Nem megfelelő tipus');
+DEFINE('NICK_INVALID','Nem megfelelő felelős');
+DEFINE('REQ_INVALID','Nem megfelelő feltétel');
+DEFINE('CAN_NOT_START','Nem inditható');
+DEFINE('TASK_SAVED','Feladat adatok tárolva');
+DEFINE('ALLSTATE','Minden státusz');
+DEFINE('id','Kódszám');
+DEFINE('tasktype','Tipus');
+DEFINE('nick','Felelős');
+DEFINE('description','Leírás');
+DEFINE('state','Státusz');
+DEFINE('deadline','Határidő');
+DEFINE('reqclosed','Csak ennek lezárása után inditható');
+DEFINE('reqnotrun','Csak akkor inditható ha ez nincs folyamatban');
+DEFINE('sequence','Sürgösség');
+DEFINE('wait_req','Inditási feltételekre vár');
+DEFINE('wait_run','Inditható');
+DEFINE('runing','Munkában');
+DEFINE('wait_control','Ellenörizendő');
+DEFINE('closed','Lezárt');
+DEFINE('task','Feladat');
+DEFINE('bug','Hiba');
+DEFINE('request','Kérdés');
+DEFINE('suggestion','Javaslat');
+DEFINE('comment','Megjegyzés');
+DEFINE('ADD','Új felvitel');
+DEFINE('TASKS','Feladatok');
+DEFINE('DESCRIPTION','Leírás');
+DEFINE('DEADLINE','Határidő');
+DEFINE('BACK','Vissza');
+DEFINE('SURE_DELETE','Biztos törölni akarod?');
+
+?>

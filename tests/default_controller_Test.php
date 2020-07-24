@@ -3,8 +3,10 @@ declare(strict_types=1);
 global $REQUEST;
 include_once './tests/config.php';
 include_once './core/database.php';
-include_once './controllers/default.php';
 include_once './tests/mock.php';
+include_once './models/users.php';
+include_once './controllers/common.php';
+include_once './controllers/default.php';
 
 use PHPUnit\Framework\TestCase;
 

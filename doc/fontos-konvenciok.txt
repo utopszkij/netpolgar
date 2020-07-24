@@ -1,0 +1,66 @@
+A program struktura feltétlenül betartandó konvenciói:
+
+1. minden rekordhoz kell egy "list" és "form" task
+ "list" browser
+ "form" adatform params: id
+ 
+ A likes model getCounts paraméterei: type, id, userId
+   result {"up":#, "down":#, "upChecked":false, "downChecked":false}
+ 	A like gombok AJAX hivással tárolnak, a #divLike -ban lévő dolgokat 
+ 	modositják a képernyőn.
+ 	
+A likes controlle setlike és setdislike AJAX background taskjainak resultja:
+{up, down upChecked, downChecked} 	
+ 	
+A comments model getCounts paramaéterei: type, id, userId
+resultja: {total, new}
+
+
+A list képernyök igényelt paraméterei
+   option 
+   msgs
+   msgClass
+   formTitle
+   items [{row fields}, ...}
+   total
+   offset
+   limit
+   order
+   order_dir
+   itemTask
+   addTask
+   userMember
+   userAdmin
+   filterStr
+   paginators [{offset, pageNo, enabled},...]
+	
+A form képernyök igényelt paraméterei
+   option
+   msgs
+   msgClass
+	formTitle string
+	backUrl
+	id
+	item {form mezői}
+	like {up,down, upChecked, downChecked}
+	comments {total, new}
+
+   Ha like gombok is vannak:
+     userMember bool
+     like {up, down, upChecked, downChecked}
+     item.state
+  
+A képernyő templateseknek gondoskodniuk kell a $scope.onload() hivásáról.
+Ha ng-repeat van akkor:
+  js -ben: 
+  $scope.itemOnload = function($last {
+		if ($last) { $scope.onload()}
+  })    	
+  templatesben:
+  <... ng-repeat="...." ng-init="itemLOnload($las)">...
+     
+A js filok általános felépitése: lásd groups.js
+
+Ha nincs ng-reat akkor a templates utolsó sorában
+{{onload()}}
+

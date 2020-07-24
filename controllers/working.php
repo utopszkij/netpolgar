@@ -6,6 +6,10 @@ include_once './controllers/common.php';
 
 /** kontroller osztály */
 class WorkingController extends CommonController {
+        
+    function __construct() {
+        $this->cName = 'working';
+    }
     
     /**
      * készül képernyő megjelenítés task

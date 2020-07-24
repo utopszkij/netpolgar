@@ -1,0 +1,95 @@
+		 	<div ng-include="templates.navbar"></div>
+		 	<div ng-include="templates.popup"></div>
+          	<div id="taskForm" class="tasksPage">
+        		<div class="alert alert-{{msgClass}}" ng-if="msgs.length > 0">
+        			<p ng-repeat="msg in msgs">{{msg}}</p>
+        		</div>
+        		
+                <div id="taskForm2">
+                	<h3>{{project.name}}</h3>
+                	<h4>{{txt('TASK')}}</h4>
+				    <form method="post" id="taskForm3" action="./index.php" target="_self">
+				    	<input type="hidden" name="option" value="tasks" />	
+				    	<input type="hidden" name="task" value="save" />	
+				    	<input type="hidden" name="id" value="{{item.id}}" />	
+				    	<input type="hidden" name="project_id" value="{{item.project_id}}" />	
+					    <div class="form-group">
+							    <label>{{txt('ID')}}</label>
+							    <input type="text" class="form-control" id="id" 
+							    	name="id" value="{{item.id}}" disabled="disabled"/>
+						</div>
+					    <div class="form-group">
+							    <label>{{txt('DESCRIPTION')}} *</label>
+							    <textarea cols="80" rows="5" class="form-control" id="description"
+							     name="description">{{item.description}}</textarea>
+						</div>
+						<div class="form-group">
+							    <label>{{txt('state')}} *</label>
+							    <select class="form-control" id="state" name="state">
+							      <option value="wait_req">{{txt('wait_req')}}</option>
+							      <option value="wait_run">{{txt('wait_run')}}</option>
+							      <option value="runing">{{txt('runing')}}</option>
+							      <option value="wait_control">{{txt('wait_control')}}</option>
+							      <option value="closed">{{txt('closed')}}</option>
+							    </select>
+						</div>
+					    <div class="form-group">
+							    <label>{{txt('DEADLINE')}} *</label>
+							    <input type="date" class="form-control" id="deadline" 
+							    	name="deadline" value="{{item.deadline}}" />
+						</div>
+						<div class="form-group">
+							    <label>{{txt('tasktype')}} *</label>
+							    <select class="form-control" id="tasktype" name="tasktype">
+							      <option value="task">{{txt('task')}}</option>
+							      <option value="bug">{{txt('bug')}}</option>
+							      <option value="request">{{txt('request')}}</option>
+							      <option value="suggestion">{{txt('suggestion')}}</option>
+							      <option value="comment">{{txt('comment')}}</option>
+							    </select>
+						</div>
+					    <div class="form-group">
+							    <label>{{txt('reqclosed')}}</label>
+							    <input type="text" class="form-control" id="reqclosed" 
+							    	name="reqclosed" value="{{item.reqclosed}}" />
+						</div>
+					    <div class="form-group">
+							    <label>{{txt('reqnotrun')}}</label>
+							    <input type="text" class="form-control" id="reqnotrun" 
+							    	name="reqnotrun" value="{{item.reqnotrun}}" />
+						</div>
+					    <div class="form-group">
+							    <label>{{txt('nick')}}</label>
+							    <input type="text" class="form-control" id="nick" 
+							    	name="nick" value="{{item.nick}}" />
+						</div>
+					    <div class="form-group">
+							    <label>{{txt('sequence')}}</label>
+							    <input type="text" class="form-control" id="sequence" 
+							    	name="sequence" value="{{item.sequence}}" />
+						</div>
+						
+				        <p class="buttons">
+		                		<button class="btn btn-primary" type="button" id="btnOk">
+		                			<em class="fa fa-check"></em>
+		                			{{txt('OK')}}
+		                		</button>	
+		                		&nbsp;
+		                		<a class="btn btn-secondary" target="_self"
+			                		    href="{{backUrl}}">
+				                			<em class="fa fa-reply"></em>{{txt('BACK')}}
+		                		</a>
+		                		&nbsp;
+		                		<button type="button" id="delBtn" class="btn btn-danger" 
+		                		   ng-if="loggedState == 'admin'">
+				                			<em class="fa fa-ban"></em>{{txt('DELETE')}}
+		                		</button>
+		                		
+				        </p>
+					</form>            	
+              	</div><!-- #taskForm -->  
+			 	<div class="clear"></div>
+			</div><!--  #taskForm --> 	
+		 	<div ng-include="templates.footer"></div>
+		 	{{onload()}}
+			

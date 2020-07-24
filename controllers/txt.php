@@ -10,7 +10,11 @@
  * @author utopszkij
  */
 class TxtController extends Controller {
-
+    
+    function __construct() {
+        $this->cName = 'txt';
+    }
+    
     /**
      * Új nyelvi konstans felviteli képernyő
      * @param Request $request

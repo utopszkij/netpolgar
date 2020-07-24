@@ -7,6 +7,11 @@ include_once './controllers/common.php';
 /** kontroller osztály */
 class ReadmeController extends CommonController {
     
+    
+    function __construct() {
+        $this->cName = 'readme';
+    }
+    
     /**
      * Leírás megjelítése task
      * @param Request $request

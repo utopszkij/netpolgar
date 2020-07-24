@@ -62,7 +62,7 @@ class AdomanyView  extends CommonView  {
 		  <?php $this->loadJavaScriptAngular('adomany',$p); ?>
         </body>
         </html>
-        <?php 		
+        <?php 	
 	}
 }
 ?>

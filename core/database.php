@@ -934,6 +934,24 @@ class Filter extends Table {
 		$this->setQuery($this->getSql());
 		return $this->loadObjectList();
 	}
+	
+	public function count(): int {
+	    $result = 0;
+	    $backupLimit = $this->limit;
+	    $backupOffset = $this->offset;
+	    $this->limit = 0;
+	    $this->offset = 0;
+        $sql = 'select count(*) cc from ('.$this->getSql().') s';	    
+	    $db = new Db();
+	    $db->setQuery($sql);
+	    $res = $db->loadObject();
+	    if ($res) {
+	        $result = $res->cc;
+	    }
+	    $this->limit = $backupLimit;
+	    $this->offset = $backupOffset;
+	    return $result;
+	}
 } // Filter
 
 ?>

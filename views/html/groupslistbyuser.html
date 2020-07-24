@@ -1,0 +1,95 @@
+<!-- szükséges JS funciók: 
+$scope.filterStateSelected(s,filterstate) result: '' or ' "selected"="selected"
+$scope.thClass(s, order, order_dir)  result 'urorder' or 'order'
+$scope.titleIcon(s, order, order_dir) result '' or 'fa-caret-up' or 'fa-caret-down'		  	 	
+$scope.trClass() result 'tr0' or 'tr1'
+
+titleClick(s,order,order_dir)
+itemClick(id)
+paginatorClick(offset)
+
+paginátor:  $scope.paginators=[{"offset":#, "pageNo":#, "enabled":true|false}, ....]
+-->
+<div ng-include="templates.navbar"></div>
+<div ng-include="templates.popup"></div>
+<div class="alert alert-{{msgClass}}" ng-if="msgs.length > 0">
+	<p ng-repeat="msg in msgs">{{txt(msg)}}</p>
+</div>
+<div class="page pageBody" id="page">
+	<div class="pageBody members" id="pageBody">
+		<h3><em class="fa fa-user"></em>&nbsp;{{formTitle}}</h3>
+		<div id="groupsListByUser">				
+		<form id="listForm" method="get" action="{{MYDOMAIN}}" target="_self">
+			<input type="hidden" id="option" name="option" value="groups" /> 
+			<input type="hidden" id="task" name="task" value="list_by_member" /> 
+			<input type="hidden" id="type" name="type" value="groups" />
+			<input type="hidden" id="id" name="id" value="{{id}}" />
+			<input type="hidden" id="user_id" name="user_id" value="{{user_id}}" />
+			<input type="hidden" name="{{crsToken}}" value="1" /> 
+			<input type="hidden" id="offset" name="offset" value="{{offset}}" /> 
+			<input type="hidden" id="limit" name="limit" value="{{limit}}" /> 
+			<input type="hidden" id="order" name="order" value="{{order}}" /> 
+			<input type="hidden" id="order_dir" name="order_dir" value="{{order_dir}}" />
+         	<div class="search">
+            	<input type="text" name="search_str" id="search_str" value="{{search_str}}" />
+	            <div style="display:inline-block; width:auto">
+	                 <button type="button" id="searchBtn" class="btn btn-primary">
+	                 	<em class="fa fa-search"></em>
+	                 </button>
+	                 <button type="button" id="delSearchBtn" class="btn btn-danger">
+	                 	<em class="fa fa-times"></em>
+	                 </button>
+	            </div>
+            </div>
+            <table class="table table-bordered">
+			<thead class="thead-dark">
+		  		<tr>
+			  	 	<th class="id {{thClass('g.id', order, order_dir)}}" style="cursor:pointer"
+			  	 		id="th_g.id"> 
+			  	 	    {{txt('ID')}}&nbsp;
+			  	 	    <em class="fa {{titleIcon('g.id', order, order_dir)}}"></em>		  	 	
+			  	 	</th>
+			  	 	<th class="name {{thClass('g.name', order, order_dir)}}" style="cursor:pointer" 
+			  	 	    id="th_g.name">
+			  	 	    {{txt('NAME')}}&nbsp;
+			  	 	    <em class="fa {{titleIcon('g.name', order, order_dir)}}"></em>		  	 	
+	            	</th>
+			  	 	<th class="state {{thClass('g.state', order, order_dir)}}" style="cursor:pointer" 
+			  	 	    id="th_g.state">
+			  	 	    {{txt('STATE')}}&nbsp;		  	 	
+			  	 	    <em class="fa {{titleIcon('g.state', order, order_dir)}}"></em>		  	 	
+			  	 	</th>
+			  	 	<th>
+			  	 	    {{filterUser.nick}} {{txt('HD_USERSTATE')}}&nbsp;		  	 	
+			  	 	</th>
+		  		</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="item in items" 
+				    class="{{trClass()}}" style="cursor:pointer" id="tr_{{item.id}}">
+					<td class="td_id">{{item.id}}</td>
+					<td class="td_name">{{item.name}}</td>
+					<td class="td_state">{{txt('GROUPSTATE_'+item.state)}}</td>
+					<td class="td_userstate">{{txt('USERSTATE_'+item.userstate)}}</td>
+				</tr>
+			</tbody>        
+        	</table>
+	        <ul id="paginator" class="paginator">
+	        	<li class="paginator-total">{{txt('TOTAL')}}:<var>{{total}}</var> {{txt('PAGES')}}</li> 
+	        	<li ng-repeat="pag in paginators" ng-init="itemLoad($last)" 
+	        	    class="page-link {{paginatorClass(pag, offset, total)}}">
+	        		<a ng-if="pag.enabled" target="_self"
+	        		   href="{{MYDOMAIN}}/opt/groups/list_by_member/offset/{{pag.offset}}">
+	        		   {{pag.pageNo}}
+	        		</a>
+	        		<var ng-if="(!pag.enabled) && (pag.pageNo != '...')" 
+	        			class="active">{{pag.pageNo}}</var>
+	        		<span ng-if="(!pag.enabled) && (pag.pageNo == '...')" 
+	        			class="active">{{pag.pageNo}}</span>
+	        	</li>
+	        </ul>
+        </form>
+        </div><!-- groupsListByUser -->
+	</div><!--  #pageBody --> 						
+</div><!--  #page -->			
+<div ng-include="templates.footer"></div>

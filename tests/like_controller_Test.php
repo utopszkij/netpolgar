@@ -3,8 +3,9 @@ declare(strict_types=1);
 global $REQUEST;
 include_once './tests/config.php';
 include_once './core/database.php';
-include_once './controllers/like.php';
 include_once './tests/mock.php';
+include_once './models/users.php';
+include_once './controllers/like.php';
 
 use PHPUnit\Framework\TestCase;
 
@@ -26,6 +27,7 @@ class LikeControllerTest extends TestCase
     }
 
     public function test_start() {
+        $this->request->set('option','like');
         // create and init test database
         $db = new DB();
         $db->statement('CREATE DATABASE IF NOT EXISTS test');
@@ -33,16 +35,19 @@ class LikeControllerTest extends TestCase
     }
     
     public function test_show() {
+        $this->request->set('option','like');
         $this->controller->show('groups',1,'label','');
         $this->expectOutputRegex('/label/');
     }
     
     public function test_list() {
+        $this->request->set('option','like');
         $this->controller->list($this->request);
         $this->expectOutputRegex('/LIKE/');
     }
     
     public function test_likesow() {
+        $this->request->set('option','like');
         $this->request->set('type','groups');
         $this->request->set('id','1');
         $this->controller->likeshow($this->request);
@@ -50,6 +55,7 @@ class LikeControllerTest extends TestCase
     }
     
     public function test_likeupclick() {
+        $this->request->set('option','like');
         $this->request->set('type','groups');
         $this->request->set('id','1');
         $this->controller->likeupclick($this->request);
@@ -57,6 +63,7 @@ class LikeControllerTest extends TestCase
     }
     
     public function test_likedownclick() {
+        $this->request->set('option','like');
         $this->request->set('type','groups');
         $this->request->set('id','1');
         $this->controller->likedownclick($this->request);

@@ -1,0 +1,104 @@
+<!-- szükséges JS funciók: 
+$scope.filterStateSelected(s,filterstate) result: '' or ' "selected"="selected"
+$scope.thClass(s, order, order_dir)  result 'urorder' or 'order'
+$scope.titleIcon(s, order, order_dir) result '' or 'fa-caret-up' or 'fa-caret-down'		  	 	
+$scope.trClass() result 'tr0' or 'tr1'
+
+titleClick(s,order,order_dir)
+itemClick(id)
+paginatorClick(offset)
+
+paginátor:  $scope.paginators=[{"offset":#, "pageNo":#, "enabled":true|false}, ....]
+-->
+<div ng-include="templates.navbar"></div>
+<div ng-include="templates.popup"></div>
+<div class="alert alert-{{msgClass}}" ng-if="msgs.length > 0">
+	<p ng-repeat="msg in msgs">{{txt(msg)}}</p>
+</div>
+<div class="page pageBody" id="page">
+	<div class="pageBody members" id="pageBody">
+		<h3><em class="fa fa-wrench"></em>&nbsp;{{formTitle}}</h3>				
+		<form id="browserForm" method="get" action="{{MYDOMAIN}}" target="_self">
+			<input type="hidden" id="option" name="option" value="projects" /> 
+			<input type="hidden" id="task" name="task" value="list" /> 
+			<input type="hidden" id="type" name="type" value="projects" />
+			<input type="hidden" id="id" name="id" value="{{id}}" />
+			<input type="hidden" id="member_id" name="member_id" value="{{member_id}}" />
+			<input type="hidden" name="{{crsToken}}" value="1" /> 
+			<input type="hidden" id="offset" name="offset" value="{{offset}}" /> 
+			<input type="hidden" id="limit" name="limit" value="{{limit}}" /> 
+			<input type="hidden" id="order" name="order" value="{{order}}" /> 
+			<input type="hidden" id="order_dir" name="order_dir" value="{{order_dir}}" />
+         	<div class="search">
+            	<input type="text" name="searchstr" id="searchstr" value="{{searchstr}}" />
+	            <select name="filterstate" id="filterState" class="selectpicker">
+	             	<option value=""{{filterStateSelected('',filterstate)}}>{{txt('ALLSTATE')}}</option>
+	             	<option value="proposal"{{filterStateSelected('proposal',filterstate)}}>{{txt('proposal')}}</option>
+	             	<option value="active"{{filterStateSelected('active',filterstate)}}>{{txt('active')}}</option>
+	             	<option value="closed"{{filterStateSelected('closed',filterstate)}}>{{txt('closed')}}</option>
+	             	<option value="draft"{{filterStateSelected('draft',filterstate)}}>{{txt('draft')}}</option>
+	             	<option value="waiting"{{filterStateSelected('waiting',filterstate)}}>{{txt('waiting')}}</option>
+	             	<option value="waiting"{{filterStateSelected('ended',filterstate)}}>{{txt('ended')}}</option>
+	            </select>
+	            <div style="display:inline-block; width:auto">
+	                 <button type="button" id="searchBtn" class="btn btn-primary">
+	                 	<em class="fa fa-search"></em>
+	                 </button>
+	                 <button type="button" id="delSearchBtn"class="btn btn-danger">
+	                 	<em class="fa fa-times"></em>
+	                 </button>
+	            </div>
+            </div>
+            <table class="table table-bordered table-striped">
+			<thead class="thead-dark">
+		  		<tr>
+			  	 	<th id="th_p.id" class="project_id {{thClass('p.id', order, order_dir)}}" style="cursor:pointer"> 
+			  	 	    {{txt('id')}}&nbsp;
+			  	 	    <em class="fa {{titleIcon('p.id', order, order_dir)}}"></em>		  	 	
+			  	 	</th>
+			  	 	<th>&nbsp;</th>
+			  	 	<th id="th_p.name" class="nick {{thClass('p.name', order, order_dir)}}" style="cursor:pointer"> 
+			  	 	    {{txt('name')}}&nbsp;
+			  	 	    <em class="fa {{titleIcon('p.name', order, order_dir)}}"></em>		  	 	
+	            	</th>
+			  	 	<th id="th_p.state"  class="state {{thClass('p.state', order, order_dir)}}" style="cursor:pointer"> 
+			  	 	    {{txt('state')}}&nbsp;		  	 	
+			  	 	    <em class="fa {{titleIcon('p.state', order, order_dir)}}"></em>		  	 	
+			  	 	</th>
+			  	 	<th id="th_p.deadline"  class="deadline {{thClass('p.deadline', order, order_dir)}}" style="cursor:pointer"> 
+			  	 	    {{txt('deadline')}}&nbsp;		  	 	
+			  	 	    <em class="fa {{titleIcon('p.deadline', order, order_dir)}}"></em>		  	 	
+			  	 	</th>
+		  		</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="item in items" ng-init="itemLoad($last)" 
+				    style="cursor:pointer" id="tr_{{item.id}}">
+					<td class="td_id">{{item.id}}</td>
+					<td class="td_avatar"><img src="{{item.avatar}}" style="height:30px"/></td>
+					<td class="td_name">{{item.name}}</td>
+					<td class="td_state">{{txt(item.state)}}</td>
+					<td class="td_deadline">{{txt(item.deadline)}}</td>
+				</tr>
+			</tbody>        
+        	</table>
+	        <ul class="paginator">
+	        	<li class="paginator-total">{{txt('TOTAL')}}:<var>{{total}}</var> {{txt('PAGES')}}</li> 
+	        	<li ng-repeat="paginator in paginators" class="page-link {{paginatorClass(paginator, offset, total)}}">
+	        		<a ng-if="paginator.enabled" target="_self"
+	        			href="{{MYDOMAIN}}/opt/members/list/offset/{{paginator.offset}}" >{{paginator.pageNo}}</a>
+	        		<var ng-if="(!paginator.enabled) && (paginator.pageNo != '...')" 
+	        			class="active">{{paginator.pageNo}}</var>
+	        		<span ng-if="(!paginator.enabled) && (paginator.pageNo == '...')" 
+	        			class="active">{{paginator.pageNo}}</span>
+	        	</li>
+	        </ul>
+	        <div class="buttons">
+	        	<button type="button" class="btn btn-primary" id="btnAdd">
+	        		<em class="fa fa-plus-circle"></em>{{txt('ADD')}}
+	        	</button>
+	        </div>
+        </form>
+	</div><!--  #pageBody --> 						
+</div><!--  #page -->
+<div ng-include="templates.footer" ng-init="onload()"></div>

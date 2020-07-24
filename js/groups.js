@@ -1,24 +1,151 @@
-  
-  // params for controller	  
-  // param1  requed	
-  // sid string requed
-  
-  // jquery page onload --- must this function !
 
-  // here $scope is not valid. 
-  function pageOnLoad() {
-  }	
+//le kell tiltani, hogy ugyanaz az em click rutin rövid időn belül kétszer fusson
+// erre szolgál ez a változó
+global.disabledId = '';
+  
+// jquery page onload --- kötelező ez a funkció !
+// here $scope is not valid. 
+function jqueryOnLoad() {
+}	
 
-  function groupsFun() {
+
+// a képernyő inicializálása
+$scope.onload = function() {
 	  if ($('#formGroupForm').length) {
-		  // form init
+		  
+		  // focus cursor
 		  $('#name').focus();
 		  
+		  // form inicializálása, select elenek beállítása
+		  $('#reg_mode').val($scope.item.reg_mode);
+		  $('#state').val($scope.item.state);
+		  if ($scope.loggedUser == undefined) {
+			  $scope.loggedUser = {"id":0};
+		  }
+		  
+		  // a csoport adatain csak az "admin" -ok modosithatnak, ők törölhetnek.
+		  if ($scope.userState != 'admin') {
+			  $('#formGroupForm input').attr('readonly','readonly');
+			  $('#formGroupForm textarea').attr('readonly','readonly');
+			  $('#formGroupForm select').attr('readonly','readonly');
+			  $('#formGroupForm select').attr('disabled','disabled');
+			  $('#btnRemove').hide();
+			  $('#btnOk').hide();
+			  $('#btnCancel').hide();
+			  $('#btnRemove').hide();
+		  }
+		  
+		  if ($scope.item.id < 0) {
+			  // virtuális root rekord
+			  $('#formGroupForm input').attr('readonly','readonly');
+			  $('#formGroupForm textarea').attr('readonly','readonly');
+			  $('#formGroupForm select').attr('readonly','readonly');
+			  $('#formGroupForm select').attr('disabled','disabled');
+			  $('#btnRemove').hide();
+		  }
+		  
+		  // lezárt  állapotban a csoporttal semmi nem csinálható
+		  if ($scope.item.state == 'closed') {
+			  $('#formGroupForm input').attr('readonly','readonly');
+			  $('#formGroupForm textarea').attr('readonly','readonly');
+			  $('#formGroupForm select').attr('readonly','readonly');
+			  $('#formGroupForm select').attr('disabled','disabled');
+			  $('#btnRemove').hide();
+			  $('#btnOk').hide();
+			  $('#btnCancel').hide();
+			  $('#btnRemove').hide();
+			  $('#btnCandidate').hide();
+			  $('#btnLogin').hide();
+			  $('#btnExit').hide();
+		  }
+
+		  // látogatók semmit nem csinálhatnak
+		  if ($scope.loggedUser.id <= 0) {
+			  $('#btnOk').hide();
+			  $('#btnCancel').hide();
+			  $('#btnRemove').hide();
+			  $('#btnCandidate').hide();
+			  $('#btnLogin').hide();
+			  $('#btnExit').hide();
+		  }
+		  
+		  // csak tagok léphetnek ki
+		  if ($scope.userState != 'active') {
+			  $('#btnExit').hide();
+		  }
+		  
+		  // új felvitelnés a sátusz csak "proposal" lehet és nem modosítható
+		  if ($scope.item.id == 0) {
+			  $('#state').val('proposal');
+			  $('#state').attr('disabled','disabled');
+		  }
+		  
+		  // like gombok és értékek inicializálása, like btnclick -ek success eljátrása is hivja 
+		  $scope.likeAdjust = function() {
+			  $scope.userMember = (($scope.userState == 'active') || ($scope.userState == 'admin'));
+			  if ($scope.userMember && 
+				  (($scope.item.state == 'active') || ($scope.item.state == 'proposal'))) {
+				  $('#likeUpBtn').attr('disabled',false);
+				  $('#likeDownBtn').attr('disabled',false);
+			  } else {
+				  $('#likeUpBtn').attr('disabled','disabled');
+				  $('#likeDownBtn').attr('disabled','disabled');
+			  }
+			  $('#likeUpBtn var').html($scope.likeCount.up);
+			  $('#likeDownBtn var').html($scope.likeCount.down);
+			  if ($scope.likeCount.upChecked) {
+				  $('#likeUpBtn em.fa-check').show();
+			  } else {
+				  $('#likeUpBtn em.fa-check').hide();
+			  }
+			  if ($scope.likeCount.downChecked) {
+				  $('#likeDownBtn em.fa-check').show();
+			  } else {
+				  $('#likeDownBtn em.fa-check').hide();
+			  }
+		  };
+		  $scope.likeAdjust();
+		  
+		  // process ENTER key put
+		  $('#formGroupForm').keyup(function (event) {
+			  if ( event.which == 13 ) {
+				   $('#btnOK').click();
+			  }			  
+		  });
+		  
+		  // form validátor segéd funkciók
 		  global.invalidNumber = function(fieldName) {
 			  $('#'+fieldName).addClass('is-invalid');
 			  return $scope.txt('INVALID_NUMBER')+"<br />";
 		  };
 		  
+		  // click esemény kezelők
+		  $('#likeUpBtn').click( function() {
+			  if ($('#likeUpBtn').attr('disabled') != 'disabled') {
+				  $('#likeUpBtn').attr('disabled','disabled');
+				  var url = $scope.MYDOMAIN+'/opt/likes/setlike/type/groups/id/'+$scope.id;
+				  $.get(url, function(result) {
+					  // '{up, down, upChecked, downChecked, state}'
+					  $scope.likeCount = JSON.parse(result);
+					  $scope.state = $scope.likeCount.state;
+					  $('#state').val($scope.state);
+					  window.setTimeout($scope.likeAdjust,500);
+				  });
+			  }  
+		  });
+		  $('#likeDownBtn').click( function() {
+			  if ($('#likeDownBtn').attr('disabled') != 'disabled') {
+				  $('#likeDownBtn').attr('disabled','disabled');
+				  var url = $scope.MYDOMAIN+'/opt/likes/setdislike/type/groups/id/'+$scope.id;
+				  $.get(url, function(result) {
+					  // '{up, down, upChecked, downChecked, state}'
+					  $scope.likeCount = JSON.parse(result);
+					  $scope.state = $scope.likeCount.state;
+					  $('#state').val($scope.state);
+					  window.setTimeout($scope.likeAdjust,500);
+				  });
+			  }  
+		  });
 		  $('#btnOK').click(function() {
 			  var msgs = '';
 			  $('#name').removeClass('is-invalid');
@@ -80,70 +207,192 @@
 			  $('#formGroupForm').attr('action',$scope.MYADMIN + '/opt/groups/add/parentid/'+$scope.item.id);
 			  $('#formGroupForm').submit();
 		  });
-		  if ($scope.user == undefined) {
-			  $scope.user = {"id":0};
-		  }
-		  if ($scope.userMember == undefined) {
-			  $scope.userMember = false;
-		  }
-		  $('#reg_mode').val($scope.item.reg_mode);
-		  $('#state').val($scope.item.state);
-		  if ($scope.userGroupAdmin) {
-			  $('#btnBack').hide();
-		  } else {	  
-			  $('#formGroupForm input').attr('readonly','readonly');
-			  $('#formGroupForm textarea').attr('readonly','readonly');
-			  $('#formGroupForm select').attr('readonly','readonly');
-			  $('#formGroupForm select').attr('disabled','disabled');
-			  $('#btnOK').hide();
-			  $('#btnCancel').hide();
-			  $('#btnRemove').hide();
-			  $('#btnAdd').hide();
-		  }
-		  if ($scope.item.id < 0) {
-			  // virtuális root rekord
-			  $('#formGroupForm input').attr('readonly','readonly');
-			  $('#formGroupForm textarea').attr('readonly','readonly');
-			  $('#formGroupForm select').attr('readonly','readonly');
-			  $('#formGroupForm select').attr('disabled','disabled');
-		  }
-		  if (($scope.item.state == 'closed') | ($scope.item.state == 'proposal')) {
-			  $('#btnCandidate').hide();
-			  $('#btnLogin').hide();
-			  $('#btnExit').hide();
-		  } else if ($scope.userMember) {
-			  $('#btnCandidate').hide();
-			  $('#btnLogin').hide();
-		  } else {
-			  $('#btnExit').hide();
-			  if (($scope.item.reg_mode == 'candidate') | ($scope.user.id == 0)) {
-				  $('#btnLogin').hide();
-			  }
-			  if (($scope.item.reg_mode == 'self') | ($scope.user.id == 0)) {
-				  $('#btnCandidate').hide();
-			  }
-			  if (($scope.item.reg_mode == 'admin') | ($scope.user.id == 0)) {
-				  $('#btnLogin').hide();
-				  $('#btnCandidate').hide();
-			  }
-		  }
 	  } // form 
 	  
 	  if ($('#groupsList').length) {
 		  if (!$scope.userGroupAdmin) {
 			  $('#addSubGroup').hide();
 		  }
+		  $scope.treeInit();
 	  } // groupList 
-	  
+
+	  if ($('#groupsListByUser').length) {
+		  if (!$scope.userGroupAdmin) {
+			  $('#addSubGroup').hide();
+		  }
+		  $('#groupsListByUser tbody tr').click(function() {
+			  var group_id = this.id.substring(3,100);
+			  var url = $scope.MYDOMAIN + '/opt/groups/form/id/' + group_id;
+			  window.location = url;
+		  });
+		  //+ browser
+		  $('#searchBtn').click(function() {
+			  $('#offset').val(0);
+			  $('#listForm').submit();
+		  });
+		  $('#delSearchBtn').click(function() {
+			  $('#filter_str').val('');
+			  $('#offset').val(0);
+			  $('#listForm').submit();
+		  });
+		  $('#search_str').keyup(function(event) {
+			  if ( event.which == 13 ) {
+				   $('#listForm').click();
+			  }			  
+		  });
+		  $scope.thClass = function(s, order, order_dir)  {
+			  	//result 'unorder' or 'order'
+			  	var result = 'unorder';
+			  	if (s == order) {
+			  		result = 'order';
+			  	}
+			  	return result;
+		  };
+		  $scope.titleIcon = function(s, order, order_dir) {
+			  	//result '' or 'fa-caret-up' or 'fa-caret-down'
+			  	var result = '';
+			  	if ((s == order) & (order_dir == 'DESC')) {
+			  		result = ' fa-caret-up';
+			  	}
+			  	if ((s == order) & (order_dir == 'ASC')) {
+			  		result = ' fa-caret-down';
+			  	}
+			  	return result;
+		  };
+		  $scope.trClassStr = 'tr0';
+		  $scope.trClass = function() {
+			  	//result 'tr0' or 'tr1'
+			  	if ($scope.trClassStr == 'tr1') {
+			  		$scope.trClassStr = 'tr0';
+			  	} else {
+			  		$scope.trClassStr = 'tr1';
+			  	}
+			  	return $scope.trClassStr;
+		  };
+		  $('#listForm thead th').click(function() {
+			  var name = this.id.substring(3,100);
+			  if (name == $scope.order) {
+				  if ($scope.order_dir == 'ASC') {
+					  $('#order_dir').val('DESC');
+				  } else {
+					  $('#order_dir').val('ASC');
+				  }
+			  } else {
+				  $('#order').val(name);
+				  $('#order_dir').val('ASC');
+			  }
+			  $('#offset').val(0);
+			  $('#listForm').submit();
+		  });
+		  //- browser
+	  } // groupsListByUser
 	  $('#scope').show();
 	  return 'groups';
-  }
-  
-  // jquery pageOnLoad
-  $(function() {
-  	pageOnLoad();
-  });	
+ }; // groupsFun
 
-  // angular pageOnLoad
-  groupsFun();
   
+ 
+/**
+* a subgroup nem biztos, hogy be van olvasva (elöször csak egy üres ul kerül kialakitásra)
+* tehát lehet, hogy be kell olvasni az adatbázisból AJAX hívással
+* @param JqueryUlObject subGroup
+* @param int parentId 
+* @param function() success function
+*/
+ $scope.loadSubGroup = function(subGroup, parentId, successFun) {
+	 // be van már olvasva?
+     if (subGroup[0].childElementCount <= 0) {
+	        global.working(true);
+	        // ajax server result: {parentId:###, items:[{id,name,childs:bool}..... ]}
+	        // ajaxhivás(parentId, function(result) {
+	        var url = '<?php echo MYDOMAIN?>/opt/groups/loadsubgroup';
+	        var data = {"parentId": parentId};
+	        global.post(url, data,  function(res) {
+		        		//  res.items elemekkel az ul feltöltése
+						var parentId = res.parentId;
+						var ul = $('#i_'+parentId+' ul:first');
+						for (var i=0; i < res.items.length; i++) {
+							if (res.items[i].childs) {
+								var newLi = $('<li id="i_'+res.items[i].id+'">'+
+										'<em class="fa fa-plus-square" style="cursor:pointer"></em>'+
+										'<var>'+
+										'<img class="groupIcon" src="'+res.items[i].avatar+'" />'+
+										res.items[i].name+
+										'</var></li>');
+								ul.append(newLi);
+								var newUl = '<ul style="display:none"></ul>';
+								$('#i_'+res.items[i].id).append(newUl);
+							} else {
+								var newLi = $('<li id="i_'+res.items[i].id+'">'+
+										'<em></em>'+
+										'<var>'+
+										'<img class="groupIcon" src="'+res.items[i].avatar+'" />'+
+										res.items[i].name+
+										'</var></li>');
+								ul.append(newLi);
+							}
+						}
+	    		        global.working(false);
+	    		        $scope.treeInit('i_'+parentId);
+	    		        successFun();
+	        });
+      } else {
+	        successFun();
+	  }
+};
+
+$scope.treeInit = function(parentId) {
+		if (parentId == undefined) {
+			parentId = 'groupsTree';
+		}
+		// em click rutin
+		$('#'+parentId+' em').click(function() {
+			var itemId = this.parentNode.id;
+			if ((itemId == '') | (itemId == undefined) | (itemId == global.disabledId)) {
+				return;
+			}
+			global.disabledId = itemId; 
+			var item = $('#'+itemId);
+			var subgroup = item.find('ul:first');
+			var em = item.find('em:first');
+			if (subgroup.is(':hidden')) {
+				$scope.loadSubGroup(subgroup, itemId.substr(2,100), function() {
+				     subgroup.show();
+				     em.removeClass('fa-plus-square');		
+				     em.addClass('fa-minus-square');		
+				});
+				subgroup.show();
+				em.removeClass('fa-plus-square');		
+				em.addClass('fa-minus-square');		
+			} else {				
+				subgroup.hide();
+				em.removeClass('fa-minus-square');		
+				em.addClass('fa-plus-square');		
+			}
+			window.setTimeout('global.disabledId="";',500);			
+		});
+
+		// name click rutin
+		$('#'+parentId+' var').click(function() {
+			var itemId = this.parentNode.id.substr(2,100);
+			window.location='<?php echo MYDOMAIN; ?>/opt/groups/form/id/'+itemId+
+			'/'+$scope.csrToken+'/1';
+		});
+		return '';
+}; // treeInit
+  
+	
+$(function() {
+    // jquery pageOnLoad
+  	jqueryOnLoad();
+});	
+  
+// az items ciklus minden sorának kiirása után hívódik.
+// a $last = true jelti, hogy ez volt az utolsó elem
+$scope.itemLoad = function($last) {
+	if ($last) {
+		$scope.onload();
+	}
+	return '';
+}
+

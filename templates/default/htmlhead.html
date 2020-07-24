@@ -4,8 +4,9 @@
     <base href="{{MYDOMAIN}}/" target="_blank">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	 <meta charset="utf-8">
-    <meta name="title" content="Ügyfélkapus login rendszer">
-    <meta name="description" content="web szolgáltatás e-demokrácia programok számára. Regisztráció ügyfélkapus aláírás segitségével.">
+    <meta name="title" content="Netpolgar szabad emberek, szabad társulása">
+    <meta name="description" content="web rendszer. csoport szervezés, projekt menedzselés, virtuális piactér, kommunikáció, szavazások">
+    <meta name="keywords" content="csoport szervezés, projekt menedzselés, virtuális piactér, kommunikáció, szavazások">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Netpolgar</title>
 	<link rel="shortcut icon" type="image/png" href="{{MYDOMAIN}}/favicon.png"> 
@@ -33,6 +34,8 @@
 
     <script type="text/javascript">
     var global = {};
+    global.DEFLNG = "{{DEFLNG}}";
+    global.MYDOMAIN = "{{MYDOMAIN}}";
     global.alert = function(str) {
         // window.alert(str);
         $("#popupYes").hide();

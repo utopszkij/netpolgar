@@ -1,0 +1,55 @@
+			<div ng-include="templates.navbar"></div>
+			<div ng-include="templates.popup"></div>
+        	<div id="divProfileForm">
+        		<h2>{{txt('PROFILE')}}</h2>
+        		<div class="alert alert-danger" ng-if="msgs.length > 0">
+					<p ng-repeat="msg in msgs">{{txt(msg)}}</p>
+				</div>
+
+   				<div ng-include="templates.userssubmenu"></div>
+   				<form class="form-row" id="formRegform"	action="{{ MYDOMAIN }}"
+              	target="_self" method="post">
+              	<input type="hidden" name="option" value="users" />
+              	<input type="hidden" name="task" value="profilesave" />
+              	<input type="hidden" name="{{csrToken}}" value="1" />
+              	<input type="hidden" name="id" id="id" value="{{id}}" />
+        		<input type="hidden" name="enabled" value="{{enabled}}" />
+        		<input type="hidden" name="reg_mode" id="reg_mode" value="{{reg_mode}}" />
+        		<input type="hidden" name="backUrl" id="backUrl" value="{{backUrl}}" />
+                <p id="pAvatar" ng-if="avatarUrl > 'a'">
+                <img id="imgAvatar" src="{{avatarUrl}}" style="display:none" alt="avatar" />
+                </p>
+                <p>
+              		<label>{{txt('NICK')}} *:</label>
+              		<input id="nick" name="nick" type="text" value="{{nick}}"  size="32" />
+              		<input id="origNick" name="origNick" type="hidden" value="{{nick}}"  size="32" disabled="disabled" />
+              	</p>
+              	<p>
+              		<label>{{txt('VALID_NAME')}} *:</label>
+              		<input id="name" name="name" type="text" value="{{name}}"  size="50" />
+              	</p>
+              	<p>
+              		<label>{{txt('EMAIL')}} *:</label>
+              		<input id="email" name="email" type="text" value="{{email}}"  size="50" />
+              	</p>
+              	<p>
+              		<label>{{txt('AVATAR')}}:</label>
+              		<input id="avatar" name="avatar" type="text" value="{{avatar}}"  size="50" />
+              		<button type="button" id="btnAvatarShow">
+              			<em class="fa fa-eye"></em>
+              		</button>
+              	</p>
+			    <div class="clear"><br /></div>
+              	<p class="formButtons">
+              		<button type="button" id="btnOk" class="btn btn-primary">
+              			<em class="fa fa-check"></em>{{txt('OK')}}</button>&nbsp;
+              		<button type="button" id="btnCancel" class="btn btn-secondary">
+              			<em class="fa fa-arrow-left"></em>{{txt('CANCEL')}}</button>&nbsp;
+              		&nbsp;&nbsp;&nbsp;
+              		<button type="button" id="btnRemove" class="btn btn-danger" ng-if="id > 0">
+              			<em class="fa fa-times-circle"></em>{{txt('REMOVE_ACCOUNT')}}</button>&nbsp;
+              	</p>
+              </form>
+			</div>
+		    <div class="clear"></div>
+			<div ng-include="templates.footer" onload="onload()"></div>

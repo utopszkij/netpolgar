@@ -4,6 +4,7 @@ global $REQUEST;
 include_once './tests/mock.php';
 include_once './tests/config.php';
 include_once './core/database.php';
+include_once './models/users.php';
 include_once './controllers/adatkezeles.php';
 
 use PHPUnit\Framework\TestCase;
@@ -21,12 +22,14 @@ class adatkezelesControllerTest extends TestCase
         parent::__construct();
         $this->controller = new AdatkezelesController();
         $this->request = new Request();
+        $this->request->set('option','adatkezeles');
         $REQUEST = $this->request;
         
     }
     public function test_start() {
         // create and init test database
         $db = new DB();
+        $db->statement('DROP DATABASE test');
         $db->statement('CREATE DATABASE IF NOT EXISTS test');
         $this->assertEquals('',$db->getErrorMsg());
     }
