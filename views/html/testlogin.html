@@ -1,0 +1,21 @@
+			<div ng-include="templates.navbar"></div>
+			<div ng-include="templates.popup"></div>
+        	<div id="divTestloginForm" class="pageBody" style="text-align:center; padding:20px; height:500px">
+        		<h2>Test login</h2>
+        		<p> </p>
+        		<div class="alert alert-danger" ng-if="msgs.length > 0">
+					<p ng-repeat="msg in msgs">{{txt(msg)}}</p>
+				</div>
+					<a href="./index.php/opt/users/testlogin/user/testadmin" target="_self">
+						<img src="https://image.flaticon.com/icons/svg/2856/2856679.svg" style="height:30px" />Testadmin</a>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;						
+					<a href="./index.php/opt/users/testlogin/user/testuser" target="_self">
+						<img src="https://image.flaticon.com/icons/svg/1876/1876698.svg" style="height:30px" />Testuser</a>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<a href="./index.php/opt/users/login/uklogin/1" target="_self">
+						<img src="https://uklogin.tk/templates/default/logo.png" style="height:30px" />
+						Ügyfélkapus login</a>
+											
+			</div>
+		    <div class="clear"></div>
+			<div ng-include="templates.footer" onload="onload()"></div>

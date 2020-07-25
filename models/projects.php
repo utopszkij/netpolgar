@@ -57,13 +57,13 @@ class ProjectsModel extends Model {
                 'type = "projects" and object_id=p.id and user_id = "'.$filter->quote($p->member_id).'"');            
         }
         if ($p->searchstr != '') {
-            $filter->where(['p.name','like','%'.$filter->quote($p->searchstr).'%']);
+            $filter->where(['p.name','like','%'.$p->searchstr.'%']);
         }
         if ($p->filterState != '') {
-            $filter->where(['p.state','=',$filter->quote($p->filterState)]);
+            $filter->where(['p.state','=',$p->filterState]);
         }
         if ($p->member_id != '') {
-            $filter->where(['m.user_id','=',$filter->quote($p->member_id)]);
+            $filter->where(['m.user_id','=',$p->member_id]);
         }
         $filter->order($p->order.' '.$p->order_dir);
         $filter->offset($p->offset);
@@ -126,5 +126,16 @@ class ProjectsModel extends Model {
         }
     }
     
+    /**
+     * utolsó néhány projekt lekérdezése
+     * @param $limit 
+     * @return array of ProjectRecords
+     */
+    public function newProjects(int $limit = 3) {
+        $table = new Table('projects');
+        $table->order('id DESC');
+        $table->limit($limit);
+        return $table->get();
+    }
 } // class
 ?>

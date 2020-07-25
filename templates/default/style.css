@@ -1,4 +1,4 @@
-body {font-family: sans-serif; font-size:14px; background-color:white; line-height:120%;
+body {font-family: poppins sans-serif; font-size:14px; background-color:white; line-height:120%;
    min-height:600px;}
 div {margin:0px; padding:0px; width:100% }
 .pageBody {min-height:600px; padding: 0px}
@@ -103,8 +103,24 @@ button em {margin-right:5px}
 .carousel .buttons em {display:none}
 .carousel .buttons .btn {border-style:solid; border-color:white; border-radius:25px; width:200px; margin-right:30px;}
 
+#newProjects {padding:30px 10px 10px 10px; text-align:center}
+#newProjects h2 {text-align:center; font-size:40px; font-weight:300; color:#232323; padding:20px 0px 20px 0px}
+#newProjects .newProjects2 {vertical-align:top}
+#newProjects .newProject {display:inline-block; width:300px; height: 350px; 
+   overflow:hidden; text-align:center; padding:5px}
+#newProjects .newProject .img {width:300x; height:200px; overflow:hidden}
+#newProjects .newProject h3 {text-align:center; font-size:16px; font-weight:300; color:#232323
+   height:20px; overflow:hidden}
+#newProjects .newProjectTxt {display:inline-block; margin-top:-240px; opacity:0;  
+   width:0px; min-width:0px; height:250px; padding:5px; overflow:hidden;
+   background-color:#EC342C; color:white;
+   font-size:14x; font-weight:300; text-align:center;}
+#newProjects .newProject:hover .newProjectTxt {width:300px; opacity:0.99; transition:0.6s ease} 
+
 .info {background-color:silver; color:black; padding:10px; text-align:center;}   
 /* recent-work and tema-wrap  */
+#suggest {padding:30px 10px 10px 10px; text-align:center}
+#suggest h2 {text-align:center; font-size:40px; font-weight:300; color:#232323; padding:20px 0px 20px 0px}
 #suggest .suggest-item {display:inline-block; 
    width:250px; height:250px; max-width:250px; max-height:250px;
    margin:0px; padding:0px; background-size: cover}

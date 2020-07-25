@@ -4,10 +4,12 @@
         		<div class="alert alert-{{msgClass}}" ng-if="msgs.length > 0">
         			<p ng-repeat="msg in msgs">{{msg}}</p>
         		</div>
-        		
+				<h3><a href="{{MYDOMAIN}}/opt/projects/form/id/{{project.id}}" target="_self">
+						<em class="fa fa-wrench"></em>&nbsp;{{project.name}}
+  				    </a>	
+				</h3>				
+                <h4>{{txt('TASK')}}</h4>
                 <div id="taskForm2">
-                	<h3>{{project.name}}</h3>
-                	<h4>{{txt('TASK')}}</h4>
 				    <form method="post" id="taskForm3" action="./index.php" target="_self">
 				    	<input type="hidden" name="option" value="tasks" />	
 				    	<input type="hidden" name="task" value="save" />	

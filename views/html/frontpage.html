@@ -145,10 +145,26 @@
 			</p>
 </div -->
 		
+<div id="newProjects" ng-if="newProjects.length > 0">
+	<h2>Legújabb projektek</h2>
+	<div class="newProjects2">
+	<div class="newProjects-items" style="display:inline-block; width:auto">
+		<div class="newProject" ng-repeat="newProject in newProjects">
+			<a href="{{MYDOMAIN}}/opt/projects/form/id/{{newProject.id}}" target="_self">
+				<div class="img">
+					<img src="{{newProject.avatar}}" style="width:100%" />
+				</div>
+				<h3>{{newProject.name}}</h3>
+				<div class="newProjectTxt animated rotateInUpLeft">{{newProject.description}}</div>
+			</a>
+		</div>
+		<div class="clear"></div>
+	</div>
+</div>		
+		
 <div id="suggest">
 	<div style="text-align:center">
-		<p> </p>
-		<p class="lead"><strong>Ajánlott oldalak</strong></p>
+		<h2>Ajánlott oldalak</strong></h2>
 		<div class="suggest-items" style="display:inline-block; width:auto">
 							<div class="suggest-item" style="background-image:url('images/recent/item1.png')">
 								<div class="popuptitle animated rotateInUpLeft">

@@ -17,7 +17,10 @@ paginátor:  $scope.paginators=[{"offset":#, "pageNo":#, "enabled":true|false}, 
 </div>
 <div class="page pageBody" id="page">
 	<div class="pageBody tasks" id="pageBody">
-		<h3><em class="fa fa-wrench"></em>&nbsp;{{project.name}}</h3>				
+		<h3><a href="{{MYDOMAIN}}/opt/projects/form/id/{{project.id}}" target="_self">
+				<em class="fa fa-wrench"></em>&nbsp;{{project.name}}
+			</a>	
+		</h3>				
 		<h4>{{formTitle}}</h4>
 		
 		<div id="help">

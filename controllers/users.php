@@ -69,19 +69,20 @@ class UsersController extends CommonController {
 	   $this->redirectTo(config('MYDOMAIN'));
 	}
 
+	/**
+	 * user login 
+	 * @param Request $request - uklogin=1 - test config ellenére uklogin
+	 */
 	public function login(Request $request) {
-	    // local test
-	    if ($_SERVER['REMOTE_ADDR'] == '192.168.0.12') {
-	        global $REQUEST;
-	        $user = new UserRecord();
-	        $user->id = 1;
-	        $user->nick = 'admin';
-	        $user->admin = 1;
-	        $REQUEST->sessionSet('loggedUser', $user);
-	        $this->redirectTo(config('MYDOMAIN'));
-	        return;
+	    $p = $this->init($request, ['uklogin']);
+	    if ($p->uklogin != 1) {
+    	    // local test
+    	    if ((substr($_SERVER['REMOTE_ADDR'],0,7) == '192.168') | 
+    	        (config('TESTVERSION') == 1)) {
+    	        $this->view->testLogin($p);
+    	        return;
+    	    }
 	    }
-	    
 	    $ukloginUrl = 'https://uklogin.tk/openid/authorize/'.
 	   	    '?client_id='.urlencode(config('MYDOMAIN').'/opt/users/accesstoken/').
 	   	    '&nonce='.session_id().
@@ -89,6 +90,43 @@ class UsersController extends CommonController {
 	   	    '&policy='.urlencode(config('MYDOMAIN').'opt/policy/show').
 	   	    '&scope='.urlencode('sub nickname audited');
 	    $this->redirectTo($ukloginUrl);
+	}
+	
+	/**
+	 * test login, ha nincs meg az adatbázisban akkor létrehozza
+	 * @param Request $request user="testuser" vagy 'testadmin'
+	 */
+	public function testlogin(Request $request) {
+	    $p = $this->init($request, ['user']);
+	    global $REQUEST;
+	    $user = new UserRecord();
+	    $table = new table('users');
+	    if ($p->user == 'testadmin') {
+	        $user->id = 3;
+	        $user->nick = $p->user;
+	        $user->admin = 1;
+	        $user->enabled = 1;
+	        $user->avatar = "https://image.flaticon.com/icons/svg/2856/2856679.svg";
+	        $REQUEST->sessionSet('loggedUser', $user);
+	        $w = $this->model->getById($user->id);
+	        if ($w->id <= 0) {
+	            $table->insert($user);
+	        }
+	        $this->redirectTo(config('MYDOMAIN'));
+	    } else if ($p->user == 'testuser') {
+	        $user->id = 4;
+	        $user->nick = $p->user;
+	        $user->admin = 0;
+	        $user->avatar = "https://image.flaticon.com/icons/svg/1876/1876698.svg";
+	        $user->enabled = 1;
+	        $REQUEST->sessionSet('loggedUser', $user);
+	        $w = $this->model->getById($user->id);
+	        if ($w->id <= 0) {
+	            $table->insert($user);
+	        }
+	        $this->redirectTo(config('MYDOMAIN'));
+	    }
+	    return;
 	}
 
 	/**
@@ -143,7 +181,7 @@ class UsersController extends CommonController {
 	    }
 	    if ($p->userId > 1) {
 	        $this->createCsrToken($request, $p);
-	        $p->userData = $this->model->getById($p->userId);
+	        $p->user = $this->model->getById($p->userId);
 	        $this->view->removeaccount($p);
 	    } else {
 	        $this->view->errorMsg(['NOT_FOUND'],$p->backUrl,txt('OK'),$p);

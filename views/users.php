@@ -12,6 +12,7 @@ class UsersView  extends CommonView  {
 	 * @param object $p - loggedUser, userData, backUrl
 	 */
 	public function profileForm(Params $p) {
+	    $this->echoHtmlHead($p);
 	    foreach ($p->loggedUser as $fn => $fv) {
 	        $p->$fn = $fv;
 	    }
@@ -25,36 +26,11 @@ class UsersView  extends CommonView  {
 	 */
 	public function removeaccount(Params $p) {
 	    $this->echoHtmlHead($p);
-	    foreach ($p->user as $fn => $fv) {
+	    foreach ($p->loggedUser as $fn => $fv) {
 	        $p->$fn = $fv;
 	    }
-	    ?>
-        <body ng-app="app">
-          <div ng-controller="ctrl" id="scope" style="display:none">
-			<?php $this->echoHtmlPopup(); ?>
-            <?php $this->echoNavbar($p); ?>
-        	<div id="removeaccount">
-        		<form action="<?php echo MYDOMAIN; ?>/opt/users/doremoveaccount"
-        		    method="post" target="_self">
-        		    <input type="hidden" name="{{csrToken}}" value="1" />
-        		    <input type="hidden" name="backUrl" value="{{backUrl}}" />
-        		    <input type="hidden" name="userId" value="{{userId}}" />
-            		<h2>{{txt('REMOVE_ACCOUNT')}}</h2>
-            		<p><strong>{{userData.nick}} / {{userData.name}}</strong></p>
-            		<p>{{txt('SURE_REMOVE_ACCOUNT')}}</p>
-            		<p>
-            			<button type="submit" class="btn btn-danger">{{txt('YES')}}</button>&nbsp;
-            			<a href="<?php echo $p->backUrl; ?>" target="_self" class="btn btn-secondary">{{txt('NO')}}</a>
-            		</p>
-        		</form>
-			</div>
-		    <div class="clear"></div>
-		    <?php $this->echoFooter(); ?>
-	      </div><!-- #scope -->
-		  <?php $this->loadJavaScriptAngular('users',$p); ?>
-        </body>
-        </html>
-	    <?php
+	    $this->setTemplates($p,['userssubmenu','usersform']);
+	    $this->echoHtmlPage('removeaccount', $p, 'users');
 	}
 
 
@@ -147,6 +123,19 @@ class UsersView  extends CommonView  {
         </html>
 	    <?php
 	}
+	
+	/**
+	 * login form teszt verziohoz
+	 * @param object $p - loggedUser, userData, backUrl
+	 */
+	public function testlogin(Params $p) {
+	    foreach ($p->loggedUser as $fn => $fv) {
+	        $p->$fn = $fv;
+	    }
+	    $this->setTemplates($p,[]);
+	    $this->echoHtmlPage('testlogin', $p, 'users');
+	}
+	
 
 }
 ?>

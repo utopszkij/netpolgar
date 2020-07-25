@@ -14,14 +14,12 @@
 	  $('#scope').show();
 	  
 	  $( window ).scroll(function() {
-		  console.log($(document).scrollTop());
 		  if ($(document).scrollTop() > 10) {
 			  $( "nav" ).css( "background-color", "red" );
 		  } else {
 			  $( "nav" ).css( "background-color", "transparent" );
 		  }
 		});
-	  
 	  return 'frontpage';
 	  
   }

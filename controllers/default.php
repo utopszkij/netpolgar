@@ -18,6 +18,8 @@ class DefaultController extends CommonController {
 	    $request->set('option','frontpage');
 	    $p = $this->init($request,[]); 
 	    $p->cookieEnabled = $request->sessionGet('cookieEnabled',false);
+	    $projectsModel = $this->getModel('projects');
+	    $p->newProjects = $projectsModel->newProjects(3);
 		$this->view->display($p);
 	}
 }

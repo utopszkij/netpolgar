@@ -1,0 +1,23 @@
+        <div ng-include="templates.navbar"></div>
+        <div class="pageBody">
+        	<div id="removeaccount">
+        		<form action="./index.php/opt/users/doremoveaccount"
+        		    method="post" target="_self">
+        		    <input type="hidden" name="{{csrToken}}" value="1" />
+        		    <input type="hidden" name="backUrl" value="{{backUrl}}" />
+        		    <input type="hidden" name="userId" value="{{userId}}" />
+            		<h2>{{txt('REMOVE_ACCOUNT')}}</h2>
+            		<p><strong>{{user.nick}} / {{user.name}}</strong></p>
+            		<p>{{txt('SURE_REMOVE_ACCOUNT')}}</p>
+            		<p>
+            			<button type="submit" class="btn btn-danger">{{txt('YES')}}</button>&nbsp;
+            			<a href="./index.php/opt/users/profile" target="_self" class="btn btn-secondary">{{txt('NO')}}</a>
+            		</p>
+        		</form>
+			</div>
+   	    </div>
+       	<div ng-include="templates.popup"></div>
+	    <div ng-include="templates.footer"></div>
+   	    
+    	    
+    	    

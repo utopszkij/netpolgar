@@ -56,7 +56,10 @@ class TasksModel extends Model {
             $filter->where(['t.description','like','%'.$filter->quote($p->searchstr).'%']);
         }
         if ($p->filterState != '') {
-            $filter->where(['t.state','=',$filter->quote($p->filterState)]);
+            $filter->where(['t.state','=',$p->filterState]);
+        }
+        if ($p->project_id != '') {
+            $filter->where(['t.project_id','=',$p->project_id]);
         }
         $filter->order($p->order.' '.$p->order_dir);
         $filter->offset($p->offset);

@@ -9,6 +9,9 @@
 
   function projectsFun() {
 	  if ($('#browserForm').length > 0) {
+		  
+		  $('#filterState').val($scope.filterState);
+		  
 		  $scope.filterStateSelected = function(s,filterstate) {
 		  	//result: '' or ' "selected"="selected"
 			var result = '';
@@ -72,7 +75,7 @@
 			  }			  
 		  });
 		  $('#btnAdd').click(function() {
-			location = $scope.MYDOMAIN+'/opt/tasks/add/project_id/'+$scope.project_id;
+			location = $scope.MYDOMAIN+'/opt/projects/add';
 		  });
 		  if ($scope.loggedUser.id <= 0) {
 			  $('#btnAdd').hide();
