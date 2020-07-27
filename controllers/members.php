@@ -191,7 +191,7 @@ class MembersController extends CommonController {
 	 * @return array
 	 */
 	public function updateMemberState(Params $p,
-	    string $oldState, string $newStatet): array {
+	    string $oldState, string $newState): array {
 	    $msgs = [];
 	    if (($p->loggedUser->id > 0) & ($p->loggedUser->id == $p->user_id)) {
 	        $objectModel = $this->getModel($p->type);
@@ -201,7 +201,7 @@ class MembersController extends CommonController {
 	                $memberRec = $this->model->getRecordBy($p->type, $p->id, $p->user_id);
 	                if ($memberRec->state == $oldState) {
 	                    $memberRec->type = $p->type;
-	                    $memberRec->objectid = $p->id;
+	                    $memberRec->object_id = $p->id;
 	                    $memberRec->user_id = $p->user_id;
 	                    $memberRec->state = $newState;
 	                    if ($newState == 'none') {
@@ -237,8 +237,8 @@ class MembersController extends CommonController {
 	    $this->checkCsrToken($request);
 	    $this->createCsrToken($request, $p);
 	    $msgs = $this->updateMemberState($p, 'none', 'aspire');
+	    $url = config('MYDOMAIN').'/opt/'.$p->type.'/form/id/'.$p->id.'/'.$p->csrToken.'/1';
 	    if (count($msgs) == 0) {
-	        $url = config('MYDOMAIN').'/opt/'.$p->type.'/form/id/'.$p->id.'/'.$p->csrToken.'/1';
 	        $this->redirectTo($url);
 	    } else {
 	        $this->view->errorMsg($msgs, $url, txt('BACK'), $p);

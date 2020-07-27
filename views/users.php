@@ -13,7 +13,7 @@ class UsersView  extends CommonView  {
 	 */
 	public function profileForm(Params $p) {
 	    $this->echoHtmlHead($p);
-	    foreach ($p->loggedUser as $fn => $fv) {
+	    foreach ($p->userData as $fn => $fv) {
 	        $p->$fn = $fv;
 	    }
 	    $this->setTemplates($p,['userssubmenu','usersform']);

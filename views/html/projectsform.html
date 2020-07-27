@@ -74,8 +74,41 @@
 					    <div class="form-group">
 							    <label>{{txt('NAME')}} *</label>
 							    <input type="text" class="form-control" id="name"
-							     name="name" value="{{item.name}}" />
+								     name="name" value="{{item.name}}" />
 						</div>
+					    <div class="form-group">
+							    <label>&nbsp;</label>
+			                    <div class="memberButtons" style="display:inline-block; width:auto">
+			                  		<var ng-if="loggedUser.id > 0">{{txt('USERSTATE')}}: {{txt(loggedState)}}</var>
+			     					<a href="{{MYDOMAIN}}/opt/members/aspire/type/projects/id/{{item.id}}/user_id/{{loggedUser.id}}/{{csrToken}}/1" 
+			        					     class="btn btn-secondary btn-member" target="_self"
+			        					     ng-if="(item.state == 'active') && ((loggedState == 'none') || (loggedState == 'exiting'))  && (loggedUser.id > 0)">
+			        					   	 <em class="fa fa-sign-in-alt"></em>&nbsp;{{txt('ASPIRE')}}
+			        				</a>
+			     					<a href="{{MYDOMAIN}}/opt/members/quit/type/projects/id/{{item.id}}/user_id/{{loggedUser.id}}/{{csrToken}}/1" 
+			        					     class="btn btn-secondary btn-member" target="_self" 
+			        					     ng-if="(item.state == 'active') && (loggedState == 'active') && (loggedUser.id > 0)">
+			        					   	 <em class="fa fa-sign-out-alt"></em>&nbsp;{{txt('QUIT')}}
+			        				</a>
+			     					<a href="{{MYDOMAIN}}/opt/members/notaspire/type/projects/id/{{item.id}}/user_id/{{loggedUser.id}}/{{csrToken}}/1" 
+			        					     class="btn btn-secondary btn-member" target="_self" 
+			        					     ng-if="(item.state == 'active') && (loggedState == 'aspre') && (loggedUser.id > 0)">
+			        					   	 <em class="fa fa-times"></em>&nbsp;{{txt('NOTASPIRE')}}
+			        				</a>
+			     					<a href="{{MYDOMAIN}}/opt/members/pause/type/projects/id/{{item.id}}/user_id/{{loggedUser.id}}/{{csrToken}}/1" 
+			        					     class="btn btn-secondary btn-member" target="_self" 
+			        					     ng-if="(item.state == 'active') && (loggedState == 'active') && (loggedUser.id > 0)">
+			        					   	 <em class="fa fa-clock"></em>&nbsp;{{txt('PAUSE')}}
+			        				</a>
+			     					<a href="{{MYDOMAIN}}/opt/members/activate/type/projects/id/{{item.id}}/user_id/{{loggedUser.id}}/{{csrToken}}/1" 
+			        					     class="btn btn-secondary btn-member" target="_self" 
+			        					     ng-if="(item.state == 'active') && (loggedState == 'paused') && (loggedUser.id > 0)">
+			        					   	 <em class="fa fa-clock"></em>&nbsp;{{txt('ACTIVATE')}}
+			        				</a>
+			    				</div>
+						</div>
+
+
 						<div class="form-group">
 							    <label>{{txt('state')}} *</label>
 							    <select class="form-control" id="state" name="state">

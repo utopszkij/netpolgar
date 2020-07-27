@@ -27,7 +27,11 @@
 					}
 					var cardHtml = '<div class="card '+taskClass+' '+task.tasktype+'"'+
 					    ' id="'+task.id+'" sequence="'+task.sequence+'">';
-					cardHtml += '<p class="nick"><strong>#'+task.id+'</strong> <img src="'+task.avatar+'" />'+task.nick+'</p>';
+					if (task.nick != '') {
+						cardHtml += '<p class="nick"><strong>#'+task.id+'</strong> <img src="'+task.avatar+'" />'+task.nick+'</p>';
+					} else {
+						cardHtml += '<p class="nick"><strong>#'+task.id+'</strong></p>';
+					}	
 					cardHtml += '<p class="desc">'+task.description+'</p>';
 					cardHtml += '</div>';
 					$('#'+state).append(cardHtml);

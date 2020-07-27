@@ -148,20 +148,58 @@
 <div id="newProjects" ng-if="newProjects.length > 0">
 	<h2>Legújabb projektek</h2>
 	<div class="newProjects2">
-	<div class="newProjects-items" style="display:inline-block; width:auto">
-		<div class="newProject" ng-repeat="newProject in newProjects">
-			<a href="{{MYDOMAIN}}/opt/projects/form/id/{{newProject.id}}" target="_self">
-				<div class="img">
-					<img src="{{newProject.avatar}}" style="width:100%" />
-				</div>
-				<h3>{{newProject.name}}</h3>
-				<div class="newProjectTxt animated rotateInUpLeft">{{newProject.description}}</div>
-			</a>
+		<div class="newProjects-items" style="display:inline-block; width:auto">
+			<div class="newProject" ng-repeat="newProject in newProjects">
+				<a href="{{MYDOMAIN}}/opt/projects/form/id/{{newProject.id}}" target="_self">
+					<div class="img">
+						<img src="{{newProject.avatar}}" style="width:100%" />
+					</div>
+					<h3>{{newProject.name}}</h3>
+					<div class="newProjectTxt animated rotateInUpLeft">{{newProject.description}}</div>
+				</a>
+			</div>
+			<div class="clear"></div>
 		</div>
-		<div class="clear"></div>
-	</div>
+	</div>		
 </div>		
 		
+<div id="newGroups" ng-if="newGroups.length > 0">
+	<h2>Legújabb csoportok</h2>
+	<div class="newGroups2">
+		<div class="newGroups-items" style="display:inline-block; width:auto">
+			<div class="newGroup" ng-repeat="newGroup in newGroups">
+				<a href="{{MYDOMAIN}}/opt/groups/form/id/{{newGroup.id}}" target="_self">
+					<div class="img">
+						<img src="{{newGroup.avatar}}" style="width:100%" />
+					</div>
+					<button type="button" class="btn btn-primary">Bővebben</button>
+					<h3>{{newGroup.name}}</h3>
+					<div class="newGroupTxt animated rotateInUpLeft">{{newGroup.description}}</div>
+				</a>
+			</div>
+			<div class="clear"></div>
+		</div>
+	</div>
+</div>		
+
+<div id="newUsers" ng-if="newUsers.length > 0">
+	<h2>Legújabb tagjaink</h2>
+	<div class="newUsers2">
+		<div class="newUsers-items" style="display:inline-block; width:auto">
+			<div class="newUser" ng-repeat="newUser in newUsers">
+				<a href="{{MYDOMAIN}}/opt/users/form/id/{{newUser.id}}" target="_self">
+					<div class="img">
+						<img src="{{newUser.avatar}}" />
+					</div>
+					<div class="newUserTxt">{{newUser.pubinfo}}</div>
+					<h3>{{newUser.nick}}</h3>
+				</a>
+			</div>
+			<div class="clear"></div>
+		</div>
+	</div>
+</div>		
+
 <div id="suggest">
 	<div style="text-align:center">
 		<h2>Ajánlott oldalak</strong></h2>

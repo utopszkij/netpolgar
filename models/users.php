@@ -8,6 +8,7 @@ class UserRecord {
    public $avatar = ''; // img-re mutató url vagy üres
    public $reg_mode = ''; // 'uklogin' | 'web' | 'facebook' | 'google'
    public $admin = 0;
+   public $pubinfo = '';
 }
 
 
@@ -22,7 +23,8 @@ class UsersModel {
                 ['email','VARCHAR',80,false],
                 ['avatar','VARCHAR',80,false],
                 ['reg_mode','VARCHAR',32,false],
-                ['admin', 'INT',1,false]
+                ['admin', 'INT',1,false],
+                ['pubinfo','TEXT',0,false]
             ],
             ['nick','email']
         );
@@ -211,6 +213,19 @@ class UsersModel {
         $total = $table->count();
         return $table->get();
     }
+    
+    /**
+     * utolsó néhány projekt lekérdezése
+     * @param $limit
+     * @return array of ProjectRecords
+     */
+    public function newUsers(int $limit = 3) {
+        $table = new Table('users');
+        $table->order('id DESC');
+        $table->limit($limit);
+        return $table->get();
+    }
+    
 
 } // class
 ?>

@@ -47,9 +47,6 @@ class TasksModel extends Model {
         if ($p->offset == '') {
             $p->offset = 0;
         }
-        if ($p->limit == '') {
-            $p->limit = 20;
-        }
         $filter = new Filter('tasks','t');
         $filter->setColumns('t.id, t.description, t.tasktype, t.state, t.deadline, t.nick, t.sequence');
         if ($p->searchstr != '') {

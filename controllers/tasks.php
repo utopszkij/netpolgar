@@ -56,26 +56,26 @@ class TasksController extends CommonController {
 	    $memberModel = $this->getModel('members');
 	    $userModel = $this->getModel('users');
 	    $p->loggedState = $memberModel->getState('projects', $p->project_id, $p->loggedUser->id);
-	    
 	    // items elemek szépítése
 	    // szin állítás state alapján, user avatar nick alapján
 	    for ($i = 0; $i < count($p->items);  $i++) {
 	        $p->items[$i]->description = str_replace("\n", " ", $p->items[$i]->description);
 	        $p->items[$i]->description = str_replace("\r", " ", $p->items[$i]->description);
+	        $p->items[$i]->description = str_replace('"', ' ', $p->items[$i]->description);
+	        $p->items[$i]->description = str_replace("'", ' ', $p->items[$i]->description);
 	        if (strlen($p->items[$i]->description) > 60) {
-	            $p->items[$i]->description = substr($p->items[$i]->description,0,60).'...';
+	            $p->items[$i]->description = mb_substr($p->items[$i]->description,0,60).'...';
 	        }
+	        $p->items[$i]->avatar = '';
 	        if ($p->items[$i]->nick != '') {
 	            $user = $userModel->getByNick($p->items[$i]->nick);
 	            $p->items[$i]->avatar = $user->avatar;
 	            if ($p->items[$i]->avatar == '') {
 	                $p->items[$i]->avatar = 'images/noavatar.png';
 	            }
-	        } else {
-	            $p->items[$i]->avatar = '';
 	        }
 	    }
-        $this->view->browser($p);
+	    $this->view->browser($p);
 	}
 	
 	/**

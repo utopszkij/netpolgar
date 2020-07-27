@@ -104,7 +104,7 @@
                   		<input id="name" name="name" type="text" value="{{item.name}}"  size="80" />
                   		<br />                 
                   		<var ng-if="loggedUser.id > 0">{{txt('USERSTATE')}}: {{txt(userState)}}</var>
-     					<a href="{{MYDOMAIN}}/opt/members/aspire/type/groups/id/{{groupId}}/user_id/{{loggedUser.id}}/{{csrToken}}/1" 
+     					<a href="{{MYDOMAIN}}/opt/members/aspire/type/groups/id/{{item.id}}/user_id/{{loggedUser.id}}/{{csrToken}}/1" 
         					     class="btn btn-secondary btn-member" target="_self"
         					     ng-if="(item.state == 'active') && ((userState == 'none') || (userState == 'exiting'))  && (loggedUser.id > 0)">
         					   	 <em class="fa fa-sign-in-alt"></em>&nbsp;{{txt('ASPIRE')}}

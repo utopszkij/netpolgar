@@ -326,10 +326,19 @@ class UsersController extends CommonController {
 	 * publikus user profil
 	 * @param Request $request - user_id
 	 */
-	public function public_profile(Request $request) {
-	    $p = $this->init($request,['user_id']);
+	public function form(Request $request) {
+	    $p = $this->init($request,['id']);
 	    $this->view->setTemplates($p,['navbar','footer']);
-	    $this->view->echoHtmlPage('working', $p);
+	    $this->createCsrToken($request, $p);
+	    $p->loggedUser = $this->model->getById($p->loggedUser->id);
+	    $p->userData = $this->model->getById($p->id);
+	    $p->userDataAvatarUrl = $p->avatarUrl;
+	    $p->backUrl = MYDOMAIN;
+	    if ($p->userData->id > 0) {
+	        $this->view->profileForm($p);
+	    } else {
+	        $this->view->errorMsg(['NOT_FOUND'], '','', $p);
+	    }
 	}
 }
 ?>

@@ -408,5 +408,17 @@ class GroupsModel {
         }
     }
     
+    /**
+     * utolsó néhány projekt lekérdezése
+     * @param $limit
+     * @return array of ProjectRecords
+     */
+    public function newGroups(int $limit = 3) {
+        $table = new Table('groups');
+        $table->order('id DESC');
+        $table->limit($limit);
+        return $table->get();
+    }
+    
 } // class
 ?>

@@ -28,5 +28,20 @@ DEFINE('PROJECT_TO_CLOSE','Projekt lezárás feltétele [tagság ennyi százalá
 DEFINE('MEMBER_TO_ACTIVE','Tag aktíválás feltétele [támogatás darab]');
 DEFINE('MEMBER_TO_EXCLUDE','Tag kizárás feltétele [tagság ennyi százaláka ellenzi]');
 DEFINE('BACK','Vissza');
+DEFINE('ASPIRE','Tagnak jelentkezem');
+DEFINE('QUIT','Kilépek a projektből');
+DEFINE('NOTASPIRE','Mégsem jelentkezek');
+DEFINE('PAUSE','Szüneteltetem a tagságomat');
+DEFINE('ACTIVATE','Aktíválás');
+DEFINE('USERSTATE','Tagságod');
+DEFINE('none','Nem vagy tag');
+DEFINE('aspirant','Tagnak jelentkeztél');
+DEFINE('pause','Szüneteltetve');
+DEFINE('excluded','Kizárva');
+
+
+
+
+
 
 ?>

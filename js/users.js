@@ -37,6 +37,16 @@
 			  '/p1/0'+
 			  '?backUrl='+encodeURI($scope.backUrl);
 		  });
+		  
+		  if ($scope.userData.id != $scope.loggedUser.id) {
+			  // nem modosítható
+			  $('input').attr('disabled','disabled');
+			  $('textarea').attr('disabled','disabled');
+			  $('select').attr('disabled','disabled');
+			  $('#btnOk').hide();
+			  $('#btnRemove').hide();
+			  $('#btnCanvel span').html(txt('BACK'));
+		  }
 	  }
 	  
 	  global.reOrder = function(fieldName) {
