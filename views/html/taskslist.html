@@ -1,0 +1,155 @@
+<!-- szükséges JS funciók: 
+$scope.filterStateSelected(s,filterstate) result: '' or ' "selected"="selected"
+$scope.thClass(s, order, order_dir)  result 'urorder' or 'order'
+$scope.titleIcon(s, order, order_dir) result '' or 'fa-caret-up' or 'fa-caret-down'		  	 	
+$scope.trClass() result 'tr0' or 'tr1'
+
+titleClick(s,order,order_dir)
+itemClick(id)
+paginatorClick(offset)
+
+paginátor:  $scope.paginators=[{"offset":#, "pageNo":#, "enabled":true|false}, ....]
+-->
+<div ng-include="templates.navbar"></div>
+<div ng-include="templates.popup"></div>
+<div class="alert alert-{{msgClass}}" ng-if="msgs.length > 0">
+	<p ng-repeat="msg in msgs">{{txt(msg)}}</p>
+</div>
+<div class="page pageBody" id="page">
+	<div class="pageBody tasks" id="pageBody">
+		<h3><a href="{{MYDOMAIN}}/opt/projects/form/id/{{project.id}}" target="_self">
+				<em class="fa fa-wrench"></em>&nbsp;{{project.name}}
+			</a>	
+		</h3>				
+		<h4>{{formTitle}}</h4>
+		
+		<div id="help">
+			<p class="helpIcon" style="display:none">
+				<em class="btn btn-secondary" onclick="$('#help .helpIcon').hide(); $('#helpBody').show()" title="{{txt('HELP')}}">?</em>
+			</p>
+			<div id="helpBody">
+				<em class="btn btn-secondary" 
+				    onclick="$('#help .helpIcon').show(); $('#helpBody').hide()"
+				    style="float:right"
+				    title="{{txt('CLOSE')}}">X</em>
+				<div ng-include="'langs/taskslist_help_hu.html'"></div>
+				<div class="clear"></div>
+			</div>
+		</div>
+		<div style="text-align:center">
+		<div class="kanban">
+			<div id="wait_req" class="kanbanCol" valign="top">
+				<h4><em class="fa fa-caret-square-down"></em>{{txt('wait_req')}}</h4>
+				<div class="tasks"></div>
+			</div>
+			<div id="wait_run" class="kanbanCol" valign="top">
+				<h4><em class="fa fa-caret-square-down"></em>{{txt('wait_run')}}</h4>
+				<div class="tasks"></div>
+			</div>
+			<div id="runing" class="kanbanCol" valign="top">
+				<h4><em class="fa fa-caret-square-down"></em>{{txt('runing')}}</h4>
+				<div class="tasks"></div>
+			</div>
+			<div id="wait_control" class="kanbanCol" valign="top">
+				<h4><em class="fa fa-caret-square-down"></em>{{txt('wait_control')}}</h4>
+				<div class="tasks"></div>
+			</div>
+			<div id="closed" class="kanbanCol" valign="top">
+				<h4><em class="fa fa-caret-square-down"></em>{{txt('closed')}}</h4>
+				<div class="tasks"></div>
+			</div>
+			<div class="clear"></div>
+		</div>
+		</div>
+				
+		<form id="browserForm" method="get" action="{{MYDOMAIN}}" target="_self">
+			<input type="hidden" id="option" name="option" value="tasks" /> 
+			<input type="hidden" id="task" name="task" value="list" /> 
+			<input type="hidden" id="id" name="id" value="{{id}}" />
+			<input type="hidden" id="project_id" name="project_id" value="{{project_id}}" />
+			<input type="hidden" name="{{crsToken}}" value="1" /> 
+			<input type="hidden" id="offset" name="offset" value="{{offset}}" /> 
+			<input type="hidden" id="limit" name="limit" value="{{limit}}" /> 
+			<input type="hidden" id="order" name="order" value="{{order}}" /> 
+			<input type="hidden" id="order_dir" name="order_dir" value="{{order_dir}}" />
+         	<div class="search" style="display:none">
+            	<input type="text" name="searchstr" id="searchstr" value="{{searchstr}}" />
+	            <input type="text" name="filterstate" id="filterState" value="{{filterstate}}" />
+	            <div style="display:inline-block; width:auto">
+	                 <button type="button" id="searchBtn" class="btn btn-primary">
+	                 	<em class="fa fa-search"></em>
+	                 </button>
+	                 <button type="button" id="delSearchBtn"class="btn btn-danger">
+	                 	<em class="fa fa-times"></em>
+	                 </button>
+	            </div>
+            </div>
+            <table class="table table-bordered table-striped" style="display:none">
+			<thead class="thead-dark">
+		  		<tr>
+			  	 	<th id="th_t.id,t.sequence" class="task_id {{thClass('t.id,t.sequence', order, order_dir)}}" style="cursor:pointer"> 
+			  	 	    {{txt('id')}}&nbsp;
+			  	 	    <em class="fa {{titleIcon('t.id,t.sequence', order, order_dir)}}"></em>		  	 	
+			  	 	</th>
+			  	 	<th id="th_t.description,t.sequence" class="description {{thClass('t.description,t.sequence', order, order_dir)}}" style="cursor:pointer"> 
+			  	 	    {{txt('description')}}&nbsp;
+			  	 	    <em class="fa {{titleIcon('t.description,t.sequence', order, order_dir)}}"></em>		  	 	
+	            	</th>
+			  	 	<th id="th_t.state,t.sequence"  class="state {{thClass('t.state,t.sequence', order, order_dir)}}" style="cursor:pointer"> 
+			  	 	    {{txt('state')}}&nbsp;		  	 	
+			  	 	    <em class="fa {{titleIcon('t.state,t.sequence', order, order_dir)}}"></em>		  	 	
+			  	 	</th>
+			  	 	<th id="th_t.deadline,t.sequence"  class="deadline {{thClass('t.deadline,t.sequence', order, order_dir)}}" style="cursor:pointer"> 
+			  	 	    {{txt('deadline')}}&nbsp;		  	 	
+			  	 	    <em class="fa {{titleIcon('t.deadline,t.sequence', order, order_dir)}}"></em>		  	 	
+			  	 	</th>
+			  	 	<th id="th_t.tasktype,t.sequence"  class="tasktype {{thClass('t.tasktype,t.sequence', order, order_dir)}}" style="cursor:pointer"> 
+			  	 	    {{txt('tasktype')}}&nbsp;		  	 	
+			  	 	    <em class="fa {{titleIcon('t.tasktype,t.sequence', order, order_dir)}}"></em>		  	 	
+			  	 	</th>
+			  	 	<th id="th_t.nick,t.sequence"  class="nick {{thClass('t.nick,t.sequence', order, order_dir)}}" style="cursor:pointer"> 
+			  	 	    {{txt('nick')}}&nbsp;		  	 	
+			  	 	    <em class="fa {{titleIcon('t.nick,t.sequence', order, order_dir)}}"></em>		  	 	
+			  	 	</th>
+			  	 	
+		  		</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="item in items" ng-init="itemLoad($last)" 
+				    style="cursor:pointer" id="tr_{{item.id}}">
+					<td class="td_id">{{item.id}}</td>
+					<td class="td_description"><var class="{{item.state}}">{{item.description}}</var></td>
+					<td class="td_state">{{txt(item.state)}}</td>
+					<td class="td_deadline">{{item.deadline}}</td>
+					<td class="td_tasktype">{{txt(item.tasktype)}}</td>
+					<td class="td_nick">
+					  <img src="{{item.avatar}}" class="taskAvatar" ng-if="item.avatar != ''" />
+					  {{txt(item.nick)}}
+					</td>
+				</tr>
+			</tbody>        
+        	</table>
+	        <ul class="paginator" style="display:none">
+	        	<li class="paginator-total">{{txt('TOTAL')}}:<var>{{total}}</var> {{txt('PAGES')}}</li> 
+	        	<li ng-repeat="paginator in paginators" class="page-link {{paginatorClass(paginator, offset, total)}}">
+	        		<a ng-if="paginator.enabled" target="_self"
+	        			href="{{MYDOMAIN}}/opt/members/list/offset/{{paginator.offset}}" >{{paginator.pageNo}}</a>
+	        		<var ng-if="(!paginator.enabled) && (paginator.pageNo != '...')" 
+	        			class="active">{{paginator.pageNo}}</var>
+	        		<span ng-if="(!paginator.enabled) && (paginator.pageNo == '...')" 
+	        			class="active">{{paginator.pageNo}}</span>
+	        	</li>
+	        </ul>
+	        <div class="buttons">
+	        	<button type="button" class="btn btn-primary" id="btnAdd">
+	        		<em class="fa fa-plus-circle"></em>{{txt('ADD')}}
+	        	</button>
+	        	&nbsp;&nbsp;&nbsp;&nbsp;<em class="bug">{{txt('bug')}}</em>
+	        	&nbsp;<em class="task">{{txt('task')}}</em>
+	        	&nbsp;<em class="request">{{txt('request')}}</em>
+	        	&nbsp;<em class="suggestion">{{txt('suggestion')}}</em>
+	        </div>
+        </form>
+	</div><!--  #pageBody --> 						
+</div><!--  #page -->
+<div ng-include="templates.footer" ng-init="onload()"></div>

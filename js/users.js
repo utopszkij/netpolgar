@@ -11,176 +11,11 @@
   }	
 
   function mainFun() {
-	  if ($('#registForm').length) {
-		  /**
-		   * regmod selector változás eseménykezelő
-		   */
-		  $('#regmodSelect').change(function() {
-			  if ($('#regmodSelect').val() == 'uklogin') {
-				  $scope.reg_mode = 'uklogin';
-				  $('#ukloginRegform').show();
-				  $('#ifrmUklogin').attr('src',"https://uklogin.tk/opt/userregist/registform/client_id/12");
-				  $('#webRegform').hide();
-			  } else if ($('#regmodSelect').val() == 'web') {
-				  $scope.reg_mode = 'web';
-				  $scope.avatarUrl = '';
-				  $('#imgAvatar').hide();
-				  $('#reg_mode').val('web');
-				  $('#ukloginRegform').hide();
-				  $('#webRegform').show();
-				  
-				  // fokusz beállítása
-				  if (($('#nick').val() == '') && ($('#nick').attr('disabled') != 'disabled')) {
-					  $('#nick').focus();
-				  } else {
-					  $('#name').focus();
-				  }
-	
-				  // inputban és textareaban ENTER click --> Ok click
-				  $('input').keypress(function (e) {
-					  if (e.which == 13) {
-					    $('#btnOk').click();
-					    return false;    //<---- Add this line
-					  }
-				  });
-				  $('textarea').keypress(function (e) {
-					  if (e.which == 13) {
-					    $('#btnOk').click();
-					    return false;    //<---- Add this line
-					  }
-				  });
-				  
-			  } else {
-				  $scope.reg_mode = '';
-				  $('#ukloginRegform').hide();
-				  $('#webRegform').hide();
-			  }
-		  });
-		  
-	      $('#nick').attr('disabled',false);
-
-		  /**
-		   * avatar beíró mező változás eseménykezelő
-		   */
-		  $('#avatar').change(function() {
-			  $scope.avatarUrl = $('#avatar').val();
-			  $('#imgAvatar').attr('src',$scope.avatarUrl);
-			  if ($scope.avatarUrl == '') {
-				  $('#imgAvatar').hide();
-			  } else {
-				  $('#imgAvatar').show();
-			  }
-		  });
-		  
-		  /**
-		   * avatar megjelenitő gomb click eseménykezelő
-		   * @returns
-		   */
-		  $('#btnAvatarShow').click(function() {
-				 $('#avatar').change();  
-		  });
-		  
-		  /**
-		   * OK gomb click eseménykezelő
-		   */
-		  $('#btnOk').click(function() {
-			  var msg = '';
-			  $('#nick').removeClass('is-invalid');
-			  $('#psw').removeClass('is-invalid');
-			  $('#name').removeClass('is-invalid');
-			  $('#email').removeClass('is-invalid');
-			  $('#psw2').removeClass('is-invalid');
-			  
-			  if ($('#nick').val() == '') {
-				  $('#nick').addClass('is-invalid');
-				  msg += $scope.txt('NICK_REQUED')+"<br />";
-			  }
-			  
-			  if ($scope.id == 0) {
-				  if ($('#psw').val() == '') {
-					  $('#psw').addClass('is-invalid');
-					  msg += $scope.txt('PSW_REQUED')+"<br />";
-				  }
-			  }
-			  
-			  if ($('#psw').val() != $('#psw2').val()) {
-				  $('#psw').addClass('is-invalid');
-				  $('#psw2').addClass('is-invalid');
-				  msg += $scope.txt('PSWS_NOT_EQUALS')+"<br />";
-			  }
-			  if (($('#psw').val().length < 6) && ($('#psw').val() != '')) {
-				  $('#psw').addClass('is-invalid');
-				  msg += $scope.txt('PSWS_SORT')+"<br />";
-			  }		  
-			  
-			  if ($('#name').val() == '') {
-				  $('#name').addClass('is-invalid');
-				  msg += $scope.txt('NAME_REQUED')+"<br />";
-			  }
-			  if ($('#email').val() == '') {
-				  $('#email').addClass('is-invalid');
-				  msg += $scope.txt('EMAIL_REQUED')+"<br />";
-			  }
-			  if (msg == '') {
-				  $('#formRegform').submit(); 
-			  } else {
-				  global.alert(msg);
-			  }
-		  });
-		  
-		  /**
-		   * cancel gomb click eseménykezelő
-		   */
-		  $('#btnCancel').click(function() {
-			  if ($scope.cancelUrl != '') {
-				  window.location = $scope.cancelUrl;
-			  } else {
-				  $('#ukloginRegform').hide();
-				  $('#webRegform').hide();
-				  $('#regmodSelect').val('');
-			  }
-		  });
-		  
-		  /**
-		   * form init
-		   */
-		  if ($scope.avatarrUrl == '') {
-			  $('#imgAvatar').hide();
-		  } else {
-			  $('#imgAvatar').show();
-		  }
-		  $('#regmodSelect').val($scope.reg_mode);
-		  $('#regmodSelect').change();
-		  if ($scope.id > 0) {
-			  $('#nick').attr('disabled','disabled');
-		  }
-	  } // registformról van szó
-
 	  
 	  if ($('#usersList').length) {
 	  }
 
 	  $('#scope').show();
-	  
-	  if ($('#loginForm').length) {
-		    $('#nick').attr('disabled',false);
-			$('#nick').focus();	  
-			$('#btnUklogin').click(function() {
-				$('#loginForm').hide();
-				$('#divUkloginLogin').show();
-			});
-			$('#linkForgetPsw').click(function() {
-				$('#formLogin').attr('action','<?php echo MYDOMAIN; ?>/opt/users/forgetpsw');
-				$('#formLogin').submit();
-				return false;
-			});
-			$('#linkGetActivateEmail').click(function() {
-				$('#formLogin').attr('action','<?php echo MYDOMAIN; ?>/opt/users/getactivateemail');
-				$('#formLogin').submit();
-				return false;
-			});
-			$('#btnUklogin').click();
-	  } // login formról van szó
 
 	  if ($('#divProfileForm').length) {
 		  if ($scope.avatarUrl == '') {
@@ -202,6 +37,16 @@
 			  '/p1/0'+
 			  '?backUrl='+encodeURI($scope.backUrl);
 		  });
+		  
+		  if ($scope.userData.id != $scope.loggedUser.id) {
+			  // nem modosítható
+			  $('input').attr('disabled','disabled');
+			  $('textarea').attr('disabled','disabled');
+			  $('select').attr('disabled','disabled');
+			  $('#btnOk').hide();
+			  $('#btnRemove').hide();
+			  $('#btnCanvel span').html(txt('BACK'));
+		  }
 	  }
 	  
 	  global.reOrder = function(fieldName) {
@@ -255,5 +100,7 @@
   });	
 
   // angular pageOnLoad
-  mainFun();
+  $scope.onload = function() {
+	  mainFun();
+  }	  
   

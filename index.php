@@ -6,6 +6,14 @@ if (isset($_POST['sid'])) {
     session_id(strip_tags($_POST['sid']));
 }
 session_start();
+
+// iframe cross ower hack
+if (isset($_GET['url'])) {
+    $lines = file($_GET['url']);
+    echo implode('',$lines);
+    exit();
+}
+
 include_once './.config.php';
 include_once './core/database.php';
 include_once './core/framework.php';

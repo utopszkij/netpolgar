@@ -3,8 +3,9 @@ declare(strict_types=1);
 global $REQUEST;
 include_once './tests/config.php';
 include_once './core/database.php';
-include_once './controllers/issu.php';
 include_once './tests/mock.php';
+include_once './models/users.php';
+include_once './controllers/issu.php';
 
 use PHPUnit\Framework\TestCase;
 
@@ -27,17 +28,20 @@ class IssuControllerTest extends TestCase
 
     public function test_start() {
         // create and init test database
+        $this->request->set('option','issu');
         $db = new DB();
         $db->statement('CREATE DATABASE IF NOT EXISTS test');
         $this->assertEquals('',$db->getErrorMsg());
     }
     
     public function test_form() {
+        $this->request->set('option','issu');
         $msg = $this->controller->form($this->request);
         $this->expectOutputRegex('/LBL_ISSU/');
     }
     
     public function test_send_error() {
+        $this->request->set('option','issu');
         $this->request->sessionset('csrToken','123');
         $this->request->set('123','1');
         $this->request->set('body','');
@@ -47,6 +51,7 @@ class IssuControllerTest extends TestCase
     }
     
     public function test_send_ok() {
+        $this->request->set('option','issu');
         $this->request->sessionset('csrToken','123');
         $this->request->set('123','1');
         $this->request->set('body','issu_title');

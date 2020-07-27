@@ -4,16 +4,20 @@ use PhpParser\Node\Expr\BinaryOp\Identical;
 include_once './controllers/common.php';
 class LikeController extends CommonController {
     
+    function __construct() {
+        $this->cName = 'like';
+    }
+    
     /**
      * like/dislike képernyő rész kirajzolása (nem task hanem be inkludolt rutin)
-     * @param string $type objektum tipus ('group',...)
-     * @param int $id objektum Id
+     * @param string $type objektum tipus ('group', groupMember...)
+     * @param int $id objektum Id (groupId, groupId.userId ,projectId, productId,...)
      * @param string $label szöveg a képernyőre
      * @param string $help szöveg a képernyőre
      */
     public function show(string $type, int $id, string $label, string $help) {
         global $REQUEST;
-        $p = $this->init($REQUEST,[]);
+        $this->init($REQUEST,[]);
         ?>
         <div id="divLike">
         	<label><?php echo txt($label); ?></label>
@@ -187,8 +191,6 @@ class LikeController extends CommonController {
 	            $this->model->set($type, $id, $name1, $user->id);
 	            $this->model->remove($type, $id, $name2, $user->id);
 	        }
-	        
-	        
 	    }
 	    $this->likeshow($request);
 	}

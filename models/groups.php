@@ -42,6 +42,27 @@ class GroupsModel {
         
     } // constructor
     
+    
+    /**
+     * get subgroups filter by states
+     * @param int $groupId
+     * @param array $states
+     * @return array of {subGroupId, likeCount, disLikeCount}
+     */
+    public function getSubGroupsLike(int $groupId, string $state): array {
+        return [];
+    }
+    
+    /**
+     * set subgroup state
+     * @param int $groupid
+     * @param int $userId
+     * @param string $state
+     */
+    public function setSubGroupState(int $groupId, int $subGroupId, string $state) {
+        
+    }
+    
     /**
      * group rekord tárolás előtti ellenörzése
      * @param GroupRecord $data
@@ -120,7 +141,18 @@ class GroupsModel {
         $msgs = [];
         $table = new table('groups');
         if ($data->id == 0) {
-            $table->insert($data);
+            if ($table->insert($data)) {
+                $data->id = $table->getInsertedId();
+                // members rekord létrehozása
+                $table1 = new Table('members');
+                $rec = new stdClass();
+                $rec->id = 0;
+                $rec->type = 'groups';
+                $rec->object_id = $data->id;
+                $rec->user_id = $user->id;
+                $rec->state = 'admin';
+                $table1->insert($rec);
+            }
         } else {
             unset($data->nick); // nick nem módosítható
             $table->where(['id','=',$data->id]);
@@ -128,10 +160,6 @@ class GroupsModel {
         }
         if ($table->getErrorNum() != 0) {
             $msgs[] = $table->getErrorMsg();
-        } else {
-            // új felvitelnél a group admin beállítása ....
-            // ha új state == 'closed' akkor az alcsoportokban  is state = 'closed'
-            // ha új state == 'proposal' akkor az alcsoportokban  is state = 'proposal'
         }
         return $msgs;
     }
@@ -185,41 +213,40 @@ class GroupsModel {
     }
     
     /**
-     * A paraméterként kapott itemet és gyermekeit beirja a result XML -be
+     * A paraméterként kapott itemet és gyermekeit beirja a result -ba
      * filter userId, modositja a total értékét is.
      * @param GroupRecord $item
-     * @param array $result xml string <li id="i_'id'"<em><em><var class="'state'">'name'</var>
-     *                                     <ul>.....</ul> 
-     *                                 </li>
+     * @param array $result [{id, state, avatar, name , childs},...]
      * @param int $total
      * @param int $userId
      */
-    protected function getItem($item, array & $result, int & $total, int $userId) {
-        if ($item->avatar == '') {
-            $icon = '<img class="groupIcon" src="templates/'.config('TEMPLATE').'/no-image.png" />';
-        } else {
-            $icon = '<img class="groupIcon" src="'.$item->avatar.'" />';
-        }
-        $result[] = '<li id="i_'.$item->id.'"><em></em>'.
-          '<var  class="'.$item->state.'">'.$icon.$item->name.'</var>';
+    public function getItem($item, array & $result, int & $total, int $userId) {
         $total = $total + 1;
+        $result[] = new stdClass();
         $itemI = count($result) - 1;
-        $totalI = $total;
+        $result[$itemI]->id = $item->id;
+        $result[$itemI]->state = $item->state;
+        $result[$itemI]->name = $item->name;
+        if ($item->avatar == '') {
+            $result[$itemI]->avatar = 'templates/'.config('TEMPLATE').'/no-image.png';
+        } else {
+            $result[$itemI]->avatar = $item->avatar;
+        }
         $this->getSubItems($item->id, $result, $total, $userId);
-        $result[] = '</li>';
     }
     
     /**
-     * a paraméterként kapott parent gyermek rekordjait beirja a result XML -be,
-     * filter UserId, modosítja a total értékét is
+     * ha a legfelső szinten hivták (total==0) akkor a paraméterként kapott parent gyermek 
+     *     rekordjait beirja a result tömbbe,
+     * ha nem a legfeéső szinten (total > 0) és vannak gyermek rekordok akkor az 
+     *      utolsó elem child értékét modosítja    
      * @param int $parent
      * @param array $result
      * @param int $total
      * @param int $userId
      */
     protected function getSubItems(int $parent, array & $result, int & $total, int $userId) {
-        // a legfelső szinten beolvassuk az alrekordokat, máshol csak
-        // az "<ul></ul>" -el jelezzük, hogy vannak alrekordok
+        $itemI = count($result) - 1;
         $table = new Table('groups');
         $table->where(['parent','=', $parent]);
         if ($total > 0) {
@@ -228,16 +255,16 @@ class GroupsModel {
         $items = $table->get();
         if (count($items) > 0) {
             if ($total == 0) {
-                $result[] = '<ul>';
-            } else {
-                $result[] = '<ul style="display:none">';
-            }
-            if ($total == 0) {
                 foreach ($items as $item) {
                     $this->getItem($item, $result, $total, $userId);
                 }
+            } else {
+                $result[$itemI]->childs = [];
             }
-            $result[] = '</ul>';
+        } else {
+            if ($itemI >= 0) {
+                $result[$itemI]->childs = false;
+            }
         }
     }
     
@@ -257,7 +284,7 @@ class GroupsModel {
         }
         $result[] = new GroupRecord();
         $result[count($result) - 1]->id = -1;
-        $result[count($result) - 1]->name = '<span class="fa fa-home"></span>&nbsp;'.txt('GROUPS_ROOT');
+        $result[count($result) - 1]->name = txt('GROUPS_ROOT');
         return $result;
     }
         
@@ -266,24 +293,16 @@ class GroupsModel {
      * ha $->userid adott akkor csak azon groupok jelennek meg amelyiknek tagja vagy adminisztrátora
      * @param object $p   userid, parentId 
      * @param int $total
-     * @return xml string
-     *  <ul>
-     *      <li id="i_###"><em></em><var class="xxx">xxxxxxxxx</var></li>
-     *      ......
-     *      <li id="i_###"><em></em><var class="xxx">xxxxxxxxx</var>
-     *          <ul>......</ul>
-     *      </li>
-     *      ....
-     *  </ul> 
+     * @return [ {id,state,avatar,name, childs}, ....]
+     *   childs = false ha nincsenek alrekordok
+     *   chhilds = [{id,state,avatar,name, childs}...] a legfelső szinten, ha vannak alrekordok
+     *   chhilds = [] az alsóbb szinteken, ha vannak alrekordok
      */
-    public function getRecords($p, int & $total): string {
+    public function getRecords($p, int & $total): array {
         $result = [];
         $total = 0;
-        $this->getSubItems($p->parentId, $result, $total, $p->userId);
-        if ($total == 0) {
-            $result[] = '<li class="alert alert-warning">'.txt('GROUPS_NOT_FOUND').'</li>';
-        }
-        return implode("\n",$result);
+        $this->getSubItems($p->parentId, $result, $total, $p->loggedUser->id);
+        return $result;
     }
     
     /**
@@ -319,6 +338,86 @@ class GroupsModel {
             $i++;
         }
         return $result. ']}';
+    }
+    
+    public function getRecords_by_user(int $offset, int $limit, string $filterStr,
+        string $orderField, string $orderDir, int $userId, int &$total): array {
+        $filter = new Filter('members','m');
+        $filter->join('LEFT OUTER JOIN','groups','g','m.object_id = g.id');
+        $filter->where(['m.type','=','groups']);
+        $filter->where(['m.user_id','=',$userId]);
+        if ($filterStr != '') {
+            $filter->where(['g.name','like','%'.$filterStr.'%']);
+        }
+        $filter->setColumns('distinct g.id, g.name, g.state, m.state userstate');
+        $filter->offset($offset);
+        $filter->limit($limit);
+        $filter->order($orderField.' '.$orderDir);
+        $total = $filter->count();
+        return $filter->get();
+    }
+    
+    /**
+     * csoport statusz automatikus modositása a like számok alapján
+     * @param int $id
+     */
+    public function autoUpdate(int $id) {
+        $group = $this->getRecord($id);
+        if (($group->id > 0) & (($group->state == 'proposal') | ($group->state == 'active'))) {
+            $table = new Table('memebrs');
+            $table->where(['type','==','groups']);
+            $table->where(['object_id','==',$id]);
+            $table->where(['state','==','active']);
+            $memberCount = $table->count();
+            $table = new Table('memebrs');
+            $table->where(['type','==','groups']);
+            $table->where(['object_id','==',$id]);
+            $table->where(['state','==','admin']);
+            $memberCount = $memberCount + $table->count();
+            
+            $table = new Table('likes');
+            $table->where(['type','==','groups']);
+            $table->where(['object_id','==',$id]);
+            $table->where(['like_type','==','like']);
+            $likeCount = $table->count();
+            
+            $table = new Table('likes');
+            $table->where(['type','==','groups']);
+            $table->where(['object_id','==',$id]);
+            $table->where(['like_type','==','dislike']);
+            $dislikeCount = $table->count();
+            
+            if (($group->state == 'proposal') &
+                ((($likeCount - $dislikeCount) >= $group->mgroup_to_active) |
+                    ($likeCount >= $memberCount)
+                    )
+                ) {
+                    $group->state = 'active';
+                    $table = new table('groups');
+                    $table->update($grop);
+            }
+            if (($group->state == 'active') &
+                    ((($dislikeCount - $likeCount) >= ($memberCount * $group->group_to_close / 100)) |
+                        ($dislikeCount >= $memberCount)
+                        )
+               ) {
+                    $group->state = 'closed';
+                    $table = new table('groups');
+                    $table->update($grop);
+            }
+        }
+    }
+    
+    /**
+     * utolsó néhány projekt lekérdezése
+     * @param $limit
+     * @return array of ProjectRecords
+     */
+    public function newGroups(int $limit = 3) {
+        $table = new Table('groups');
+        $table->order('id DESC');
+        $table->limit($limit);
+        return $table->get();
     }
     
 } // class

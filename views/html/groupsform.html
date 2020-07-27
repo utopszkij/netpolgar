@@ -1,0 +1,205 @@
+			<div ng-include="templates.navbar"></div>
+			<div ng-include="templates.popup"></div>
+          	<div id="divGroupForm" class="pageBody">
+              	<div class="parents">
+              		<span ng-repeat="parent in parents | orderBy:'-'">
+              	    <em class="fa fa-caret-right"></em>&nbsp;
+                    <a href="{{MYDOMAIN}}/opt/groups/form/id/{{parent.id}}" target="_self">
+                            {{parent.name}}
+                    </a>
+                    </span>
+              	</div>
+                <h2><em class="fa fa-users"></em>&nbsp;&nbsp;&nbsp;{{txt(formTitle)}}</h2>
+    			<div class="alert alert-{{msgClass}}" ng-if="msgs.length > 0">
+    				<p ng-repeat="msg in msgs">{{txt(msg)}}</p>
+    			</div>
+    			
+			    <nav class="navbar navbar-expand-lg navbar-light bg-light subMenu"
+			            id="grouprSubmenu">
+			            <button class="navbar-toggler" type="button" data-toggle="collapse"
+			                data-target="#userSubmenuContent"
+			                aria-controls="userSubmenuContent"
+			                aria-expanded="false" aria-label="Toggle navigation">
+			                <em class="fa fa-ellipsis-v"></em>
+			            </button>
+			                     
+			            <div class="collapse navbar-collapse" id="userSubmenuContent">
+			                 <ul>
+			                     <li>
+			                        <a class="nav-link" target="_self"
+			                            href="{{MYDOMAIN}}/opt/members/list/type/groups/id/{{item.id}}">
+			                            <em class="fa fa-user"></em>{{txt('MEMBERS')}}
+			                         </a>
+			                     </li>
+			                     <li>
+			                        <a class="nav-link" target="_self"
+			                            href="{{MYDOMAIN}}/opt/groups/list/parentid/{{item.id}}">
+			                            <em class="fa fa-sitemap"></em>{{txt('SUB_GROUPS')}}
+			                         </a>
+			                     </li>
+			                     <li>
+			                         <a class="nav-link" target="_self"
+			                             href="{{MYDOMAIN}}/opt/projects/list/type/groups/id/{{item.id}}">
+			                             <em class="fa fa-cogs"></em>{{txt('PROJECTS')}}
+			                         </a>
+			                     </li>
+			                     <li>
+			                         <a class="nav-link" target="_self"
+			                              href="{{MYDOMAIN}}/opt/markets/list/type/groups/id/{{item.id}}">
+			                              <em class="fa fa-shopping-basket"></em>{{txt('MARKET')}}
+			                         </a>
+			                     </li>
+			                     <li>
+			                         <a class="nav-link" target="_self"
+			                              href="{{MYDOMAIN}}/opt/files/list/type/groups/{{item.id}}">
+			                              <span class="fa fa-file"></span>{{txt('DOCS')}}
+			                         </a>
+			                     </li>
+			                     <li>
+			                         <a class="nav-link" target="_self" title="total/new"
+			                              href="{{MYDOMAIN}}/opt/comments/type/groups/id/{{item.id}}">
+			                              <em class="fa fa-comments"></em>{{txt('CHATS')}}
+			                              {{commentCount.total}}<span ng-if="commentCount.new > 0">/<strong>{{commentCount.new}}</strong></span>                        
+			                         </a>
+			                     </li>
+			                     <li>
+			                         <a class="nav-link" target="_self" title="total/new"
+			                              href="{{MYDOMAIN}}/opt/voks/list/type/groups/id/{{item.id}}">
+			                              <em class="fa fa-balance-scale"></em>{{txt('POLLS')}}
+			                              {{pollCount.total}}<span ng-if="pollCount.new > 0">/<strong>{{pollCount.new}}</strong></span>                        
+			                         </a>
+			                     </li>
+			                      <li>
+			                         <a class="nav-link" target="_self" title="total/future"
+			                              href="{{MYDOMAIN}}/opt/events/list/type/groups/id/{{item.id}}">
+			                               <em class="fa fa-calendar"></em>{{txt('EVENTS')}}
+			                              {{eventCount.total}}<span ng-if="eventCount.new > 0">/<strong>{{eventCount.new}}</strong></span>                        
+			                         </a>
+			                      </li>
+			                      <li>
+			                         <a class="nav-link" target="_self" title="total/new"
+			                              href="{{MYDOMAIN}}/opt/messages/list/userid/{{item.id}}">
+			                              <em class="fa fa-comment"></em>{{txt('MESSAGES')}}
+			                              {{messageCount.total}}<span ng-if="messageCount.new > 0">/<strong>{{messageCount.new}}</strong></span>                        
+			                         </a>
+			                      </li>
+			                 </ul>
+			            </div>
+			    </nav>
+    			
+                <form class="form-row" id="formGroupForm"
+              	action="./index.php"
+              	target="_self" method="post">
+              	<input type="hidden" name="{{csrToken}}" value="1" />
+              	<input type="hidden" name="option" value="groups" />
+              	<input type="hidden" name="task" value="save" />
+              	<input type="hidden" name="groupid" id="id" value="{{item.id}}" />
+              	<input type="hidden" name="id" id="id" value="{{item.id}}" />
+              	<input type="hidden" name="parent" id="parent" value="{{item.parent}}" />
+        		<input type="hidden" name="backUrl" id="backUrl" value="{{backUrl}}" />
+                <img id="imgAvatar" src="{{item.avatar}}" alt="avatar" ng-if="item.avatar != ''" />
+                <p>
+              		<label>{{txt('NAME')}} *:</label>
+                    <div class="memberButtons">
+                  		<input id="name" name="name" type="text" value="{{item.name}}"  size="80" />
+                  		<br />                 
+                  		<var ng-if="loggedUser.id > 0">{{txt('USERSTATE')}}: {{txt(userState)}}</var>
+     					<a href="{{MYDOMAIN}}/opt/members/aspire/type/groups/id/{{item.id}}/user_id/{{loggedUser.id}}/{{csrToken}}/1" 
+        					     class="btn btn-secondary btn-member" target="_self"
+        					     ng-if="(item.state == 'active') && ((userState == 'none') || (userState == 'exiting'))  && (loggedUser.id > 0)">
+        					   	 <em class="fa fa-sign-in-alt"></em>&nbsp;{{txt('ASPIRE')}}
+        				</a>
+     					<a href="{{MYDOMAIN}}/opt/members/quit/type/groups/id/{{groupId}}/user_id/{{loggedUser.id}}/{{csrToken}}/1" 
+        					     class="btn btn-secondary btn-member" target="_self" 
+        					     ng-if="(item.state == 'active') && (userState == 'active') && (loggedUser.id > 0)">
+        					   	 <em class="fa fa-sign-out-alt"></em>&nbsp;{{txt('QUIT')}}
+        				</a>
+     					<a href="{{MYDOMAIN}}/opt/members/notaspire/type/groups/id/{{groupId}}/user_id/{{loggedUser.id}}/{{csrToken}}/1" 
+        					     class="btn btn-secondary btn-member" target="_self" 
+        					     ng-if="(item.state == 'active') && (userState == 'aspre') && (loggedUser.id > 0)">
+        					   	 <em class="fa fa-times"></em>&nbsp;{{txt('NOTASPIRE')}}
+        				</a>
+     					<a href="{{MYDOMAIN}}/opt/members/pause/type/groups/id/{{groupId}}/user_id/{{loggedUser.id}}/{{csrToken}}/1" 
+        					     class="btn btn-secondary btn-member" target="_self" 
+        					     ng-if="(item.state == 'active') && (userState == 'active') && (loggedUser.id > 0)">
+        					   	 <em class="fa fa-clock"></em>&nbsp;{{txt('PAUSE')}}
+        				</a>
+     					<a href="{{MYDOMAIN}}/opt/members/activate/type/groups/id/{{groupId}}/user_id/{{loggedUser.id}}/{{csrToken}}/1" 
+        					     class="btn btn-secondary btn-member" target="_self" 
+        					     ng-if="(item.state == 'active') && (userState == 'paused') && (loggedUser.id > 0)">
+        					   	 <em class="fa fa-clock"></em>&nbsp;{{txt('ACTIVATE')}}
+        				</a>
+    				</div>
+              	</p>
+              	<p>
+              		 <label>
+              		   {{txt('DESCRIPTION')}} *:
+              		 </label>
+
+              		<textarea id="description" name="description" cols="80" rows="10">{{item.description}}</textarea>
+              	</p>
+                <p>
+                	<div style="display:inline-block">
+              		<label>{{txt('STATE')}} *:</label>
+              		<select id="state" name="state">
+              			<option value="proposal">{{txt('PROPOSAL')}}</option>
+              			<option value="active">{{txt('ACTIVE')}}</option>
+              			<option value="closed">{{txt('CLOSED')}}</option>
+              		</select>
+              		</div>
+              		&nbsp;
+              		<input type="hidden" name="reg_mode" value="{{reg_mode}}" />
+              	</p>
+              	
+              	<div>
+              		<label>{{txt('GROUP_TO_ACTIVE')}} *:</label>
+              		<input type="text" id="group_to_active" name="group_to_active" min="0" max="100" value="{{item.group_to_active}}" />
+              	</div>
+              	<div>
+              		<label>{{txt('GROUP_TO_CLOSE')}} *:</label>
+              		<input type="text" id="group_to_close" name="group_to_close" min="0" max="100" value="{{item.group_to_close}}" />
+              	</div>
+
+              	<div>
+              		<label>{{txt('MEMBER_TO_ACTIVE')}} *:</label>
+              		<input type="text" id="member_to_active" name="member_to_active" min="0" max="100" value="{{item.member_to_active}}" />
+              	</div>
+              	<div>
+              		<label>{{txt('MEMBER_TO_EXCLUDE')}} *:</label>
+              		<input type="text" id="member_to_exclude" name="member_to_exclude" min="0" max="100" value="{{item.member_to_exclude}}" />
+              	</div>
+              	
+              	<p>
+              		<label>{{txt('AVATAR')}}:</label>
+              		<input id="avatar" name="avatar" type="text" value="{{item.avatar}}"  size="50" />
+              	</p>
+
+				<div id="divLike" ng-if="item.id > 0">
+				<button id="likeUpBtn" type="button" class="btn btn-info">
+					{{txt('LIKE')}}
+					<em class="fa fa-thumbs-up"></em>
+					<em class="fa fa-check"></em>
+					&nbsp;<var>{{likeCount.up}}</var>
+				</button>
+				<button id="likeDownBtn" type="button" class="btn btn-info">
+					<span ng-if="item.state != 'active'">{{txt('DISLIKE')}}</span>
+					<span ng-if="item.state == 'active'">{{txt('SUGGEST_CLOSING')}}</span>
+					<em class="fa fa-thumbs-down"></em>
+					<em class="fa fa-check"></em>
+					&nbsp;<var>{{likeCount.down}}</var>
+				</button>	
+				</div>				
+				
+              	<div class="buttons">
+              		<button type="button" id="btnOK" class="btn btn-primary" ng-if="userState == 'admin'">
+              			<em class="fa fa-check"></em>{{txt('OK')}}</button>
+              		&nbsp;
+              		<button type="button" id="btnCancel" class="btn btn-secondary" ng-if="userState == 'admin'"> 
+              			<em class="fa fa-reply"></em>{{txt('CANCEL')}}</button>
+              	</div>
+                </form>
+            </div><!-- #divGroupForm -->  
+		    <div class="clear"></div>
+			<div ng-include="templates.footer""></div>
+			 <!-- call groupsFun -->
+			{{onload()}}

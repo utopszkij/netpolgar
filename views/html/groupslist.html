@@ -1,0 +1,51 @@
+       	    <div ng-include="templates.navbar"></div>
+       	    <div ng-include="templates.popup"></div>
+        	<div id="groupsList">  
+        		<form id="formGroupsList" class="pageBody" action="./opt/groups/list" 
+        		    method="post" target="_self">
+        		    <input type="hidden" name="{{csrToken}}" value="1" />
+        		    <input type="hidden" name="offset" id="offset" value="{{offset}}" />
+        		    <input type="hidden" name="limit" id="limit" value="{{limit}}" />
+        		    <input type="hidden" name="orderField" id="orderField" value="{{orderField}}" />
+        		    <input type="hidden" name="orderDir" id="orderDir" value="{{orderDir}}" />
+        		    
+        		    <div class="parents">
+                  	<span ng-repeat="parent in parents | orderBy:'-'"> 
+                  	    <span class="fa fa-caret-right"></span>&nbsp;
+                        <a href="{{MYDOMAIN}}/opt/groups/form/id/{{parent.id}}" target="_self">
+                            {{parent.name}}
+                        </a>
+                    </span>          
+                  	</div>
+        		    
+            		<h2><em class="fa fa-users"></em>&nbsp;&nbsp;&nbsp;{{txt(formTitle)}}</h2>
+            		<h3>{{txt(formSubTitle)}}</h2>
+    				
+    				<div class="alert alert-{{msgClass}}" ng-if="msgs.length > 0">
+    					<p ng-repeat="msg in msgs">{{txt(msg)}}</p>
+    				</div>
+
+        			<p class="help"><?php echo txt('GROUPS_LIST_HELP'); ?></p>
+        			
+        			<ul id="groupsTree">
+   					<li ng-repeat="item in  items" class="groupItem" id="i_{{item.id}}">
+   					    <em class="fa fa-plus-square" ng-if="item.childs" style="cursor:pointer"></em>
+   					    <em ng-if="!item.childs"></em>
+   						<img src="{{item.avatar}}" style="height:30px" />
+   						<var class="{{item.state}}">{{item.name}}</var>
+   						<ul ng-if="item.childs" class="groupsTreeSubitems" style="display:none"></ul>
+   						{{itemLoad($last)}}
+   					</li>
+   					</ul>
+   					
+					<p>
+    					<a id="addSubGroup" class="btn btn-primary" target="_self"
+    					   href="{{MYDOMAIN}}/opt/groups/add/parentid/{{parentId}}/{{csrToken}}/1">
+    					   <span class="fa fa-plus-circle"></span>&nbsp;{{txt('ADD_SUB_GROUP')}}
+    					</a>
+					</p>
+        		</form>
+			    <div class="clear"></div>
+	       	    <div ng-include="templates.footer"></div>
+			</div>    
+		    <div class="clear"></div>

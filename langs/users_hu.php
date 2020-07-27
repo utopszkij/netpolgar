@@ -10,6 +10,7 @@ DEFINE('VALID_NAME','Valódi név');
 DEFINE('EMAIL','E-mail');
 DEFINE('AUTHENTIC','Hitelesített');
 DEFINE('AVATAR','Avatar kép URL vagy "gravatar"');
+DEFINE('PUBINFO','Egyébb információk (pl. nem, életkor, szakma, lakhely stb) Figyelem ezeket az infokat mindenki láthatja aki a web oldalra látogat');
 DEFINE('USRREG_HELP','A * -al jelölt adatokat ki kell tölteni');
 DEFINE('USRPROFILE_HELP','Ha a két jelszót üressen hagyja akkor a jelszó nem változik.');
 DEFINE('NICK_REQUED','Bejelentkezési nevet meg kell adni.');

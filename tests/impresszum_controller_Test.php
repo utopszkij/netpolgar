@@ -3,8 +3,9 @@ declare(strict_types=1);
 global $REQUEST;
 include_once './tests/config.php';
 include_once './core/database.php';
-include_once './controllers/impresszum.php';
+include_once './models/users.php';
 include_once './tests/mock.php';
+include_once './controllers/impresszum.php';
 
 use PHPUnit\Framework\TestCase;
 
@@ -21,6 +22,7 @@ class impresszumControllerTest extends TestCase
         parent::__construct();
         $this->controller = new ImpresszumController();
         $this->request = new Request();
+        $this->request->set('option','impresszum');
         $REQUEST = $this->request;
         
     }

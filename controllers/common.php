@@ -2,6 +2,7 @@
 class CommonController extends Controller {
     public $model;
     public $view;
+    protected $cName = '';
     
     /**
      * konvertálás stdClass --> UserRecord
@@ -10,8 +11,14 @@ class CommonController extends Controller {
      */
     public function objToUserRecord($obj): UserRecord {
         $result = new UserRecord();
-        foreach ($obj as $fn => $fv) {
-            $result->$fn = $fv;
+        foreach ($result as $fn => $fv) {
+            if (is_object($obj)) {
+                if (isset($obj->$fn)) {
+                    $result->$fn = $obj->$fn;
+                } else {
+                    $result->$fn = $fv;
+                }
+            }
         }
         return $result;
     }
@@ -20,11 +27,11 @@ class CommonController extends Controller {
      * standert controller inicializálás
      * @param Request $request
      * @param string $name - controller name
-     * @return object {"user": UserRecord, userAdmon:bool, avtarUrl: string}
+     * @return object {"user": UserRecord, "loggedUser": UserRecord, userAdmin:bool, avtarUrl: string}
      */
     public function init(Request &$request, array $names = []): Params {
         $p = parent::init($request, $names);
-        $user = $this->objToUserRecord($request->sessionGet('loggedUser', new UserRecord));
+        $user = $request->sessionGet('loggedUser', new UserRecord());
         $name = $request->input('option','none');
         if (file_exists('./models/'.$name.'.php')) {
             $this->model = $this->getModel($name);
@@ -36,7 +43,14 @@ class CommonController extends Controller {
         } else {
             $this->view = new View();
         }
-        $p->loggedUser = $user;
+        
+        if ($user->avatar == '') {
+            $user->avatar = './images/noavatar.png';
+        }
+        $p->loggedUser = new UserRecord();
+        foreach ($user as $fn => $fv) {
+            $p->loggedUser->$fn = $fv;            
+        }
         if ($name == 'user') {
             $p->userAdmin = $this->model->isAdmin($p->loggedUser->id);
         } else {
@@ -51,12 +65,5 @@ class CommonController extends Controller {
         return $p;
     }
     
-    /**
-     * átirányitás url -re
-     * @param string $url
-     */
-    public function redirect(string $url) {
-        redirectTo($url);
-    }
 }
 ?>

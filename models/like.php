@@ -4,8 +4,8 @@ class LikeRecord {
    public $type = '';
    public $id = 0;
    public $user_id = 0; 
-   public $user_member = 0;
-   public $like_type = 'like';
+   public $user_member = 0; // bool
+   public $like_type = 'like'; // 'dislike'
 }
 
 class LikeModel {

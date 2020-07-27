@@ -19,6 +19,9 @@ interface  RequestObject {
     public function session_count(): int;
 }
 
+class Params {
+    public $loggedUser = false;
+}
 
 class View implements ViewObject {
     public function loadJavaScript(string $jsName, object $params) {
@@ -49,6 +52,15 @@ class View implements ViewObject {
             echo '<p>'.$htmlName.' html file not found.</p>';
         }
     }
+    
+    public function errorMsg(array $msgs, string $backLink, string $backStr, $p) {
+        echo JSON_encode($msgs);
+    }
+    
+    public function successMsg(array $msgs, string $backLink, string $backStr, Params $p) {
+        echo JSON_encode($msgs);
+    }
+    
 
 }
 
@@ -57,16 +69,29 @@ class Model implements ModelObject {
 }
 
 class Controller implements ControllerObject {
+    
+    protected $cName = '';
+    public $model = false;
+    public $view = false;
+    
     protected function getModel(string $modelName)  {
-        include_once './models/'.$modelName.'.php';
-        $modelClassName = $modelName.'Model';
-        return new $modelClassName ();
+        if (file_exists('./models/'.$modelName.'.php')) {
+            include_once './models/'.$modelName.'.php';
+            $modelClassName = $modelName.'Model';
+            return new $modelClassName ();
+        } else {
+            return false;
+        }
     }
     
     protected function getView(string $viewName) {
-        $viewClassName = $viewName.'View';
-        include_once './views/'.$viewName.'.php';
-        return new $viewClassName ();
+        if (file_exists('./views/'.$viewName.'.php')) {
+            $viewClassName = $viewName.'View';
+            include_once './views/'.$viewName.'.php';
+            return new $viewClassName ();
+        } else {
+            return false;
+        }
     }
     
     protected function createCsrToken(RequestObject $request, object $data) {
@@ -93,6 +118,23 @@ class Controller implements ControllerObject {
     
     public function redirect(string $url) {
         echo 'redirect='.$url;
+    }
+    
+    public function init(Request &$request, array $names = []): Params {
+        $result = new Params();
+        if ($this->cName != '') {
+            $name = $this->cName;
+        } else {
+            $name = $request->input('option','none');
+        }
+         
+        $this->model = $this->getModel($name);
+        $this->view = $this->getView($name);
+        $result->loggedUser = $request->sessionGet('loggedUser', JSON_decode('{"id":0, "nick":"guest", "avatar":""}'));
+        foreach ($names as $fn) {
+            $result->$fn = $request->input($fn,'');
+        }
+        return $result;
     }
 } // class Controller
 

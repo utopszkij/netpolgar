@@ -3,9 +3,10 @@ declare(strict_types=1);
 global $REQUEST;
 include_once './tests/config.php';
 include_once './core/database.php';
-include_once './controllers/groups.php';
-include_once './models/users.php';
 include_once './tests/mock.php';
+include_once './models/users.php';
+include_once './controllers/common.php';
+include_once './controllers/groups.php';
 
 use PHPUnit\Framework\TestCase;
 
@@ -23,6 +24,7 @@ class groupsControllerTest extends TestCase
         parent::__construct();
         $this->controller = new GroupsController();
         $this->request = new Request();
+        $this->request->set('otion','groups');
         $REQUEST = $this->request;
     }
     
@@ -34,6 +36,7 @@ class groupsControllerTest extends TestCase
     }
 
     public function test_save_ok() {
+        $this->request->set('option','groups');
         // csr token beállítása
         $this->request->set('testCsrToken',1);
         $this->request->sessionset('csrToken','testCsrToken');
@@ -69,6 +72,7 @@ class groupsControllerTest extends TestCase
     }
 
     public function test_save_checkerror1() {
+        $this->request->set('option','groups');
         // csr token beállítása
         $this->request->set('testCsrToken',1);
         $this->request->sessionset('csrToken','testCsrToken');
@@ -97,6 +101,7 @@ class groupsControllerTest extends TestCase
     
     
     public function test_save_checkerror2() {
+        $this->request->set('option','groups');
         // csr token beállítása
         $this->request->set('testCsrToken',1);
         $this->request->sessionset('csrToken','testCsrToken');
@@ -125,6 +130,7 @@ class groupsControllerTest extends TestCase
     
     
     public function test_save_NUMERROR() {
+        $this->request->set('option','groups');
         // ilyenkor is tárol, csak nullákat ir a numerikus mezőkbe
 
         // csr token beállítása
@@ -154,6 +160,7 @@ class groupsControllerTest extends TestCase
     }
     
     public function test_list() {
+        $this->request->set('option','groups');
         // user admin
         $user = new UserRecord();
         $user->id = 1;
@@ -163,6 +170,7 @@ class groupsControllerTest extends TestCase
     }
     
     public function test_groupform_ok() {
+        $this->request->set('option','groups');
         // user admin
         $user = new UserRecord();
         $user->id = 1;
@@ -183,6 +191,7 @@ class groupsControllerTest extends TestCase
     }
     
     public function test_groupform_notfound() {
+        $this->request->set('option','groups');
         // user admin
         $user = new UserRecord();
         $user->id = 1;
@@ -203,7 +212,7 @@ class groupsControllerTest extends TestCase
     }
     
     public function test_groupform_rootGroup() {
-        
+        $this->request->set('option','groups');
         // csr token beállítása
         $this->request->set('testCsrToken',1);
         $this->request->sessionset('csrToken','testCsrToken');
@@ -219,7 +228,7 @@ class groupsControllerTest extends TestCase
     }
     
     public function test_add_ok() {
-        
+        $this->request->set('option','groups');
         // csr token beállítása
         $this->request->set('testCsrToken',1);
         $this->request->sessionset('csrToken','testCsrToken');
@@ -227,7 +236,8 @@ class groupsControllerTest extends TestCase
         // user admin
         $user = new UserRecord();
         $user->id = 1;
-        $this->request->sessionSet('user',$user);
+        $this->request->sessionSet('loggedUser',$user);
+        
         $this->request->set('parentid', 0);
         $this->controller->add($this->request);
         $this->expectOutputRegex('/ADD_SUB_GROUP/');
@@ -235,7 +245,7 @@ class groupsControllerTest extends TestCase
     
     
     public function test_add_notadmin() {
-        
+        $this->request->set('option','groups');
         // csr token beállítása
         $this->request->set('testCsrToken',1);
         $this->request->sessionset('csrToken','testCsrToken');
@@ -243,17 +253,18 @@ class groupsControllerTest extends TestCase
         // user not admin
         $user = new UserRecord();
         $user->id = 2;
-        $this->request->sessionSet('user',$user);
+        $this->request->sessionSet('loggedUser',$user);
         $this->request->set('parentid', 0);
         $this->controller->add($this->request);
         $this->expectOutputRegex('/ACCESS_VIOLATION/');
     }
     
     public function test_remove() {
+        $this->request->set('option','groups');
         // user admin
         $user = new UserRecord();
         $user->id = 1;
-        $this->request->sessionSet('user',$user);
+        $this->request->sessionSet('loggedUser',$user);
         
         // csr token beállítása
         $this->request->set('testCsrToken',1);
@@ -270,10 +281,11 @@ class groupsControllerTest extends TestCase
     }
     
     public function test_doremove() {
+        $this->request->set('option','groups');
         // user admin
         $user = new UserRecord();
         $user->id = 1;
-        $this->request->sessionSet('user',$user);
+        $this->request->sessionSet('loggedUser',$user);
         
         // csr token beállítása
         $this->request->set('testCsrToken',1);

@@ -12,7 +12,16 @@
   function frontpageFun() {
 	  $('.carousel').carousel();
 	  $('#scope').show();
+	  
+	  $( window ).scroll(function() {
+		  if ($(document).scrollTop() > 10) {
+			  $( "nav" ).css( "background-color", "red" );
+		  } else {
+			  $( "nav" ).css( "background-color", "transparent" );
+		  }
+		});
 	  return 'frontpage';
+	  
   }
   
   // jquery pageOnLoad

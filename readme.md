@@ -1,15 +1,12 @@
 # NETPOLGAR web-es közösségi platform
 
-## Kontribútoroknak
-A fejlesztésében közreműködni kívánóknak szóló információk a [ebben a leírásban](/readmeForProgrammer.md) találhatók.
-
 ## Készültség
 
 1%
 
 ## Élő demo:
 
-https://szeszt.tk/netpolgar
+https://netpolgar.hu
 
 ## Áttekintés
 
@@ -65,17 +62,27 @@ cd repoRoot
 Utolsó teszt eredménye:
 
 
+## Új funkció létrehozásához szükéges fájlok
+
+- models/ujfunkcio.php
+- views/ujfunkcio.php
+- views/html/ufunkcio_formname.html
+- js/ujfunkcio.js
+- controllers/ujfunkcio.php ('tasknév' nevű publikus funciók)
+- langs/ujfunkcio_hu.php
+
+Inditó link(ek):  domain/opt/ujfuncio/tasknév
+
 
 ## Telepítés web szerverre
 
 ### Rendszer igény:
 
-- PHP 7.1+  shell_exec funkciónak engedélyezve kell lennie
+- PHP 7.1+  (curl, mysqli, mbstring)
 - MYSQL 5.7+
-- web server (.htaccess értelmezéssel)
+- web server (.htaccess értelmezéssel, végrehajtási sorrend: php, html)
 - https tanusitvány
-- php shell_exec -al hívhatóan  pdfsig, pdfdetach parancsok
-- Létrehozandó MYSQL adatbázis: **uklogin** (utf8, magyar rendezéssel)
+- Létrehozandó MYSQL adatbázis: **netpolgar** (utf8, magyar rendezéssel)
 
 
 Telepítendő  könyvtárak:
@@ -91,8 +98,9 @@ Telepítendő  könyvtárak:
 - views
 - work (legyen irható a web szerver számára!)
 
-Telepítendő fájlok
+Telepítendő fájlok a documentRoot -ba:
 - index.php
 - .config.php  (config.txt átnevezve és értelemszerüen javítva)
 - .htaccess (a htaccess.txt átnevezve)
+
 

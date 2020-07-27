@@ -1,0 +1,117 @@
+        <nav class="navbar navbar-expand-lg navbar-light" id="navbar">
+          <div class="navbarIcons">
+          	  <a href="{{MYDOMAIN}}/" target="_self">
+          	  	<img src="./templates/{{TEMPLATE}}/logo.png" />
+          	  </a>	
+	          <button class="navbar-toggler" type="button" 
+	            data-toggle="collapse" data-target="#navbarSupportedContent" 
+	            aria-controls="_navbarSupportedContent" aria-expanded="false" 
+	            aria-label="Toggle navigation">
+	            <em class="fa fa-bars"></em>
+	          </button>
+	          <div class="clear"></div>
+          </div>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <div class="clear"></div>
+            <div class="navbarUl">
+            <ul class="navbar-nav mr-auto">
+              <li class="nav-item active groupMenuItem">
+                <a class="nav-link" 
+                  	href="{{MYDOMAIN}}/opt/groups/list/parentid/0/userid/0" target="_self">
+                  	<em class="fa fa-users">&nbsp;</em>{{txt('GROUPS')}}</a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" 
+                	href="{{MYDOMAIN}}/opt/setup/form" id="navbarDropdown"  target="_self" 
+                	role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <em class="fa fa-cog"></em>{{txt('SETUP')}}
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <a class="dropdown-item" href="{{MYDOMAIN}}/opt/categories/list" target="_self">{{txt('CATEGORIES')}}</a>
+                  <a class="dropdown-item" href="{{MYDOMAIN}}/opt/usergroups/list" target="_self">{{txt('USERGROUPS')}}</a>
+                  <a class="dropdown-item" ng-if="(userAdmin)" 
+                  	href="{{MYDOMAIN}}/opt/users/list" target="_self" >
+                  	{{txt('USERS')}}
+                  </a>
+                </div>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" 
+                   href="{{MYDOMAIN}}/opt/projects/list" id="navbarDropdown"  target="_self"
+                   role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <em class="fa fa-wrench"></em>{{txt('PROJECTS')}}
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <a class="dropdown-item" href="{{MYDOMAIN}}/opt/projects/list/filterstate//" target="_self">{{txt('ALL')}}</a>
+                  <a class="dropdown-item" href="{{MYDOMAIN}}/opt/projects/list/filterstate/active" target="_self">{{txt('ACTIVE')}}</a>
+                  <a class="dropdown-item" href="{{MYDOMAIN}}/opt/projects/list/filterstate/closed" target="_self">{{txt('CLOSED')}}</a>
+                  <a class="dropdown-item" href="{{MYDOMAIN}}/opt/projects/list/filterstate/draft" target="_self">{{txt('DRAFT')}}</a>
+                  <a class="dropdown-item" href="{{MYDOMAIN}}/opt/projects/list/filterstate/proposal" target="_self">{{txt('PROPOSAL')}}</a>
+                </div>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" 
+                  href="{{MYDOMAIN}}/opt/market/main" id="navbarDropdown" target="_self"
+                  role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <em class="fa fa-shopping-cart"></em>{{txt('MARKET')}}
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <a class="dropdown-item" href="{{MYDOMAIN}}/opt/market/offer" target="_self">{{txt('OFFER')}}</a>
+                  <a class="dropdown-item" href="{{MYDOMAIN}}/opt/market/demand" target="_self">{{txt('DEMAND')}}</a>
+                  <a class="dropdown-item" href="{{MYDOMAIN}}/opt/market/transactions" target="_self">{{txt('TRANSACTIONS')}}</a>
+                </div>
+              </li>
+              <li class="nav-item active">
+                <a class="nav-link" href="{{MYDOMAIN}}/opt/files/list" target="_self">
+                	<em class="fa fa-file"></em>{{txt('DOCS')}}  
+                </a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" 
+                  href="{{MYDOMAIN}}/opt/disputes/list" id="navbarDropdown"  target="_self"
+                  role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <em class="fa fa-comments"></em>{{txt('DISPUTES')}}
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <a class="dropdown-item" href="{{MYDOMAIN}}/opt/chats/list" target="_self">{{txt('CHATS')}}</a>
+                  <a class="dropdown-item" href="{{MYDOMAIN}}/opt/polls/list" target="_self">{{txt('POLLS')}}</a>
+                  <a class="dropdown-item" href="{{MYDOMAIN}}/opt/decisions/list" target="_self">{{txt('DECISIONS')}}</a>
+                  <a class="dropdown-item" href="{{MYDOMAIN}}/opt/messages/list" target="_self">{{txt('MESSAGES')}}</a>
+                </div>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="{{MYDOMAIN}}/opt/events/list" target="_self" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <em class="fa fa-calendar"></em>{{txt('EVENTS')}}
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <a class="dropdown-item" href="{{MYDOMAIN}}/opt/events/follows" target="_self">{{txt('FOLLOWS')}}</a>
+                  <a class="dropdown-item" href="{{MYDOMAIN}}/opt/events/olds" target="_self">{{txt('OLDS')}}</a>
+                  <a class="dropdown-item" href="{{MYDOMAIN}}/opt/events/all" target="_self">{{txt('ALL')}}</a>
+                </div>
+              </li>
+              <li class="nav-item dropdown userMenuItem" ng-if="loggedUser.id > 0">
+                <a class="nav-link dropdown-toggle"
+                  href="{{MYDOMAIN}}/opt/users/profile" target="_self" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <em ng-if="loggedUser.avatar == ''" class="fa fa-user"></em>
+                  <strong>{{loggedUser.nick}}</strong>
+                  <img ng-if="loggedUser.avatar != ''" src="{{loggedUser.avatar}}" alt="avatar" />
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <a class="dropdown-item" href="{{MYDOMAIN}}/opt/users/profile" target="_self"
+                  	 target="_self">{{txt('MYDATA')}}</a>
+                  <a class="dropdown-item" 
+                     target="_self" href="{{MYDOMAIN}}/opt/users/removeaccount">{{txt('REMOVE_ACCOUNT')}}</a>
+                  <a class="dropdown-item" href="{{MYDOMAIN}}/opt/users/logout" target="_self">{{txt('LOGOUT')}}</a>
+                </div>
+              </li>
+            </ul>
+            </div>
+            <div class="loginMenuItem" ng-if="loggedUser.nick == 'guest'">
+                <a class="nav-link" href="{{MYDOMAIN}}/opt/users/login" 
+                    target="_self">
+                	<em class="fa fa-sign-in-alt"></em>{{txt('LOGIN')}}  
+                </a>
+            </div>
+           <div class="clear"></div>
+          </div>
+        </nav>

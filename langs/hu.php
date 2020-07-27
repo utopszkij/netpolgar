@@ -12,6 +12,7 @@ DEFINE('PRIOR','elöző');
 DEFINE('FIRST','első');
 DEFINE('LAST','utolsó');
 DEFINE('PAGES','oldalak');
+DEFINE('PAGE','oldal');
 DEFINE('TOTAL','össesen');
 DEFINE('NEXTSTEP','Tovább');
 DEFINE('PLEAS_SELECT','Válaszd ki!');
@@ -22,7 +23,11 @@ DEFINE('ADMIN','System adminisztrátor');
 DEFINE('APPTITLE','Projektek, csoportok, piactér, dokumentumok, események, viták, szavazások, üzenetek');
 DEFINE('APPINFO','Szabad Emberek Szabad Társulása');
 DEFINE('LIKE','Tetszik, támogatom');
+DEFINE('DISLIKE','Nem tetszik, ellenzem');
+DEFINE('LIKEINFO','(Összes/tag)');
 DEFINE('INVALID_NUMBER','Nem megfelelő szám adat');
+DEFINE('DATA_SAVED','Adat tárolva');
+DEFINE('HELP','Súgó');
 // man menu
 DEFINE('MAINMENU','Főmenű');
 DEFINE('HOME','Kezdőlap');
@@ -65,6 +70,11 @@ DEFINE('LIKE_MEMBER_0','Nem tag');
 DEFINE('LIKE_MEMBER_1','Tag');
 DEFINE('LIKE_TYPE_dislike','Ellenzi');
 DEFINE('LIKE_TYPE_like','Támogatja');
+
+// comment
+DEFINE('COMMENTS','Beszélgetés, vélemények');
+DEFINE('WALL','Üzenő fal');
+DEFINE('SEND_MESSAGE','Üzenet neki');
 
 // footer
 DEFINE('IMPRESSUM','Impresszum');

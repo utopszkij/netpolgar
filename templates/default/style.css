@@ -1,7 +1,9 @@
-/* common */
-body {font-size:14px; font-family:roman; background-color:white; line-height:120%;
+body {font-family: poppins sans-serif; font-size:14px; background-color:white; line-height:120%;
    min-height:600px;}
 div {margin:0px; padding:0px; width:100% }
+.pageBody {min-height:600px; padding: 0px}
+.pageBody h3 {margin-top:10px}
+
 h2,h3,h4 {text-align:left}
 form {text-align:left}
 blockquote {margin:1px 1px 1px 20px}  
@@ -18,29 +20,41 @@ button em {margin-right:5px}
 .btn:hover {background-color:#d6c4c4; color: black}
 .browserPaginator button.paginatorTxt {background-color:transparent; color:black; border-style:none; cursor:default}
 .browserPaginator button.paginatorCurrent {background-color:transparent; color:black;}
- 
-.table .tr0 {background-color:transparent;}
-.table .tr1 {background-color:#d0d0d0}
+#cookieEnable {position:fixed; z-index:99; width:100%; height:auto; 
+	left:0px; bottom:0px; background-color:#E8EDEF opacity: 0.8; padding:2px; margin:0px;}
+#cookieDisable {width:100%; height:auto; background-color:#E8EDEF; padding:2px; margin:0px;}
+
+/* formhelp */
+#help .helpIcon {text-align:left}
+#help .btn {background-color:#f7e59b; color:black}
+#help .helpClose {text-align:right}
+#helpBody {border-style:solid; border-width:1px; border-radius:10px; 
+   width:100%; margin:2px 0px 2px 0px; padding:2px; fint-size:14px; text-align:left;
+   background-color:#f7e59b; color:black}
+   
+/* table */  
+.table .thead-dark th.order {color:orange}
+.table .thead-dark th.unorder {color: white}
+
 #scope {padding:5px 10px 5px 10px; min-height:600px; text-align:center}   
 .specButtons {display:inline-block; margin-left:40px; width:auto}
 
-.nav-item {border-style:solid; border-color:silver; border-width:0px 1px 0px 0px;}
-.nav-item:hover {background-color:silver}
-.nav-item a {padding:15px 2px 2px 2px}
-.nav-item em {padding: 0px 5px 0px 0px}
-.nav-item img {height:32px}
-.homeMenuItem a {padding:8px 2px 2px 2px}
-.userMenuItem a {padding:8px 2px 2px 2px}
-.userMenuItem em {font-size:22px}
-.dropdown-menu {border-style:solid; border-width:0px 1px 1px 1px; border-radius: 0px 0px 10px 10px;
-	background-color: #C0C0C0; padding:3px;}
-.dropdown-item:hover {background-color:black; color:white;}
-.navbar-collapse li {text-align:left}
-.navbar-collapse li .fa {margin-right:5px}
-#loggedUser {display:block; background-color:#b79191; margin:0px; font-wight:bold}
-.parents {text-align:left}
+/* főmenü */
+#navbar {background-color:red; font-size:14px; text-align:left; padding:15px 20px 15px 20px} 
+#navbar img {height:35px; margin:0px 0px 0px 20px}
+#navbar .nav-item {margin-right:10px;}
+#navbar .nav-item em {display:none}
+#navbar a {color:white}
+#navbar a:hover {color:#E0E0E0}
+#navbar .dropdown-menu {background-color:red; width:auto; border-radius:0px 0px 25px 25px}
+#navbar .navbar-toggler {color:white; float:right; margin-top:6px}
+#navbar .loginMenuItem em {display:none}
+#navbar .loginMenuItem  {border-style:solid; border-width:2px; border-radius:20px}
+#navbar .userMenuItem img {height:20px}
+#navbar .dropdown-item:hover {background-color:transparent}
 
-.subMenu {display:inline-block; width:auto; float:left; }
+/* submenu */
+.subMenu {display:inline-block; width:auto; float:left; text-align:left}
 .subMenu ul {border-style:solid; border-width:1px; border-color: black;  padding:0px}
 .subMenu li {display:block; border-style:solid; border-width:0px 0px 1px 0px}
 .subMenu li:hover {background-color:#d0d0d0}
@@ -58,12 +72,109 @@ button em {margin-right:5px}
     text-align:center; margin:0px;
     width:128px; height:128px; font-size:10px;}
 #working span {display:none}   
+.search {padding:15px 0px 15px 0px}
 
 #divLike {text-align:right; font-size:14pt; padding:2px 20px 2px 2px}
 #divLike label {width:auto;}
 #likeDetails {position: absolute; z-index:99; left:5px; top:5px; width: 90%; height:840px;
   border-style:solid; border-width:1px; padding:3px; background-color:#d0d0d0}
   
+#divComments {border-style:solid; border-width:1px; margin:2px 0px 2px 0px; padding:10px; text-align:left}
+#divComments .commentTitle var {font-weight:bold}
+#divComments .commentTitle em {cursor:pointer}
+  
+.paginator {margin: 10px 0px 0px 0px; padding: 0px 0px 0px 0px}  
+.paginator li {list-styla: none; display: inline-block; margin: 1px 2px 1px 2px;}
+.paginator .paginator-total .page-link {border-style:none;}
+.paginator .paginator-total var {margin: 1px 10px 1px 1px;}
+.paginator .active {font-weight:bolder; color:green}
+.paginator a:hover {text-decoration:none}
+ 
+/* frontPage */
+.carouselIcon {width:70px; height:70px; font-size:40px; padding:12px;
+  background-color:#261F23; color:white; font-weight:100;
+  border-style:solid; border-width:2px; border-radius:35px;}
+.carousel {background-color:black}
+.carousel img {opacity:0.7}
+.carousel .groupsItem img {opacity:0.48} 
+.carousel-caption {top: 30%; left: 25%; font-size:16px; bottom:auto; width:50%; height:auto; z-index:1; 
+   background-color:transparent; color:white}
+.carousel-caption h5 {background-color:transparent; font-size:18px; font-weight:bolder}  
+.carousel .buttons em {display:none}
+.carousel .buttons .btn {border-style:solid; border-color:white; border-radius:25px; width:200px; margin-right:30px;}
+
+#newProjects {padding:30px 10px 10px 10px; text-align:center}
+#newProjects h2 {text-align:center; font-size:40px; font-weight:300; color:#232323; padding:20px 0px 20px 0px}
+#newProjects .newProjects2 {vertical-align:top}
+#newProjects .newProject {display:inline-block; width:300px; height: 350px; 
+   overflow:hidden; text-align:center; padding:5px; margin:5px 20px 5px 5px}
+#newProjects .newProject .img {width:300x; height:200px; overflow:hidden;  background-color:silver}
+#newProjects .newProject h3 {text-align:center; font-size:16px; font-weight:300; color:#232323
+   height:20px; overflow:hidden}
+#newProjects .newProjectTxt {display:inline-block; margin-top:-240px; opacity:0;  
+   width:0px; min-width:0px; height:250px; padding:5px; overflow:hidden;
+   background-color:#EC342C; color:white;
+   font-size:16px; font-weight:300; text-align:center;}
+#newProjects .newProject:hover .newProjectTxt {width:300px; opacity:0.99; transition:0.6s ease} 
+
+#newGroups {padding:30px 10px 10px 10px; text-align:center; background-color:#EFEFEF}
+#newGroups h2 {text-align:center; font-size:40px; font-weight:300; color:#232323; padding:20px 0px 20px 0px}
+#newGroups .newGroups2 {vertical-align:top}
+#newGroups .newGroup {display:inline-block; width:300px; height: 400px; 
+   overflow:hidden; text-align:center; padding:5px; background-color:white; margin:5px 20px 5px 5px}
+#newGroups .newGroup .img {width:300px; height:200px; overflow:hidden; background-color:silver; margin:0px;}
+#newGroups .newGroup h3 {text-align:left; font-size:20px; font-weight:300; color:black;
+   background-color:white; margin:0px; padding: 30px 0px 0px 20px; height:auto}
+#newGroups .newGroupTxt {display:inline-block; margin:0px;   
+   max-height:100px; padding:25px; overflow:hidden;
+   background-color:white; color:#767676;
+   font-size:16px; font-weight:300; text-align:left}
+#newGroups .newGroup button {margin:-240px 0px 0px 0px; padding:5px 45px 5px 45px; z-index:2;
+   border-radius:20px; opacity:0}
+#newGroups .newGroup:hover a {text-decoration:none}
+#newGroups .newGroup:hover img {opacity:0.5}
+#newGroups .newGroup:hover button {opacity:0.99}
+
+#newUsers {padding:30px 10px 10px 10px; text-align:center; background-color:white}
+#newUsers h2 {text-align:center; font-size:40px; font-weight:300; color:#232323; padding:20px 0px 20px 0px}
+#newUsers .newUsers2 {vertical-align:top}
+#newUsers .newUser {display:inline-block; width:300px; height: 400px; 
+   overflow:hidden; text-align:center; padding:5px; background-color:white; margin:5px 20px 5px 5px}
+#newUsers .newUser .img {width:300px; height:130px; overflow:hidden;  margin:0px;}
+#newUsers .newUser img {width:120px; height:120px; border-radius:60px}
+#newUsers .newUser h3 {text-align:center; font-size:20px; font-weight:300; color:black;
+   background-color:white; margin:0px; padding: 30px 0px 0px 20px; height:auto}
+#newUsers .newUserTxt {display:inline-block; margin:0px;   
+   max-height:100px; padding:25px; overflow:hidden;
+   background-color:white; color:#767676;
+   font-size:16px; font-weight:300; text-align:center}
+#newUsers .newUser:hover a {text-decoration:none}
+
+.info {background-color:silver; color:black; padding:10px; text-align:center;}   
+/* recent-work and tema-wrap  */
+#suggest {padding:30px 10px 10px 10px; text-align:center}
+#suggest h2 {text-align:center; font-size:40px; font-weight:300; color:#232323; padding:20px 0px 20px 0px}
+#suggest .suggest-item {display:inline-block; 
+   width:250px; height:250px; max-width:250px; max-height:250px;
+   margin:0px; padding:0px; background-size: cover}
+#suggest .suggest-item a {color:white;}   
+#suggest .suggest-item .popuptitle {margin:0px; padding:0px; display:inline-block; 
+	overflow: hidden; 
+	height:250px; width:0px; max-width:250px; min-width:0px;   
+	background-color: transparent; color:white;}
+#suggest .suggest-item:hover .popuptitle {width:250px; max-width:250px; padding:10px; 
+    background-color: #EC342C; color:white; 
+    transition:0.6s ease}  
+
+.tema-wrap {padding:10px;}
+.tema-wrap i {font-size:32px; padding:6px;
+	background-color:#00808B; color:white; width: 46px; height:46px; border-radius:23px;}
+.tema-wrap i.fa-child {padding: 6px 6px 6px 12px}	
+.tema-wrap i.fa-calendar {padding: 6px 6px 6px 8px}	
+.tema-wrap i.fa-folder-open-o {padding: 6px 6px 6px 8px}	
+.tema-wrap:hover {background-color:#B3CFD1}
+ 
+ 
 #registForm {display:inline-block; width: 700px; min-height:600px; text-align:left; }
 #divRegmodSelect {padding:10px; display:inline-block; width:auto; float:right}  
 #webRegform {}
@@ -75,7 +186,7 @@ button em {margin-right:5px}
 #divProfileForm {min-height:600px;}
 #divProfileForm2 {display:inline-block; width:70%; float:right; text-align:center}
 
-#loginForm {display:inline-block; text-align:left;  width: 400px; min-height:600px; padding:10px;}
+#loginForm {display:inline-block; text-align:left;  width: 500px; min-height:600px; padding:10px;}
 #divUklogin {display:none; position:absolute; z-index:99; 
 	top:60px; left:20px;  width:920px; height:820px; padding:5px; 
 	border-style:solid; border-width:1px; 
@@ -100,85 +211,131 @@ button em {margin-right:5px}
 
 #groupsList .groupIcon {height:32px; min-width:32px; margin:0px 10px 0px 10px}
 
+#membersList .table {width:auto; margin-top:5px}
+#memberForm h3 {text-align:center}
+#memberForm h2 img {height:35px}
+
 #divGroupForm {min-height:600px; padding:10px;}
 #divGroupForm #imgAvatar {height:100px; margin:3px}
-
+#divGroupForm .memberButtons {display:inline-block; width:auto; height:auto}
+#divGroupForm .btn-member {width:auto; margin:2px 1px 1px 1px;}
 #removeGroup {padding:10px; min-height:600px;}
 
+#projectForm {min-height:600px;}
+#projectForm img {width:150px}
+#projectForm2 {display:inline-block; width:70%; float:right; text-align:center}
+#projectForm2 input {width:400px; display:inline-block}
+#projectForm2 select {width:400px; display:inline-block}
+#projectForm2 textarea {width:400px; display:inline-block}
+
+/* projekt */
+.kanban {display:inline-block; border-style:none; width:auto; font-family: sans-serif; font-size:14px;}
+.kanbanCol {float:left; width:242x; height:700px; 
+   border-style:solid; border-width: 1px; padding:0px 1px 20px 1px; margin:1px; valign:top}
+.kanbanCol h4 {background-color:#343a40;; color:white; text-align:center; padding:5px; 
+   height:auto; font-damily:sans-serif; font-size:14px}
+.kanbanCol h4 em {cursor:pointer; display:none}
+.kanban .card {display:inline-block; width:220px; height:100px; overflow:hidden; cursor:pointer;
+   border-style:solid; margin:1px; padding:2px; z-index:1}
+.kanban .nick {text-align:left}   
+.kanban img {height:30px}   
+#taskForm {min-height:600px;}
+#taskForm img {width:150px}
+#taskForm2 {display:inline-block; width:70%; float:right; text-align:center}
+#taskForm2 input {width:400px; display:inline-block}
+#taskForm2 select {width:400px; display:inline-block}
+#taskForm2 textarea {width:400px; display:inline-block}
+.taskAvatar {height:32px}
+.task {background-color:silver}
+.bug {background-color:red}
+.suggestion {background-color:lime}
+.request {background-color:orange}
 #scope .readme {text-align:left}
 
-#footer {background-color:#d6c4c4; color:white; padding:20px;}  
-
-.carousel-caption {width:70%; text-align:center;  
-   background-color:black; opacity:0.5; border-radius:20px;}
-.carousel-caption h5 {background-color:transparent; font-size:24px; font-weight:bolder}  
-.carousel-item .buttons {position:absolute; z-index:10; left:30%; top:20%; height:auto; width:auto;}
-.carousel-item .buttons a {display:inline-block; background-color:black; opacity:0.5; 
-	 width:180px; padding:15px; margin-right:50px;
-    color:white; font-size:20px; font-weight:bolder; 
-	border-style:solid; border-color:white; border-width:2px; border-radius:10px}
-.info {background-color:silver; color:black; padding:10px; text-align:center;}   
-
-/* recent-work and tema-wrap  */
-#suggest .suggest-item {display:inline-block; width:250px; height:250px; max-width:250px; max-height:250px;
-   margin:0px; padding:0px; background-size: cover}
-#suggest .suggest-item .popuptitle {margin:0px 0px 0px 0px; padding:10px; display:none; 
-	height:250px; float:left;  background-color: #d6c4c4}
-#suggest .suggest-item:hover .popuptitle {display:inline-block}  
-
-.tema-wrap {padding:10px;}
-.tema-wrap i {font-size:32px; padding:6px;
-	background-color:#00808B; color:white; width: 46px; height:46px; border-radius:23px;}
-.tema-wrap i.fa-child {padding: 6px 6px 6px 12px}	
-.tema-wrap i.fa-calendar {padding: 6px 6px 6px 8px}	
-.tema-wrap i.fa-folder-open-o {padding: 6px 6px 6px 8px}	
-.tema-wrap:hover {background-color:#B3CFD1}
-
+#footer {background-color:#2E2E2E; color:#828A8A; padding:20px; margin-top:10px}
+#footer a {color:#828A8A;}  
+#cookieEnable, #cookieDisable {background-color: #E8EDEF; color:black; padding-right:10px}
    
 /* phone */
 @media (max-width: 576px) {
+	#frontPage #navbar {background-color:red; position:fixed; top:0px; 
+	    z-index:2;font-size:16px;
+	width:100%; height:auto; 
+    background-color:#EC342C; color:white}
+    .carousel .buttons {display:none}
 	.browserPaginator .paginatorDesctop {display:none} 
     .browserPaginator .total {display:block} 
     .browserPaginator .buttons {display:block; width:100%} 
 	form#formApp label {width:250px; text-align:left}
-	.carousel-inner .buttons {display:none}
 	form#formApp label {display:block; width:auto; text-align:left}
 	form#formAdminLogin label {display:block; width:auto; text-align:left}
 	input {width: 340px; max-width:340px}
 	textarea {width: 340px; max-width:340px}
 	.subMenu {padding:1px}
 	.subMenu button {padding:1px}
+
+	.kanbanCol {float:left; width:100%; min-height:60px; height:60px; overflow:hidden}
+	.kanbanCol h4 {text-align:left}
+    .kanbanCol h4 em {display: inline-block}
 }
 
 /* tablet */
-@media (min-width: 577px) and (max-width: 991px) {
+@media (min-width: 577px) and (max-width: 1100px) {
+	#frontPage #navbar {background-color:red; position:fixed; top:0px; 
+	    z-index:2;font-size:16px}
+	.carousel .buttons {display:block; position:absolute; z-index:10; 
+		left:0px; top:60%; height:auto; width:100%; text-align:center}
+	width:100%; height:auto; 
+    background-color:#EC342C; color:white}
 	.browserPaginator button.paginatorDesctop {display:inline} 
     .browserPaginator .buttons {display:inline-block; width:auto} 
 	form#formApp label {width:250px; text-align:left}
-	.carousel-inner .buttons {display:none}
 	form#formApp label {display:block;width:auto; text-align:left}
 	form#formAdminLogin label {display:block; width:auto; text-align:left}
 	input {width: 520px; max-width:520px}
 	textarea {width: 520px; max-width:520px}
 	.subMenu {padding:2px}
 	.subMenu button {padding:2px}
+	
+	.kanbanCol {float:left; width:100%; min-height:60px; height:60px; overflow:hidden}
+	.kanbanCol h4 {text-align:left}
+    .kanbanCol h4 em {display: inline-block}
+	
 }
 
 /* desctop */
-@media (min-width: 992px) and (max-width: 1199px) {
-	.browserPaginator button.paginatorDesctop {display:inline} 
-    .browserPaginator .buttons {display:inline-block; width:auto} 
+@media (min-width: 1101px) and (max-width: 1199px) {
+	#frontPage #navbar {background-color:transparent; 
+	    position:fixed; top:0px; left:0px; right:0px;
+   		z-index:2; font-size:16px;  padding:10px 20px 10px 2px; margin:0px 10px 0px 10px}
+	.carousel .buttons {display:block; position:absolute; z-index:10; 
+		left:0px; top:60%; height:auto; width:100%; text-align:center}
 	form#formApp label {width:250px; text-align:left}
 	input {width: 920px; max-width:920px}
 	textarea {width: 920px; max-width:920px}
 	.subMenu {padding:6px}
 	.subMenu button {padding:2px}
+	.kanban {overflow:scroll; height:500px}
+	.kanbanCol {float:left; width:238px; min-height:500px; height:auto; z-index:1; 
+	    overflow:visible}
+	.kanbanCol h4 {text-align:center}
+    .kanbanCol h4 em {display: none}
 }
 
 /* extra big */
 @media (min-width: 1200px) {
+	#frontPage #navbar {background-color:transparent; 
+	    position:fixed; top:0px; left:0px; right:0px;
+   		z-index:2; font-size:16px;  padding:10px 20px 10px 2px; margin:0px 10px 0px 10px}
+	.carousel .buttons {display:block; position:absolute; z-index:10; 
+		left:0px; top:60%; height:auto; width:100%; text-align:center}
 	.browserPaginator button.paginatorDesctop {display:inline} 
     .browserPaginator .buttons {display:inline-block; width:auto} 
 	.subMenu {padding:10px}
 	.subMenu button {padding:4px}
+	.kanban {overflow:scroll; height:500px}
+	.kanbanCol {float:left; width:238px; min-height:500px; height:auto; z-index:1; 
+	    overflow:visible}
+	.kanbanCol h4 {text-align:center}
+    .kanbanCol h4 em {display: none}
 }
