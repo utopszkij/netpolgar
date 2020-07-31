@@ -1,0 +1,60 @@
+ 1. .htaccess törölve (jelszó védelem volt benne)
+ 
+ 2.  index.php -ből a https kieröltetés kikommentezve, angularjs használat beillesztve 
+   
+ 3.  az angular használathoz egy új angular.js file került az assets könyvtárba	
+
+ 4.  a footer.php -ből a js betöltések át kerület a header.php -ba
+   
+ 5.Több helyen gondjaim vannak az abszolut és a relativ utvonalakkal, ugyanis az összerakásnál
+   ezek változnak, és az összerakott rendszerben  bázis utvonal sem a template fő könyvtára.
+   Ezért az utvonalakat mindenhol  {{TEMPLATEURL}}/..... formában kell irni
+   pl:  {{TEMPLATEURL}}/csoportok/menu.php
+   A program fő könyvtárát pedig {{MYDOMAIN}} formában lehet használni
+   Ezek kezelését a mobirate teszthez betettem az index.php -ba.
+   
+ 6.Az adatformokon az egyes input mezők "id" -je és "name" értéke mindig azonos és megegyezik
+   az adott mező adatbázis beli nevével. 
+   
+ 7. Minden <a href="...." tagbe kell "target="_self" is.
+   
+ 8. Mivel a használt framework többnyelvü fix szövegek helyett {{txt('TOKEN')}} kell.
+   
+ 9. A "<form" -ok "id" -je a programban meghatározott érték kell, hogy legyen, esetenként
+    a "<sectionok" -id -je is.
+   
+ 10.Egyes képernyők legalján kell egy rejtett div (a programtól függ, hogy kell vagy nem)
+    <div style="display:none">{{onload()}}</div>
+   	
+ 11.Tmeplates/html -be kell minden oldalhoz egy 'oldalnév'.html 
+    ami az oldal elmeit includolja, 	beleértve a menu.php -t és a footer.php -t is
+	 
+ 12.az én meglévő régi formjaim ideiglenes megjelenitéséhez került ide navbar.html és footer.html is. Ezeket te ne használd!
+	 
+ 13.A style.css -hez én nem nyúlok. Készült egy új "mystyle.css" fájl, ebben az én régi formjaimhoz szükséges stilusok vannak,
+   idővel ez remélhetőleg ki fog ürülni. Továbbá it még én szükség esetén felül irhatok css elemeket (remélem erre
+   ritkán lesz szükség, inkább téged kérlek meg hogy javitsd a style.css -ben). Arra kérlek te viszont ehhez ne nyulj!	 
+
+
+JAVASOLT MUNKAMENET
+
+	1. Te megcsinálod a dizájn tervet úgy mint eddig, csinálsz hozzá az index.php -ba is teszt hívást,
+	   feltöltöd a github -ra a templates/modern  könyvtárba (pull requested -et is csinálsz, ami azt hiszem 
+	   emailbemn értesit engem)
+	2. Én bele javitom az "id" és "name" értékeket, {{txt('....')}} -ket, ha kell a záró rejtett formot,
+	   Készitek a html -könyvtárba új .html fájlt hozzá, Csinálok az index.html -be teszt adatokat. feltöltöm a 
+	   github -ra, (pull request -et csinálok, ami talán emailben értesít téged a változásról).
+	4. Ezután te visszamásolhatod a te mobirate -rendszeredbe, az reményeim szerint ott is 
+	   müködni fog és te tovább dolgozhatsz vele, ha csak dizájnt változtatsz (tehát id-ket {{...}} részeket nem, akkor én gond nélkül
+	   felül irhatom a nálam lévőket. (ha mást is akkor persze dolgoznom kell vele)
+	5. Ha változtattál akkor újra a feltöltöd, pull request ....
+
+	A github -on akkor tudunk viszonylag hatékonyan dolgozni ha amikor pull requestet csináltál
+	akkor te már nem nyulsz hozzá addig amig nem kapod tőlem a változást jelző pull requestet. Miután letöltötted azt
+	újra "nálad a labda" te dolgozhatsz vele, és nekem nem szabad belepiszkálnom......
+	
+	Ha ezt a szabályt megszegjük, a github segitségével azért összemergelhető a két állapot, de elég macerás dolog....
+	
+	     
+	
+

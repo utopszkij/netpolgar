@@ -1,0 +1,46 @@
+.pageBody {min-height:600px; padding: 0px; text-align:left}
+.pageBody h3 {margin-top:10px}
+.pageBody h2 {display:none}
+.btn {border-radius:30px}
+.mbr-section {padding-top:10px; padding-bottom:10px}
+.btn em {margin:0px 5px 0px 5px}
+
+/* főmenu */
+.mainmenu .nav-item {width:145px}
+.mainmenu .nav-item img#navbarUserAvatar {height:32px !important};
+
+/* formhelp */
+#help .helpIcon {text-align:left}
+#help .btn {background-color:#f7e59b; color:black}
+#help .helpClose {text-align:right}
+#helpBody {border-style:solid; border-width:1px; border-radius:10px; 
+   width:100%; margin:2px 0px 2px 0px; padding:2px; fint-size:14px; text-align:left;
+   background-color:#f7e59b; color:black}
+   
+/* table */  
+.table .thead-dark th.order {color:orange}
+.table .thead-dark th.unorder {color: white}
+
+#scope {padding:5px 10px 5px 10px; min-height:600px; text-align:center}   
+.specButtons {display:inline-block; margin-left:40px; width:auto}
+
+#popup {cursor: move; position:fixed; z-index:99; left:50px; top:50px;
+    width:500px; height:auto;
+    background-color:#F0F0F0; color:black; padding:1px; border-style:solid; border-width:1px;}
+#popup .popupCloseDiv {text-align:right; margin:0px; padding:0px;}
+#popup p {padding:20px; margin:20px; text-align:center}
+#popupButtons {padding:10px; text-align:center}  
+  
+#working {position:fixed; z-index:200; 
+    left:50%; top:150px; margin: 0px 0px 0px -64px; display:none;
+    background-image:url('working.gif'); background-color:transparent; 
+    text-align:center; margin:0px;
+    width:128px; height:128px; font-size:10px;}
+#working span {display:none}   
+
+/* csoportok */
+#groupsTree {list-style:none; line-height:200%}
+#groupsTree li {cursor:pointer}
+#groupsTree li img {width:30px}
+#groupsTree .groupsTreeSubitems {list-style:none; line-height:200%}
+

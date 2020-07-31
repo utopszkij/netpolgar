@@ -163,13 +163,10 @@ class View {
         if ($jsName == '') {
             $jsName = $name;
         }
-        if (file_exists('./templates/'.config('TEMPLATE').'/html/'.$name.'.html')) {
-            $htmlName = './templates/'.config('TEMPLATE').'/html/'.$name.'.html';
+        if (file_exists(config('MYPATH').'/templates/'.config('TEMPLATE').'/html/'.$name.'.html')) {
+            $htmlName = config('MYDOMAIN').'/templates/'.config('TEMPLATE').'/html/'.$name.'.html';
         } else {
-            $htmlName = './views/html/'.$name.'.html';
-        }
-        if (!file_exists($htmlName)) {
-            echo 'Fatal error html template not found '.$htmlName; exit();
+            $htmlName = config('MYDOMAIN').'/views/html/'.$name.'.html';
         }
         ?>
         <body ng-app="app">
@@ -246,6 +243,7 @@ class View {
         <script type="text/javascript">
         angular.module("app", []).controller("ctrl", function($scope) {
         $scope.MYDOMAIN = "<?php echo config('MYDOMAIN'); ?>";
+        $scope.TEMPLATEURL = "<?php echo config('MYDOMAIN').'/templates/'.TEMPLATE; ?>";
         $scope.cookieEnabled = "<?php echo $REQUEST->sessionGet('cookieEnabled'); ?>"
         $scope.LNG = {};
         $scope.txt = function(token) {
@@ -266,7 +264,14 @@ class View {
         	<?php endif ?>
         <?php endforeach; ?>
         $scope.sid = "<?php session_id(); ?>";
-        <?php include_once './js/'.$jsName.'.js'; ?>
+		<?php
+        if (file_exists('./templates/'.config('TEMPLATE').'/js/'.$jsName.'.js')) {
+            $jsFileName = './templates/'.config('TEMPLATE').'/js/'.$jsName.'.js';
+        } else {
+            $jsFileName = './js/'.$jsName.'.js';
+        }
+        include_once $jsFileName; 
+        ?>
         $("#scope").show();
         $("#working").hide();
         }); // controller function
@@ -296,7 +301,8 @@ class View {
         }
         $s = str_replace('{{EXTRACSS}}',$extraCss,$s);
         $s = str_replace('{{DEFLNG}}',DEFLNG,$s);
-        echo str_replace('{{MYDOMAIN}}',MYDOMAIN,$s);
+        $s = str_replace('{{MYDOMAIN}}',MYDOMAIN,$s);
+        echo str_replace('{{TEMPLATEURL}}',MYDOMAIN.'/templates/'.TEMPLATE,$s);
     }
 
     /**

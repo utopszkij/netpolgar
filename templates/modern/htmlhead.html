@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="hu">
+  <head>
+    <base href="{{MYDOMAIN}}/" target="_blank">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	 <meta charset="utf-8">
+    <meta name="title" content="Netpolgar szabad emberek, szabad társulása">
+    <meta name="description" content="web rendszer. csoport szervezés, projekt menedzselés, virtuális piactér, kommunikáció, szavazások">
+    <meta name="keywords" content="csoport szervezés, projekt menedzselés, virtuális piactér, kommunikáció, szavazások">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Netpolgar</title>
+	<link rel="shortcut icon" type="image/png" href="{{MYDOMAIN}}/favicon.png"> 
+	
+	<!--  jquery -->
+    <!--  lehet, hogy a jquery-ui nem is kell...  script src="{{MYDOMAIN}}/core/jquery-ui.js"></script -->
+	<!--                                          link rel="stylesheet" href="{{MYDOMAIN}}/core/jquery-ui.css" -->
+	<script src="{{TEMPLATEURL}}/assets/web/assets/jquery/jquery.min.js"></script>
+    
+	 <!-- bootstrap -->
+     <script src="{{TEMPLATEURL}}/assets/bootstrap/js/bootstrap.min.js"></script>
+     <script src="{{TEMPLATEURL}}/assets/popper/popper.min.js"></script>
+	 <link rel="stylesheet" href="{{TEMPLATEURL}}/assets/bootstrap/css/bootstrap.min.css">
+     <link rel="stylesheet" href="{{TEMPLATEURL}}/assets/bootstrap/css/bootstrap-grid.min.css">
+     <link rel="stylesheet" href="{{TEMPLATEURL}}/assets/bootstrap/css/bootstrap-reboot.min.css">
+	 
+	 <!-- fonts -->	
+	 <link rel="stylesheet" href="{{MYDOMAIN}}/core/fontawesome/css/all.css">
+	 <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Poppins" />
+
+  <!--  Dizajner program (mobirite) dolgai -->
+  <link rel="stylesheet" href="{{TEMPLATEURL}}/assets/web/assets/mobirise-icons/mobirise-icons.css">
+  <link rel="stylesheet" href="{{TEMPLATEURL}}/assets/socicon/css/styles.css">
+  <link rel="stylesheet" href="{{TEMPLATEURL}}/assets/dropdown/css/style.css">
+  <link rel="stylesheet" href="{{TEMPLATEURL}}/assets/tether/tether.min.css">
+  <link rel="stylesheet" href="{{TEMPLATEURL}}/assets/theme/css/style.css">
+  <link rel="preload" as="style" href="{{TEMPLATEURL}}/assets/mobirise/css/mbr-additional.css">
+  <link rel="stylesheet" href="{{TEMPLATEURL}}/assets/mobirise/css/mbr-additional.css" type="text/css">
+  <link rel="stylesheet" href="{{TEMPLATEURL}}/flickity/flickity.css">
+
+ 	 <!-- main css -->
+     <link rel="stylesheet" href="{{TEMPLATEURL}}/style.css">
+     {{EXTRACSS}}
+     <link rel="stylesheet" href="{{TEMPLATEURL}}/mystyle.css">
+
+    <script type="text/javascript">
+	 var RESTRICTED = {};
+    var global = {};
+    global.DEFLNG = "{{DEFLNG}}";
+    global.MYDOMAIN = "{{MYDOMAIN}}";
+    global.alert = function(str) {
+        // window.alert(str);
+        $("#popupYes").hide();
+        $("#popupNo").hide();
+        $("#popupClose").show();
+        $("#popup p").html(str);
+        $("#popup").show();
+        $("#popupClose").click(function(){
+            $("#popup").hide();
+        });
+    };
+    global.confirm = function(str, yesfun, nofun) {
+        if (yesfun != undefined) {
+            $("#popupYes").mouseup(yesfun);
+        } else {
+            $("#popupYes").mouseup(function() {});
+        }
+        if (nofun != undefined) {
+            $("#popupNo").mouseup(nofun);
+        } else {
+            $("#popupNo").mouseup(function() {});
+        }
+        $("#popupYes").show();
+        $("#popupNo").show();
+        $("#popupClose").hide();
+        $("#popup p").html(str);
+        $("#popupNo").click(function(){
+            $("#popup").hide();
+        });
+            $("#popupYes").click(function(){
+                $("#popup").hide();
+            });
+                $("#popup").show();
+    };
+    global.working = function(show) {
+        if (show == undefined) {
+            $("#working").toggle();
+        } else if (show) {
+            $("#working").show();
+        } else {
+            $("#working").hide();
+        }
+    };
+    global.post = function(url, postData, successFun, failFun) {
+        if (failFun != undefined) {
+            $.post(url, postData, successFun)
+            .fail(failFun);
+        } else {
+            $.post(url, postData, successFun);
+        }
+    }
+    global.submit = function(formId) {
+		$('#'+formId).submit();    
+    }
+    </script>
+    
+  <script src="{{TEMPLATEURL}}/assets/tether/tether.min.js"></script>
+  <script src="{{TEMPLATEURL}}/assets/smoothscroll/smooth-scroll.js"></script>
+  <script src="{{TEMPLATEURL}}/assets/dropdown/js/nav-dropdown.js"></script>
+  <script src="{{TEMPLATEURL}}/assets/dropdown/js/navbar-dropdown.js"></script>
+  <script src="{{TEMPLATEURL}}/assets/touchswipe/jquery.touch-swipe.min.js"></script>
+  <script src="{{TEMPLATEURL}}/assets/web/assets/cookies-alert-plugin/cookies-alert-core.js"></script>
+  <script src="{{TEMPLATEURL}}/assets/web/assets/cookies-alert-plugin/cookies-alert-script.js"></script>
+  <script src="{{TEMPLATEURL}}/assets/vimeoplayer/jquery.mb.vimeo_player.js"></script>
+  <script src="{{TEMPLATEURL}}/assets/countdown/jquery.countdown.min.js"></script>
+  <script src="{{TEMPLATEURL}}/assets/bootstrapcarouselswipe/bootstrap-carousel-swipe.js"></script>
+  <script src="{{TEMPLATEURL}}/assets/mbr-flip-card/mbr-flip-card.js"></script>
+  <script src="{{TEMPLATEURL}}/assets/mbr-popup-btns/mbr-popup-btns.js"></script>
+  <script src="{{TEMPLATEURL}}/assets/ytplayer/jquery.mb.ytplayer.min.js"></script>
+  <script src="{{TEMPLATEURL}}/assets/theme/js/script.js"></script>
+  <script src="{{TEMPLATEURL}}/assets/slidervideo/script.js"></script>
+  <script src="{{TEMPLATEURL}}/flickity/flickity.js"></script>
+  <script src="{{TEMPLATEURL}}/scripts.js"></script>
+    
+    

@@ -11,6 +11,9 @@ function jqueryOnLoad() {
 
 // a képernyő inicializálása
 $scope.onload = function() {
+	
+	console.log('formGroupForm onload');
+	
 	  if ($('#formGroupForm').length) {
 		  
 		  // focus cursor
@@ -18,7 +21,15 @@ $scope.onload = function() {
 		  
 		  // form inicializálása, select elenek beállítása
 		  $('#reg_mode').val($scope.item.reg_mode);
+		  
+		  console.log(' AAA ',$scope.item.state);
+		  
+		  
 		  $('#state').val($scope.item.state);
+		  
+		  
+		  console.log(' BBBB ');
+		  
 		  if ($scope.loggedUser == undefined) {
 			  $scope.loggedUser = {"id":0};
 		  }
@@ -381,9 +392,10 @@ $scope.treeInit = function(parentId) {
 		return '';
 }; // treeInit
   
+
+console.log('groups.js start'); 
 	
 $(function() {
-    // jquery pageOnLoad
   	jqueryOnLoad();
 });	
   
