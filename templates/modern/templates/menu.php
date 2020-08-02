@@ -11,7 +11,7 @@
         <div class="menu-logo">
             <div class="navbar-brand">
                 <span class="navbar-logo">
-                    <a href="./index.php">
+                    <a href="./index.php" target="_self">
                          <img src="{{TEMPLATEURL}}/images/logo.png" alt="Netpolgár" class="toplogo">
                     </a>
                 </span>                
@@ -21,50 +21,63 @@
             <ul class="navbar-nav nav-dropdown" data-app-modern-menu="true">
 				<li class="nav-item">
                     <a class="nav-link link text-white display-4" 
-                       href="{{MYDOMAIN}}/opt/groups/list" target="_self">Csoportok</a>
+                       href="{{MYDOMAIN}}/opt/groups/list" target="_self">{{txt('GROUPS')}}</a>
                 </li>
 				<li class="nav-item dropdown">
-					<a class="nav-link link text-white dropdown-toggle display-4" 
-					    href="#"  target="_self" data-toggle="dropdown-submenu" aria-expanded="false">Beállítások</a>
+					<a class="nav-link link text-white dropdown-toggle display-4" href="#" 
+						target="_self" data-toggle="dropdown-submenu" aria-expanded="false">{{txt('PROJECTS')}}</a>
 					<div class="dropdown-menu">
-						<a class="text-white dropdown-item display-4" href="#" target="_self">Témakörök</a>
-						<a class="text-white dropdown-item display-4" href="#" target="_self">Felhasználói csoportok</a>
+						<a class="text-white dropdown-item display-4"
+							href="{{MYDOMAIN}}/opt/projects/list/filterstate//" target="_self">{{txt('ALL')}}</a>
+						<a class="text-white dropdown-item display-4" 
+							href="{{MYDOMAIN}}/opt/projects/list/filterstate/active" target="_self">{{txt('ACTIVE')}}</a>
+						<a class="text-white dropdown-item display-4" 
+							href="{{MYDOMAIN}}/opt/projects/list/filterstate/draft" target="_self">{{txt('DRAFT')}}</a>
+						<a class="text-white dropdown-item display-4" 
+							href="{{MYDOMAIN}}/opt/projects/list/filterstate/proposal" target="_self">{{txt('PROPOSAL')}}</a>
 					</div>
 				</li>
 				<li class="nav-item dropdown">
-					<a class="nav-link link text-white dropdown-toggle display-4" href="#" target="_self" data-toggle="dropdown-submenu" aria-expanded="false">Projektek</a>
+					<a class="nav-link link text-white dropdown-toggle display-4" href="#" 
+						data-toggle="dropdown-submenu" aria-expanded="false">{{txt('MARKET')}}</a>
 					<div class="dropdown-menu">
-						<a class="text-white dropdown-item display-4" href="#" target="_self">Aktív</a>
-						<a class="text-white dropdown-item display-4" href="#" target="_self">Lezárt</a>
-						<a class="text-white dropdown-item display-4" href="#" target="_self">Tervezet</a>
-					</div>
-				</li>
-				<li class="nav-item dropdown">
-					<a class="nav-link link text-white dropdown-toggle display-4" href="#" data-toggle="dropdown-submenu" aria-expanded="false">Piactér</a>
-					<div class="dropdown-menu">
-						<a class="text-white dropdown-item display-4" href="#" target="_self">Kínál</a>
-						<a class="text-white dropdown-item display-4" href="#" target="_self">Keres</a>
-						<a class="text-white dropdown-item display-4" href="#" target="_self">Tranzakciók</a>
+						<a class="text-white dropdown-item display-4" href="#" target="_self">{{txt('OFFER')}}</a>
+						<a class="text-white dropdown-item display-4" href="#" target="_self">{{txt('DEMAND')}}</a>
+						<a class="text-white dropdown-item display-4" href="#" target="_self">{{txt('TRANSACTIONS')}}</a>
 					</div>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link link text-white display-4" href="#" target="_self">Dokumentumok</a>
+					<a class="nav-link link text-white display-4" href="#" target="_self">{{txt('DOCS')}}</a>
 				</li>
 				<li class="nav-item dropdown">
-					<a class="nav-link link text-white dropdown-toggle display-4" href="#" data-toggle="dropdown-submenu" aria-expanded="false">Eszmecserék</a>
+					<a class="nav-link link text-white dropdown-toggle display-4" href="#" 
+						data-toggle="dropdown-submenu" aria-expanded="false">{{txt('DISPUTES')}}</a>
 					<div class="dropdown-menu">
-						<a class="text-white dropdown-item display-4" href="#" target="_self">Viták</a>
-						<a class="text-white dropdown-item display-4" href="#" target="_self">Szavazások</a>
-						<a class="text-white dropdown-item display-4" href="#" target="_self">Döntések</a>
-						<a class="text-white dropdown-item display-4" href="#" target="_self">Privát üzenetek</a>
+						<a class="text-white dropdown-item display-4" href="#" target="_self">{{txt('CHATS')}}k</a>
+						<a class="text-white dropdown-item display-4" href="#" target="_self">{{txt('POLLS')}}</a>
+						<a class="text-white dropdown-item display-4" href="#" target="_self">{{txt('DECISIONS')}}</a>
+						<a class="text-white dropdown-item display-4" href="#" target="_self">{{txt('MESSAGES')}}</a>
 					</div>
 				</li>
 				<li class="nav-item dropdown">
-					<a class="nav-link link text-white dropdown-toggle display-4" href="#" target="_self" data-toggle="dropdown-submenu" aria-expanded="false">Események</a>
+					<a class="nav-link link text-white dropdown-toggle display-4" href="#" 
+						target="_self" data-toggle="dropdown-submenu" aria-expanded="false">{{txt('EVENTS')}}</a>
 					<div class="dropdown-menu">
-						<a class="text-white dropdown-item display-4" href="#" target="_self">Elkövetkezők</a>
-						<a class="text-white dropdown-item display-4" href="#" target="_self">Korábbiak</a>
-						<a class="text-white dropdown-item display-4" href="#" target="_self">Összes</a>
+						<a class="text-white dropdown-item display-4" href="#" target="_self">{{txt('FOLLOWS')}}</a>
+						<a class="text-white dropdown-item display-4" href="#" target="_self">{{txt('OLDS')}}</a>
+						<a class="text-white dropdown-item display-4" href="#" target="_self">{{txt('ALL')}}</a>
+					</div>
+				</li>
+				<li class="nav-item dropdown">
+					<a class="nav-link link text-white dropdown-toggle display-4" 
+					    href="#"  target="_self" data-toggle="dropdown-submenu" aria-expanded="false">
+					    {{txt('SETUP')}}
+					</a>
+					<div class="dropdown-menu">
+						<a class="text-white dropdown-item display-4" href="#" target="_self">
+						{{txt('CATEGORIES')}}</a>
+						<a class="text-white dropdown-item display-4" href="#" target="_self">
+						{{txt('USERGROUPS')}}</a>
 					</div>
 				</li>
 				<li class="nav-item dropdown" ng-if="loggedUser.id > 0">
@@ -76,16 +89,18 @@
 					</a>
 					<div class="dropdown-menu">
 						<a class="text-white dropdown-item display-4" 
-						   href="./index.php/opt/users/profile/id/{{loggedUser.id}}" target="_self">Profil</a>
+						   href="./index.php/opt/users/profile/id/{{loggedUser.id}}" target="_self">
+						   {{txt('PROFILE')}}</a>
 						<a class="text-white dropdown-item display-4" 
-						   href="./index.php/opt/users/logout/id/{{loggedUser.id}}" target="_self">Kijelentkezés</a>
+						   href="./index.php/opt/users/logout/id/{{loggedUser.id}}" target="_self">
+						   {{txt('LOGOUT')}}</a>
 					</div>
 				</li>
 				
 			</ul>
          <div class="navbar-buttons mbr-section-btn" ng-if="loggedUser.id == 0">
          	<a class="btn btn-sm btn-white-outline display-4" 
-         	   href="{{MYDOMAIN}}/opt/users/login" target="_self">Bejelentkezés</a>
+         	   href="{{MYDOMAIN}}/opt/users/login" target="_self">{{txt('LOGIN')}}</a>
          </div>
         </div>
     </nav>

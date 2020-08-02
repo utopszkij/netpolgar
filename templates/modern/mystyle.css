@@ -2,8 +2,38 @@
 .pageBody h3 {margin-top:10px}
 .pageBody h2 {display:none}
 .btn {border-radius:30px}
-.mbr-section {padding-top:10px; padding-bottom:10px}
+.mbr-section {padding-top:10px; padding-bottom:0px}
+.section-table {padding-top:10px; padding-bottom:0px}
 .btn em {margin:0px 5px 0px 5px}
+.buttons {text-align:center}
+
+.search {margin:20px 0px 20px 0px}
+.search input {height:30px}
+.search select {height:30px}
+.search .btn {padding:5px; margin:0px 2px 0px 2px}
+
+.readme {text-align:left; padding:10px}
+.readme p {text-align:left; padding:10px}
+.readme li {text-align:left}
+
+/* subMenu */
+.inner_menu li {width:300px; text-align:left}
+.subMenu ul {list-style:none; text-align:center}
+.subMenu ul li {display:inline-block; width:300px; margin:10px; text-align:left}
+.subMenu ul li em {display:none}
+
+/* frontpage */
+.card-img {height:225px; overflow: hidde; background-color:silver}
+
+/* userprofil */
+#divProfileForm img {width:100%}
+
+/* projekt */
+#projectForm img {width:100%}
+#projectForm label {height:45px}
+
+/* group form */
+#divGroupForm img {width:100%}
 
 /* főmenu */
 .mainmenu .nav-item {width:145px}
@@ -18,8 +48,18 @@
    background-color:#f7e59b; color:black}
    
 /* table */  
-.table .thead-dark th.order {color:orange}
-.table .thead-dark th.unorder {color: white}
+.table {text-align:center}
+.table .thead-dark tr {display:inline-block; position:relative; width:block; height:auto;
+   overflow:hide; border-style:none; background-color:white}
+.table .thead-dark th {display:inline-block; width:150px; border-style:none; background-color:white}
+.table .thead-dark th.order {color:blue}
+.table .thead-dark th.unorder {color: red}
+.table .thead-dark th.tableComment {background-color:transparent; color:black; border-style:none}
+.table tbody tr {display:inline-block; position:relative; width:260px; height:340px;
+   overflow:hidden; margin: 2px; background-color: #e5e5e5; border-style:none}
+.table tbody td {display:block; border-style:none}
+.table tbody .td_avatar {width:100%; max-height: 150px; overflow:hidden}
+.table tbody .td_avatar img {width:100%}
 
 #scope {padding:5px 10px 5px 10px; min-height:600px; text-align:center}   
 .specButtons {display:inline-block; margin-left:40px; width:auto}
@@ -43,4 +83,40 @@
 #groupsTree li {cursor:pointer}
 #groupsTree li img {width:30px}
 #groupsTree .groupsTreeSubitems {list-style:none; line-height:200%}
+
+.paginator {margin: 10px 0px 0px 0px; padding: 0px 0px 0px 0px}  
+.paginator li {list-styla: none; display: inline-block; margin: 1px 2px 1px 2px;}
+.paginator .paginator-total .page-link {border-style:none;}
+.paginator .paginator-total var {margin: 1px 10px 1px 1px;}
+.paginator .active {font-weight:bolder; color:green}
+.paginator a:hover {text-decoration:none}
+
+#help .btn {padding:3px 10px 3px 10px; margin:3px; font-size:12px}
+#help .helpIcon {display:block; width:auto; height:auto; 
+  position:absolute; left:15px; top:200px; z-index:100}
+#help ul {padding:2px 20px 2px 20px; margin:2px}
+
+/* projekt */
+.kanban {display:inline-block; border-style:none; 
+    width:auto; height: 400px; font-family: sans-serif; font-size:14px; overflow:scroll}
+.kanbanCol {float:left; width:242px; height:400px; 
+   border-style:solid; border-width: 1px; padding:0px 1px 20px 1px; margin:1px; valign:top}
+.kanbanCol h4 {background-color:#343a40;; color:white; text-align:center; padding:5px; 
+   height:auto; font-damily:sans-serif; font-size:14px}
+.kanbanCol h4 em {cursor:pointer; display:none}
+.kanban .card {display:inline-block; width:220px; height:100px; overflow:hidden; cursor:pointer;
+   border-style:solid; margin:1px; padding:2px; z-index:1}
+.kanban .nick {text-align:left}   
+.kanban img {height:30px}   
+#taskForm {min-height:600px;}
+#taskForm img {width:150px}
+#taskForm2 {display:inline-block; width:70%; float:right; text-align:center}
+#taskForm2 input {width:400px; display:inline-block}
+#taskForm2 select {width:400px; display:inline-block}
+#taskForm2 textarea {width:400px; display:inline-block}
+.taskAvatar {height:32px}
+.task {background-color:silver}
+.bug {background-color:red}
+.suggestion {background-color:lime}
+.request {background-color:orange}
 

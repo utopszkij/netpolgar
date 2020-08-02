@@ -17,7 +17,8 @@ class WorkingController extends CommonController {
      */
 	public function show(Request $request) {
 	    $request->set('option','working');
-	    $data = $this->init($request,[]); 
+	    $data = $this->init($request,[]);
+	    $data->formTitle = 'Sajnos ez még nincs készen ..... dolgozunk rajata. :(';
 		$this->view->display($data);
 	}
 }

@@ -6,7 +6,7 @@
         <div class="row justify-content-md-center">
             <div class="col-md-10 align-center">
                 <h1 class="mbr-section-title mbr-bold pb-3 mbr-fonts-style display-1">
-                   <span style="font-weight: normal;">{{item.name}}</span>
+                   <span style="font-weight: normal;">{{formTitle}}</span>
                 </h1>
             </div>
         </div>

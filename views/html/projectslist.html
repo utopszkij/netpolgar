@@ -17,7 +17,7 @@ paginátor:  $scope.paginators=[{"offset":#, "pageNo":#, "enabled":true|false}, 
 </div>
 <div class="page pageBody" id="page">
 	<div class="pageBody members" id="pageBody">
-		<h3><em class="fa fa-wrench"></em>&nbsp;{{formTitle}}</h3>				
+		<h2><em class="fa fa-wrench"></em>&nbsp;{{formTitle}}</h2>				
 		<form id="browserForm" method="get" action="{{MYDOMAIN}}" target="_self">
 			<input type="hidden" id="option" name="option" value="projects" /> 
 			<input type="hidden" id="task" name="task" value="list" /> 
@@ -51,12 +51,14 @@ paginátor:  $scope.paginators=[{"offset":#, "pageNo":#, "enabled":true|false}, 
             </div>
             <table class="table table-bordered table-striped">
 			<thead class="thead-dark">
+				<tr>
+					<th colspan="5" class="tableComment">Rendezés:</th>
+				</tr>
 		  		<tr>
-			  	 	<th id="th_p.id" class="project_id {{thClass('p.id', order, order_dir)}}" style="cursor:pointer"> 
+			  	 	<th id="th_p.id" class="project_id {{thClass('p.id', order, order_dir)}}" colspan="2" style="cursor:pointer"> 
 			  	 	    {{txt('id')}}&nbsp;
 			  	 	    <em class="fa {{titleIcon('p.id', order, order_dir)}}"></em>		  	 	
 			  	 	</th>
-			  	 	<th>&nbsp;</th>
 			  	 	<th id="th_p.name" class="nick {{thClass('p.name', order, order_dir)}}" style="cursor:pointer"> 
 			  	 	    {{txt('name')}}&nbsp;
 			  	 	    <em class="fa {{titleIcon('p.name', order, order_dir)}}"></em>		  	 	
@@ -74,9 +76,9 @@ paginátor:  $scope.paginators=[{"offset":#, "pageNo":#, "enabled":true|false}, 
 			<tbody>
 				<tr ng-repeat="item in items" ng-init="itemLoad($last)" 
 				    style="cursor:pointer" id="tr_{{item.id}}">
-					<td class="td_id">{{item.id}}</td>
-					<td class="td_avatar"><img src="{{item.avatar}}" style="height:30px"/></td>
-					<td class="td_name">{{item.name}}</td>
+					<td class="td_id">#{{item.id}}</td>
+					<td class="td_avatar"><img src="{{item.avatar}}" /></td>
+					<td class="td_name"><strong>{{item.name}}</strong></td>
 					<td class="td_state">{{txt(item.state)}}</td>
 					<td class="td_deadline">{{txt(item.deadline)}}</td>
 				</tr>

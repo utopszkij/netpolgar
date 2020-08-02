@@ -105,15 +105,16 @@ class ProjectsController extends CommonController {
 	    $this->createCsrToken($request, $p);
 	    $p->backUrl = MYDOMAIN.'/opt/projects/list/'.$p->csrToken.'/1';
 	    
-	    // formTitle és form ikon beállítása
-	    $p->formTitle = txt('PROJECT');
-	    $p->formIcon = 'fa-wrench';
 	    
 	    // item beolvasása, dátumok átalakítása a megjelenítés érdekében
 	    $p->item = $this->model->getRecord((int)$p->id); // project record
 	    if (!$p->item) {
 	        $p->item = new ProjectRecord();
 	    }
+	    
+	    // formTitle és form ikon beállítása
+	    $p->formTitle = $p->item->name.' '.txt('PROJECT');
+	    $p->formIcon = 'fa-wrench';
 	    
 	    // ha hibaüzenettel lett visszahivva akkor form adatok a requestből
 	    foreach ($p->item as $fn => $fv) {

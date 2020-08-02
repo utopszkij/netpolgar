@@ -2,6 +2,11 @@
   
     <div class="container">
         <div class="row justify-content-center">
+        	<div class="alert col-12">
+        		<p ng-repeat="msg in msgs">
+        			{{msg}}
+        		</p>
+        	</div>
             <div class="title col-12 col-lg-8">
                 <h2 class="mbr-section-title align-center pb-3 mbr-fonts-style display-2">Csoport tulajdonságok</h2>
             </div>
@@ -10,7 +15,7 @@
 	
     <div class="container">
         <div class="row justify-content-center">
-            <div class="media-container-column col-lg-8" data-form-type="formoid">
+            <div class="media-container-column col-12" data-form-type="formoid">
                 <form action="index.php" id="formGroupForm" method="POST" class="mbr-form form-with-styler">
                 	<input type="hidden" name="option" value="groups" />
                 	<input type="hidden" name="task" value="save" />
@@ -19,15 +24,17 @@
                     <div class="row">
                     </div>
                     <div class="dragArea row">
-                        <div class="col-md-4  form-group">
+                    	<div class="col-sm-12 col-md-2">
+                    		<img src="{{item.avatar}}" ng-id="item.avatar != ''" />
+                    	</div>
+                        <div class="col-md-4 col-sm-12 form-group">
                             <label class="form-control-label mbr-fonts-style display-7">
                             {{txt('NAME')}} *</label>
                             <input type="text" name="name" data-form-field="Name" required="required" class="form-control display-7"
                                 id="name" 
                             	value="{{item.name}}">
                         </div>
-                        
-                        <div class="col-md-4  form-group">
+                        <div class="col-md-3 col-sm-12  form-group">
                             <label class="form-control-label mbr-fonts-style display-7">
                             	{{txt('STATE')}}</label>
                             <select name="state" id="state" class="form-control display-7">
@@ -36,39 +43,38 @@
               					<option value="closed">{{txt('CLOSED')}}</option>
                             </select>
                         </div>
-                        <div class="col-md-4  form-group">
+                        <div class="col-md-4 col-sm-12  form-group">
                             <label class="form-control-label mbr-fonts-style display-7">
                             {{txt('GROUP_TO_ACTIVE')}} *</label>
                             <input type="text" name="group_to_active" class="form-control display-7" id="group_to_active"
                             	 value="{{item.group_to_active}}">
                         </div>
-                        <div class="col-md-4  form-group">
+                        <div class="col-md-4 col-sm-12  form-group">
                             <label class="form-control-label mbr-fonts-style display-7">
                                 {{txt('GROUP_TO_CLOSE')}} *</label>
                             <input type="text" name="group_to_close" required="required" class="form-control display-7" 
                             	 id="name-form1-14" value="{{item.group_to_close}}">
                         </div>
-                        <div class="col-md-4  form-group">
+                        <div class="col-md-4 col-sm-12 form-group">
                             <label class="form-control-label mbr-fonts-style display-7">
                             	{{txt('MEMBER_TO_ACTIVE')}} *</label>
                             <input type="text" name="member_to_active" required="required" class="form-control display-7" 
                             	id="meber_to_active"
                             	 value="{{item.member_to_active}}">
                         </div>
-                        <div class="col-md-4  form-group">
+                        <div class="col-md-4 col-sm-12  form-group">
                             <label class="form-control-label mbr-fonts-style display-7">
                             	{{txt('MEMBER_TO_EXCLUDE')}} *</label>
                             <input type="text" name="member_to_exclude" class="form-control display-7"
                             	 id="member_to_exclude" value="{{item.member_to_exclude}}">
                         </div>
-                        <div data-for="phone" class="col-md-4  form-group">
+                        <div data-for="phone" class="col-md-4 col-sm-12 form-group">
                             <label class="form-control-label mbr-fonts-style display-7">
                             {{txt('AVATAR')}}</label>
                             <input type="text" name="avatar" class="form-control display-7" id="avatar" 
                             	value="{{item.avatar}}">
                         </div>
-                        <div class="col-md-4  form-group">
-
+                        <div class="col-md-4 col-sm-12  form-group">
                       		<label class="form-control-label mbr-fonts-style display-7" 
                       		    ng-if="loggedUser.id > 0">{{txt('USERSTATE')}}: {{txt(userState)}}</label>
                       		<br />    
@@ -99,7 +105,6 @@
                     		</a>
 
                         </div>
-                        
                         <div class="col-md-12 form-group">
                             <label class="form-control-label mbr-fonts-style display-7">{{txt('DESCRIPTION')}}</label>
                             <textarea name="description" class="form-control display-7" 

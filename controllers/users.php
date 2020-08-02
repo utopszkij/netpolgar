@@ -150,6 +150,7 @@ class UsersController extends CommonController {
 	    $p->userData = $p->loggedUser;
 	    $p->userDataAvatarUrl = $p->avatarUrl;
 	    $p->backUrl = urldecode($request->input('backUrl',MYDOMAIN));
+	    $p->formTitle = $p->loggedUser->nick.' '.txt('PROFILE');
 	    if ($p->userAdmin) {
 	        $w = $request->input('userid');
 	        if ($w != '') {
@@ -334,6 +335,7 @@ class UsersController extends CommonController {
 	    $p->userData = $this->model->getById($p->id);
 	    $p->userDataAvatarUrl = $p->avatarUrl;
 	    $p->backUrl = MYDOMAIN;
+	    $p->formTitle = $p->userData->nick; 
 	    if ($p->userData->id > 0) {
 	        $this->view->profileForm($p);
 	    } else {

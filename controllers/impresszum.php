@@ -8,6 +8,7 @@ class ImpresszumController extends CommonController {
     
 	public function show(Request $request) {
 	    $p = $this->init($request,['impresszum']);
+	    $p->formTitle = 'Impresszum';
 	    $this->view->display($p);
 	}
 }

@@ -35,6 +35,7 @@ button em {margin-right:5px}
 /* table */  
 .table .thead-dark th.order {color:orange}
 .table .thead-dark th.unorder {color: white}
+.table .tableComment {display:none}
 
 #scope {padding:5px 10px 5px 10px; min-height:600px; text-align:center}   
 .specButtons {display:inline-block; margin-left:40px; width:auto}

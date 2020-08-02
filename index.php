@@ -7,6 +7,11 @@ if (isset($_POST['sid'])) {
 }
 session_start();
 
+// a modern template igényli ezt a symlink -et. Ha már megvan akkor ki is lehet kommentezni innen.
+if (!is_dir('assets')) {
+    symlink('templates/modern/assets','assets');    
+}
+
 // iframe cross ower hack
 if (isset($_GET['url'])) {
     $lines = file($_GET['url']);
@@ -53,12 +58,20 @@ foreach ($_GET as $name => $value) {
 }
 
 // cokkie engedélyezés/tiltás kattintások kezelése
-if (isset($_GET['cookieenabled'])) {
-    if ($_GET['cookieenabled'] == 1) {
+if (isset($_COOKIE['netpolgarcookie'])) {
+    if (($_COOKIE['netpolgarcookie']) == 1) {
         $request->sessionSet('cookieEnabled',true);
-    } else {
-        $request->sessionSet('cookieEnabled',false);
+        setcookie('netpolgarcookie', 1, time() + (86400 * 30), "/");
     }
+}
+if (isset($_GET['cookieenabled']))  {
+        if ($_GET['cookieenabled'] == 1) {
+            $request->sessionSet('cookieEnabled',true);
+            setcookie('netpolgarcookie', 1, time() + (86400 * 30), "/");
+        } else {
+            $request->sessionSet('cookieEnabled',false);
+            setcookie('netpolgarcookie', 0, time() + (86400 * 30), "/");
+        }
 }
 
 // bejelentjkezett user sessionban

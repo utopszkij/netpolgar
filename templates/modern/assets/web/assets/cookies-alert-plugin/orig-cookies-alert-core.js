@@ -5,8 +5,6 @@
 
  Modified by Mobirise
  
-NETPOLGAR specális verzió !!!!! 
- 
  */
 
 ;(function($) {
@@ -188,8 +186,6 @@ NETPOLGAR specális verzió !!!!!
 
 			var html = '';
 
-/* netpolgar ezt másként ldja meg
-
 			html += '<div id="epd">';
 			html += '<div id="cookiesdirective" style="position:'+ settings.css +';'+ settings.position + ':-300px;left:0px;width:100%;';
 			html += 'height:auto;background:' + settings.backgroundColor + ';opacity:.' + settings.backgroundOpacity + ';';
@@ -231,7 +227,6 @@ NETPOLGAR specális verzió !!!!!
 			// Links
 			html = html.replace(/<a/g, '<a style="color: ' + settings.linkColor + ';text-decoration:' + (settings.underlineLink === true || settings.underlineLink === 'true' ? 'underline' : 'none') + ';"');
 
-*/
 			$('body').append(html);
 
 		} else {

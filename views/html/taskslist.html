@@ -17,12 +17,10 @@ paginátor:  $scope.paginators=[{"offset":#, "pageNo":#, "enabled":true|false}, 
 </div>
 <div class="page pageBody" id="page">
 	<div class="pageBody tasks" id="pageBody">
-		<h3><a href="{{MYDOMAIN}}/opt/projects/form/id/{{project.id}}" target="_self">
+		<h2><a href="{{MYDOMAIN}}/opt/projects/form/id/{{project.id}}" target="_self">
 				<em class="fa fa-wrench"></em>&nbsp;{{project.name}}
 			</a>	
-		</h3>				
-		<h4>{{formTitle}}</h4>
-		
+		</h2>				
 		<div id="help">
 			<p class="helpIcon" style="display:none">
 				<em class="btn btn-secondary" onclick="$('#help .helpIcon').hide(); $('#helpBody').show()" title="{{txt('HELP')}}">?</em>
@@ -33,7 +31,6 @@ paginátor:  $scope.paginators=[{"offset":#, "pageNo":#, "enabled":true|false}, 
 				    style="float:right"
 				    title="{{txt('CLOSE')}}">X</em>
 				<div ng-include="'langs/taskslist_help_hu.html'"></div>
-				<div class="clear"></div>
 			</div>
 		</div>
 		<div style="text-align:center">

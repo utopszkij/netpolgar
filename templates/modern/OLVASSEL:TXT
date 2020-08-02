@@ -26,8 +26,9 @@
  10.Egyes képernyők legalján kell egy rejtett div (a programtól függ, hogy kell vagy nem)
     <div style="display:none">{{onload()}}</div>
    	
- 11.Tmeplates/html -be kell minden oldalhoz egy 'oldalnév'.html 
-    ami az oldal elmeit includolja, 	beleértve a menu.php -t és a footer.php -t is
+ 11.Tmeplates/html -be kell minden oldalhoz egy 'oldalnév'.html ez az "interface" az általam használt
+    framework és a mobirate között.
+    Ez a fájl az oldal elmeit includolja, beleértve a menu.php -t és a footer.php -t is
 	 
  12.az én meglévő régi formjaim ideiglenes megjelenitéséhez került ide navbar.html és footer.html is. Ezeket te ne használd!
 	 

@@ -16,7 +16,6 @@ DEFINE('LOGIN_TO_GROUP','Csatlakozok a csoporthoz');
 DEFINE('EXIT_FROM_GROUP','Kilépek a csoportból');
 DEFINE('ADD_SUB_GROUP','Új alcsoport');
 DEFINE('REMOVE_GROUP','Csoport törlése');
-DEFINE('PROPOSAL','Javaslat');
 DEFINE('REG_MODE_INVITE','Adminok meghívására');
 DEFINE('REG_MODE_ADMIN','Adminok vehetnek fel tagokat');
 DEFINE('REG_MODE_SELF','Bárki sajátmaga beléphet a csoportba');

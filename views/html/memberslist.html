@@ -17,7 +17,7 @@ paginátor:  $scope.paginators=[{"offset":#, "pageNo":#, "enabled":true|false}, 
 </div>
 <div class="page" id="page">
 	<div class="pageBody members" id="pageBody">
-		<h3><em class="fa fa-user"></em>&nbsp;{{formTitle}}</h3>				
+		<h2><em class="fa fa-user"></em>&nbsp;{{formTitle}}</h2>				
 		<form id="browserForm" method="get" action="{{MYDOMAIN}}" target="_self">
 			<input type="hidden" id="option" name="option" value="members" /> 
 			<input type="hidden" id="task" name="task" value="list" /> 
@@ -32,14 +32,14 @@ paginátor:  $scope.paginators=[{"offset":#, "pageNo":#, "enabled":true|false}, 
          	<div class="search">
             	<input type="text" name="searchstr" id="searchstr" value="{{searchstr}}" />
 	            <select name="filterstate" id="filterState" class="selectpicker">
-	             	<option value=""{{filterStateSelected('',filterstate)}}>{{txt('ALLSTATE')}}</option>
-	             	<option value="aspirant"{{filterStateSelected('aspirant',filterstate)}}>{{txt('aspirant')}}</option>
-	             	<option value="active"{{filterStateSelected('active',filterstate)}}>{{txt('active')}}</option>
-	             	<option value="excluded"{{filterStateSelected('excluded',filterstate)}}>{{txt('excluded')}}</option>
-	             	<option value="admin"{{filterStateSelected('admin',filterstate)}}>{{txt('admin')}}</option>
+	             	<option value="">{{txt('ALLSTATE')}}</option>
+	             	<option value="aspirant">{{txt('aspirant')}}</option>
+	             	<option value="active">{{txt('active')}}</option>
+	             	<option value="excluded">{{txt('excluded')}}</option>
+	             	<option value="admin">{{txt('admin')}}</option>
 	            </select>
 	            <div style="display:inline-block; width:auto">
-	                 <button type="button" id="searchBtn" class="btn btn-primary">
+	                 <button type="submit" id="searchBtn" class="btn btn-primary">
 	                 	<em class="fa fa-search"></em>
 	                 </button>
 	                 <button type="button" id="delSearchBtn"class="btn btn-danger">
@@ -49,12 +49,14 @@ paginátor:  $scope.paginators=[{"offset":#, "pageNo":#, "enabled":true|false}, 
             </div>
             <table class="table table-bordered table-striped">
 			<thead class="thead-dark">
+				<tr class="tableComment">
+					<th colspan="4">Rendezés:</th>
+				</tr>
 		  		<tr>
-			  	 	<th id="th_m.id" class="user_id {{thClass('m.id', order, order_dir)}}" style="cursor:pointer"> 
+			  	 	<th id="th_m.id" colspan="2" class="user_id {{thClass('m.id', order, order_dir)}}" style="cursor:pointer"> 
 			  	 	    {{txt('id')}}&nbsp;
 			  	 	    <em class="fa {{titleIcon('m.id', order, order_dir)}}"></em>		  	 	
 			  	 	</th>
-			  	 	<th>&nbsp;</th>
 			  	 	<th id="th_u.nick" class="nick {{thClass('u.nick', order, order_dir)}}" style="cursor:pointer"> 
 			  	 	    {{txt('nick')}}&nbsp;
 			  	 	    <em class="fa {{titleIcon('u.nick', order, order_dir)}}"></em>		  	 	
@@ -68,9 +70,9 @@ paginátor:  $scope.paginators=[{"offset":#, "pageNo":#, "enabled":true|false}, 
 			<tbody>
 				<tr ng-repeat="item in items" ng-init="itemLoad($last)"
 				    style="cursor:pointer" id="tr_{{item.id}}">
-					<td class="td_user_id">{{item.id}}</td>
-					<td class="td_avatar"><img src="{{item.avatar}}" style="height:30px"/></td>
-					<td class="td_nick">{{item.nick}}</td>
+					<td class="td_user_id">#{{item.id}}</td>
+					<td class="td_avatar"><img src="{{item.avatar}}" /></td>
+					<td class="td_nick"><strong>{{item.nick}}</strong></td>
 					<td class="td_state">{{txt(item.state)}}</td>
 				</tr>
 			</tbody>        
@@ -86,12 +88,7 @@ paginátor:  $scope.paginators=[{"offset":#, "pageNo":#, "enabled":true|false}, 
 	        			class="active">{{paginator.pageNo}}</span>
 	        	</li>
 	        </ul>
-	        <div class="buttons">
-	        	<a class="btn btn-secondary" href="{{backUrl}}" target="_self">
-	        		{{txt('PRIOR')+' '+txt('PAGE')}}
-	        	</a>
-	        </div>
         </form>
 	</div><!--  #pageBody --> 						
 </div><!--  #page -->			
-<div ng-include="templates.footer"></div>
+<div ng-include="templates.footer" ng-init="onload()"></div>

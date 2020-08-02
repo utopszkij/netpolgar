@@ -13,13 +13,11 @@
             <div class="col-12 col-md-3 mbr-fonts-style display-7">
                 <h5 class="pb-3">Rólunk</h5>
                 <p class="mbr-text">
-                    <a href="https://netpolgar.hu/opt/impresszum/show" class="text-info">Impresszum</a>
-					<a href="https://netpolgar.hu/opt/policy/show" class="text-info">Adatvédelmi irányelvek</a>
-					<a href="http://gnu.hu/gpl.html" target="_blank" class="text-info">Licensz: GNU/GPL</a>
-					<a href="https://netpolgar.hu/opt/policy/show" class="text-info"></a>
-					<a href="https://github.com/utopszkij/netpolgar" target="_blank" class="text-info">Forrás program</a>
-					<a href="https://netpolgar.hu/opt/policy/show" class="text-info"></a>
-					<a href="https://netpolgar.hu/opt/issu/form" class="text-info">Programhiba jelzése</a>
+                    <a href="{{MYDOMAIN}}/opt/impresszum/show" target="_self" class="text-info">Impresszum</a>
+					<a href="{{MYDOMAIN}}/opt/policy/show" target="_self" class="text-info">Adatvédelmi irányelvek</a>
+					<a href="{{MYDOMAIN}}/opt/licensz/show" target="_self" class="text-info">Licensz: GNU/GPL</a>
+					<a href="https://github.com/utopszkij/netpolgar" target="_self" class="text-info">Forrás program</a>
+					<a href="{{MYDOMAIN}}/opt/issu/form" target="_self" class="text-info">Programhiba jelzése</a>
 				</p>
             </div>
 			
@@ -87,8 +85,26 @@
 	
 </section>
   
-<input name="cookieData" type="hidden" data-cookie-customDialogSelector='null' data-cookie-colorText='#424a4d' data-cookie-colorBg='rgba(234, 239, 241, 0.99)' data-cookie-textButton='Engedélyezem' data-cookie-colorButton='' data-cookie-colorLink='#424a4d' data-cookie-underlineLink='true' data-cookie-text="A rendszer használatához engedélyeznie kell egy munkamenet cookie használatát.  Lásd: <a href='#'>Adatkezelési irányelvek</a>.">
-<div id="scrollToTop" class="scrollToTop mbr-arrow-up"><a style="text-align: center;"><i class="mbr-arrow-up-icon mbr-arrow-up-icon-cm cm-icon cm-icon-smallarrow-up"></i></a></div>
+<div id="cookieEnable" ng-if="cookieEnabled == false">
+  	<p style="margin:0px; padding:5px; text-align:right; position:fixed; bottom:30px; right:20px; background-color:silver; color:black; z-index:10; opacity:1.0">
+  	A rendszer használatához engedélyeznie kell egy munkamenet cookie használatát.
+    &nbsp;Lásd: <a href="index.php/opt/policy/show" target="_new">Adatkezelési leírás</a>
+    <a class="btn btn-primary" target="_self"
+    	  href="index.php?cookieenabled=1">Engedélyezem
+    </a>
+	</p>
+</div>
+  
+<div id="cookieDisable" ng-if="cookieEnabled == true">
+   	<p style="margin:0px; padding:0px; text-align:right">A rendszer használatához engedélyezte egy munkamenet cookie használatát.
+                 	&nbsp;Lásd: <a href="index.php/opt/policy/show" target="_new">Adatkezelési leírás</a>
+    				<a class="btn btn-primary" target="_self"
+    				  href="index.php?cookieenabled=0">Letiltom
+    				</a>
+	</p>
+</div>
+  
+  
 </div><!-- ng controller -->
  
   

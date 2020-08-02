@@ -4,10 +4,12 @@
  * 24 October 2013
 
  Modified by Mobirise
- 
+====================================================
 NETPOLGAR specális verzió !!!!! 
- 
- */
+
+Ennek kell cookie-alert-core.js néven lennie.
+====================================================
+*/
 
 ;(function($) {
 	$.cookiesDirective = function(options) {

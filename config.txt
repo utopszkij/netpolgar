@@ -6,6 +6,9 @@ define('MYPATH','/var/www/html/netpolgar');
 define('DEFLNG','hu');
 function config(string $token): string {
 	$values = new stdClass();
+	$values->MYPATH = MYPATH;
+	$values->MYDOMAIN = MYDOMAIN;
+	$values->TEMPLATE = 'modern';
 	$values->TEMPLATE = 'modern';
 	$values->MYSQLHOST = 'localhost';
 	$values->MYSQLUSER = 'root';

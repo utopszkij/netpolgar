@@ -9,14 +9,7 @@
 
   function membersFun() {
 	  if ($('#browserForm').length) {
-		  $scope.filterStateSelected = function(s,filterstate) {
-		  	//result: '' or ' "selected"="selected"
-			var result = '';
-			if (s == filterstate) {
-				result = ' selected="selected"';
-			}
-			return result;  
-		  };
+		  $('#filterState').val($scope.filterState);
 		  $scope.titleIcon = function(s, order, order_dir) {
 		  	//result '' or 'fa-caret-up' or 'fa-caret-down'
 		  	var result = '';
@@ -122,9 +115,9 @@
 
 	  } // memberForm	  
 	  $('#scope').show();
-	  return 'members';
+	  return '';
   }
- 
+  
   // jquery pageOnLoad
   $(function() {
   	pageOnLoad();

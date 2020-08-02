@@ -162,11 +162,11 @@ class GroupsController extends CommonController {
           $p->userGroupAdmin = $this->isUserAdmin($p->loggedUser, $p->userAdmin, $p->id);
           $membersModel = $this->getModel('members');
           $p->userState = $membersModel->getState('groups', $p->id, $p->loggedUser->id);
-          $p->formTitle = 'GROUP';
           $p->msgs = [];
           if ($p->id > 0) {
               $p->parents = $this->model->getGroupPath($p->id);
               $p->item = $this->model->getRecord($p->id);
+              $p->formTitle = $p->item->name.' '.txt('GROUP');
               $memberCount = $membersModel->getMemberCount('group', $p->id);
               $this->adjustMembers($p->item, $memberCount);
               $this->adjustSubgroups($p->item, $memberCount);
