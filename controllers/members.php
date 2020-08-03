@@ -104,10 +104,19 @@ class MembersController extends CommonController {
 	    
 	    if ($p->type = 'groups') {
 	        $groupModel = $this->getModel('groups');
-	        $p->group = $groupModel->getRecord($p->id);
+	        $p->group = $groupModel->getRecord($p->objectId);
 	        $p->groupAvatar = $p->group->avatar;
 	        $p->groupName = $p->group->name;
-	        $p->backUrl = MYDOMAIN.'/opt/groups/form/id/'.$p->id.'/'.$p->csrToken.'/1';
+	        $p->backUrl = MYDOMAIN.'/opt/groups/form/id/'.$p->objectId.'/'.$p->csrToken.'/1';
+	        $p->formTitle = $p->groupName.' '.txt('GROUP_MEMBER');
+	    }
+	    if ($p->type = 'projects') {
+	        $projectModel = $this->getModel('projects');
+	        $p->project = $projectModel->getRecord($p->objectId);
+	        $p->projectAvatar = $p->project->avatar;
+	        $p->projectName = $p->project->name;
+	        $p->backUrl = MYDOMAIN.'/opt/projects/form/id/'.$p->objectId.'/'.$p->csrToken.'/1';
+	        $p->formTitle = $p->projectName.' '.txt('PROJECT_MEMBER');
 	    }
 	    $userModel = $this->getModel('users');
 	    $p->loggedState = $this->model->getState($p->type, $p->id, $p->loggedUser->id);

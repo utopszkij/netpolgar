@@ -1,4 +1,6 @@
-.pageBody {min-height:600px; padding: 0px; text-align:left}
+#scope {padding:0px; min-height:600px; text-align:center}   
+.specButtons {display:inline-block; margin-left:40px; width:auto}
+.pageBody {min-height:600px; padding: 10px 0px 10px 0px; text-align:left}
 .pageBody h3 {margin-top:10px}
 .pageBody h2 {display:none}
 .btn {border-radius:30px}
@@ -7,7 +9,7 @@
 .btn em {margin:0px 5px 0px 5px}
 .buttons {text-align:center}
 
-.search {margin:20px 0px 20px 0px}
+.search {margin:20px 10px 20px 10px}
 .search input {height:30px}
 .search select {height:30px}
 .search .btn {padding:5px; margin:0px 2px 0px 2px}
@@ -25,28 +27,6 @@
 /* frontpage */
 .card-img {height:225px; overflow: hidde; background-color:silver}
 
-/* userprofil */
-#divProfileForm img {width:100%}
-
-/* projekt */
-#projectForm img {width:100%}
-#projectForm label {height:45px}
-
-/* group form */
-#divGroupForm img {width:100%}
-
-/* főmenu */
-.mainmenu .nav-item {width:145px}
-.mainmenu .nav-item img#navbarUserAvatar {height:32px !important};
-
-/* formhelp */
-#help .helpIcon {text-align:left}
-#help .btn {background-color:#f7e59b; color:black}
-#help .helpClose {text-align:right}
-#helpBody {border-style:solid; border-width:1px; border-radius:10px; 
-   width:100%; margin:2px 0px 2px 0px; padding:2px; fint-size:14px; text-align:left;
-   background-color:#f7e59b; color:black}
-   
 /* table */  
 .table {text-align:center}
 .table .thead-dark tr {display:inline-block; position:relative; width:block; height:auto;
@@ -61,9 +41,27 @@
 .table tbody .td_avatar {width:100%; max-height: 150px; overflow:hidden}
 .table tbody .td_avatar img {width:100%}
 
-#scope {padding:5px 10px 5px 10px; min-height:600px; text-align:center}   
-.specButtons {display:inline-block; margin-left:40px; width:auto}
+/* paginator */
+.paginator {margin: 10px 10px 10px 10px; padding: 0px 0px 0px 0px}  
+.paginator li {list-styla: none; display: inline-block; margin: 1px 2px 1px 2px;}
+.paginator .paginator-total .page-link {border-style:none;}
+.paginator .paginator-total var {margin: 1px 10px 1px 1px;}
+.paginator .active {font-weight:bolder; color:green}
+.paginator a:hover {text-decoration:none}
 
+/* formhelp */
+#help .helpIcon {text-align:left}
+#help .btn {background-color:#f7e59b; color:black}
+#help .helpClose {text-align:right}
+#helpBody {border-style:solid; border-width:1px; border-radius:10px; 
+   margin:2px 10px 2px 10px; padding:2px; font-size:14px; text-align:left;
+   background-color:#f7e59b; color:black}
+#help .btn {padding:3px 10px 3px 10px; margin:3px; font-size:12px}
+#help .helpIcon {display:block; width:auto; height:auto; 
+  position:absolute; left:15px; top:200px; z-index:100}
+#help ul {padding:2px 20px 2px 20px; margin:2px}
+
+/* popup */   
 #popup {cursor: move; position:fixed; z-index:99; left:50px; top:50px;
     width:500px; height:auto;
     background-color:#F0F0F0; color:black; padding:1px; border-style:solid; border-width:1px;}
@@ -71,6 +69,7 @@
 #popup p {padding:20px; margin:20px; text-align:center}
 #popupButtons {padding:10px; text-align:center}  
   
+/* türelem kérő ikon */  
 #working {position:fixed; z-index:200; 
     left:50%; top:150px; margin: 0px 0px 0px -64px; display:none;
     background-image:url('working.gif'); background-color:transparent; 
@@ -78,23 +77,24 @@
     width:128px; height:128px; font-size:10px;}
 #working span {display:none}   
 
+/* főmenu */
+.mainmenu .nav-item {width:145px}
+.mainmenu .nav-item img#navbarUserAvatar {height:32px !important};
+
+/* userprofil */
+#divProfileForm img {width:100%}
+
+/* projekt */
+#projectForm img {width:100%}
+#projectForm label {height:45px}
+
 /* csoportok */
+#divGroupForm img {width:100%}
+.parents {padding: 5px 10px 5px 10px; text-align:left}
 #groupsTree {list-style:none; line-height:200%}
 #groupsTree li {cursor:pointer}
 #groupsTree li img {width:30px}
 #groupsTree .groupsTreeSubitems {list-style:none; line-height:200%}
-
-.paginator {margin: 10px 0px 0px 0px; padding: 0px 0px 0px 0px}  
-.paginator li {list-styla: none; display: inline-block; margin: 1px 2px 1px 2px;}
-.paginator .paginator-total .page-link {border-style:none;}
-.paginator .paginator-total var {margin: 1px 10px 1px 1px;}
-.paginator .active {font-weight:bolder; color:green}
-.paginator a:hover {text-decoration:none}
-
-#help .btn {padding:3px 10px 3px 10px; margin:3px; font-size:12px}
-#help .helpIcon {display:block; width:auto; height:auto; 
-  position:absolute; left:15px; top:200px; z-index:100}
-#help ul {padding:2px 20px 2px 20px; margin:2px}
 
 /* projekt */
 .kanban {display:inline-block; border-style:none; 
@@ -108,15 +108,43 @@
    border-style:solid; margin:1px; padding:2px; z-index:1}
 .kanban .nick {text-align:left}   
 .kanban img {height:30px}   
-#taskForm {min-height:600px;}
+#taskForm {min-height:600px; height:auto}
 #taskForm img {width:150px}
-#taskForm2 {display:inline-block; width:70%; float:right; text-align:center}
-#taskForm2 input {width:400px; display:inline-block}
-#taskForm2 select {width:400px; display:inline-block}
-#taskForm2 textarea {width:400px; display:inline-block}
 .taskAvatar {height:32px}
 .task {background-color:silver}
 .bug {background-color:red}
 .suggestion {background-color:lime}
 .request {background-color:orange}
 
+
+/* phone */
+@media (max-width: 576px) {
+	.kanbanCol {float:left; width:100%; min-height:60px; height:60px; overflow:hidden}
+	.kanbanCol h4 {text-align:left}
+    .kanbanCol h4 em {display: inline-block}
+}
+
+/* tablet */
+@media (min-width: 577px) and (max-width: 1100px) {
+	.kanbanCol {float:left; width:100%; min-height:60px; height:60px; overflow:hidden}
+	.kanbanCol h4 {text-align:left}
+    .kanbanCol h4 em {display: inline-block}
+}
+
+/* desctop */
+@media (min-width: 1101px) and (max-width: 1199px) {
+	.kanban {overflow:scroll; height:500px}
+	.kanbanCol {float:left; width:238px; min-height:500px; height:auto; z-index:1; 
+	    overflow:visible}
+	.kanbanCol h4 {text-align:center}
+    .kanbanCol h4 em {display: none}
+}
+
+/* extra big */
+@media (min-width: 1200px) {
+	.kanban {overflow:scroll; height:500px}
+	.kanbanCol {float:left; width:238px; min-height:500px; height:auto; z-index:1; 
+	    overflow:visible}
+	.kanbanCol h4 {text-align:center}
+    .kanbanCol h4 em {display: none}
+}

@@ -5,7 +5,7 @@
             <div class="col-12 col-md-3">
                 <div class="media-wrap">
                     <a href="http://netpolgar.hu">
-                        <img src="../../images/logo.png" alt="Netpolgár" class="bottomlogo">
+                        <img src="templates/modern/images/logo.png" alt="Netpolgár" class="bottomlogo">
                     </a>
                 </div>
             </div>
@@ -22,7 +22,7 @@
             </div>
 			
             <div class="col-12 col-md-3 mbr-fonts-style display-7">
-                <h5 class="pb-3">Felhasznált szoftverek</h5>
+                <h5 class="pb-3">Felhasznált erőforrások</h5>
                 <p class="mbr-text">
 					<a href="https://www.php.net/manual/en/index.php" target="_blank" class="text-info">PHP</a>
 					<a href="https://fontawesome.com/icons?d=gallery" target="_blank" class="text-info">fontAwesome</a>
@@ -30,6 +30,7 @@
 					<a href="https://getbootstrap.com/" target="_blank" class="text-info">bootstrap</a>
 					<a href="https://jquery.com" target="_blank" class="text-info">jQuery</a>
 					<a href="https://angularjs.org" target="_blank" class="text-info">AngularJs</a>
+					<a href="https://mobirise.com" target="_blank" class="text-info">Mobirise</a>
 					<a href="https://www.fpdf.org" target="_blank" class="text-info">fpdf</a>
 					<a href="https://github.com/smalot/pdfparser" target="_blank" class="text-info">smalot</a>
 					<a href="https://github.com/tan-tan-kanarek/github-php-client" target="_blank" class="text-info">tan-tan-kanarek_github_kliens</a>

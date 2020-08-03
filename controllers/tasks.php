@@ -132,7 +132,7 @@ class TasksController extends CommonController {
 	    $p->backUrl = MYDOMAIN.'/opt/tasks/list/'.$p->csrToken.'/1';
 	    
 	    // formTitle és form ikon beállítása
-	    $p->formTitle = txt('NEW_TASK');
+	    $p->formTitle = $p->project->name.' '.txt('NEW_TASK');
 	    $p->formIcon = 'fa-wrench';
 	    
 	    $memberModel = $this->getModel('members');

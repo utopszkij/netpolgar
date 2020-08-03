@@ -4,28 +4,26 @@
         		<div class="alert alert-{{msgClass}}" ng-if="msgs.length > 0">
         			<p ng-repeat="msg in msgs">{{msg}}</p>
         		</div>
-				<h3><a href="{{MYDOMAIN}}/opt/projects/form/id/{{project.id}}" target="_self">
-						<em class="fa fa-wrench"></em>&nbsp;{{project.name}}
-  				    </a>	
-				</h3>				
-                <h4>{{txt('TASK')}}</h4>
-                <div id="taskForm2">
-				    <form method="post" id="taskForm3" action="./index.php" target="_self">
+		    	<div class="container">
+		        <div class="row justify-content-center">
+		        <div class="media-container-column col-12" data-form-type="formoid">
+				    <form method="post" id="taskForm3" class="mbr-form form-with-styler form-row" 
+				        action="./index.php" target="_self">
 				    	<input type="hidden" name="option" value="tasks" />	
 				    	<input type="hidden" name="task" value="save" />	
 				    	<input type="hidden" name="id" value="{{item.id}}" />	
-				    	<input type="hidden" name="project_id" value="{{item.project_id}}" />	
-					    <div class="form-group">
+				    	<input type="hidden" name="project_id" value="{{item.project_id}}" />
+					    <div class="form-group col-md-4 col-sm-12">
 							    <label>{{txt('ID')}}</label>
 							    <input type="text" class="form-control" id="id" 
 							    	name="id" value="{{item.id}}" disabled="disabled"/>
 						</div>
-					    <div class="form-group">
+					    <div class="form-group col-md-4 col-sm-12">
 							    <label>{{txt('DESCRIPTION')}} *</label>
 							    <textarea cols="80" rows="5" class="form-control" id="description"
 							     name="description">{{item.description}}</textarea>
 						</div>
-						<div class="form-group">
+						<div class="form-group col-md-4 col-sm-12">
 							    <label>{{txt('state')}} *</label>
 							    <select class="form-control" id="state" name="state">
 							      <option value="wait_req">{{txt('wait_req')}}</option>
@@ -35,12 +33,12 @@
 							      <option value="closed">{{txt('closed')}}</option>
 							    </select>
 						</div>
-					    <div class="form-group">
+					    <div class="form-group col-md-4 col-sm-12">
 							    <label>{{txt('DEADLINE')}} *</label>
 							    <input type="date" class="form-control" id="deadline" 
 							    	name="deadline" value="{{item.deadline}}" />
 						</div>
-						<div class="form-group">
+						<div class="form-group col-md-4 col-sm-12">
 							    <label>{{txt('tasktype')}} *</label>
 							    <select class="form-control" id="tasktype" name="tasktype">
 							      <option value="task">{{txt('task')}}</option>
@@ -50,28 +48,27 @@
 							      <option value="comment">{{txt('comment')}}</option>
 							    </select>
 						</div>
-					    <div class="form-group">
+					    <div class="form-group col-md-4 col-sm-12">
 							    <label>{{txt('reqclosed')}}</label>
 							    <input type="text" class="form-control" id="reqclosed" 
 							    	name="reqclosed" value="{{item.reqclosed}}" />
 						</div>
-					    <div class="form-group">
-							    <label>{{txt('reqnotrun')}}</label>
+					    <div class="form-group col-md-4 col-sm-12">
+							    <label class="col-md4 col-sm-12">{{txt('reqnotrun')}}</label>
 							    <input type="text" class="form-control" id="reqnotrun" 
 							    	name="reqnotrun" value="{{item.reqnotrun}}" />
 						</div>
-					    <div class="form-group">
-							    <label>{{txt('nick')}}</label>
+					    <div class="form-group col-md-4 col-sm-12">
+							    <label class="col-md4 col-sm-12">{{txt('nick')}}</label>
 							    <input type="text" class="form-control" id="nick" 
 							    	name="nick" value="{{item.nick}}" />
 						</div>
-					    <div class="form-group">
-							    <label>{{txt('sequence')}}</label>
+					    <div class="form-group col-md-4 col-sm-12">
+							    <label class="col-md4 col-sm-12">{{txt('sequence')}}</label>
 							    <input type="text" class="form-control" id="sequence" 
 							    	name="sequence" value="{{item.sequence}}" />
 						</div>
-						
-				        <p class="buttons">
+				        <div class="form-groups buttons col-12">
 		                		<button class="btn btn-primary" type="button" id="btnOk">
 		                			<em class="fa fa-check"></em>
 		                			{{txt('OK')}}
@@ -86,12 +83,11 @@
 		                		   ng-if="loggedState == 'admin'">
 				                			<em class="fa fa-ban"></em>{{txt('DELETE')}}
 		                		</button>
-		                		
-				        </p>
+				        </div>
 					</form>            	
-              	</div><!-- #taskForm -->  
-			 	<div class="clear"></div>
+              	</div>
+              	</div>
+              	</div>  
 			</div><!--  #taskForm --> 	
-		 	<div ng-include="templates.footer"></div>
-		 	{{onload()}}
+		 	<div ng-include="templates.footer" ng-init="onload()"></div>
 			

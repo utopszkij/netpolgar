@@ -2,6 +2,8 @@
 // members
 DEFINE('GROUP_MEMBERS','Csoport tagjai');
 DEFINE('PROJECT_MEMBERS','Project tagjai');
+DEFINE('GROUP_MEMBER','Csoport tagja');
+DEFINE('PROJECT_MEMBER','Project tagja');
 DEFINE('MEMBER_FORM','Tagja');
 DEFINE('ADD','Tag felvitele');
 DEFINE('ASPIRE','Jelentkezek tagnak');

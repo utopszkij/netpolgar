@@ -46,6 +46,7 @@
 				renderState('wait_control',$scope);
 				renderState('closed',$scope);
 				$scope.rendered = true;
+				cardDraggable();
 			}	
 		}
 		function updateState(id, state, sequence) {
@@ -63,7 +64,7 @@
 			});
 		}
 		
-	  if ($('#browserForm').length > 0) {
+		if ($('#browserForm').length > 0) {
 		  global.pause = false; // gyors egymásutáni click tiltása
 		  $scope.filterStateSelected = function(s,filterstate) {
 		  	//result: '' or ' "selected"="selected"
@@ -144,7 +145,6 @@
 		  $('.card').click(function() {
 				location = './index.php/opt/tasks/form/id/'+this.id;
 		  });
-		  console.log('em click define');
 		  $('.kanbanCol h4 em').click(function() {
 				var colName = this.parentNode.parentNode.id;
 				console.log('em click ',colName, this.className);
@@ -284,7 +284,7 @@
 		  });
 	  } // taskForm	  
 	  $('#scope').show();
-	  return 'tasks';
+	  return '';
   }
 
   // jquery pageOnLoad

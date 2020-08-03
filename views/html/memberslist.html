@@ -21,7 +21,7 @@ paginátor:  $scope.paginators=[{"offset":#, "pageNo":#, "enabled":true|false}, 
 		<form id="browserForm" method="get" action="{{MYDOMAIN}}" target="_self">
 			<input type="hidden" id="option" name="option" value="members" /> 
 			<input type="hidden" id="task" name="task" value="list" /> 
-			<input type="hidden" id="type" name="type" value="groups" />
+			<input type="hidden" id="type" name="type" value="{{type}}" />
 			<input type="hidden" id="id" name="id" value="{{id}}" />
 			<input type="hidden" id="member_id" name="member_id" value="{{member_id}}" />
 			<input type="hidden" name="{{crsToken}}" value="1" /> 

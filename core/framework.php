@@ -176,6 +176,28 @@ class View {
          	<?php $this->loadJavaScriptAngular($jsName, $p); ?>
         </body>
         <?php
+        if (TEMPLATE == 'modern') {
+            // mobirate dolgai
+            ?>
+              <script src="assets/tether/tether.min.js"></script>
+              <script src="assets/smoothscroll/smooth-scroll.js"></script>
+              <script src="assets/dropdown/js/nav-dropdown.js"></script>
+              <script src="assets/dropdown/js/navbar-dropdown.js"></script>
+              <script src="assets/touchswipe/jquery.touch-swipe.min.js"></script>
+              <script src="assets/web/assets/cookies-alert-plugin/cookies-alert-core.js"></script>
+              <script src="assets/web/assets/cookies-alert-plugin/cookies-alert-script.js"></script>
+              <script src="assets/vimeoplayer/jquery.mb.vimeo_player.js"></script>
+              <script src="assets/countdown/jquery.countdown.min.js"></script>
+              <script src="assets/bootstrapcarouselswipe/bootstrap-carousel-swipe.js"></script>
+              <script src="assets/mbr-flip-card/mbr-flip-card.js"></script>
+              <script src="assets/mbr-popup-btns/mbr-popup-btns.js"></script>
+              <script src="assets/ytplayer/jquery.mb.ytplayer.min.js"></script>
+              <script src="assets/theme/js/script.js"></script>
+              <script src="assets/slidervideo/script.js"></script>
+              <script src="templates/modern/flickity/flickity.js"></script>
+              <script src="templates/modern/scripts.js"></script>
+            <?php
+        }
         $this->echoHtmlEnd();
     }
     

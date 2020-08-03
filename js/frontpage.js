@@ -10,7 +10,6 @@
   }	
 
   function frontpageFun() {
-	  $('.carousel').carousel();
 	  $('#scope').show();
 	  
 	  $( window ).scroll(function() {
@@ -20,8 +19,8 @@
 			  $( "nav" ).css( "background-color", "transparent" );
 		  }
 		});
-	  return 'frontpage';
-	  
+	  return '';
+
   }
   
   // jquery pageOnLoad
@@ -32,3 +31,5 @@
   // angular pageOnLoad
   frontpageFun();
   
+  // slider automatikus inditása
+  window.setInterval("$('.carousel-control-next').click();",7000);
