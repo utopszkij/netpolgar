@@ -9,10 +9,10 @@
         		    <input type="hidden" name="orderField" id="orderField" value="{{orderField}}" />
         		    <input type="hidden" name="orderDir" id="orderDir" value="{{orderDir}}" />
         		    
-        		    <div class="parents">
+        		    <div class="parents" ng-if="userId <= 0">
                   	<span ng-repeat="parent in parents | orderBy:'-'"> 
                   	    <span class="fa fa-caret-right"></span>&nbsp;
-                        <a href="{{MYDOMAIN}}/opt/groups/form/id/{{parent.id}}" target="_self">
+                        <a href="{{MYDOMAIN}}/opt/groups/form/id/{{parent.id}}/userid/0" target="_self">
                             {{parent.name}}
                         </a>
                     </span>          

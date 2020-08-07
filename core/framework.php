@@ -419,8 +419,7 @@ class Controller {
     }
 
     /**
-     * task init - logged User és kapott paraméterek a result Params -ba
-     * model és view létrehozása
+     * task init - logged User, messagesCounts, model, view és kapott paraméterek a result Params -ba
      * @param Request $request
      * @param array $names elvért paraméter nevek
      * @return Params
@@ -447,6 +446,10 @@ class Controller {
         $result->msgs = [];
         $result->msgClass = 'danger';
         $result->DEFLNG = DEFLNG;
+        
+        $messagesModel = $this->getModel('messages');
+        $result->messagesCount = $messagesModel->getCounts('private',$result->loggedUser->id, $result->loggedUser->id);
+        
         return $result;
     }
 

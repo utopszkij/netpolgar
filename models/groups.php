@@ -247,12 +247,17 @@ class GroupsModel {
      */
     protected function getSubItems(int $parent, array & $result, int & $total, int $userId) {
         $itemI = count($result) - 1;
-        $table = new Table('groups');
-        $table->where(['parent','=', $parent]);
-        if ($total > 0) {
-            $table->limit(1);
+        $filter = new Filter('groups','g');
+        $filter->join('LEFT OUTER JOIN', 'members','m', 'm.type = "group" and m.object_id = g.id');
+        $filter->setColumns('g.*');
+        $filter->where(['g.parent','=', $parent]);
+        if ($userId > 0) {
+            $filter->where(['m.user_id','=', $userId]);
         }
-        $items = $table->get();
+        if ($total > 0) {
+            $filter->limit(1);
+        }
+        $items = $filter->get();
         if (count($items) > 0) {
             if ($total == 0) {
                 foreach ($items as $item) {
@@ -290,7 +295,7 @@ class GroupsModel {
         
     /**
      * rekord készlet beolvasása
-     * ha $->userid adott akkor csak azon groupok jelennek meg amelyiknek tagja vagy adminisztrátora
+     * ha $p->userid adott akkor csak azon groupok jelennek meg amelyiknek tagja vagy adminisztrátora
      * @param object $p   userid, parentId 
      * @param int $total
      * @return [ {id,state,avatar,name, childs}, ....]
@@ -301,7 +306,12 @@ class GroupsModel {
     public function getRecords($p, int & $total): array {
         $result = [];
         $total = 0;
-        $this->getSubItems($p->parentId, $result, $total, $p->loggedUser->id);
+        if ($p->userId > 0) {
+            $result = $this->getRecords_by_user($p->offset, $p->limit, $p->filterStr,
+                $p->orderField, $p->orderDir, $p->userId, $total);
+        } else {
+            $this->getSubItems($p->parentId, $result, $total, (int)$p->userId);
+        }
         return $result;
     }
     
@@ -342,17 +352,17 @@ class GroupsModel {
     
     public function getRecords_by_user(int $offset, int $limit, string $filterStr,
         string $orderField, string $orderDir, int $userId, int &$total): array {
-        $filter = new Filter('members','m');
-        $filter->join('LEFT OUTER JOIN','groups','g','m.object_id = g.id');
+        $filter = new Filter('groups','g');
+        $filter->join('LEFT OUTER JOIN','members','m','m.object_id = g.id');
         $filter->where(['m.type','=','groups']);
         $filter->where(['m.user_id','=',$userId]);
         if ($filterStr != '') {
             $filter->where(['g.name','like','%'.$filterStr.'%']);
         }
-        $filter->setColumns('distinct g.id, g.name, g.state, m.state userstate');
+        $filter->setColumns('distinct g.id, g.name, g.state, g.avatar, m.state userstate');
         $filter->offset($offset);
         $filter->limit($limit);
-        $filter->order($orderField.' '.$orderDir);
+        $filter->order('g.name ASC');
         $total = $filter->count();
         return $filter->get();
     }

@@ -335,7 +335,20 @@ class UsersController extends CommonController {
 	    $p->userData = $this->model->getById($p->id);
 	    $p->userDataAvatarUrl = $p->avatarUrl;
 	    $p->backUrl = MYDOMAIN;
-	    $p->formTitle = $p->userData->nick; 
+	    $p->formTitle = $p->userData->nick;
+	    
+	    $likeModel = $this->getModel('likes');
+	    $p->likeCount = $likeModel->getCounts('users', $p->id);
+	    
+	    $commentModel = $this->getModel('messages');
+	    $p->commentsCount = $commentModel->getCounts('users', $p->id, $p->id);
+	    $p->messagesCount = $commentModel->getCounts('private', $p->id, $p->id);
+	    
+	    //!!! NINCS KÉSZ !!!
+	    $p->pollCount = JSON_decode('{"total":13, "new":2}'); // aktiv szavazások ahol még nem szavazott, és szavazhat
+	    $p->eventCount = JSON_decode('{"total":45, "new":3}'); // jövőbeli események
+	    
+	    
 	    if ($p->userData->id > 0) {
 	        $this->view->profileForm($p);
 	    } else {

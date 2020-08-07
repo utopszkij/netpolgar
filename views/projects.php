@@ -20,7 +20,7 @@ class ProjectsView  extends CommonView  {
      * @param Params $p
      */
     public function form(Params $p) {
-        $this->setTemplates($p,['likebar']);
+        $this->setTemplates($p,['likebar','commentadd']);
         $this->echoHtmlPage('projectsform',$p, 'projects');
     }
 	

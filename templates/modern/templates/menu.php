@@ -21,20 +21,20 @@
             <ul class="navbar-nav nav-dropdown" data-app-modern-menu="true">
 				<li class="nav-item">
                     <a class="nav-link link text-white display-4" 
-                       href="{{MYDOMAIN}}/opt/groups/list" target="_self">{{txt('GROUPS')}}</a>
+                       href="{{MYDOMAIN}}/opt/groups/list/parentid/0/userid/0" target="_self">{{txt('GROUPS')}}</a>
                 </li>
 				<li class="nav-item dropdown">
 					<a class="nav-link link text-white dropdown-toggle display-4" href="#" 
 						target="_self" data-toggle="dropdown-submenu" aria-expanded="false">{{txt('PROJECTS')}}</a>
 					<div class="dropdown-menu">
 						<a class="text-white dropdown-item display-4"
-							href="{{MYDOMAIN}}/opt/projects/list/filterstate//" target="_self">{{txt('ALL')}}</a>
+							href="{{MYDOMAIN}}/opt/projects/list/filterstate//userid/0" target="_self">{{txt('ALL')}}</a>
 						<a class="text-white dropdown-item display-4" 
-							href="{{MYDOMAIN}}/opt/projects/list/filterstate/active" target="_self">{{txt('ACTIVE')}}</a>
+							href="{{MYDOMAIN}}/opt/projects/list/filterstate/active/userid/0" target="_self">{{txt('ACTIVE')}}</a>
 						<a class="text-white dropdown-item display-4" 
-							href="{{MYDOMAIN}}/opt/projects/list/filterstate/draft" target="_self">{{txt('DRAFT')}}</a>
+							href="{{MYDOMAIN}}/opt/projects/list/filterstate/draft/userid/0" target="_self">{{txt('DRAFT')}}</a>
 						<a class="text-white dropdown-item display-4" 
-							href="{{MYDOMAIN}}/opt/projects/list/filterstate/proposal" target="_self">{{txt('PROPOSAL')}}</a>
+							href="{{MYDOMAIN}}/opt/projects/list/filterstate/proposal/userid/0" target="_self">{{txt('PROPOSAL')}}</a>
 					</div>
 				</li>
 				<li class="nav-item dropdown">

@@ -85,7 +85,7 @@ class MembersController extends CommonController {
 	 * session: user, csrToken
 	 */
 	public function form(Request $request, array  $msgs=[], string $msgClass='info') {
-	    $p = $this->init($request,['type', 'type', 'id', 'member_id']);
+	    $p = $this->init($request,['type', 'id', 'member_id']);
 	    $p->msgs = $msgs;
 	    $p->msgClass = $msgClass;
 	    $this->createCsrToken($request, $p);
@@ -98,11 +98,16 @@ class MembersController extends CommonController {
 	    }
 	    $likeModel = $this->getModel('likes');
 	    $p->likeCount = $likeModel->getCounts('members', $p->memberId, $p->loggedUser->id);
-// !!! NINCS KÉSZ !!!
-	    $p->commentCount = JSON_decode('{"total":12, "new":3}');
-	    $p->messageCount = JSON_decode('{"total":22, "new":2}'); // olvasatlan privát üzenetek
+	    $messagesModel = $this->getModel('messages');
+	    $p->commentsCount = $messagesModel->getCounts('members', $p->id, $p->loggedUser->id);
+	    $p->messagesCount = $messagesModel->getCounts('private', $p->loggedUser->id, $p->loggedUser->id);
 	    
-	    if ($p->type = 'groups') {
+	    // !!! NINCS KÉSZ !!!
+	    $p->pollCount = JSON_decode('{"total":13, "new":2}'); // aktiv szavazások ahol még nem szavazott, és szavazhat
+	    $p->eventCount = JSON_decode('{"total":45, "new":3}'); // jövőbeli események
+	    
+	    
+	    if ($p->type == 'groups') {
 	        $groupModel = $this->getModel('groups');
 	        $p->group = $groupModel->getRecord($p->objectId);
 	        $p->groupAvatar = $p->group->avatar;
@@ -110,7 +115,7 @@ class MembersController extends CommonController {
 	        $p->backUrl = MYDOMAIN.'/opt/groups/form/id/'.$p->objectId.'/'.$p->csrToken.'/1';
 	        $p->formTitle = $p->groupName.' '.txt('GROUP_MEMBER');
 	    }
-	    if ($p->type = 'projects') {
+	    if ($p->type == 'projects') {
 	        $projectModel = $this->getModel('projects');
 	        $p->project = $projectModel->getRecord($p->objectId);
 	        $p->projectAvatar = $p->project->avatar;

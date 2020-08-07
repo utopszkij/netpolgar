@@ -20,7 +20,7 @@ class TasksView  extends CommonView  {
      * @param Params $p
      */
     public function form(Params $p) {
-        $this->setTemplates($p,[]);
+        $this->setTemplates($p,['commentadd']);
         $this->echoHtmlPage('tasksform',$p, 'tasks');
     }
 	

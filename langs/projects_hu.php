@@ -5,6 +5,7 @@ DEFINE('DATE_INVALID','Nem megfelelő dátum');
 DEFINE('NEW_PROJECT','Új projekt');
 DEFINE('STATE_INVALID','Nem megfelelő státusz');
 DEFINE('PROJECT_SAVED','Projekt adatok tárolva');
+DEFINE('IN_MEMBER','amiknek tagja');
 DEFINE('proposal','Javaslat');
 DEFINE('active','Aktív');
 DEFINE('ended','Befejezett');

@@ -5,10 +5,63 @@
         		<div class="alert alert-danger" class="col-12" ng-if="msgs.length > 0">
 					<p ng-repeat="msg in msgs">{{txt(msg)}}</p>
 				</div>
-   				<div ng-include="templates.userssubmenu"></div>
+   				
+			    <nav class="navbar navbar-expand-lg navbar-light bg-light subMenu"
+			            id="memberSubmenu">
+			            <button class="navbar-toggler" type="button" data-toggle="collapse"
+			                data-target="#memberSubmenuContent"
+			                aria-controls="memberSubmenuContent"
+			                aria-expanded="false" aria-label="Toggle navigation">
+			                <em class="fa fa-ellipsis-v"></em>
+			            </button>
+			                     
+			            <div class="collapse navbar-collapse" id="memberSubmenuContent">
+			                 <ul>
+			                     <li>
+			                        <a class="nav-link" target="_self"
+			                            href="{{MYDOMAIN}}/opt/groups/list/parentid/0/userid/{{id}}">
+			                            <em class="fa fa-sitemap"></em>{{txt('GROUPS')}}
+			                         </a>
+			                     </li>
+			                     <li>
+			                         <a class="nav-link" target="_self"
+			                             href="{{MYDOMAIN}}/opt/projects/list/userid/{{id}}/userid/0">
+			                             <em class="fa fa-cogs"></em>{{txt('PROJECTS')}}
+			                         </a>
+			                     </li>
+			                     <li>
+			                         <a class="nav-link" target="_self"
+			                              href="{{MYDOMAIN}}/opt/markets/list/userid/{{id}}">
+			                              <em class="fa fa-shopping-basket"></em>{{txt('MARKET')}}
+			                         </a>
+			                     </li>
+			                     <li>
+			                         <a class="nav-link" target="_self"
+			                              href="{{MYDOMAIN}}/opt/files/list/type/all/id/0/userid/{{id}}">
+			                              <em class="fa fa-file"></em>{{txt('DOCS')}}
+			                         </a>
+			                     </li>
+			                     <li>
+			                         <a class="nav-link" target="_self"
+			                              href="{{MYDOMAIN}}/opt/comments/list/type/users/id/{{id}}">
+			                              <em class="fa fa-comments"></em>{{txt('WALL')}}
+			                              {{commentsCount.total}}<span ng-if="commentsCount.new > 0">/<strong>{{commentsCount.new}}</strong></span>                        
+			                         </a>
+			                     </li>
+			                     <li id="messagesIcon">
+			                         <a class="nav-link" target="_self" title="total/new"
+			                              href="{{MYDOMAIN}}/opt/messages/list/private/{{id}}">
+			                              <em class="fa fa-comment"></em>&nbsp;{{txt('MESSAGES')}}
+			                              {{messagesCount.total}}<span ng-if="messagesCount.new > 0">/<strong>{{messagesCount.new}}</strong></span>                        
+			                         </a>
+			                     </li>
+			                  </ul>   
+			             </div>     
+				</nav>        		
+			    
 			    <div class="container">
 			        <div class="row justify-content-center">
-			            <div class="media-container-column col-12" data-form-type="formoid">
+			            <div class="media-container-column col-12" data-form-type="formoid" style="text-align:center">
 			   				<form id="formRegform"	action="{{ MYDOMAIN }}"
 			   					class="mbr-form form-with-styler form-row"
 			              		target="_self" method="post">
@@ -19,23 +72,24 @@
 				        		<input type="hidden" name="enabled" value="{{enabled}}" />
 				        		<input type="hidden" name="reg_mode" id="reg_mode" value="{{reg_mode}}" />
 				        		<input type="hidden" name="backUrl" id="backUrl" value="{{backUrl}}" />
-				        		<div class="form-group col-md-2 col-sm-12">
-									 <img id="imgAvatar" src="{{userData.avatar}}" ng-if="userData.avatar != ''" alt="avatar" />
+				        		<div class="form-group col-12">
+									 <img id="imgAvatar" src="{{userData.avatar}}"
+									 	class="col-md-2 col-sm-6" ng-if="userData.avatar != ''" alt="avatar" />
 				        		</div>
-				                <div class="form-group col-md-3 col-sm-12">
+				                <div class="form-group col-md-6 col-sm-12">
 				              		<label class="form-control-label mbr-fonts-style display-7">{{txt('NICK')}} *:</label>
 				              		<input id="nick" class="form-control display-7" name="nick" type="text" value="{{nick}}"  size="32" />
 				              		<input id="origNick" name="origNick" type="hidden" value="{{nick}}"  size="32" disabled="disabled" />
 				              	</div>
-				              	<div class="form-group col-md-4 col-sm-12">
+				              	<div class="form-group col-md-6 col-sm-12" ng-if="loggedUser.id ==  id">
 				              		<label class="form-control-label mbr-fonts-style display-7">{{txt('VALID_NAME')}} *:</label>
 				              		<input id="name" class="form-control display-7" name="name" type="text" value="{{name}}"  size="50" />
 				              	</div>
-				              	<div class="form-group col-md-4 col-sm-12">
+				              	<div class="form-group col-md-6 col-sm-12" ng-if="loggedUser.id == id">
 				              		<label class="form-control-label mbr-fonts-style display-7">{{txt('EMAIL')}} *:</label>
 				              		<input id="email" class="form-control display-7" name="email" type="text" value="{{email}}"  size="50" />
 				              	</div>
-				              	<div class="form-group col-md-4 col-sm-12">
+				              	<div class="form-group col-md-6 col-sm-12">
 				              		<label class="form-control-label mbr-fonts-style display-7">{{txt('AVATAR')}}:</label>
 				              		<input id="avatar" class="form-control display-7" name="avatar" type="text" value="{{avatar}}"  size="50" />
 				              	</div>
@@ -57,4 +111,5 @@
 			    </div>      
 			</div>
 		    <div class="clear"></div>
+			<div ng-include="templates.commentadd"></div>
 			<div ng-include="templates.footer" onload="onload()"></div>

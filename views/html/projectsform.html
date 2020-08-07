@@ -28,37 +28,43 @@
 			                     </li>
 			                     <li>
 			                         <a class="nav-link" target="_self"
-			                              href="{{MYDOMAIN}}/opt/files/list/type/projects/id/{{item.id}}">
+			                              href="{{MYDOMAIN}}/opt/files/list/type/projects/id/{{item.id}}/userid/0">
 			                              <em class="fa fa-file"></em>{{txt('DOCS')}}
 			                         </a>
 			                     </li>
 			                     <li>
 			                         <a class="nav-link" target="_self"
-			                              href="{{MYDOMAIN}}/opt/markets/list/type/projects/id/{{item.id}}">
+			                              href="{{MYDOMAIN}}/opt/markets/list/type/projects/id/{{item.id}}/userid/0">
 			                              <em class="fa fa-shopping-basket"></em>{{txt('MARKET')}}
 			                         </a>
 			                     </li>
 			                     <li>
 			                         <a class="nav-link" target="_self" title="total/new"
-			                              href="{{MYDOMAIN}}/opt/comments/list/type/projects/id/{{item.id}}">
-			                              <em class="fa fa-comments"></em>{{txt('CHATS')}}
-			                              {{commentCount.total}}<span ng-if="commentCount.new > 0">/<strong>{{commentCount.new}}</strong></span>                        
+			                              href="{{MYDOMAIN}}/opt/comments/list/type/projects/id/{{item.id}}/userid/0">
+			                              <em class="fa fa-comments"></em>{{txt('DISPUTES')}}
+			                              {{commentsCount.total}}<span ng-if="commentsCount.new > 0">/<strong>{{commentsCount.new}}</strong></span>                        
 			                         </a>
 			                     </li>
 			                     <li>
 			                         <a class="nav-link" target="_self" title="total/new"
-			                              href="{{MYDOMAIN}}/opt/voks/list/type/projects/id/{{item.id}}">
+			                              href="{{MYDOMAIN}}/opt/polls/list/type/projects/id/{{item.id}}/userid/0">
 			                              <em class="fa fa-balance-scale"></em>{{txt('POLLS')}}
-			                              {{pollCount.total}}<span ng-if="pollCount.new > 0">/<strong>{{pollCount.new}}</strong></span>                        
+			                              {{pollsCount.total}}<span ng-if="pollsCount.new > 0">/<strong>{{pollsCount.new}}</strong></span>                        
 			                         </a>
 			                     </li>
 			                      <li>
 			                         <a class="nav-link" target="_self" title="total/future"
-			                              href="{{MYDOMAIN}}/opt/events/list/type/projects/id/{{item.id}}">
+			                              href="{{MYDOMAIN}}/opt/events/list/type/projects/id/{{item.id}}/userid/0">
 			                               <em class="fa fa-calendar"></em>{{txt('EVENTS')}}
-			                              {{eventCount.total}}<span ng-if="eventCount.new > 0">/<strong>{{eventCount.new}}</strong></span>                        
+			                              {{eventsCount.total}}<span ng-if="eventsCount.new > 0">/<strong>{{eventsCount.new}}</strong></span>                        
 			                         </a>
 			                      </li>
+				        		  <li id="messagesIcon">
+				        		  	<a href="{{MYDOMAIN}}/opt/messages/list/private/{{loggedUser.id}}">
+				        		  		 Privát üzenetek
+				        		  	</a>
+				    				{{messagesCount.total}}<span ng-if="messagesCount.new > 0">/<strong>{{messagesCount.new}}</strong></span>    		
+				        		  </li>
 			                  </ul>   
 			             </div>     
 				</nav>        		
@@ -191,6 +197,7 @@
               	</div><!-- #projectForm -->  
 			 	<div class="clear"></div>
 			</div><!--  #projectForm --> 	
+			<div ng-include="templates.commentadd"></div>
 		 	<div ng-include="templates.footer"></div>
 		 	{{onload()}}
 			

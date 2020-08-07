@@ -73,7 +73,7 @@ class GroupsController extends CommonController {
 	 * a "tree" orderField jelentése: sa struktura szerinti sorrend                  
 	 */
 	public function list(Request $request, array $msgs = []) {
-	    $p = $this->init($request,[]);
+	    $p = $this->init($request,['parentid', 'userid']);
 	    $p->userId = $request->input('userid', $request->sessionGet('groupsUserId',0));
 	    $p->parentId = $request->input('parentid', $request->sessionGet('groupsParentId',0));
 	    if ($p->parentId < 0) {
@@ -111,7 +111,9 @@ class GroupsController extends CommonController {
 	        $p->formTitle = $parentGroup->name;
 	        $p->formSubTitle = 'SUB_GROUPS_LIST';
 	    }
-	    
+	    if ($p->userId > 0) {
+	        $p->formTitle  = txt('GROUPS').' '.txt('IN_MEMBER').' '.$p->filterUser->nick;
+	    }
 	    $this->createCsrToken($request, $p);
 	    $this->view->browser($p);
       } // list task
@@ -172,18 +174,15 @@ class GroupsController extends CommonController {
               $this->adjustSubgroups($p->item, $memberCount);
               
               $likeModel = $this->getModel('likes');
-              $p->likeCount = $likeModel->getCounts('groups', $p->id);
+              $p->likesCount = $likeModel->getCounts('groups', $p->id);
               
-              //$commentModel = $this->getModel('comments');
-              //$p->commentCount = $commentModel->getCounts('groups', $p->id);
-//!!! NINCS KÉSZ !!!              
-              $p->commentCount = JSON_decode('{"total":13, "new":2}'); // aktiv szavazások ahol még nem szavazott, és szavazhat
+              $messagesModel = $this->getModel('messages');
+              $p->commentsCount = $messagesModel->getCounts('groups', $p->id, $p->loggedUser->id);
               
-              $p->pollCount = JSON_decode('{"total":13, "new":2}'); // aktiv szavazások ahol még nem szavazott, és szavazhat
+              $p->pollsCount = JSON_decode('{"total":13, "new":2}'); // aktiv szavazások ahol még nem szavazott, és szavazhat
               
-              $p->eventCount = JSON_decode('{"total":45, "new":3}'); // jövőbeli események
+              $p->eventsCount = JSON_decode('{"total":45, "new":3}'); // jövőbeli események
               
-              $p->messageCount = JSON_decode('{"total":22, "new":2}'); // olvasatlan privát üzenetek
               
               if ($p->item->id > 0) {
                   $this->view->form($p);

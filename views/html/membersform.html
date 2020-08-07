@@ -1,9 +1,10 @@
 		 	<div ng-include="templates.navbar"></div>
 		 	<div ng-include="templates.popup"></div>
           	<div id="memberForm" class="pageBody">
-        		<div class="alert alert-{{msgClass}}" ng-if="msgs.length > 0">
+        		<div class="alert alert-{{msgClass}}" class="col-12" ng-if="msgs.length > 0">
         			<p ng-repeat="msg in msgs">{{msg}}</p>
         		</div>
+			    
 			    <nav class="navbar navbar-expand-lg navbar-light bg-light subMenu"
 			            id="memberSubmenu">
 			            <button class="navbar-toggler" type="button" data-toggle="collapse"
@@ -23,13 +24,13 @@
 			                     </li>
 			                     <li>
 			                        <a class="nav-link" target="_self"
-			                            href="{{MYDOMAIN}}/opt/groups/list/userid/{{item.user_id}}">
+			                            href="{{MYDOMAIN}}/opt/groups/list/parentid/0/userid/{{item.user_id}}">
 			                            <em class="fa fa-sitemap"></em>{{txt('GROUPS')}}
 			                         </a>
 			                     </li>
 			                     <li>
 			                         <a class="nav-link" target="_self"
-			                             href="{{MYDOMAIN}}/opt/projects/list/userid/{{item.user_id}}">
+			                             href="{{MYDOMAIN}}/opt/projects/list/userid/{{item.user_id}}/userid/0">
 			                             <em class="fa fa-cogs"></em>{{txt('PROJECTS')}}
 			                         </a>
 			                     </li>
@@ -41,76 +42,75 @@
 			                     </li>
 			                     <li>
 			                         <a class="nav-link" target="_self"
-			                              href="{{MYDOMAIN}}/opt/files/list/userid/{{item.user_id}}">
+			                              href="{{MYDOMAIN}}/opt/files/list/type/all/id/0/userid/{{item.user_id}}">
 			                              <span class="fa fa-file"></span>{{txt('DOCS')}}
 			                         </a>
 			                     </li>
 			                     <li>
 			                         <a class="nav-link" target="_self"
 			                              href="{{MYDOMAIN}}/opt/comments/list/type/users/id/{{item.user_id}}">
-			                              <em class="fa fa-comments"></em>{{txt('WALL')}}
-			                              {{commentCount.total}}<span ng-if="commentCount.new > 0">/<strong>{{commentCount.new}}</strong></span>                        
+			                              <em class="fa fa-comments"></em>{{txt('DISPUTES')}}
+			                              {{commentsCount.total}}<span ng-if="commentsCount.new > 0">/<strong>{{commentsCount.new}}</strong></span>                        
 			                         </a>
 			                     </li>
-			                      <li>
+			                     <li id="messagesIcon">
 			                         <a class="nav-link" target="_self" title="total/new"
-			                              href="{{MYDOMAIN}}/opt/messages/send/to/{{item.user_id}}">
-			                              <em class="fa fa-comment"></em>{{txt('SEND_MESSAGE')}}
-			                              {{messageCount.total}}<span ng-if="messageCount.new > 0">/<strong>{{messageCount.new}}</strong></span>                        
+			                              href="{{MYDOMAIN}}/opt/messages/list/private/{{item.user_id}}">
+			                              {{txt('MESSAGES')}}
+			                              {{messagesCount.total}}<span ng-if="messagesCount.new > 0">/<strong>{{messagesCount.new}}</strong></span>                        
 			                         </a>
-			                      </li>
-			                     
-			                     
+			                     </li>
 			                  </ul>   
 			             </div>     
 				</nav>        		
         		
-                <div id="memberForm2" class="col-12">
-                	<center>
-                	<img src="{{user.avatar}}" class="col-md-2 col-sd-6"/>
-                	<h3>{{user.nick}}</h3>
-                	<p><var id="userState">{{txt(userState)}}</var></h4>
-                	
-					<div id="divLike" class="col-12" ng-if="(item.id > 0) && 
-						((userState == 'active') || (userState == 'aspirant') || (userState == 'admin'))">
-						<button id="likeUpBtn" type="button" class="btn btn-info">
-							{{txt('LIKE')}}
-							<em class="fa fa-thumbs-up"></em>
-							<em class="fa fa-check"></em>
-							&nbsp;<var>{{likeCount.up}}</var>
-						</button>
-						<button id="likeDownBtn" type="button" class="btn btn-info">
-							<span>{{txt('DISLIKE')}}</span>
-							<em class="fa fa-thumbs-down"></em>
-							<em class="fa fa-check"></em>
-							&nbsp;<var>{{likeCount.down}}</var>
-						</button>	
-					</div>				
-                	
-                	<p class="buttons" class="col-12">
-                		<a class="btn btn-secondary"  target="_self"
-                		    href="{{MYDOMAIN}}/opt/members/setadmin/type/{{type}}/id/{{objectId}}/member_id/{{item.id}}/{{csrToken}}/1"
-                		    ng-if="(userState == 'active') && (loggedState == 'admin') && (user.id != loggedUser.id)">
-                			<em class="fa fa-chess-king"></em>
-                			{{txt('SET_MANAGER')}}
-                		</a>	
-                		<a class="btn btn-secondary"  target="_self"
-                		    href="{{MYDOMAIN}}/opt/members/setnoadmin/type/{{type}}/id/{{objectId}}/member_id/{{item.id}}//{{csrToken}}/1"
-                		    ng-if="(userState == 'admin') && (loggedState == 'admin') && (user.id != loggedUser.id)">
-                			<em class="fa fa-chess-pawn"></em>
-                			{{txt('SET_NO_MANAGER')}}
-                		</a>
-                		&nbsp;
-                		<a class="btn btn-secondary" target="_self"
-                		    href="{{MYDOMAIN}}/opt/members/list/type/{{type}}/id/{{id}}">
-                			<em class="fa fa-reply"></em>{{txt('BACK')}}
-                		</a>
-                	</p>
-                	</center>
-                	<div ng-include="templates.likebar"></div>
+                <div id="memberForm2">
+                	<div class="container">
+                		<div class="container-row row">
+		                	<div class="col-12"><img src="{{user.avatar}}" class="col-md-2 col-sm-6" /></div>
+		                	<div class="col-12"><h3>{{user.nick}}</h3></div>
+		                	<div class="col-12"><var>{{txt(userState)}}</var></div>
+		                	<div class="col-12">{{user.pubinfo}}</var></div>
+							<div id="divLike" class="col-12" ng-if="(item.id > 0) && 
+								((userState == 'active') || (userState == 'aspirant') || (userState == 'admin'))">
+								<button id="likeUpBtn" type="button" class="btn btn-info">
+									{{txt('LIKE')}}
+									<em class="fa fa-thumbs-up"></em>
+									<em class="fa fa-check"></em>
+									&nbsp;<var>{{likeCount.up}}</var>
+								</button>
+								<button id="likeDownBtn" type="button" class="btn btn-info">
+									<span>{{txt('DISLIKE')}}</span>
+									<em class="fa fa-thumbs-down"></em>
+									<em class="fa fa-check"></em>
+									&nbsp;<var>{{likeCount.down}}</var>
+								</button>	
+							</div>				
+		                	
+		                	<div class="buttons col-12">
+		                		<a class="btn btn-secondary"  target="_self"
+		                		    href="{{MYDOMAIN}}/opt/members/setadmin/type/{{type}}/id/{{objectId}}/member_id/{{item.id}}/{{csrToken}}/1"
+		                		    ng-if="(userState == 'active') && (loggedState == 'admin') && (user.id != loggedUser.id)">
+		                			<em class="fa fa-chess-king"></em>
+		                			{{txt('SET_MANAGER')}}
+		                		</a>	
+		                		<a class="btn btn-secondary"  target="_self"
+		                		    href="{{MYDOMAIN}}/opt/members/setnoadmin/type/{{type}}/id/{{objectId}}/member_id/{{item.id}}//{{csrToken}}/1"
+		                		    ng-if="(userState == 'admin') && (loggedState == 'admin') && (user.id != loggedUser.id)">
+		                			<em class="fa fa-chess-pawn"></em>
+		                			{{txt('SET_NO_MANAGER')}}
+		                		</a>
+		                		&nbsp;
+		                		<a class="btn btn-secondary" target="_self"
+		                		    href="{{MYDOMAIN}}/opt/members/list/type/{{type}}/id/{{id}}">
+		                			<em class="fa fa-reply"></em>{{txt('BACK')}}
+		                		</a>
+		                	</div>
+	                	</div>
+                	</div>
               	</div><!-- #memberForm2 -->  
-			 	<div class="clear"></div>
 			</div><!--  #memberForm --> 	
-		 	<div ng-include="templates.footer"></div>
-		 	{{onload()}}
+			<div ng-include="templates.commentadd"></div>
+			<div ng-include="templates.footer"></div>
+		{{onload()}}
 			

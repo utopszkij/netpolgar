@@ -10,12 +10,12 @@ class ProjectsController extends CommonController {
 	/**
 	 * projects böngésző 
 	 * ha userGroupAdmin akkor van "add" és "invite" gomb is, 
-	 * @param Request $request  - opcionálisan member_id
+	 * @param Request $request  - opcionálisan browser paraméterek, userid
 	 * -sessionba jöhet: loggedUser, offset, order, order_dir, searchstr, filterState, limit
 	 */
 	public function list(Request $request, $msgs = [], $msgClass = 'danger') {
 	    // task inicializálás, feltétlen szükséges request elemek felsorolása
-	    $p = $this->init($request,['id','member_id']);
+	    $p = $this->init($request,['id','userid']);
         $p->msgs = $msgs;
         $p->msgClass = $msgClass;
 	    $this->createCsrToken($request, $p);
@@ -23,9 +23,9 @@ class ProjectsController extends CommonController {
 	    
 	    // formTitle és form ikon beállítása
 	    $p->formTitle = txt('PROJECTS');
-	    if ($p->member_id != '') {
+	    if ($p->userid > 0) {
 	        $userModel = $this->getModel('users');
-	        $p->member = $userModel->getRecord($p->member_id);
+	        $p->member = $userModel->getById($p->userid);
 	        $p->formTitle .= ' '.txt('IN_MEMBER').' '.$p->member->nick;
 	    }
 	    $p->formIcon = 'fa-wrench';
@@ -128,9 +128,14 @@ class ProjectsController extends CommonController {
 	    $p->item->deadline = str_replace('.','-',$p->item->deadline); // html -nek yyyy-mm-dd forma kell
 	    $likeModel = $this->getModel('likes');
 	    $p->likeCount = $likeModel->getCounts('projects', $p->id, $p->loggedUser->id);
-// !!! NINCS KÉSZ !!!
-	    $p->commentCount = JSON_decode('{"total":12, "new":3}');
-	    $p->messageCount = JSON_decode('{"total":22, "new":2}'); // olvasatlan privát üzenetek
+	    $messagesModel = $this->getModel('messages');
+	    $p->commentsCount = $messagesModel->getCounts('projects', $p->id, $p->loggedUser->id);
+	    $p->messagesCount = $messagesModel->getCounts('private', $p->loggedUser->id, $p->loggedUser->id);
+	    
+	    // !!! NINCS KÉSZ !!!
+	    $p->pollCount = JSON_decode('{"total":13, "new":2}'); // aktiv szavazások ahol még nem szavazott, és szavazhat
+	    $p->eventCount = JSON_decode('{"total":45, "new":3}'); // jövőbeli események
+	    
 	    
         $memberModel = $this->getModel('members');
         $p->loggedState = $memberModel->getState($p->type, $p->id, $p->loggedUser->id);

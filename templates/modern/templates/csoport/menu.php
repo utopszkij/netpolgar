@@ -23,7 +23,7 @@
         <div class="container">
             <ul class="inner_menu">
         		<li><a href="{{MYDOMAIN}}/opt/members/list/type/groups/id/{{item.id}}" target="_self">Tagok</a></li>
-        		<li><a href="{{MYDOMAIN}}/opt/groups/list/parentid/{{item.id}}" target="_self">Alcsoportok</a></li>
+        		<li><a href="{{MYDOMAIN}}/opt/groups/list/parentid/{{item.id}}/userid/0" target="_self">Alcsoportok</a></li>
         		<li><a href="{{MYDOMAIN}}/opt/projects/list/type/groups/id/{{item.id}}" target="_self">Projektek</a></li>
         		<li><a href="{{MYDOMAIN}}/opt/markets/list/type/groups/id/{{item.id}}" target="_self">Piactér</a></li>
         		<li><a href="{{MYDOMAIN}}/opt/files/list/type/groups/{{item.id}}" target="_self">Dokumentumok</a></li>

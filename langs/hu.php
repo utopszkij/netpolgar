@@ -36,7 +36,7 @@ DEFINE('USERS','Felhasználók');
 DEFINE('PROJECTS','Projektek');
 DEFINE('MARKET','Piactér');
 DEFINE('DOCS','Dokumentumok');
-DEFINE('DISPUTES','Eszmecserék');
+DEFINE('DISPUTES','Üzenőfal');
 DEFINE('EVENTS','Események');
 DEFINE('PROFILE','Profil');
 DEFINE('LOGIN','Bejelentkezés');
@@ -74,8 +74,12 @@ DEFINE('LIKE_TYPE_like','Támogatja');
 
 // comment
 DEFINE('COMMENTS','Beszélgetés, vélemények');
+DEFINE('COMMENT','Post az üzenőfalra');
 DEFINE('WALL','Üzenő fal');
 DEFINE('SEND_MESSAGE','Üzenet neki');
+DEFINE('SEND','Küldés');
+DEFINE('ATTACHMENT','Fájl csatolása');
+DEFINE('UPLOAD','Feltöltés');
 
 // footer
 DEFINE('IMPRESSUM','Impresszum');

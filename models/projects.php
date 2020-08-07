@@ -38,7 +38,7 @@ class ProjectsModel extends Model {
 
     /**
      * get rekord set
-     * @param object $p -  offset, limit, orderField, orderDir, searchStr, filterState, opcionálisan member_id
+     * @param object $p -  offset, limit, orderField, orderDir, searchStr, filterState, opcionálisan userid
      * @param int $total
      * @return array
      */
@@ -51,10 +51,10 @@ class ProjectsModel extends Model {
             $p->limit = 20;
         }
         $filter = new Filter('projects','p');
-        $filter->setColumns('p.id, p.avatar, p.name,  p.state, p.deadline');
-        if ($p->member_id != '') {
+        $filter->setColumns('distinct p.id, p.avatar, p.name,  p.state, p.deadline');
+        if ($p->userid > 0) {
             $filter->join('LEFT OUTER JOIN','members','m',
-                'type = "projects" and object_id=p.id and user_id = "'.$filter->quote($p->member_id).'"');            
+                'm.type = "projects" and m.object_id=p.id');            
         }
         if ($p->searchstr != '') {
             $filter->where(['p.name','like','%'.$p->searchstr.'%']);
@@ -62,8 +62,8 @@ class ProjectsModel extends Model {
         if ($p->filterState != '') {
             $filter->where(['p.state','=',$p->filterState]);
         }
-        if ($p->member_id != '') {
-            $filter->where(['m.user_id','=',$p->member_id]);
+        if ($p->userid > 0) {
+            $filter->where(['m.user_id','=',$p->userid]);
         }
         $filter->order($p->order.' '.$p->order_dir);
         $filter->offset($p->offset);

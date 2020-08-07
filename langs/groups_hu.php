@@ -4,6 +4,7 @@ DEFINE('SUB_GROUPS','Alcsoportok');
 DEFINE('GROUPS_LIST','Csoport struktúra');
 DEFINE('SUB_GROUPS_LIST','Alcsoportok');
 DEFINE('GROUPS_ROOT','Csoport struktúra kezdőpont');
+DEFINE('IN_MEMBER','amiknek tagja');
 DEFINE('GROUPS_LIST_HELP','Csoport adatok megnézéséhez,modosításához, törléséhez kattints a csoport nevére!');
 DEFINE('MEMBERS','Tagok');
 DEFINE('NAME','Megnevezés');

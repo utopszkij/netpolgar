@@ -24,6 +24,22 @@
 .subMenu ul li {display:inline-block; width:300px; margin:10px; text-align:left}
 .subMenu ul li em {display:none}
 
+/* comments */
+#commentsList {text-align:left; margin:20px 0px 20px 0px}
+#commentsList .replys {margin:10px 0px 10px 30px;
+  border-style:solid; border-width:1px; border-color:silver}
+.comment {border-style:solid; border-width:1px; margin:1px 1px 1px 1px; 
+	padding:3px; text-align:left; height:auto; max-height:220px; overflow:hidden}
+.commentBody {border-style:none; padding:3px; margin:2px}
+.commentBody .senderDiv {display:inline-block; 
+	width:20%; max-width:120px; height:100px; overflow:hidden}
+	.commentBody .senderDiv .avatarDiv {width:100%; max-height: 80px; 
+		overflow:hidden}
+	.commentBody .senderDiv img {width:70px}
+.commentBody .txtDiv {display:inline-block; width:75%; height:100px; overflow:hidden}
+.comment .buttons {text-align:right}
+.comment .btn {padding:2px; 6px 2px 6px; margin:2px}
+
 /* frontpage */
 .card-img {height:225px; overflow: hidde; background-color:silver}
 
@@ -81,6 +97,9 @@
 .mainmenu .nav-item {width:145px}
 .mainmenu .nav-item img#navbarUserAvatar {height:32px !important};
 
+
+#footer1-c {margin-top:20px;}
+
 /* userprofil */
 #divProfileForm img {width:100%}
 
@@ -116,6 +135,8 @@
 .suggestion {background-color:lime}
 .request {background-color:orange}
 
+/* members */
+#memberForm2 {text-align:center}
 
 /* phone */
 @media (max-width: 576px) {

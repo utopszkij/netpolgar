@@ -8,7 +8,7 @@ class GroupsView  extends CommonView  {
      *    $p->userid, $p->filterUser
      */
     public function form(Params $p) {
-        $this->setTemplates($p,['groupssubmenu','likebar']);
+        $this->setTemplates($p,['groupssubmenu','likebar','commentadd']);
         $this->echoHtmlPage('groupsform',$p, 'groups');
     }
 	

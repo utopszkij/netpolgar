@@ -1,1 +1,9 @@
 <div ng-include="'templates/modern/templates/footer.php'"></div>
+<div id="messagesIcon" ng-if="(messagesCount.new > 0) && (loggedUser.id > 0)" title="Üzenetek"
+    style="position:fixed; z-index:100; top:20px; right:100px; diplay:block; width:auto; height:auto; color:white">
+  	<a href="{{MYDOMAIN}}/opt/messages/list/private/{{loggedUser.id}}" style="color:white">
+  		 <em class="fa fa-comment"></em>&nbsp;
+  	</a>
+	{{messagesCount.total}}<span ng-if="messagesCount.new > 0">/<strong>{{messagesCount.new}}</strong></span>    		
+</div>
+

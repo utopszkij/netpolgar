@@ -16,7 +16,7 @@ class UsersView  extends CommonView  {
 	    foreach ($p->userData as $fn => $fv) {
 	        $p->$fn = $fv;
 	    }
-	    $this->setTemplates($p,['userssubmenu','usersform']);
+	    $this->setTemplates($p,['userssubmenu','usersform','commentadd']);
 	    $this->echoHtmlPage('usersprofile', $p, 'users');
 	}
 
@@ -29,7 +29,7 @@ class UsersView  extends CommonView  {
 	    foreach ($p->loggedUser as $fn => $fv) {
 	        $p->$fn = $fv;
 	    }
-	    $this->setTemplates($p,['userssubmenu','usersform']);
+	    $this->setTemplates($p,['userssubmenu','usersform','commentadd']);
 	    $this->echoHtmlPage('removeaccount', $p, 'users');
 	}
 
