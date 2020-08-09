@@ -210,7 +210,8 @@
             "MIT"
         ],
         "description": "Promoting the interoperability of container objects (DIC, SL, etc.)",
-        "homepage": "https://github.com/container-interop/container-interop"
+        "homepage": "https://github.com/container-interop/container-interop",
+        "abandoned": "psr/container"
     },
     {
         "name": "doctrine/annotations",
@@ -1023,12 +1024,12 @@
         "version_normalized": "9999999-dev",
         "source": {
             "type": "git",
-            "url": "https://github.com/phpDocumentor/phpDocumentor2.git",
+            "url": "https://github.com/phpDocumentor/phpDocumentor.git",
             "reference": "1cf525c384a71c0d8cc7f414b8ba3eb78168e9f4"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/phpDocumentor/phpDocumentor2/zipball/1cf525c384a71c0d8cc7f414b8ba3eb78168e9f4",
+            "url": "https://api.github.com/repos/phpDocumentor/phpDocumentor/zipball/1cf525c384a71c0d8cc7f414b8ba3eb78168e9f4",
             "reference": "1cf525c384a71c0d8cc7f414b8ba3eb78168e9f4",
             "shasum": ""
         },
@@ -1218,17 +1219,17 @@
     },
     {
         "name": "phpmailer/phpmailer",
-        "version": "v6.0.7",
-        "version_normalized": "6.0.7.0",
+        "version": "v6.1.7",
+        "version_normalized": "6.1.7.0",
         "source": {
             "type": "git",
             "url": "https://github.com/PHPMailer/PHPMailer.git",
-            "reference": "0c41a36d4508d470e376498c1c0c527aa36a2d59"
+            "reference": "2c2370ba3df7034f9eb7b8f387c97b52b2ba5ad0"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/PHPMailer/PHPMailer/zipball/0c41a36d4508d470e376498c1c0c527aa36a2d59",
-            "reference": "0c41a36d4508d470e376498c1c0c527aa36a2d59",
+            "url": "https://api.github.com/repos/PHPMailer/PHPMailer/zipball/2c2370ba3df7034f9eb7b8f387c97b52b2ba5ad0",
+            "reference": "2c2370ba3df7034f9eb7b8f387c97b52b2ba5ad0",
             "shasum": ""
         },
         "require": {
@@ -1237,13 +1238,9 @@
             "php": ">=5.5.0"
         },
         "require-dev": {
-            "doctrine/annotations": "1.2.*",
+            "doctrine/annotations": "^1.2",
             "friendsofphp/php-cs-fixer": "^2.2",
-            "phpdocumentor/phpdocumentor": "2.*",
-            "phpunit/phpunit": "^4.8 || ^5.7",
-            "zendframework/zend-eventmanager": "3.0.*",
-            "zendframework/zend-i18n": "2.7.3",
-            "zendframework/zend-serializer": "2.7.*"
+            "phpunit/phpunit": "^4.8 || ^5.7"
         },
         "suggest": {
             "ext-mbstring": "Needed to send email in multibyte encoding charset",
@@ -1253,7 +1250,7 @@
             "stevenmaguire/oauth2-microsoft": "Needed for Microsoft XOAUTH2 authentication",
             "symfony/polyfill-mbstring": "To support UTF-8 if the Mbstring PHP extension is not enabled (^1.2)"
         },
-        "time": "2019-02-01T15:04:28+00:00",
+        "time": "2020-07-14T18:50:27+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -1263,16 +1260,16 @@
         },
         "notification-url": "https://packagist.org/downloads/",
         "license": [
-            "LGPL-2.1"
+            "LGPL-2.1-only"
         ],
         "authors": [
             {
-                "name": "Jim Jagielski",
-                "email": "jimjag@gmail.com"
-            },
-            {
                 "name": "Marcus Bointon",
                 "email": "phpmailer@synchromedia.co.uk"
+            },
+            {
+                "name": "Jim Jagielski",
+                "email": "jimjag@gmail.com"
             },
             {
                 "name": "Andy Prevost",
@@ -2729,7 +2726,8 @@
             "psr-16",
             "psr-6",
             "zf"
-        ]
+        ],
+        "abandoned": "laminas/laminas-cache"
     },
     {
         "name": "zendframework/zend-config",
@@ -2787,7 +2785,8 @@
         "keywords": [
             "config",
             "zf2"
-        ]
+        ],
+        "abandoned": "laminas/laminas-config"
     },
     {
         "name": "zendframework/zend-eventmanager",
@@ -2843,7 +2842,8 @@
             "eventmanager",
             "events",
             "zf2"
-        ]
+        ],
+        "abandoned": "laminas/laminas-eventmanager"
     },
     {
         "name": "zendframework/zend-filter",
@@ -2910,7 +2910,8 @@
             "ZendFramework",
             "filter",
             "zf"
-        ]
+        ],
+        "abandoned": "laminas/laminas-filter"
     },
     {
         "name": "zendframework/zend-hydrator",
@@ -2970,7 +2971,8 @@
         "keywords": [
             "hydrator",
             "zf2"
-        ]
+        ],
+        "abandoned": "laminas/laminas-hydrator"
     },
     {
         "name": "zendframework/zend-i18n",
@@ -3040,7 +3042,8 @@
             "ZendFramework",
             "i18n",
             "zf"
-        ]
+        ],
+        "abandoned": "laminas/laminas-i18n"
     },
     {
         "name": "zendframework/zend-json",
@@ -3092,7 +3095,8 @@
             "ZendFramework",
             "json",
             "zf"
-        ]
+        ],
+        "abandoned": "laminas/laminas-json"
     },
     {
         "name": "zendframework/zend-serializer",
@@ -3151,7 +3155,8 @@
             "ZendFramework",
             "serializer",
             "zf"
-        ]
+        ],
+        "abandoned": "laminas/laminas-serializer"
     },
     {
         "name": "zendframework/zend-servicemanager",
@@ -3205,7 +3210,8 @@
         "keywords": [
             "servicemanager",
             "zf2"
-        ]
+        ],
+        "abandoned": "laminas/laminas-servicemanager"
     },
     {
         "name": "zendframework/zend-stdlib",
@@ -3266,7 +3272,8 @@
         "keywords": [
             "stdlib",
             "zf2"
-        ]
+        ],
+        "abandoned": "laminas/laminas-stdlib"
     },
     {
         "name": "zetacomponents/base",

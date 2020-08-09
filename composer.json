@@ -1,6 +1,6 @@
 {
     "require": {
-        "phpmailer/phpmailer": "^6.0",
+        "phpmailer/phpmailer": "^6.1",
         "smalot/pdfparser": "*",
         "tecnickcom/tc-lib-pdf-parser": "^2.3"
     },

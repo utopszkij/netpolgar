@@ -39,6 +39,7 @@
 .commentBody .txtDiv {display:inline-block; width:75%; height:100px; overflow:hidden}
 .comment .buttons {text-align:right}
 .comment .btn {padding:2px; 6px 2px 6px; margin:2px}
+.moderated {background-color:silver}
 
 /* frontpage */
 .card-img {height:225px; overflow: hidde; background-color:silver}
