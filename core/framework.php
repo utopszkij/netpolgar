@@ -768,18 +768,52 @@ function url(string $s): string {
 }
 
 /**
- * Nyelvi fordítás
+ * Nyelvi fordítás {varName} helyettesítéssel
  * @param string $s nyelvi token
+ * @param array $vars ["varName" => "value", ...]
  * @return string szöveg
  */
-function txt(string $s): string {
+function txt(string $s, array $vars = []): string {
     $result = $s;
     if (defined($s)) {
         $result = constant($s);
     } else {
         $result = $s;
     }
+    foreach ($vars as $fn => $fv) {
+        $result = str_replace('{'.$fn.'}', $fv, $result);
+    }
     return $result;
 }
+
+/**
+ * $path.'/'.$name.'-'.$locale.'.mo' nyelvi fájl betöltése és értelmezése PHP konstansokba  
+ * @param string $path nyelvi fájl könyvtár  
+ * @param string $name nyelvi fájl neve
+ * @param string $locale nyelv konstans 
+ * @return bool   sikeres beolvasás és értelmezés
+ */
+function loadMoFile(string $path, string $name, string $locale = 'hu_HU'): bool {
+    include_once 'core/moparser.php';
+    if ($name == '') {
+        $fileName = $path.'/'.$locale.'.mo';
+    } else {
+        $fileName = $path.'/'.$name.'-'.$locale.'.mo';
+    }
+    $result = false;
+    if (file_exists($fileName)) {
+        $moFile = new moparser();
+        $data = $moFile->loadTranslationData($fileName, $locale);
+        $data1 = $data[$locale];
+        foreach ($data1 as $fn => $fv) {
+            if (!defined($fn)) {
+                define($fn,$fv);
+            }
+        }
+        $result = true;
+    }
+    return $result;
+}
+
 
 ?>

@@ -1,0 +1,59 @@
+    	<div class="container" id="commentDiv">
+	        <div class="row justify-content-center">
+		        <div class="media-container-column col-12" data-form-type="formoid">
+				    <form method="post" id="commentForm" class="mbr-form form-with-styler form-row" 
+				        action="./index.php" target="_self">
+				    	<input type="hidden" name="option" value="comments" />	
+				    	<input type="hidden" name="task" value="add" />	
+				    	<input type="hidden" name="type" value="{{option}}" />	
+				    	<input type="hidden" name="object_id" value="{{item.id}}" />
+					    <div class="form-group col-12">
+					    		<label>{{txt('COMMENT')}}</label>
+					    </div>		
+					    <div class="form-group col-12">
+							    <textarea cols="80" rows="5" class="form-control" id="text"
+							     name="text"></textarea>
+						</div>
+					    <div class="form-group col-12" ng-repeat="attacment in attacments">
+					    	{{attachment}}&nbsp;
+					    	<button type="button" class="btn btn-secundary">
+					    		<em class="fa fa-times"></em>
+					    	</button>
+						</div>
+						
+						<div class="form-group col-12">
+							<button type="button" id="attachBtn" class="btn btn-secondary"
+								onclick="$('#attachDiv').toggle()">
+								<em class="fa fa-paperclip"></em>&nbsp{{txt('ATTACHMENT')}}
+							</button>
+							&nbsp;
+							<button type="submit" id="OkBtn" class="btn btn-primary">
+								<em class="fa fa-paper-plane"></em>&nbsp;{{txt('SEND')}}
+							</button>
+						</div>
+					</form>            	
+              	</div>
+              	
+		        <div class="media-container-column col-12" data-form-type="formoid"
+		        	id="attachDiv" style="display:none">
+				    <form method="post" id="filetForm" class="mbr-form form-with-styler form-row" 
+				        action="./index.php" target="_self">
+				    	<input type="hidden" name="option" value="files" />	
+				    	<input type="hidden" name="task" value="add" />	
+				    	<input type="hidden" name="type" value="{{option}}" />	
+				    	<input type="hidden" name="object_id" value="{{item.id}}" />
+					    <div class="form-group col-md-6 col-sm-12">
+							    <input type="file" id="fileattach"
+							     name="fileattach" />
+						</div>
+						<div class="form-group col-md-6 col-sm-12">
+							<button type="button" id="OkBtn" class="btn bt-secondary">
+								<em class="fa fa-upload"></em>&nbsp;{{txt('UPLOAD')}}
+							</button>
+						</div>
+					</form>            	
+              	</div>
+             </div>
+          </div>  
+		</div><!--  container --> 	
+			

@@ -8,6 +8,7 @@
 .section-table {padding-top:10px; padding-bottom:0px}
 .btn em {margin:0px 5px 0px 5px}
 .buttons {text-align:center}
+.cookieText {display:none}
 
 .search {margin:20px 10px 20px 10px}
 .search input {height:30px}
@@ -40,6 +41,10 @@
 .comment .buttons {text-align:right}
 .comment .btn {padding:2px; 6px 2px 6px; margin:2px}
 .moderated {background-color:silver}
+.comment .objectName {display:inline-block; width:70%; height:20px; overflow:hidden; padding:0px; margin:0px;}
+.comment .objectName var {display:inline-block; width:auto; max-width:60%; height:20px; overflow:hidden;
+    padding:0px; margin:0px}
+
 
 /* frontpage */
 .card-img {height:225px; overflow: hidde; background-color:silver}

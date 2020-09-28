@@ -1,0 +1,240 @@
+<div ng-include="templates.navbar"></div>
+<div ng-include="templates.popup"></div>
+<div id="commentsList" class="container">
+    <div><a href="#">Korábbi üzenetek...</a></div>  
+	
+	<div class="comment" id="{{item.id}}">
+		<div class="commentBody">
+			<div class="ids"><strong>123</strong> #111
+			<a ng-if="type != 'users'" target="_self" href="" class="objectName">
+				<var>homokozó, tanulásra, próbálkozásra</var>&nbsp;<var>csoport</var>
+			</a>
+			</div>
+			<a class="senderDiv" href="" target="_self">
+				<div class="avatarDiv"><img src="images/noavatar.png" /></div>
+				<div class="nickDiv">senderNick</div>
+			</a>
+			<div class="txtDiv">
+				<a href="" target="_self">
+				123.üzenet szövege, ajskjht ,lklkr jhjhr uhne tvvvb rricu mgjhthr xkjrn xjxuxu xhhh
+				nnnricn76ghhb69 i7 jiu9987 odsioioc úőln köoi kööö
+				qdch 8uhb 6jh iiiii   items[12].text.substring(0,100)  
+				ng-if="items[12].text.length > 100"
+				</a>
+				<em onclick="fulltxt(12)" style="cursor:pointer">...</em>
+			</div>
+			<div class="buttons">
+				<button type="button" class="btn btn-secondary" title="csatolt fájlok"><em class="fa fa-paperclip"></em></button>
+				(Módosítva)&nbsp;&nbsp;
+				<button type="button" class="btn btn-secondary" title="válasz"><em class="fa fa-reply"></em></button>
+				<button type="button" class="btn btn-secondary" title="eszközök"><em class="fa fa-tools"></em></button>
+			</div>
+		</div>
+	</div><!--  comment -->
+	
+	<div class="replys">
+		<div><a href="#">Korábbi válaszok...</a></div>
+		<div class="comment" id="{{item.id}}">
+			<div class="commentBody">
+				<div class="ids"><strong>124</strong> #111</div>
+				<div class="senderDiv">
+					<div class="avatarDiv"><img src="images/noavatar.png" /></div>
+					<div class="nickDiv">senderNick</div>
+				</div>
+				<div class="txtDiv">
+					124.üzenet szövege, ajskjht ,lklkr jhjhr uhne tvvvb rricu mgjhthr xkjrn xjxuxu xhhh
+					nnnricn76ghhb69 i7 jiu9987 odsioioc úőln köoi kööö
+					qdch 8uhb 6jh iiiii hjhjz jkjkjj 
+					124.üzenet szövege, ajskjht ,lklkr jhjhr uhne tvvvb rricu mgjhthr xkjrn xjxuxu xhhh
+					nnnricn76ghhb69 i7 jiu9987 odsioioc úőln köoi kööö
+					qdch 8uhb 6jh iiiii hjhjz jkjkjj 
+					124.üzenet szövege, ajskjht ,lklkr jhjhr uhne tvvvb rricu mgjhthr xkjrn xjxuxu xhhh
+					nnnricn76ghhb69 i7 jiu9987 odsioioc úőln köoi kööö
+					qdch 8uhb 6jh iiiii hjhjz jkjkjj 
+					124.üzenet szövege, ajskjht ,lklkr jhjhr uhne tvvvb rricu mgjhthr xkjrn xjxuxu xhhh
+					nnnricn76ghhb69 i7 jiu9987 odsioioc úőln köoi kööö
+					qdch 8uhb 6jh iiiii hjhjz jkjkjj 
+					124.üzenet szövege, ajskjht ,lklkr jhjhr uhne tvvvb rricu mgjhthr xkjrn xjxuxu xhhh
+					nnnricn76ghhb69 i7 jiu9987 odsioioc úőln köoi kööö
+					qdch 8uhb 6jh iiiii hjhjz jkjkjj 
+				</div>
+				<div class="buttons">
+					<button type="button" class="btn btn-secondary">
+						<em class="fa fa-file"></em>Csatolt fájl(ok)</button>
+					&nbsp;
+					(Módosítva)
+					&nbsp;
+					<button type="button" class="btn btn-secondary">
+						<em class="fa fa-edit"></em>&nbsp;Modosításs</button>
+					&nbsp;	
+					<button type="button" class="btn btn-secondary">
+						<em class="fa fa-ban"></em>&nbsp;Moderálás</button>
+					&nbsp;
+					<button type="button" class="btn btn-secondary">
+						<em class="fa fa-reply"></em>&nbsp;Válasz</button>
+				</div>
+			</div>
+		</div><!-- comment -->    
+		<div class="comment" id="{{item.id}}">
+			<div class="commentBody">
+				<div class="ids"><strong>124</strong> #111</div>
+				<div class="senderDiv">
+					<div class="avatarDiv"><img src="images/noavatar.png" /></div>
+					<div class="nickDiv">senderNick</div>
+				</div>
+				<div class="txtDiv">
+					124.üzenet szövege, ajskjht ,lklkr jhjhr uhne tvvvb rricu mgjhthr xkjrn xjxuxu xhhh
+					nnnricn76ghhb69 i7 jiu9987 odsioioc úőln köoi kööö
+					qdch 8uhb 6jh iiiii hjhjz jkjkjj 
+					124.üzenet szövege, ajskjht ,lklkr jhjhr uhne tvvvb rricu mgjhthr xkjrn xjxuxu xhhh
+					nnnricn76ghhb69 i7 jiu9987 odsioioc úőln köoi kööö
+					qdch 8uhb 6jh iiiii hjhjz jkjkjj 
+					124.üzenet szövege, ajskjht ,lklkr jhjhr uhne tvvvb rricu mgjhthr xkjrn xjxuxu xhhh
+					nnnricn76ghhb69 i7 jiu9987 odsioioc úőln köoi kööö
+					qdch 8uhb 6jh iiiii hjhjz jkjkjj 
+					124.üzenet szövege, ajskjht ,lklkr jhjhr uhne tvvvb rricu mgjhthr xkjrn xjxuxu xhhh
+					nnnricn76ghhb69 i7 jiu9987 odsioioc úőln köoi kööö
+					qdch 8uhb 6jh iiiii hjhjz jkjkjj 
+					124.üzenet szövege, ajskjht ,lklkr jhjhr uhne tvvvb rricu mgjhthr xkjrn xjxuxu xhhh
+					nnnricn76ghhb69 i7 jiu9987 odsioioc úőln köoi kööö
+					qdch 8uhb 6jh iiiii hjhjz jkjkjj 
+				</div>
+				<div class="buttons">
+					<button type="button" class="btn btn-secondary">
+						<em class="fa fa-file"></em>Csatolt fájl(ok)</button>
+					&nbsp;
+					(Módosítva)
+					&nbsp;
+					<button type="button" class="btn btn-secondary">
+						<em class="fa fa-edit"></em>&nbsp;Modosításs</button>
+					&nbsp;	
+					<button type="button" class="btn btn-secondary">
+						<em class="fa fa-ban"></em>&nbsp;Moderálás</button>
+					&nbsp;
+					<button type="button" class="btn btn-secondary">
+						<em class="fa fa-reply"></em>&nbsp;Válasz</button>
+				</div>
+			</div>
+		</div><!-- comment -->  
+		<div class="replys">
+			<div class="comment" id="{{item.id}}">
+				<div class="commentBody">
+					<div class="ids"><strong>124</strong> #111</div>
+					<div class="senderDiv">
+						<div class="avatarDiv"><img src="images/noavatar.png" /></div>
+						<div class="nickDiv">senderNick</div>
+					</div>
+					<div class="txtDiv">
+						124.üzenet szövege, ajskjht ,lklkr jhjhr uhne tvvvb rricu mgjhthr xkjrn xjxuxu xhhh
+						nnnricn76ghhb69 i7 jiu9987 odsioioc úőln köoi kööö
+						qdch 8uhb 6jh iiiii hjhjz jkjkjj 
+						124.üzenet szövege, ajskjht ,lklkr jhjhr uhne tvvvb rricu mgjhthr xkjrn xjxuxu xhhh
+						nnnricn76ghhb69 i7 jiu9987 odsioioc úőln köoi kööö
+						qdch 8uhb 6jh iiiii hjhjz jkjkjj 
+						124.üzenet szövege, ajskjht ,lklkr jhjhr uhne tvvvb rricu mgjhthr xkjrn xjxuxu xhhh
+						nnnricn76ghhb69 i7 jiu9987 odsioioc úőln köoi kööö
+						qdch 8uhb 6jh iiiii hjhjz jkjkjj 
+						124.üzenet szövege, ajskjht ,lklkr jhjhr uhne tvvvb rricu mgjhthr xkjrn xjxuxu xhhh
+						nnnricn76ghhb69 i7 jiu9987 odsioioc úőln köoi kööö
+						qdch 8uhb 6jh iiiii hjhjz jkjkjj 
+						124.üzenet szövege, ajskjht ,lklkr jhjhr uhne tvvvb rricu mgjhthr xkjrn xjxuxu xhhh
+						nnnricn76ghhb69 i7 jiu9987 odsioioc úőln köoi kööö
+						qdch 8uhb 6jh iiiii hjhjz jkjkjj 
+					</div>
+					<div class="buttons">
+						<button type="button" class="btn btn-secondary">
+							<em class="fa fa-file"></em>Csatolt fájl(ok)</button>
+						&nbsp;
+						(Módosítva)
+						&nbsp;
+						<button type="button" class="btn btn-secondary">
+							<em class="fa fa-edit"></em>&nbsp;Modosításs</button>
+						&nbsp;	
+						<button type="button" class="btn btn-secondary">
+							<em class="fa fa-ban"></em>&nbsp;Moderálás</button>
+						&nbsp;
+						<button type="button" class="btn btn-secondary">
+							<em class="fa fa-reply"></em>&nbsp;Válasz</button>
+					</div>
+				</div>
+			</div><!-- comment -->    
+		</div>
+		  
+		<div><a href="#">Késöbbi válaszok...</a></div>
+	</div><!-- replys -->
+	    
+	<div class="comment" id="{{item.id}}">
+		<div class="commentBody">
+			<div class="ids"><strong>124</strong> #111</div>
+			<div class="senderDiv">
+				<div class="avatarDiv"><img src="images/noavatar.png" /></div>
+				<div class="nickDiv">senderNick</div>
+			</div>
+			<div class="txtDiv">
+				124.üzenet szövege, ajskjht ,lklkr jhjhr uhne tvvvb rricu mgjhthr xkjrn xjxuxu xhhh
+				nnnricn76ghhb69 i7 jiu9987 odsioioc úőln köoi kööö
+				qdch 8uhb 6jh iiiii hjhjz jkjkjj 
+				124.üzenet szövege, ajskjht ,lklkr jhjhr uhne tvvvb rricu mgjhthr xkjrn xjxuxu xhhh
+				nnnricn76ghhb69 i7 jiu9987 odsioioc úőln köoi kööö
+				qdch 8uhb 6jh iiiii hjhjz jkjkjj 
+				124.üzenet szövege, ajskjht ,lklkr jhjhr uhne tvvvb rricu mgjhthr xkjrn xjxuxu xhhh
+				nnnricn76ghhb69 i7 jiu9987 odsioioc úőln köoi kööö
+				qdch 8uhb 6jh iiiii hjhjz jkjkjj 
+				124.üzenet szövege, ajskjht ,lklkr jhjhr uhne tvvvb rricu mgjhthr xkjrn xjxuxu xhhh
+				nnnricn76ghhb69 i7 jiu9987 odsioioc úőln köoi kööö
+				qdch 8uhb 6jh iiiii hjhjz jkjkjj 
+				124.üzenet szövege, ajskjht ,lklkr jhjhr uhne tvvvb rricu mgjhthr xkjrn xjxuxu xhhh
+				nnnricn76ghhb69 i7 jiu9987 odsioioc úőln köoi kööö
+				qdch 8uhb 6jh iiiii hjhjz jkjkjj 
+			</div>
+			<div class="buttons">
+				<button type="button" class="btn btn-secondary">
+					<em class="fa fa-file"></em>Csatolt fájl(ok)</button>
+				&nbsp;
+				(Módosítva)
+				&nbsp;
+				<button type="button" class="btn btn-secondary">
+					<em class="fa fa-edit"></em>&nbsp;Modosításs</button>
+				&nbsp;	
+				<button type="button" class="btn btn-secondary">
+					<em class="fa fa-ban"></em>&nbsp;Moderálás</button>
+				&nbsp;
+				<button type="button" class="btn btn-secondary">
+					<em class="fa fa-reply"></em>&nbsp;Válasz</button>
+			</div>
+		</div>
+	</div><!-- comment -->    
+	
+	<div class="comment moderated" id="{{item.id}}">
+		<div class="commentBody">
+			<div class="ids"><strong>124</strong> #111</div>
+			<div class="senderDiv">
+				<div class="avatarDiv"><img src="images/noavatar.png" /></div>
+				<div class="nickDiv">senderNick</div>
+			</div>
+			<div class="txtDiv">
+				<strong>Moderálva</strong><br />
+				Moderálás indoklása 2020-02-02 10:12<br />
+				<strong>moderátor</strong>
+				<a href="#">Moderált tartalom megnézése</a> 
+			</div>
+			<div class="buttons">
+				<button type="button" class="btn btn-secondary">
+					<em class="fa fa-file"></em>Csatolt fájl(ok)</button>
+				&nbsp;
+				&nbsp;
+				<button type="button" class="btn btn-secondary">
+					<em class="fa fa-edit"></em>&nbsp;Modosításs</button>
+				&nbsp;	
+				<button type="button" class="btn btn-secondary">
+					<em class="fa fa-check"></em>&nbsp;Moderálás visszavonása</button>
+				&nbsp;
+			</div>
+		</div>
+	</div><!-- comment -->    
+	
+    <div><a href="#">Későbbi üzenetek...</a></div>  
+	<div class="clear"></div>
+</div>	
+<div ng-include="templates.commentadd"></div>
+<div ng-include="templates.footer"></div>

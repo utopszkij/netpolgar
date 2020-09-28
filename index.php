@@ -79,15 +79,24 @@ $user = $request->sessionGet('user',new UserRecord());
 $request->sessionSet('user',$user);
 
 // option szerint  nyelvi fájlok betöltése, task végrehajtása 
+// értelmezett nyelvi fájlok:  .php    define('token','value')
+//                             .mo     .po -ból poedit -el forditott fájl
+// Az .mo kezelés csak akkor jó ha csak és kizárólag a controllerben van a txt() fv használva.
 $option = $request->input('option','default');
 $task = $request->input('task','default');
 $lng = $request->input('lng',$request->sessionGet('lng',DEFLNG));
 $request->sessionSet('lng',$lng);
 if (!defined('LNGDEF')) {
-    include './langs/'.$lng.'.php';
+    if (!loadMoFile('langs','',$lng)) {
+        if (file_exists('./langs/'.$lng.'.php')) {
+            include './langs/'.$lng.'.php';
+        }
+    }
 }
-if (file_exists('./langs/'.$option.'_'.$lng.'.php')) {
-    include './langs/'.$option.'_'.$lng.'.php';
+if (!loadMoFile('langs',$option,$lng)) {
+    if (file_exists('./langs/'.$option.'_'.$lng.'.php')) {
+        include './langs/'.$option.'_'.$lng.'.php';
+    }
 }
 
 if (file_exists('./controllers/'.$option.'.php')) {

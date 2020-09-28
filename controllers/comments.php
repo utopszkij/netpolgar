@@ -2,7 +2,7 @@
 use PhpParser\Node\Expr\BinaryOp\Identical;
 
 include_once './controllers/common.php';
-class CommentController extends CommonController {
+class CommentsController extends CommonController {
     
     function __construct() {
         $this->cName = 'comment';
@@ -27,6 +27,23 @@ class CommentController extends CommonController {
         	<div id="commentsPage">----- comment form --------</div>
         </div>
         <?php 
+	}
+	
+	/**
+	 * comment lista
+	 * @param Request $request - type, id, session loggedUser, commentOffsets
+	 *    commentOffsets [{id, offset},....]  ha id>0 "id" alatti válaszzok offsetje
+	 *                                        ha id=0 a legfelső szint offsetje
+	 *    offset szám vagy "new" ez utobbi azt jelenti az első olvasatlantól vagy a legújabb 5                                          
+	 */
+	public function browser(Request $request, array $options=[]) {
+	    $p = $this->init($request,[]);
+	    $this->createCsrToken($request, $p);
+	    $this->view->browser($p);
+	}
+	
+	public function list(Request $request) {
+	    $this->browser($request,[]);
 	}
 }
 ?>
