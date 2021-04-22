@@ -1,0 +1,75 @@
+https://www.positronx.io/laravel-socialite-login-with-facebook-tutorial-with-example/
+=====================================================================================
+
+Az alábbi link tartalmazza a szolciál loginok beállítási leírását:
+https://www.soengsouy.com/2020/12/login-with-laravel-8-and-socialite.html
+
+szükséges:
+  nodejs 12+
+  composer 1.10+
+  php 7.4+
+
+alap 8.37 ralavel project létrehozása
+------------------------------------
+
+cd <documentRoot fölötti könyvtár>
+composer create-project laravel/laravel --prefer-dist <projectName>
+cd <projectName>
+edit .env ( database access )
+
+jetstream user login/regist plugin telepítése
+---------------------------------------------
+
+composer require laravel/jetstream
+php artisan jetstream:install livewire
+npm install
+npm run dev   --ha hibajelzéseket ad :(  nodejs -t kell frissiteni
+
+	sudo apt update
+	sudo apt -y install curl dirmngr apt-transport-https lsb-release ca-certificates
+	curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+	sudo apt-get install nodejs
+	npm run dev
+php artisan migrate
+
+socialite plugin telepítése 
+---------------------------
+
+composer require laravel/socialite
+edit config/app.php (lásd a fenti url -ben)
+
+facebook login beállítása
+-------------------------
+
+edit config/services.php (lásd a fenti url -ben Oauth app_id, secret, callbackurl)
+adatbázis alter
+	php artisan make:migration add_fb_id_column_in_users_table --table=users
+	edit <time>_add_fb_id_column_in_users_table.php (lásd a fenti url -ben)
+	php artisan migrate
+	edit app/Models/User.php (lásd a fenti url -ben   fb_id mező kezelés felvéve)
+rooter funkciók
+	edit rootes/web.php (lásd a fenti url -ben -- socialLogin és callback 
+		lásd a config/services.php -t is )
+	php artisan make:controller SocialController
+	edit app/Http/Controllers/SocialController.php (lásd a fenti url -ben 
+		a rootes/web.php -vel összhangban) 
+edit views/auth/login.blade.php (lásd a fenti url -ben sociál login button hozzáadása)
+
+Ennek mintájára értelemszerüen a többi szociál login is...
+
+Telepítése github -ról:
+-----------------------
+git clone
+composer install
+php artisan key:generate
+php artisan migrate --seed
+
+Test futtatás:
+-------------
+php artisan serve
+
+Upload web szerverre
+--------------------
+a "public" könyvtárra mutasson a document_root
+
+    

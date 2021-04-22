@@ -1,0 +1,37 @@
+controllerben:
+
+	view('bladeName1'); vagy
+	view('bladeName1', ["p1" => $value,...]);
+	
+views/bladeName1.blade.php
+	<x-layoutName>	
+		html oldal 
+		    {{-- comment --}}
+			{{ $var }} karakter szürésseé
+			{!! $var !!} nincs karakter szürés
+			{{ $var ?? "Default" }} opcionális változó
+            {{ __('token') }}  nyelvi forditás a resources/langs/lngCode.json alapján
+            {{ __('xxx :p1 xxx',["p1" => "v1"]) }}  nyelvi forditás a resources/langs/lngCode.json alapján
+                                                   :p1 cserélve v1-re 
+            {{ __('type.token') }}  nyelvi forditás a resources/langs/lngCode/type.php alapján
+			@if( php logikai kifejezés)....@elseif(...).....@else.....@endif
+			@isset($var)...@endisset
+			@auth....@else....@endauth
+			@foreach ($item as $array)....@endforeach
+			@include('bladeName3', $paramsArray)
+			@include('bladeName3')
+			@php .... @endphp
+
+	</x-layoutName>
+	
+views/layouts/layoutName.blade.php
+   <!DOCTYPE html>
+   ....	
+   .... komplett html oldal
+   ....
+   @livewire('bladeName2', $paramsAray)	
+   @livewire('bladeName2')	
+   ....
+   {{ $slot }}   <-- ide jön be a bladeName1.blade.php tartalma
+   .....
+   </html>

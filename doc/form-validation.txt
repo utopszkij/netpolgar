@@ -1,0 +1,115 @@
+
+blade.php -ben:
+---------------
+
+felső hibaüzenet terület:
+
+@if (count($errors) > 0)
+   <div class = "alert alert-danger">
+      <ul>
+         @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+         @endforeach
+      </ul>
+   </div>
+@endif
+
+hibaüzenet a formok belsejében:
+
+<div class="col-md-6">
+
+     <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus>
+     @error('name')
+         <span class="invalid-feedback" role="alert">
+             <strong>{{ $message }}</strong>
+         </span>
+     @enderror
+</div>
+
+ controller -ben
+ ---------------
+
+    
+ A https://laravel.com/docs/8.x/validation valami ilyesmit javasol:   
+    
+ protected function store(array $data)
+    {
+		$validated = $request->validate([
+        	'title' => 'required|unique:posts|max:255',
+        	'body' => 'required',
+    	]);
+   	
+    	/*
+    	 ide csak akkor kerül a vezérlés ha jók az adatok, ha nem jók akkor visszahivja a formot
+    	 a hibaüzenetek kiirása a blade-ban:
+    	   fieldname specifikusan (pl. az input tag alá)
+    	 		@error('name')
+         		<span class="invalid-feedback" role="alert">
+        	     <strong>{{ $message }}</strong>
+         		</span>
+     	 		@enderror
+     	  az összes hibaüzenet kiirása (pl a form tetején)
+			@if ($errors->any())
+			    <div class="alert alert-danger">
+			        <ul>
+			            @foreach ($errors->all() as $error)
+			                <li>{{ $error }}</li>
+			            @endforeach
+			        </ul>
+			    </div>
+			@endif
+     	$validated  array ami a validated adatokat tartalmazza
+        */
+
+    	// validálás jó..tárolás
+    	
+    }
+    
+    
+.....
+}
+
+A hibaüzenetek testre szabhatóak a lang/lngkod/validation.php -ben:   
+
+    'custom' => [
+        'attribute-name' => [
+            'rule-name' => 'custom-message',
+        ],
+        'publicinfo' => [
+		    'min' => ['string' => 'Ez az adatt min. :min karakter legyen.'],
+		    'required' => 'Ezt az adatot meg kell adni.',
+        ],
+    ],
+ 
+Egyedi validátor kezelés a controllerben:
+-----------------------------------------
+
+public function store(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|unique:posts|max:255',
+            'body' => 'required',
+        ]);
+
+	    $validator->after(function ($validator) {
+        	if (...$validator->data['fieldName'] használható....) {
+            	$validator->errors()->add('fieldName', 'Something is wrong with this field!');
+        	}
+    	});
+
+        if ($validator->fails()) {
+            return redirect('form')
+                        ->withErrors($validator)
+                        ->withInput();
+        }
+
+        // validator success; store 
+        .....
+    }
+
+}
+
+
+
+ 
+ 

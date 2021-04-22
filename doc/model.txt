@@ -1,0 +1,79 @@
+Adat lekérés
+------------
+
+Model
+	  ->orderBy('tábla.mező',...)
+      ->offset(szám)
+      ->limit(szám)
+      ->join('tábla', 'tábla.mező' ,'=', 'tábla.mező','left outer')
+          vagy ->leftJoin('tábla', 'tábla.mező' ,'=', 'tábla.mező')
+	  ->select('táblaa.név',.....)
+      ->where('tábla.mező','=',érték)
+      ->whereIn('mező',[érték,.....])
+      
+      ->get()                       - array -t add vissza
+      vagy
+      ->first()                     - egy objektumot ad vissza  
+      			->fieldname = value
+      			->save()
+      			->delete()
+      vagy
+      ->count()                     - egy számot ad vissza
+      vagy 
+      ->all()->delete()                    
+      		 ->count()
+      		 
+ Adat felvitel
+ -------------
+ 
+ Model->mezőnév = érték
+ ....
+ Model->save()
+
+ vagy ->create([mezőnév => érték, ....])	
+ 
+ Adat módosítás
+ --------------
+ 
+ 1. rekord elérés
+ 2. Model->mezőnév = érték
+    ......
+ 3. Model->save()
+ 
+Adat törlés
+-----------
+1. rekord elérés
+2. Model->delete()
+
+   Model->truncate()
+   
+   
+Utolsó müvelet hibaüzenete
+--------------------------   
+Model->errorMsg;  
+
+Utoljára felvitt rekord id:
+--------------------------
+Model->id 
+   
+ 
+Tranzakció kezelés
+------------------
+
+DB::transaction(function() use ($model1, $model2, ....) {
+
+            müveletek a modelleket használva
+            
+});
+
+Hiba kezelés
+------------   
+
+try {
+    ......
+    
+} catch ($e) {
+	... Model->errorMsg használható ...
+}   
+ 
+      

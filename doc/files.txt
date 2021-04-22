@@ -1,0 +1,33 @@
+fontosabb fileok, könyvtárak
+----------------------------
+app
+	Models
+		táblanév.php  			adat modellek
+	Http
+		Controllers
+			névController.php  	controllerek	
+public     						ez a document root  url('/') is ide mutat
+	css
+	js
+	index.php
+	.htaccess
+routes
+	web.php   					url rootolás
+	api.php                     api rootolás
+resources
+	views
+		layouts
+			*.blade.php			komlett html oldal templates {{ $slot }} -ba kerül a tartalom
+		*.blade.php				html temlates  <x-layoutName>.....</x-layoutName>
+	lang						nyelvi szöveg konstansok
+		lngcode
+			*.php				__('lngFileName.token')
+		lngcode.json	       	__('token')
+database
+	migrations
+		*.php 					adatbázis kreálások, alterezések
+	seeders						
+		*.php					adatbázis kezdő értékkel feltöltések			
+vendor							ez kell a müködéshez "composer install" hozza létre
+node_modules					azt hiszem ez csak a fejlesztéshez kell npm install, npm run dev	
+	

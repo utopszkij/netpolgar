@@ -1,0 +1,1 @@
+https://github.com/romanbican/roles - ehhez 6 éve nyúlt utoljára a fejlesztő, laravel 5.1 kompatibilis mi meg laravel 8.x-el dolgozunk
