@@ -1,8 +1,11 @@
 body {margin:0 0 0 0; padding:0 0 0 0; width:100%}
 svg.w-16 {display:none}
-nav .logo {display:inline-block; height:30px; width:auto}
+nav.navbar {position:fixed; width:100%; top:0px; z-index:20}
+nav .logo {display:inline-block; height:30px; width:auto; border-radius:15px}
 nav .dropdown-menu[data-bs-popper] {left:-60px}
 nav .dropdown-menu form {margin-left:15px}
+.header {margin:1px;}
+main {padding-top:50px;}
 p {display:block; width:100%; margin:5px;}
 h1 {font-size:22pt; font-weight:bold; margin:20px}
 h2 {font-size:20pt; font-weight:bold; margin:14px}

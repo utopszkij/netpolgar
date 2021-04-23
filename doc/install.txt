@@ -3,6 +3,9 @@ https://www.positronx.io/laravel-socialite-login-with-facebook-tutorial-with-exa
 
 Az alábbi link tartalmazza a szolciál loginok beállítási leírását:
 https://www.soengsouy.com/2020/12/login-with-laravel-8-and-socialite.html
+	I. Facebook: https://developers.facebook.com/
+	II. Google: https://console.developers.google.com/
+	III. GitHub: https://github.com/settings/apps/
 
 szükséges:
   nodejs 12+

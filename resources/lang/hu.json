@@ -52,5 +52,6 @@
 "Delete Account": "Fiók törlése",
 "Permanently delete your account.": "Fiók végleges törlése",
 "Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.": "A fiók törlése után adataid törlődnek a szerverről. A törlés előtt ments le minden adatot amire szükséged van!",
-"Are you sure": "Biztos vagy benne, hogy törölni akarod a fiókot?"
+"Are you sure": "Biztos vagy benne, hogy törölni akarod a fiókot?",
+"Profile": "Profil"
 }

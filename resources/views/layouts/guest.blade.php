@@ -7,9 +7,11 @@
     	<div>
 	    	@include('navigation-menu')
     	</div>
-        <div class="font-sans text-gray-900 antialiased">
-            {{ $slot }}
-        </div>
+    	<main>
+	        <div class="font-sans text-gray-900 antialiased">
+	            {{ $slot }}
+	        </div>
+        </main>
         @include('footer')
     </body>
 </html>
