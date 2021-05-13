@@ -18,15 +18,15 @@ class CreateGroupsTable extends Migration
         Schema::create('groups', function (Blueprint $table) {
             $table->id();
             $table->biginteger('parent_id')->unsigned()->nullable();  // fa szerkezet, tuljdonos
-            $table->string('name')->nullabled();  // megnevezés
-            $table->mediumtext('description')->nullabled(); // leírás
-            $table->string('avatar')->nullabled();  // avatar kép url
-            $table->string('status')->nullabled(); // 'suggestion' | 'active' | 'closed' | 'suspended'
-            $table->mediumtext('config')->nullabled(); // beállítások
-			$table->date('activated_at')->nullabled();            
-			$table->date('closed_at')->nullabled();            
+            $table->string('name')->nullable();  // megnevezés
+            $table->mediumtext('description')->nullable(); // leírás
+            $table->string('avatar')->nullable();  // avatar kép url
+            $table->string('status')->nullable(); // 'suggestion' | 'active' | 'closed' | 'suspended'
+            $table->mediumtext('config')->nullable(); // beállítások
+			$table->date('activated_at')->nullable();            
+			$table->date('closed_at')->nullable();            
             $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent()->nullable();
             $table->biginteger('created_by')->unsigned();
             //----
             $table->foreign('created_by')->references('id')->on('users');

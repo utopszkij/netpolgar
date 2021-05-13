@@ -18,9 +18,9 @@ class CreateVoksTable extends Migration
         Schema::create('voks', function (Blueprint $table) {
             $table->id();
             $table->biginteger('poll_id')->unsigned()->nullable();  // tuljdonos szavazás
-            $table->biginteger('option_id')->unsigned()->nullable(); // opció
-            $table->integer('position')->nullable();
-            $table->biginteger('user_id')->unsigned()->nullable(); // szavazó
+            $table->biginteger('option_id')->unsigned()->nullabled(); // opció
+            $table->integer('position')->nullabled();
+            $table->biginteger('user_id')->unsigned()->nullabled(); // szavazó
             $table->integer('token')->nullanled();
             //----
             $table->foreign('poll_id')->references('id')->on('polls');

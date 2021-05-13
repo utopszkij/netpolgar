@@ -12,6 +12,11 @@ h2 {font-size:20pt; font-weight:bold; margin:14px}
 h3 {font-size:18pt; font-weight:bold; margin:12px}
 h4 {font-size:16pt; font-weight:bold; margin:10px}
 h5 {font-size:14pt; font-weight:bold; margin:10px}
+.descriptionBtn {font-size:22pt}
+.leiras {margin:2%; width:90%}
+.leiras div {margin-top:1%}
+.tartalom {margin:5%; clear:both; padding:2%}
+.tartalom li {margin-left:2%; list-style:disc}
 
 footer {background:silver; padding:10px; margin-top:20px}
 #cookieEnable {position:fixed; z-index:999; bottom:0px; left:0px; width:100%;

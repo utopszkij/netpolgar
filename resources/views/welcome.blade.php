@@ -13,6 +13,7 @@
 					<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
 					<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
 					<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+					<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="3" aria-label="Slide 4"></button>
 				</div>
 				<div class="carousel-inner">
 					<div class="carousel-item active">
@@ -40,7 +41,7 @@
 			
 			
 			<div style="z-index:10; position:absolute; top:300px; width:100%; text-align:center">
-				<a href="#description" class="btn btn-primary" 
+				<a href="#description" class="btn btn-primary descriptionBtn" 
 				    style="opacity:0.6; padding:10px 30px 10px 30px; border-radius:15px">
 			 		{{ __('Description') }}
 				</a>

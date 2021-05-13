@@ -18,15 +18,15 @@ class CreatePollsTable extends Migration
         Schema::create('polls', function (Blueprint $table) {
             $table->id();
             $table->biginteger('group_id')->unsigned()->nullable();  // tuljdonos csoport
-            $table->string('name')->nullable();  // megnevezés
-            $table->mediumtext('description')->nullable();  // leírás
-            $table->string('avatar')->nullable();  // avatar kép url
-            $table->string('status')->nullable();  // státusz
-            $table->string('type')->nullable();  // szavazás tipusa
-            $table->datetime('start')->nullable();  // tényleges indulás
-            $table->datetime('end')->nullable();  // tényleges vége
-            $table->mediumtext('config')->nullable();  // konfiguráció
-            $table->string('can_voks')->nullable(); // ez a "ranks" szavazhat
+            $table->string('name')->nullabled();  // megnevezés
+            $table->mediumtext('description')->nullabled();  // leírás
+            $table->string('avatar')->nullabled();  // avatar kép url
+            $table->string('status')->nullabled();  // státusz
+            $table->string('type')->nullabled();  // szavazás tipusa
+            $table->datetime('start')->nullabled();  // tényleges indulás
+            $table->datetime('end')->nullabled();  // tényleges vége
+            $table->mediumtext('config')->nullabled();  // konfiguráció
+            $table->string('can_voks')->nullabled(); // ez a "ranks" szavazhat
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();
             $table->biginteger('created_by')->unsigned();
