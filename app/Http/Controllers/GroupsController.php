@@ -164,16 +164,16 @@ class GroupsController extends Controller {
         if (($id > 0) & ($user != false)) {
             $memberModel = new \App\Models\Group_members();
             $member = $memberModel->where('group_id','=',$id)
-            ->where('user_id','=',$user->id)
-            ->where('rank','=','admin')->first();
-            if (($member == false) & ($user->current_team_id <> 0)) {
+            ->where('user_id','=',$user->id)->first();
+            // ->where('rank','=','admin')->first();
+            if (($member == false) & ($user->current_team_id != 0)) {
                 return redirect('/groups/0/0/0')->with('error',__('accessViolation'));
             }
             if (!isset($member->rank)) {
                 $member->rank = "";
             }
         } else {
-            $member = JSON_decode('{"rank":""}');
+            $member = JSON_decode('{"id":0, "rank":""}');
         }
         $model = new \App\Models\Groups();
         if ($id > 0) {
@@ -199,19 +199,23 @@ class GroupsController extends Controller {
             ->where('parent_id','=',$group->id)
             ->where('type','=','dislike')
             ->count();
-            $messageModel = new \App\Models\Messages();
-            $userLiked = ($messageModel->where('parent_type','=','group')
-                ->where('parent_id','=',$group->id)
-                ->where('type','=','like')
-                ->where('user_id','=',$user->id)
-                ->count() > 0);
-            $messageModel = new \App\Models\Messages();
-            $userDisLiked = ($messageModel->where('parent_type','=','group')
-                ->where('parent_id','=',$group->id)
-                ->where('type','=','dislike')
-                ->where('user_id','=',$user->id)
-                ->count() > 0);
-            
+            if ($user) {
+                $messageModel = new \App\Models\Messages();
+                $userLiked = ($messageModel->where('parent_type','=','group')
+                    ->where('parent_id','=',$group->id)
+                    ->where('type','=','like')
+                    ->where('user_id','=',$user->id)
+                    ->count() > 0);
+                $messageModel = new \App\Models\Messages();
+                $userDisLiked = ($messageModel->where('parent_type','=','group')
+                    ->where('parent_id','=',$group->id)
+                    ->where('type','=','dislike')
+                    ->where('user_id','=',$user->id)
+                    ->count() > 0);
+            } else {
+                $userLiked = 0;
+                $userDisLiked = 0;
+            }
             return view('group_show',["group" => $group,
                 "user" => \Auth::user(),
                 "member" => $member,

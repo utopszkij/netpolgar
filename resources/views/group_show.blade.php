@@ -1,7 +1,9 @@
 <?php 
+// params group,  parent, parentPath, user, creator
+
 /**
  * create url from user record
- * @param unknown $user
+ * @parm User $user
  * @return string
  */
 function avatar($user) {
@@ -30,9 +32,6 @@ function option($act, $value) {
 }
 ?>
 <x-guest-layout>
-      <!-- 
-        params: group,  parent, parentPath, user, creator
-      -->
 <div id="groupShow" class="pageContainer row groupShow">
     <div class="row filters">
     	@if (count($parentPath) > 0)
@@ -177,22 +176,32 @@ function option($act, $value) {
     	@if ($group->status == 'proposal')
     		@if ($userLiked)
     			<em class="fa fa-check"></em>&nbsp;
-    		@endif 
+    		@endif
+    		@if ($member->id > 0) 
     		<a href="{{ URL::to('/') }}/like/group/{{ $group->id }}/like">
 	    		Aktiválását javaslom&nbsp;
     			<em class="fa fa-thumbs-up"></em>
     		</a>
+    		@else
+	    		Aktiválását javaslom&nbsp;
+    			<em class="fa fa-thumbs-up"></em>
+    		@endif
     		&nbsp;
     		<var><a href="{{ URL::to('/') }}/likelist/group/{{ $group->id }}/like">{{ $likeCount }}</a></var>
     	@endif
     	@if ($group->status == 'active')
     		@if ($userDisLiked)
     			<em class="fa fa-check"></em>&nbsp;
-    		@endif 
+    		@endif
+    		@if ($member->id > 0) 
     		<a href="{{ URL::to('/') }}/like/group/{{ $group->id }}/dislike">
 	    		Lezárását javaslom&nbsp;
     			<em class="fa fa-thumbs-down"></em>
     		</a>
+    		@else
+	    		Lezárását javaslom&nbsp;
+    			<em class="fa fa-thumbs-down"></em>
+    		@endif
     		&nbsp;
     		<var><a href="{{ URL::to('/') }}/likelist/group/{{ $group->id }}/dislike">{{ $disLikeCount }}</a></var>
     	@endif

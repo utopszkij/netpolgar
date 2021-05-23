@@ -15,8 +15,58 @@ use Illuminate\Validation\Validator;
  */
 class MessagesController extends Controller {
 
+    /**
+     * group like/dislike -ra jogosult?
+     * @param int $id group->id
+     * @return bool
+     */
+    protected function likeCheckGroup(int $id): bool {
+        $result = false;
+        $user = \Auth::user();
+        if ($user) {
+            $group = \DB::table('groups')->where('id','=',$id)->first();
+            if ($group) {
+                if (($group->parent_id == 0) & ($user->current_team_id == 0)) {
+                    $result = true;
+                } else if ($group->parent_id > 0) {
+                    $w = \DB::table('users')->where('id','=',$group->parent_id)->first();
+                    if ($w) {
+                        $result = true;
+                    }
+                }
+            }
+        }
+        return $result;
+    }
+    
+    /**
+     * parent like/dislike -ra jogosult?
+     * @param string $parentType
+     * @param int $id
+     * @return bool
+     */
+    protected function likeCheck(string $parentType, int $id):bool {
+        $result = false;
+        if ($parentType == 'group') {
+            $result = $this->checkGroup($id);
+        }
+        return $result;
+    }
+    
+    /**
+     * like/dislike 
+     * @param Request $request
+     * @param string $parentType
+     * @param int $id parentRec->id
+     * @param string $likeType
+     * @return \Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse
+     */
     public function like(Request $request, string $parentType, int $id, string $likeType) {
         if (\Auth::user()) {
+            $enabled = $this->likeCheck($parentType, $id); 
+            if (!$enabled) {
+                return redirect(\URL::previous());
+            }
             if (($likeType == 'like') | ($likeType == 'dislike')) {
                 $model = new \App\Models\Messages();
                 $w = $model->where('parent_type','=',$parentType)
@@ -43,7 +93,9 @@ class MessagesController extends Controller {
                 }
                 return redirect(\URL::previous());
             }
-        }   
+        } else {
+            return redirect(\URL::previous());
+        }
     }
 }
 
