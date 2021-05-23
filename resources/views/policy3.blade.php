@@ -1,5 +1,5 @@
 <x-guest-layout>
       <div class="pageContainer row policy">
-                @include('policy-'.app()->getLocale())
+                @include('policy3-'.app()->getLocale())
       </div>
 </x-guest-layout>

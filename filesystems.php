@@ -27,9 +27,6 @@ return [
     | Supported Drivers: "local", "ftp", "sftp", "s3"
     |
     */
-    
-    // orig lokal root: 'root' => storage_path('app'),
-    
 
     'disks' => [
 

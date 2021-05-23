@@ -21,6 +21,8 @@ views/bladeName1.blade.php
 			@include('bladeName3', $paramsArray)
 			@include('bladeName3')
 			@php .... @endphp
+			
+			\Auth::user() -is használható
 
 	</x-layoutName>
 	

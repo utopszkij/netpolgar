@@ -35,7 +35,7 @@ hibaüzenet a formok belsejében:
  protected function store(array $data)
     {
 		$validated = $request->validate([
-        	'title' => 'required|unique:posts|max:255',
+        	'title' => 'required|unique:posts|max:255',   exists:tableName,colName
         	'body' => 'required',
     	]);
    	

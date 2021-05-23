@@ -7,12 +7,12 @@
 					<strong><em class="fa fa-lock"></em> GDPR</strong><br />
 					<ul>
 					<li><i class="bx bx-chevron-right"></i>
-						<a href="{{ \URL::to('/privacy-policy') }}">
+						<a href="{{ \URL::to('/policy') }}">
 						{{ __('footer.privacy-policy') }}
 						</a>
 					</li>
 					<li><i class="bx bx-chevron-right"></i>
-						<a href="{{ \URL::to('/terms-of-service') }}">
+						<a href="{{ \URL::to('/terms') }}">
 						{{ __('footer.term-of-service') }}
 						</a>
 					</li>
@@ -28,7 +28,7 @@
 						<em class="fa fa-copyright"></em> {{ __('footer.licence') }}
 						</a></li>
 					<li><i class="bx bx-chevron-right"></i>
-						<a href="https://github.com/Code-for-Hungary/fogadj-orokbe-egy-web-oldalt" target="_new">
+						<a href="https://github.com/utopszkij/netpolgar" target="_new">
 						<em class="fa fa-code"></em> {{ __('footer.source') }}
 						</a></li>
 					<li><i class="bx bx-chevron-right"></i>
@@ -56,7 +56,7 @@
 	<div id="cookieEnable" style="display:none">
 		{{ __('footer.enableLabel') }}
 		&nbsp;		
-		<a href="{{ \URL::to('/privacy-policy') }}" style="color:blue">
+		<a href="{{ \URL::to('/policy') }}" style="color:blue">
 		{{ __('footer.seeThis') }}
 		</a>
 		<br />	

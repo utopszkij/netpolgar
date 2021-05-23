@@ -1,6 +1,8 @@
 Adat lekérés
 ------------
 
+filenév = tábla név 
+
 Model
 	  ->orderBy('tábla.mező',...)
       ->offset(szám)

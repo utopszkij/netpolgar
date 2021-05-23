@@ -1,6 +1,7 @@
 @php 
 if (Auth::user()) {
-	$avatar = str_replace('storage/','/storage/app/public/',Auth::user()->profile_photo_url);
+	$avatar = str_replace('/storage/','/storage/app/public/',Auth::user()->profile_photo_url);
+	Auth::user()->avatar = $avatar;
 }
 @endphp
   
@@ -16,7 +17,7 @@ if (Auth::user()) {
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">
+          <a class="nav-link active" aria-current="page" href="{{ URL::to('/') }}/groups/0/0/0">
           	{{ __('navigation.groups') }}
           </a>
         </li>

@@ -6,17 +6,42 @@ nav .dropdown-menu[data-bs-popper] {left:-60px}
 nav .dropdown-menu form {margin-left:15px}
 .header {margin:1px;}
 main {padding-top:50px;}
+.pageContainer {padding:0px 10px 10px 10px; min-height:500px}
 p {display:block; width:100%; margin:5px;}
-h1 {font-size:22pt; font-weight:bold; margin:20px}
-h2 {font-size:20pt; font-weight:bold; margin:14px}
-h3 {font-size:18pt; font-weight:bold; margin:12px}
-h4 {font-size:16pt; font-weight:bold; margin:10px}
-h5 {font-size:14pt; font-weight:bold; margin:10px}
-.descriptionBtn {font-size:22pt}
-.leiras {margin:2%; width:90%}
-.leiras div {margin-top:1%}
-.tartalom {margin:5%; clear:both; padding:2%}
-.tartalom li {margin-left:2%; list-style:disc}
+h1 {font-size:22pt; font-weight:bold; margin:20px 0px 20px 0px}
+h2 {font-size:20pt; font-weight:bold; margin:14px 0px 14xp 0px}
+h3 {font-size:18pt; font-weight:bold; margin:12px 0px 01px 0px}
+h4 {font-size:16pt; font-weight:bold; margin:10px 0px 10px 0px}
+h5 {font-size:14pt; font-weight:bold; margin:10px 0px 10px 0px}
+.title {text-align:center}
+.submenuIcon {display:none}
+.avatar {height:26px; display:inline-block; width:auto;}
+.filters label {width:150px; text-align:right; margin:2px}
+.searchForm {margin:10px 0px 10px 0px}
+thead {background-color: silver; color:black}
+.btn-disabled {background-color:silver; border-style:solid; border-width:1px; cursor:default}
+.form-group {vertical-align:middle; margin:2px;}
+.form-group label {display:inline-block; width:150px; text-align:right; margin:2px; }
+.form-group input {display:inline-block; width:auto; margin:2px}
+.form-group select {display:inline-block; width:auto; margin:2px}
+.form-group textarea {display:inline-block; width:auto; margin:2px}
+.submenu ul {border-style:solid; border-width:1px}
+.submenu li {border-style:solid; border-width:0px 0px 1px 0px; padding:2px}
+
+/* welcome */
+.welcome .descriptionBtn {font-size:22pt}
+.welcome .leiras {margin:2%; width:90%}
+.welcome .leiras div {margin-top:1%}
+.welcome .tartalom {margin:5%; clear:both; padding:2%}
+.welcome .tartalom li {margin-left:2%; list-style:disc}
+
+/* groups */ 
+.parentPath {border-style:solid; border-width:1px; padding:2px; margin:2px; background-color:#f0f0f0}
+.groupsBrowser th.id {width:6%}
+.groupsBrowser th.name {width:55%}
+.groupsBrowser th.status {width:20%}
+.filters a {display:inline-block; width:auto}
+.groupsBrowser > p {display:none} /* paginator limit/total */
 
 footer {background:silver; padding:10px; margin-top:20px}
 #cookieEnable {position:fixed; z-index:999; bottom:0px; left:0px; width:100%;
@@ -24,4 +49,15 @@ footer {background:silver; padding:10px; margin-top:20px}
 }
 #cookieDisable {
 	background-color:#d0d0d0; text-align:right; padding:10px;
+}
+
+@media (max-width:575px) {
+.form-group label {display:block; text-align:left }
+.form-group input {display:block; width:auto; margin:2px}
+.form-group select {display:block; width:auto; margin:2px}
+.form-group textarea {display:block; width:auto; margin:2px}
+}
+@media (max-width:991px) {
+	.submenuIcon {display:inline-block}
+	.submenu {display:none}
 }

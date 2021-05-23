@@ -67,6 +67,7 @@ composer install
 php artisan key:generate
 php artisan migrate --seed
 
+
 Test futtatás:
 -------------
 php artisan serve
@@ -74,5 +75,10 @@ php artisan serve
 Upload web szerverre
 --------------------
 a "public" könyvtárra mutasson a document_root
+doc/symlink.php --> server/public
+böngésző:  https://domain/symlink.php
+szerverről a symlink.php törlése
+
+a storage -t kivéve a többi könyvtár és file csak olvasható legyen
 
     

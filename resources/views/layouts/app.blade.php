@@ -10,6 +10,7 @@
             @livewire('navigation-menu')
             <!-- Page Content -->
             <main>
+				@include('message');      
 	            <!-- Page Heading -->
 	            @if (isset($header))
 	                <header class="bg-white shadow">

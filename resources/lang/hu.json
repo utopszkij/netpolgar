@@ -10,6 +10,7 @@
 "Password": "Jelszó",
 "Login": "Bejelentkezés",
 "backHome": "Vissza a kezdő lapra",
+"accessViolation":"Nem vagy jogosult erre a müveletre",
 "Remember me": "Bejelentkezve maradok",
 "Not accounts? - register": "Nincs még fiokód? - Regisztrálj!",
 "Forgot your password?": "Elfelejtetted a jelszavad?",
@@ -53,5 +54,12 @@
 "Permanently delete your account.": "Fiók végleges törlése",
 "Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.": "A fiók törlése után adataid törlődnek a szerverről. A törlés előtt ments le minden adatot amire szükséged van!",
 "Are you sure": "Biztos vagy benne, hogy törölni akarod a fiókot?",
-"Profile": "Profil"
+"Profile": "Profil",
+"Showing": "Listázva",
+"to": "-töl",
+"of": "-ig",
+"results": "sor összesen",
+"csrf_token_error":"munkament nem érvényes vagy lejárt.",
+"Check the following errors :(": "Hibás adatok",
+"submenu": "Alemü"
 }
