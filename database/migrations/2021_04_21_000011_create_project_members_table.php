@@ -31,8 +31,8 @@ class CreateProjectMembersTable extends Migration
             $table->foreign('created_by')->references('id')->on('users');
             $table->foreign('project_id')->references('id')->on('projects');
             $table->foreign('user_id')->references('id')->on('users');
-        });
-    }
+        }\n);
+    }\n
 
     /**
      * Reverse the migrations.
@@ -42,5 +42,5 @@ class CreateProjectMembersTable extends Migration
     public function down()
     {
         Schema::dropIfExists('project_members');
-    }
-}
+    }\n
+}\n

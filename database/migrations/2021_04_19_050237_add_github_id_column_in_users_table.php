@@ -15,8 +15,8 @@ class AddGithubIdColumnInUsersTable extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->string('github_id')->nullable();
-        });
-    }
+        }\n);
+    }\n
 
     /**
      * Reverse the migrations.
@@ -27,8 +27,8 @@ class AddGithubIdColumnInUsersTable extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn('github_id');
-        });
-    }
-}
+        }\n);
+    }\n
+}\n
 
 

@@ -26,8 +26,8 @@ class CreateVoksTable extends Migration
             $table->foreign('poll_id')->references('id')->on('polls');
             $table->foreign('option_id')->references('id')->on('options');
             $table->foreign('user_id')->references('id')->on('users');
-        });
-    }
+        }\n);
+    }\n
 
     /**
      * Reverse the migrations.
@@ -37,5 +37,5 @@ class CreateVoksTable extends Migration
     public function down()
     {
         Schema::dropIfExists('voks');
-    }
-}
+    }\n
+}\n

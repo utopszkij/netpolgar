@@ -18,14 +18,14 @@ class CreateProjectsTable extends Migration
         Schema::create('projects', function (Blueprint $table) {
             $table->id();
             $table->biginteger('group_id')->unsigned()->nullable();  // tuljdonos csoport
-            $table->string('name')->nullabled();  // megnevezés
-            $table->string('avatar')->nullabled();  // avatar kép url
-            $table->mediumtext('description')->nullabled();  // leírás
-            $table->string('status')->nullabled(); // 'suggestion' | 'active' | 'closed' | 'suspended' |  'canceled'
-            $table->date('deadline')->nullabled(); // határidő
-            $table->date('start')->nullabled();  // tényleges indulás
-            $table->date('end')->nullabled();  // tényleges vége
-            $table->mediumtext('config')->nullabled();  // konfiguráció
+            $table->string('name')->nullable();  // megnevezés
+            $table->string('avatar')->nullable();  // avatar kép url
+            $table->mediumtext('description')->nullable();  // leírás
+            $table->string('status')->nullable(); // 'suggestion' | 'active' | 'closed' | 'suspended' |  'canceled'
+            $table->date('deadline')->nullable(); // határidő
+            $table->date('start')->nullable();  // tényleges indulás
+            $table->date('end')->nullable();  // tényleges vége
+            $table->mediumtext('config')->nullable();  // konfiguráció
             // ---
             $table->foreign('group_id')->references('id')->on('groups');
         });

@@ -18,11 +18,11 @@ class CreateTasksTable extends Migration
         Schema::create('tasks', function (Blueprint $table) {
             $table->id();
             $table->biginteger('project_id')->unsigned()->nullable();  // tuljdonos projekt
-            $table->string('status')->nullabled(); // 'active' | 'inwork' | ....
-            $table->string('type')->nullabled(); // 'bug' | 'question' .....
-            $table->integer('prior')->nullabled(); // prioritás
-            $table->integer('position')->nullabled(); // prioritás
-            $table->string('txt')->nullabled();
+            $table->string('status')->nullable(); // 'active' | 'inwork' | ....
+            $table->string('type')->nullable(); // 'bug' | 'question' .....
+            $table->integer('prior')->nullable(); // prioritás
+            $table->integer('position')->nullable(); // prioritás
+            $table->string('txt')->nullable();
             $table->biginteger('user_id')->unsigned();
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();

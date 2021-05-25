@@ -18,8 +18,8 @@ class CreateOptionsTable extends Migration
         Schema::create('options', function (Blueprint $table) {
             $table->id();
             $table->biginteger('poll_id')->unsigned()->nullable();  // tuljdonos szavazás
-            $table->string('status')->nullabled(); // 'suggestion' | 'active' | 'closed' | 'suspended'
-            $table->string('txt')->nullabled();
+            $table->string('status')->nullable(); // 'suggestion' | 'active' | 'closed' | 'suspended'
+            $table->string('txt')->nullable();
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();
             $table->biginteger('created_by')->unsigned();

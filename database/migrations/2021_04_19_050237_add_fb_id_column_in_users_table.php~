@@ -15,8 +15,8 @@ class AddFbIdColumnInUsersTable extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->string('fb_id')->nullable();
-        }\n);
-    }\n
+        });
+    }
 
     /**
      * Reverse the migrations.
@@ -27,8 +27,8 @@ class AddFbIdColumnInUsersTable extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn('fb_id');
-        }\n);
-    }\n
-}\n
+        });
+    }
+}
 
 

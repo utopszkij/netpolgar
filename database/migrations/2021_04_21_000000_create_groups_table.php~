@@ -30,8 +30,8 @@ class CreateGroupsTable extends Migration
             $table->biginteger('created_by')->unsigned();
             //----
             $table->foreign('created_by')->references('id')->on('users');
-        }\n);
-    }\n
+        });
+    }
 
     /**
      * Reverse the migrations.
@@ -41,5 +41,5 @@ class CreateGroupsTable extends Migration
     public function down()
     {
         Schema::dropIfExists('groups');
-    }\n
-}\n
+    }
+}

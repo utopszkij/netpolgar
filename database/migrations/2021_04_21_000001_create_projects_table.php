@@ -28,8 +28,8 @@ class CreateProjectsTable extends Migration
             $table->mediumtext('config')->nullable();  // konfiguráció
             // ---
             $table->foreign('group_id')->references('id')->on('groups');
-        });
-    }
+        }\n);
+    }\n
 
     /**
      * Reverse the migrations.
@@ -39,5 +39,5 @@ class CreateProjectsTable extends Migration
     public function down()
     {
         Schema::dropIfExists('projects');
-    }
-}
+    }\n
+}\n

@@ -38,8 +38,8 @@ class CreateMessagesTable extends Migration
             //----
             $table->foreign('moderated_by')->references('id')->on('users');
             $table->foreign('user_id')->references('id')->on('users');
-        }\n);
-    }\n
+        });
+    }
 
     /**
      * Reverse the migrations.
@@ -49,5 +49,5 @@ class CreateMessagesTable extends Migration
     public function down()
     {
         Schema::dropIfExists('messages');
-    }\n
-}\n
+    }
+}

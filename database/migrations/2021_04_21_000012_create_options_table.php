@@ -26,8 +26,8 @@ class CreateOptionsTable extends Migration
             //----
             $table->foreign('created_by')->references('id')->on('users');
             $table->foreign('poll_id')->references('id')->on('polls');
-        });
-    }
+        }\n);
+    }\n
 
     /**
      * Reverse the migrations.
@@ -37,5 +37,5 @@ class CreateOptionsTable extends Migration
     public function down()
     {
         Schema::dropIfExists('options');
-    }
-}
+    }\n
+}\n

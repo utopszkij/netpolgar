@@ -1,0 +1,24 @@
+A képernyő három iframe
+  1.
+    adatbázisból olvasott lapozható message lista böngésző 
+    ha a lista legvége látható a képernyőn akkor
+    időzitetten frissiti magát a szerverről (AJAX)
+    
+  2.
+    jitsi iframe amibe a user csatlakozhat a beszéhgetéshez és
+    bele is irhat.
+	 a joned eseménykezelő biztositja a useravatar és nick név beállítását.
+	 az outgoing eseménykezelő a küldött üzenetek tárolását.
+	 
+  3. api.getParticipantsInfo(); -val lekérhető aktiv user infó  
+  (tömb amiben objektumok vanak)  
+    
+    roomName:
+      Group_groupName  
+      Proj_projectName
+      Prod_productName
+      User_userNick
+      Meeting_meetingName
+      Poll_pollName
+      Event_eventName
+      

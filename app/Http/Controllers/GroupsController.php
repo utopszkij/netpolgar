@@ -153,6 +153,41 @@ class GroupsController extends Controller {
     }
     
     /**
+     * a configban beállított like/dislike count elérése esetén
+     * modositja a csoport státuszát
+     * @param GroupModel $group
+     * @param int $memberCount
+     * @param int $likeCount
+     * @param int $disLikeCount
+     */
+    protected function statusAdjust(&$group, int $memberCount, int $likeCount, int $disLikeCount) {
+        try {
+            $config = JSON_decode($group->config);
+            if (!isset($config->subGroupActivateVoks)) {
+                $config->subGroupActivateVoks = 10000;
+            }
+            if (!isset($config->groupCloseVoks)) {
+                $config->groupCloseVoks = '110%';
+            }
+            $groupCloseVoks = (int)str_replace('%','',$config->groupCloseVoks);
+            if ($group->status == 'proposal') {
+                if ($likeCount >= $config->subGroupActivateVoks) {
+                    $group->status = 'active';
+                    $group->save();
+                }
+            }
+            if ($group->status == 'active') {
+                if ($disLikeCount >= ($memberCount * $groupCloseVoks * 100)) {
+                    $group->status = 'closed';
+                    $group->save();
+                }
+            }
+        } finally {
+            return;
+        }
+    }
+    
+    /**
      * csoport adatlap
      * @param Request $request
      * @param int $id
@@ -160,27 +195,30 @@ class GroupsController extends Controller {
      */
     public function show(Request $request, int $id) {
         $user = \Auth::user();
-        $member = JSON_decode('{"rank":""}');
+        $member = false;
+        $parentMember = false;
+        $memberCount = 0;
+        
         if (($id > 0) & ($user != false)) {
             $memberModel = new \App\Models\Group_members();
             $member = $memberModel->where('group_id','=',$id)
             ->where('user_id','=',$user->id)->first();
-            // ->where('rank','=','admin')->first();
-            if (($member == false) & ($user->current_team_id != 0)) {
-                return redirect('/groups/0/0/0')->with('error',__('accessViolation'));
-            }
-            if (!isset($member->rank)) {
-                $member->rank = "";
-            }
-        } else {
-            $member = JSON_decode('{"id":0, "rank":""}');
+            $memberModel = new \App\Models\Group_members();
+            $memberCount = $memberModel->where('group_id','=',$id)->count();
         }
+        
         $model = new \App\Models\Groups();
         if ($id > 0) {
             $group = $model->where('id','=',$id)->first();
             $creator = \DB::table('users')->where('id','=',$group->created_by)->first();
         }
+
         if ($group) {
+            if (($group->parent_id > 0) & ($user != false)) {
+                $memberModel = new \App\Models\Group_members();
+                $parentMember = $memberModel->where('group_id','=',$group->parent_id)
+                ->where('user_id','=',$user->id)->first();
+            }
             $parent = \DB::table('groups')->where('id','=',$group->parent_id)->first();
             if ($group->parent_id > 0) {
                 $parentPath = $this->getParentPath($group->parent_id);
@@ -216,9 +254,11 @@ class GroupsController extends Controller {
                 $userLiked = 0;
                 $userDisLiked = 0;
             }
+            $this->statusAdjust($group, $memberCount, $likeCount, $disLikeCount);
             return view('group_show',["group" => $group,
                 "user" => \Auth::user(),
                 "member" => $member,
+                "parentMember" => $parentMember,
                 "parent" => $parent,
                 "parentPath" => $parentPath,
                 'creator' => $creator,

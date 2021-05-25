@@ -3,6 +3,11 @@
  * üzenetek lik, dislike, voksok kezelése (böngészés, megjelenítés, modositás, felvitel, törlés
  * használja az \Auth::user() -t.
  * - false: nincs bejelentkezve
+ * 
+ * Megoldamdó a jogosultság ellenörzés:
+ *   group like  parent-group-member | sysadmin
+ *   goup dislike group-member
+ * 
  */
 namespace App\Http\Controllers;
 
@@ -15,43 +20,6 @@ use Illuminate\Validation\Validator;
  */
 class MessagesController extends Controller {
 
-    /**
-     * group like/dislike -ra jogosult?
-     * @param int $id group->id
-     * @return bool
-     */
-    protected function likeCheckGroup(int $id): bool {
-        $result = false;
-        $user = \Auth::user();
-        if ($user) {
-            $group = \DB::table('groups')->where('id','=',$id)->first();
-            if ($group) {
-                if (($group->parent_id == 0) & ($user->current_team_id == 0)) {
-                    $result = true;
-                } else if ($group->parent_id > 0) {
-                    $w = \DB::table('users')->where('id','=',$group->parent_id)->first();
-                    if ($w) {
-                        $result = true;
-                    }
-                }
-            }
-        }
-        return $result;
-    }
-    
-    /**
-     * parent like/dislike -ra jogosult?
-     * @param string $parentType
-     * @param int $id
-     * @return bool
-     */
-    protected function likeCheck(string $parentType, int $id):bool {
-        $result = false;
-        if ($parentType == 'group') {
-            $result = $this->checkGroup($id);
-        }
-        return $result;
-    }
     
     /**
      * like/dislike 
@@ -63,7 +31,6 @@ class MessagesController extends Controller {
      */
     public function like(Request $request, string $parentType, int $id, string $likeType) {
         if (\Auth::user()) {
-            $enabled = $this->likeCheck($parentType, $id); 
             if (!$enabled) {
                 return redirect(\URL::previous());
             }

@@ -20,8 +20,8 @@ class CreateSessionsTable extends Migration
             $table->text('user_agent')->nullable();
             $table->text('payload');
             $table->integer('last_activity')->index();
-        }\n);
-    }\n
+        });
+    }
 
     /**
      * Reverse the migrations.
@@ -31,5 +31,5 @@ class CreateSessionsTable extends Migration
     public function down()
     {
         Schema::dropIfExists('sessions');
-    }\n
-}\n
+    }
+}

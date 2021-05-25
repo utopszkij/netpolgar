@@ -23,8 +23,8 @@ class CreateUsersTable extends Migration
             $table->foreignId('current_team_id')->nullable();
             $table->text('profile_photo_path')->nullable();
             $table->timestamps();
-        }\n);
-    }\n
+        });
+    }
 
     /**
      * Reverse the migrations.
@@ -34,5 +34,5 @@ class CreateUsersTable extends Migration
     public function down()
     {
         Schema::dropIfExists('users');
-    }\n
-}\n
+    }
+}

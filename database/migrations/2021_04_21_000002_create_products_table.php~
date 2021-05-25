@@ -18,16 +18,16 @@ class CreateProductsTable extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->id();
             $table->biginteger('project_id')->unsigned()->nullable();  // tuljdonos projekt
-            $table->string('name')->nullabled();  // megnevezés
-            $table->mediumtext('description')->nullabled();  // leírás
-            $table->string('avatar')->nullabled();  // avatar kép url
-            $table->string('status')->nullabled();  // státusz
-            $table->string('type')->nullabled();  // tipus
-            $table->integer('quantity')->nullabled(); // mennyiség
-            $table->string('unit')->nullabled(); // mennyiség egység
-            $table->integer('price')->nullabled(); //egységár
-            $table->date('start')->nullabled();  // tényleges indulás
-            $table->date('end')->nullabled();  // tényleges vége
+            $table->string('name')->nullable();  // megnevezés
+            $table->mediumtext('description')->nullable();  // leírás
+            $table->string('avatar')->nullable();  // avatar kép url
+            $table->string('status')->nullable();  // státusz
+            $table->string('type')->nullable();  // tipus
+            $table->integer('quantity')->nullable(); // mennyiség
+            $table->string('unit')->nullable(); // mennyiség egység
+            $table->integer('price')->nullable(); //egységár
+            $table->date('start')->nullable();  // tényleges indulás
+            $table->date('end')->nullable();  // tényleges vége
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();
             $table->biginteger('created_by')->unsigned();

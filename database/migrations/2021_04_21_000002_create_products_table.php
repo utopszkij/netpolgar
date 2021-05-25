@@ -34,8 +34,8 @@ class CreateProductsTable extends Migration
             // ----
             $table->foreign('project_id')->references('id')->on('projects');
             $table->foreign('created_by')->references('id')->on('users');
-        });
-    }
+        }\n);
+    }\n
 
     /**
      * Reverse the migrations.
@@ -45,5 +45,5 @@ class CreateProductsTable extends Migration
     public function down()
     {
         Schema::dropIfExists('products');
-    }
-}
+    }\n
+}\n

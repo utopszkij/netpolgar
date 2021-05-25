@@ -52,12 +52,14 @@ footer {background:silver; padding:10px; margin-top:20px}
 }
 
 @media (max-width:575px) {
-.form-group label {display:block; text-align:left }
-.form-group input {display:block; width:auto; margin:2px}
-.form-group select {display:block; width:auto; margin:2px}
-.form-group textarea {display:block; width:auto; margin:2px}
+	.form-group label {display:block; text-align:left }
+	.form-group input {display:block; width:auto; margin:2px}
+	.form-group select {display:block; width:auto; margin:2px}
+	.form-group textarea {display:block; width:auto; margin:2px}
+	a {color: blue}
 }
 @media (max-width:991px) {
 	.submenuIcon {display:inline-block}
 	.submenu {display:none}
+	a {color: blue}
 }

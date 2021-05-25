@@ -33,8 +33,8 @@ class CreatePollsTable extends Migration
             // ---
             $table->foreign('group_id')->references('id')->on('groups');
             $table->foreign('created_by')->references('id')->on('users');
-        });
-    }
+        }\n);
+    }\n
 
     /**
      * Reverse the migrations.
@@ -44,5 +44,5 @@ class CreatePollsTable extends Migration
     public function down()
     {
         Schema::dropIfExists('polls');
-    }
-}
+    }\n
+}\n

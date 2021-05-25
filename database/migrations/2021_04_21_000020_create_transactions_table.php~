@@ -19,9 +19,9 @@ class CreateTransactionsTable extends Migration
             $table->id();
             $table->biginteger('product_id')->unsigned()->nullable();  // tuljdonos product
             $table->biginteger('user_id')->unsigned()->nullable();  // felehasználó
-            $table->integer('quantity')->nullabled();  // mennyiség
-            $table->integer('price')->nullabled(); // egységár
-            $table->mediumtext('info')->nullabled(); // egyéb infók
+            $table->integer('quantity')->nullable();  // mennyiség
+            $table->integer('price')->nullable(); // egységár
+            $table->mediumtext('info')->nullable(); // egyéb infók
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();
             $table->biginteger('created_by')->unsigned();

@@ -20,12 +20,12 @@ class CreateGroupMembersTable extends Migration
             $table->id();
             $table->biginteger('group_id')->unsigned()->nullable();  // tuljdonos csoport
             $table->biginteger('user_id')->unsigned()->nullable();  // felehasználó
-            $table->string('rank')->nullabled();  // funció 'member' | 'admin' ...
-            $table->string('status')->nullabled(); // 'suggestion' | 'active' | 'closed' | 'suspended'
-			$table->date('activated_at')->nullabled();            
-			$table->date('closed_at')->nullabled();            
+            $table->string('rank')->nullable();  // funció 'member' | 'admin' ...
+            $table->string('status')->nullable(); // 'suggestion' | 'active' | 'closed' | 'suspended'
+			$table->date('activated_at')->nullable();            
+			$table->date('closed_at')->nullable();            
             $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent()->nullable();
             $table->biginteger('created_by')->unsigned();
             //----
             $table->foreign('created_by')->references('id')->on('users');

@@ -1,5 +1,13 @@
 <?php 
-// params group,  parent, parentPath, user, creator
+// params:  group,  parent, parentPath, user, creator, member, parentMember
+
+/* Megoldamdó
+*   jogosultság ellenörzés:
+*      group like  parent-group-member | sysadmin
+*      goup dislike group-member
+*   csoportba jelentkezés, kilépés   
+*/
+
 
 /**
  * create url from user record
@@ -23,7 +31,12 @@ if ($parent) {
     $parent_name = '';
 }
 
-function option($act, $value) {
+/**
+ * echo select option 
+ * @param unknown $act
+ * @param unknown $value
+ */
+function option(string $act, string $value) {
     if ($act == $value) {
         echo '<option value="'.$value.'" selected="selected">'.__('groups.'.$value).'</option>'."\n";
     } else {
@@ -31,6 +44,7 @@ function option($act, $value) {
     }
 }
 ?>
+
 <x-guest-layout>
 <div id="groupShow" class="pageContainer row groupShow">
     <div class="row filters">
@@ -110,12 +124,14 @@ function option($act, $value) {
    					<em class="fa fa-folder-open">&nbsp;</em>{{ __('groups.files') }}
    				</a>
    			</li>	
-   			@if ($member->rank == 'admin')
-   			<li>
-   				<a href="{{ URL::to('/') }}/group/form/{{ $group->id }}/{{ $group->parent_id }}">
-   					<em class="fa fa-edit">&nbsp;</em>{{ __('groups.edit') }}
-   				</a>
-   			</li>	
+   			@if ($member)
+       			@if ($member->rank == 'admin'))
+       			<li>
+       				<a href="{{ URL::to('/') }}/group/form/{{ $group->id }}/{{ $group->parent_id }}">
+       					<em class="fa fa-edit">&nbsp;</em>{{ __('groups.edit') }}
+       				</a>
+       			</li>	
+       			@endif
    			@endif
    		</ul>
    	</div>
@@ -131,6 +147,20 @@ function option($act, $value) {
 			<label>{{ __('groups.name') }}:</label>
 			<input type="text" name="name" disabled="disabled" class="form-control" value="{{ $group->name }}" />    	
     	</div>
+    	@auth
+    	<div class="form-group">
+			<label></label>
+			@if ($member)
+    		<a class="btn btn-primary" href="{{ URL::to('/') }}/member/signin/group/{{ $group->id }}">
+    			<em class="fa fa-sign-out"></em>&nbsp;{{ __('groups.signout') }}
+    		</a>
+			@else
+    		<a class="btn btn-primary" href="{{ URL::to('/') }}/member/signin/group/{{ $group->id }}">
+    			<em class="fa fa-sign-in"></em>&nbsp;{{ __('groups.signin') }}
+    		</a>
+    		@endif
+		</div>
+		@endauth    	
     	<div class="form-group">
 			<label>{{ __('groups.description') }}:</label>
 			<textarea cols="80" rows="5" readonly="readonly" name="description" class="form-control">{{ $group->description }}</textarea>    	
@@ -177,13 +207,13 @@ function option($act, $value) {
     		@if ($userLiked)
     			<em class="fa fa-check"></em>&nbsp;
     		@endif
-    		@if ($member->id > 0) 
-    		<a href="{{ URL::to('/') }}/like/group/{{ $group->id }}/like">
-	    		Aktiválását javaslom&nbsp;
-    			<em class="fa fa-thumbs-up"></em>
-    		</a>
-    		@else
-	    		Aktiválását javaslom&nbsp;
+    		@if (($parentMember) | (\Auth::user()->current_team_id == 0))
+        		<a href="{{ URL::to('/') }}/like/group/{{ $group->id }}/like">
+    	    		{{ __('groups.like') }}&nbsp;
+        			<em class="fa fa-thumbs-up"></em>
+        		</a>
+    		@else 
+	    		{{ __('groups.like') }}&nbsp;
     			<em class="fa fa-thumbs-up"></em>
     		@endif
     		&nbsp;
@@ -193,14 +223,14 @@ function option($act, $value) {
     		@if ($userDisLiked)
     			<em class="fa fa-check"></em>&nbsp;
     		@endif
-    		@if ($member->id > 0) 
-    		<a href="{{ URL::to('/') }}/like/group/{{ $group->id }}/dislike">
-	    		Lezárását javaslom&nbsp;
-    			<em class="fa fa-thumbs-down"></em>
-    		</a>
-    		@else
-	    		Lezárását javaslom&nbsp;
-    			<em class="fa fa-thumbs-down"></em>
+    		@if ($member)
+        		<a href="{{ URL::to('/') }}/like/group/{{ $group->id }}/dislike">
+    	    		{{ __('groups.dislike') }}&nbsp;
+        			<em class="fa fa-thumbs-down"></em>
+        		</a>
+    		@else 
+        		{{ __('groups.dislike') }}&nbsp;
+       			<em class="fa fa-thumbs-down"></em>
     		@endif
     		&nbsp;
     		<var><a href="{{ URL::to('/') }}/likelist/group/{{ $group->id }}/dislike">{{ $disLikeCount }}</a></var>

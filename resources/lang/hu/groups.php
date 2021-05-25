@@ -41,6 +41,11 @@ return [
     'save' => 'Tárolás',
     'cancel' => 'Mégsem',
     'saved' => 'Adat tárolva',
-    'ok' => 'Rendben'
+    'ok' => 'Rendben',
+    'signout' => 'kilépek',
+    'signin' => 'csatlakozok',
+    'like' => 'aktiválását javaslom',
+    'dislike' => 'lezárását javaslom'
+    
     
 ];

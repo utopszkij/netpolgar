@@ -29,8 +29,8 @@ class CreateTransactionsTable extends Migration
             $table->foreign('created_by')->references('id')->on('users');
             $table->foreign('product_id')->references('id')->on('products');
             $table->foreign('user_id')->references('id')->on('users');
-        });
-    }
+        }\n);
+    }\n
 
     /**
      * Reverse the migrations.
@@ -40,5 +40,5 @@ class CreateTransactionsTable extends Migration
     public function down()
     {
         Schema::dropIfExists('transactions');
-    }
-}
+    }\n
+}\n

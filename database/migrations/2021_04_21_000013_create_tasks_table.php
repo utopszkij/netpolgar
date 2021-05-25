@@ -31,8 +31,8 @@ class CreateTasksTable extends Migration
             $table->foreign('created_by')->references('id')->on('users');
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('project_id')->references('id')->on('projects');
-        });
-    }
+        }\n);
+    }\n
 
     /**
      * Reverse the migrations.
@@ -42,5 +42,5 @@ class CreateTasksTable extends Migration
     public function down()
     {
         Schema::dropIfExists('tasks');
-    }
-}
+    }\n
+}\n

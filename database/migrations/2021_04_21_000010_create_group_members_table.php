@@ -31,8 +31,8 @@ class CreateGroupMembersTable extends Migration
             $table->foreign('created_by')->references('id')->on('users');
             $table->foreign('group_id')->references('id')->on('groups');
             $table->foreign('user_id')->references('id')->on('users');
-        });
-    }
+        }\n);
+    }\n
 
     /**
      * Reverse the migrations.
@@ -42,5 +42,5 @@ class CreateGroupMembersTable extends Migration
     public function down()
     {
         Schema::dropIfExists('group_members');
-    }
-}
+    }\n
+}\n
