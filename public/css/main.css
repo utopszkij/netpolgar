@@ -43,6 +43,10 @@ thead {background-color: silver; color:black}
 .filters a {display:inline-block; width:auto}
 .groupsBrowser > p {display:none} /* paginator limit/total */
 
+/* messages */
+.messageItem {margin:4px; border-width:1px 1px 1px; padding:2px;}
+.sendTime {color:#A0A0A0}
+
 footer {background:silver; padding:10px; margin-top:20px}
 #cookieEnable {position:fixed; z-index:999; bottom:0px; left:0px; width:100%;
 	background-color:silver; opacity:0.9; padding:20px; text-align:right;

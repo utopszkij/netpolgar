@@ -27,7 +27,8 @@ Sotware: Laravel  8.28.1 alapon készül. lásd: [laravel-readme.md](laravel-rea
 
 További felhasznált szellemi termékek: [jQuery](http://jquery.com), [bootstrap](https://getbootstrap.com/), [Awesore fonts](https://fontawesome.com/),
 [pixabay](https://pixabay.com/),  [gravatar](http://gravatar.com), [facebook](http://facebook.com), [google](http://google.com), [github](http://github.com),
-[spatie cookie consent](https://github.com/spatie/laravel-cookie-consent)
+[spatie cookie consent](https://github.com/spatie/laravel-cookie-consent), 
+[jitsin vide meating](https://jitsi.org/) 
 
 ## Licensz
 

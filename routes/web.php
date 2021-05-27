@@ -31,6 +31,8 @@ Route::post('/group/delete/{id}', [GroupsController::class, 'delete']);
 
 Route::get('/like/{parentType}/{id}/{likeType}', [MessagesController::class, 'like']);
 
+Route::get('/messages/{parentType}/{id}',[MessagesController::class, 'list']);
+Route::get('/messageadd/{parentType}/{parentId}/{txt}',[MessagesController::class, 'add']);
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
     return view('dashboard');
