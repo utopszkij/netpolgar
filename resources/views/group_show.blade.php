@@ -207,15 +207,20 @@ function option(string $act, string $value) {
     		@if ($userLiked)
     			<em class="fa fa-check"></em>&nbsp;
     		@endif
-    		@if (($parentMember) | (\Auth::user()->current_team_id == 0))
-        		<a href="{{ URL::to('/') }}/like/group/{{ $group->id }}/like">
+    		@auth
+        		@if (($parentMember) | (\Auth::user()->current_team_id == 0))
+            		<a href="{{ URL::to('/') }}/like/group/{{ $group->id }}/like">
+        	    		{{ __('groups.like') }}&nbsp;
+            			<em class="fa fa-thumbs-up"></em>
+            		</a>
+        		@else 
     	    		{{ __('groups.like') }}&nbsp;
         			<em class="fa fa-thumbs-up"></em>
-        		</a>
+        		@endif
     		@else 
-	    		{{ __('groups.like') }}&nbsp;
-    			<em class="fa fa-thumbs-up"></em>
-    		@endif
+    	    		{{ __('groups.like') }}&nbsp;
+        			<em class="fa fa-thumbs-up"></em>
+    		@endauth
     		&nbsp;
     		<var><a href="{{ URL::to('/') }}/likelist/group/{{ $group->id }}/like">{{ $likeCount }}</a></var>
     	@endif

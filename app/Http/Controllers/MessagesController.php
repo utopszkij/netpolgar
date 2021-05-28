@@ -20,6 +20,29 @@ use Illuminate\Validation\Validator;
  */
 class MessagesController extends Controller {
 
+    /**
+     * bejelntkezett user jogosult üzenet kezelésre?
+     * @param string $parentType
+     * @param int $id
+     * @return boolean
+     */
+    protected function checkAccessRight(string $parentType, int $id) {
+        $result = false;
+        if (\Auth::user()) {
+            if ($parentType == 'group') {
+                $member = \DB::table('group_members')
+                ->where('group_id','=',$id)
+                ->where('user_id','=', \Auth::user()->id)
+                ->whereIn('rank',["member","admin"])
+                ->where('status','=','active')
+                ->first();
+                if ($member) {
+                    $result = true;
+                }
+            }
+        }
+        return $result;
+    }
     
     /**
      * like/dislike 
@@ -31,7 +54,7 @@ class MessagesController extends Controller {
      */
     public function like(Request $request, string $parentType, int $id, string $likeType) {
         if (\Auth::user()) {
-            if (!$enabled) {
+            if (!$this->checkAccessRight($parentType, $id)) {
                 return redirect(\URL::previous());
             }
             if (($likeType == 'like') | ($likeType == 'dislike')) {
@@ -62,6 +85,92 @@ class MessagesController extends Controller {
             }
         } else {
             return redirect(\URL::previous());
+        }
+    }
+    
+    /**
+     * üzenetek böngésző
+     * @param Request $request
+     * @param string $parentType
+     * @param int $id
+     * @return \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory
+     */
+    public function list(Request $request, string $parentType, int $id) {
+        if ($this->checkAccessRight($parentType,$id))  {
+            $br = 'messages';
+            $offset = $request->session()->get($br.'offset',0);
+            $limit = $request->session()->get($br.'limit',10);
+            $order = $request->session()->get($br.'order','created_at');
+            $orderDir = $request->session()->get($br.'orderDir','ASC');
+            $filterStr = $request->session()->get($br.'filterStr','');
+            if ($request->input('order') == $order) {
+                if ($orderDir == 'ASC') {
+                    $orderDir = 'DESC';
+                } else {
+                    $orderDir = 'ASC';
+                }
+            }
+            $offset = $request->input('offset',$offset);
+            $limit = $request->input('limit',$limit);
+            $order = $request->input('order',$order);
+            $filterStr = $request->input('filterStr',$filterStr);
+            if (!isset($filterStr)) {
+                $filterStr = '';
+            }
+            $request->session()->put($br.'offset', $offset);
+            $request->session()->put($br.'limit', $limit);
+            $request->session()->put($br.'order', $order);
+            $request->session()->put($br.'orderDir', $orderDir);
+            $request->session()->put($br.'filterStr', $filterStr);
+            
+            $member = new \App\Models\Group_members();
+            $member->where('group_id','=',$id)
+                ->where('user_id','=', \Auth::user()->id)
+                ->whereIn('rank',['member','admin'])
+                ->where('status','=','active')
+                ->first();
+            
+            $groupModel = new \App\Models\Groups();
+            $parent = $groupModel->where('id','=',$id)->first();
+            
+            $messages = \DB::table('messages');
+            $messages->leftJoin('users','users.id','=','messages.user_id')
+                ->select('messages.id as id', 'messages.created_at as created_at', 
+                    'value', 'name', 'profile_photo_path', 'users.id as user_id')
+                ->where('parent_type','=',$parentType)
+                ->where('parent_id','=',$id)
+                ->where('type','=','message');
+            if ($filterStr != '') {
+                $messages->where('value','like','%'.$filterStr.'%');
+            }
+            $items = $messages->offset($offset)
+                ->orderBy('messages.created_at')
+                ->paginate($limit);
+            return view('messages',[
+                'parentId'=> $id,
+                'items' => $items,
+                'parentType' => $parentType,
+                'parent' => $parent,
+                'member' => $member,
+                'filterStr' => ''
+            ]);
+        } else {
+            return redirect(\URL::previous())->with('error',__('accessViolation'));
+        }
+    }
+    
+    public function add(Request $request, string $parentType, int $parentId, string $message) {
+        if ($this->checkAccessRight($parentType,$parentId)) {
+            $model = new \App\Models\Messages();
+            $model->parent_type = $parentType;
+            $model->parent_id = $parentId;
+            $model->value = urldecode($message);
+            $model->type="message";
+            $model->user_id = \Auth::user()->id;
+            $model->save();
+            return ('saved '.$model->errorMsg);
+        } else {
+            return '';
         }
     }
 }

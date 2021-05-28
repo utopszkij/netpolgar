@@ -15,7 +15,7 @@ return [
     'projects' => 'Projektek',
     'products' => 'Termékek',
     'votes' => 'Szavazások',
-    'messages' => 'Üzenetek',
+    'messages' => 'Beszélgetések',
     'events' => 'Események',
     'files' => 'Fileok',
     'edit' => 'Szerkesztés',
