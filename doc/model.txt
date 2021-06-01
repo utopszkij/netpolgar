@@ -1,3 +1,16 @@
+Alap adatbázis kezelés
+$table = \DB::table('név')
+	->where
+	-orderBy
+	.....
+	->update(["mező" => érték, ...])
+	->insert(["mező" => érték, ...])
+	->delete()
+	->statement('......')
+
+adat modell
+===========
+
 Adat lekérés
 ------------
 

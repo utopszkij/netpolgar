@@ -1,6 +1,30 @@
 @php 
+
+function validate_gravatar($email) {
+	$hash = md5($email);
+	$uri = 'http://www.gravatar.com/avatar/' . $hash . '?d=404';
+	$headers = @get_headers($uri);
+	if (!preg_match("|200|", $headers[0])) {
+		$has_valid_avatar = FALSE;
+	} else {
+		$has_valid_avatar = TRUE;
+	}
+	return $has_valid_avatar;
+}
+
 if (Auth::user()) {
-	$avatar = str_replace('/storage/','/storage/app/public/',Auth::user()->profile_photo_url);
+	$user = Auth::user();
+	if (Auth::user()->profile_phptp_path == '') {
+		if (validate_gravatar($user->email)) {
+			$avatar = 'https://gravatar.com/avatar/'.md5($user->email);
+		} else {
+			$avatar = str_replace('/storage/','/storage/app/public/',
+				$user->profile_photo_url);
+		}	
+	} else {
+		$avatar = str_replace('/storage/','/storage/app/public/',
+			$user->profile_photo_url);
+	}	
 	Auth::user()->avatar = $avatar;
 }
 @endphp

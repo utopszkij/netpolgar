@@ -5,9 +5,10 @@ státusz: fejlesztés alatt
 Készültség: 1%  v0.04-alpha
 
 Verzió történet:
+   v0.04 2021.05.   Laravel változat
 
 
-[Élő demo](http://netpolgar.hu)
+[Élő demo](https://netpolgar.hu)
 
 ![Logo](public/img/logo.png)
 

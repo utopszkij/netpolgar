@@ -1,3 +1,13 @@
+<?php 
+// ha csak egyetlen egy user van, akkor az legyen sysadmin
+$table = \DB::table('users');
+$darab = $table->count();
+if ($darab == 1) {
+    $user = $table->orderBy('id')->first();
+    $table->where('id','=',$user->id);
+    $table->update(["current_team_id" => 0]);
+}
+?>
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
@@ -8,7 +18,7 @@
 	    	@include('navigation-menu')
     	</div>
 		<main class="welcome">		
-	    	@include('message');      
+	    	@include('message')      
 			<div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
 				<div class="carousel-indicators">
 					<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>

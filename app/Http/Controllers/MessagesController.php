@@ -4,9 +4,13 @@
  * használja az \Auth::user() -t.
  * - false: nincs bejelentkezve
  * 
- * Megoldamdó a jogosultság ellenörzés:
- *   group like  parent-group-member | sysadmin
- *   goup dislike group-member
+ * parentType:
+ *   group
+ *   project
+ *   product
+ *   event
+ *   poll
+ *   Priv_targetUserId_senderUserId 
  * 
  */
 namespace App\Http\Controllers;
@@ -40,6 +44,21 @@ class MessagesController extends Controller {
                     $result = true;
                 }
             }
+            if ($parentType == 'project') {
+                $member = \DB::table('project_members')
+                ->where('project_id','=',$id)
+                ->where('user_id','=', \Auth::user()->id)
+                ->whereIn('rank',["member","admin"])
+                ->where('status','=','active')
+                ->first();
+                if ($member) {
+                    $result = true;
+                }
+            }
+            // privát üzenet csak regisztráltaknak engedélyezett
+            // product üzenet minden regisztrált felhasználónak engedélyezett
+            // eseményhez minden regisztrált felhasználónak enegedélyezett
+            // szavazáshoz a szavazásra jogosultaknak engedélyezett
         }
         return $result;
     }
@@ -123,15 +142,57 @@ class MessagesController extends Controller {
             $request->session()->put($br.'orderDir', $orderDir);
             $request->session()->put($br.'filterStr', $filterStr);
             
-            $member = new \App\Models\Group_members();
-            $member->where('group_id','=',$id)
+            if ($parentType == 'group') {
+                $member = new \App\Models\Group_members();
+                $member->where('group_id','=',$id)
+                ->where('user_id','=', \Auth::user()->id)
+                ->whereIn('rank',['admin','member'])
+                ->where('status','=','active')
+                ->orderBy('rank','asc')
+                ->first();
+                $groupModel = new \App\Models\Groups();
+                $parent = $groupModel->where('id','=',$id)->first();
+            }
+            if ($parentType == 'project') {
+                $member = new \App\Models\Project_members();
+                $member->where('project_id','=',$id)
                 ->where('user_id','=', \Auth::user()->id)
                 ->whereIn('rank',['member','admin'])
                 ->where('status','=','active')
+                ->orderBy('rank','asc')
                 ->first();
-            
-            $groupModel = new \App\Models\Groups();
-            $parent = $groupModel->where('id','=',$id)->first();
+                $projectModel = new \App\Models\Projects();
+                $parent = $projectModel->where('id','=',$id)->first();
+            }
+            if ($parentType == 'product') {
+                $productModel = new \App\Models\Product();
+                $parent = $productModel->where('id','=',$id)->first();
+                $member = new \App\Models\Project_members();
+                $member->where('project_id','=',$parent->project_id)
+                ->where('user_id','=', \Auth::user()->id)
+                ->whereIn('rank',['member','admin'])
+                ->where('status','=','active')
+                ->orderBy('rank','asc')
+                ->first();
+            }
+            if ($parentType == 'event') {
+                $eventModel = new \App\Models\Events();
+                $parent = $eventModel->where('id','=',$id)->first();
+                $member = new \App\Models\Project_members();
+                $member->first();
+                if (\Auth::user()->id == $parent->created_by) {
+                    $member->rank = 'admin';
+                } else {
+                    $member->rank = 'member';
+                }
+            }
+            if (substr($parentType,0,4) == 'priv') {
+                $userModel = new \App\Models\User();
+                $parent = $userModel->where('id','=',$id)->first();
+                $member = new \App\Models\Project_members();
+                $member->first();
+                $member->rank = 'member';
+            }
             
             $messages = \DB::table('messages');
             $messages->leftJoin('users','users.id','=','messages.user_id')

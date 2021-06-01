@@ -8,7 +8,7 @@
 	    	@include('navigation-menu')
     	</div>
     	<main>
-			@include('message');      
+			@include('message')     
 	        <div class="font-sans text-gray-900 antialiased">
 	            {{ $slot }}
 	        </div>
