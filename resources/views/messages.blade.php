@@ -70,7 +70,16 @@ if ($parent) {
 				        	    </span>
 				        		<strong>&nbsp;#{{ $item->id }}</strong> 
 				        		<span class="sendTime">&nbsp;{{ $item->created_at }}</span>
-				        	    <br /><pre>{!! $item->value !!}</pre>
+				        		@if ($member)
+				        			@if (($member->rank == 'admin') | (\Auth::user()->current_tea_id == 0))
+				        	    	<br />
+				        	    	<pre>{!! $item->value !!}&nbsp;<a href="{{ URL::to('/') }}/messages/form/{{ $item->id }}"><em class="fa fa-edit"></em></a></pre>
+				        	    	@else
+					        	    	<br /><pre>{!! $item->value !!}</pre>
+				        			@endif 
+				        		@else
+				        	    	<br /><pre>{!! $item->value !!}</pre>
+				        	    @endif
 				        	</div>
 				        @endforeach
 				    </div>
@@ -131,8 +140,9 @@ if ($parent) {
 				$('#onlineCount').html(s.length);
 				div.html('');
 				for (i=0; i < s.length; i++) {
-					div.append('<img src="'+s[i].avatarURL+'" class="avatar" />'+
-						s[i].displayName+'<br />');
+					div.append('ä href="{{ URL::to('/') }}/user/show/'+s[i].displayName+'">'+
+						'<img src="'+s[i].avatarURL+'" class="avatar" />'+
+						s[i].displayName+'</a><br />');
 				}
  			    $('#messagesList').css('width','70%');
 			    $('#onlineMembers').show();

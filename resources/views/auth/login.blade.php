@@ -75,7 +75,7 @@
             </div>
 
             {{-- Login with Github --}}
-            <div class="flex items-center justify-end mt-4">
+            <div class="flex items-center justify-end mt-4" style="display:none">
                 <a class="btn" href="{{ url('auth/github') }}"
                     style="background: silver; color: black; padding: 10px; width: 100%; text-align: center; display: block; border-radius:3px;">
                     <em class="fab fa-github"></em>&nbsp;{{ __('Login with Github') }}

@@ -85,11 +85,6 @@ function option(string $act, string $value) {
    				</a>
    			</li>	
    			<li>
-   				<a href="{{ URL::to('/') }}/admin/group/{{ $group->id }}">
-   					<em class="fa fa-user-plus"></em>&nbsp;{{ __('groups.admins') }}
-   				</a>
-   			</li>	
-   			<li>
    				<a href="{{ URL::to('/') }}/groups/{{ $group->id }}/0/0">
    					<em class="fa fa-play"></em>&nbsp;{{ __('groups.subgroups') }}
    				</a>
