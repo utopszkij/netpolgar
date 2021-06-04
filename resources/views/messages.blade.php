@@ -73,7 +73,10 @@ if ($parent) {
 				        		@if ($member)
 				        			@if (($member->rank == 'admin') | (\Auth::user()->current_tea_id == 0))
 				        	    	<br />
-				        	    	<pre>{!! $item->value !!}&nbsp;<a href="{{ URL::to('/') }}/messages/form/{{ $item->id }}"><em class="fa fa-edit"></em></a></pre>
+				        	    	<pre>{!! $item->value !!}</pre>
+			        	    		<a href="{{ URL::to('/') }}/message/moderator/{{ $item->id }}" title="{{ __('messages.moderation') }}">
+			        	    			<em class="fa fa-edit"></em>
+			        	    		</a>
 				        	    	@else
 					        	    	<br /><pre>{!! $item->value !!}</pre>
 				        			@endif 
@@ -102,10 +105,11 @@ if ($parent) {
 		<div id="jitsi">
 		<script type="text/javascript">
             var domain = "meet.jit.si";
+            var w = window.innerWidth - 15;
             var options = {
                 roomName: "{{ $parentType }}_{{ $parent->name }}",
-                width: 700,
-                height: 700,
+                width: w,
+                height: w,
                 parentNode: undefined,
                 configOverwrite: {},
                 interfaceConfigOverwrite: {

@@ -1,0 +1,25 @@
+<?php
+return [
+  	'parents' => 'Tulajdonosok',
+  	'id' => 'Azonosító',
+  	'name' => 'Név',
+    'ranks' => 'Tisztségek',
+    'admin' => 'Adminisztrátor', 
+    'members' => 'Tagok',
+    'active member,' => 'aktiv tag,',
+    'active admin,' => 'aktiv adminisztrátor,',
+    'proposa member,' => 'javasolt tag,',
+    'proposa admin,' => 'javasolt adminisztrátor,',
+    'excluded member,' => 'kizárt tag,',
+    'closed admin,' => 'volt admin,',
+    'sysadmin' => 'Rendszer adminisztrátor',
+    
+    'search' => 'Keresés',
+    'list' => 'Tagok listája',
+    'notrecords' => 'Nincs listázandó adat',
+    'show' => 'Adatlap',
+    'search' => 'Keresés',
+    'clearSearch' => 'Kerrső szöveg törlése',
+    'save' => 'Tárolás',
+    'cancel' => 'Mégsem',
+];

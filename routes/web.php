@@ -5,6 +5,7 @@ use App\Http\Controllers;
 use App\Http\Controllers\SocialController;
 use App\Http\Controllers\GroupsController;
 use App\Http\Controllers\MessagesController;
+use App\Http\Controllers\MembersController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,7 +33,13 @@ Route::post('/group/delete/{id}', [GroupsController::class, 'delete']);
 Route::get('/like/{parentType}/{id}/{likeType}', [MessagesController::class, 'like']);
 
 Route::get('/messages/{parentType}/{id}',[MessagesController::class, 'list']);
+Route::get('/message/moderator/{id}',[MessagesController::class, 'moderator']);
+Route::post('/message/savemoderation',[MessagesController::class, 'moderationsave']);
 Route::get('/messageadd/{parentType}/{parentId}/{txt}',[MessagesController::class, 'add']);
+
+Route::get('/members/{parentType}/{id}',[MembersController::class, 'list']);
+Route::get('/member/form/{parentType}/{parentId}/{name}',[MembersController::class, 'form']);
+Route::post('/member/save',[MembersController::class, 'form']);
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
     return view('dashboard');
