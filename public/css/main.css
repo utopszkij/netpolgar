@@ -28,6 +28,7 @@ thead {background-color: silver; color:black}
 .submenu ul {border-style:solid; border-width:1px}
 .submenu li {border-style:solid; border-width:0px 0px 1px 0px; padding:2px}
 input, textarea, select {max-width:98%}
+.formButtons {margin:10px 0px 0px 0px}
 
 /* welcome */
 .welcome .descriptionBtn {font-size:22pt}

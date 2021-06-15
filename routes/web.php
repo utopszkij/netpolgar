@@ -39,7 +39,7 @@ Route::get('/messageadd/{parentType}/{parentId}/{txt}',[MessagesController::clas
 
 Route::get('/members/{parentType}/{id}',[MembersController::class, 'list']);
 Route::get('/member/form/{parentType}/{parentId}/{name}',[MembersController::class, 'form']);
-Route::post('/member/save',[MembersController::class, 'form']);
+Route::post('/member/save',[MembersController::class, 'save']);
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
     return view('dashboard');

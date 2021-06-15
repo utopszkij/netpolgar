@@ -45,7 +45,7 @@ class Members extends Model {
         int $offset, int $limit, string $order, string $orderDir, string $filterStr) {
         $table = DB::table($parentType.'_members');
         $table->leftJoin('users','users.id','=',$parentType.'_members.user_id');
-        $table->select(DB::raw('group_concat(concat(`status`," ",`rank`,",")) as ranks, 
+        $table->select(DB::raw('group_concat(concat(`status`," ",`rank`)) as ranks, 
             users.id as user_id,
             users.profile_photo_path, 
             users.name, 

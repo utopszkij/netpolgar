@@ -15,12 +15,7 @@ use Illuminate\Validation\Validator;
  * @author utopszkij
  */
 class MembersController extends Controller {
-
-    /**
-     * csoport tulajdonosok elérése a fa szerint felfelé haladva
-     * @param int $parent_id
-     * @return array
-     */
+   
     protected function getParentPath(int $parent_id) {
         $parentPath = [];
         $model = new \App\Models\Groups();
@@ -32,6 +27,7 @@ class MembersController extends Controller {
         }
         return $parentPath;
     }
+    
     
     /**
      * böngésző képernyő
@@ -109,15 +105,17 @@ class MembersController extends Controller {
             $admin = false;
         }
         
+        $users = \DB::table('users')->orderBy('name')->get();
         return view('members',['members' => $members,
             'parentType' => $parentType,
             'parentId' => $parentId,
+            'parentPath' => $parentPath,
             'parent' => $parent,
             'admin' => $admin,
             'order' => $order,
             'orderDir' => $orderDir,
             'filterStr' => $filterStr,
-            'parentPath' => $parentPath
+            'users' => $users
         ]);
     }
     
@@ -131,7 +129,13 @@ class MembersController extends Controller {
      */
     public function form(Request $request, string $parentType, int $parentId, string $name) {
         $model = \DB::table($parentType.'_members');
-          $members = $model->leftJoin('users','users.id',$parentType.'_members.user_id') 
+          $members = $model->leftJoin('users','users.id',$parentType.'_members.user_id')
+          ->select([$parentType.'_members.id as id',
+              $parentType.'_members.user_id',
+              $parentType.'_members.status',
+              $parentType.'_members.rank',
+              'users.name',
+              'users.profile_photo_path'])
           ->where($parentType.'_id','=',$parentId) 
           ->where('users.name','=',$name)  
           ->orderBy('name')
@@ -146,17 +150,19 @@ class MembersController extends Controller {
               $admin = false;
           }
           $parent = \DB::table($parentType.'s')->where('id','=',$parentId)->first();
-          view('memberForm',[
+          
+          return view('member_form',[
              "members" => $members,
              "admin" => $admin, 
-             "parent" => $parent 
+             "parent" => $parent,
+             "parentType" => $parentType 
           ]);
     }
     
     
     /**
      * add/edit ürlap tárolása
-     * @param Request $request
+     * @param Request $request parentType, parentId, name, status_###, rank
      * @param int $id
      * @return Controller Response
      */
@@ -168,91 +174,71 @@ class MembersController extends Controller {
             return redirect('/')->with('error',__('csrf_token_error'));
         }
         
-        // validator
-        $validatorRules = [
-            'name' => 'required',
-            'config' => 'required|json',
-            'status' => 'required',
-            'parent_id' => 'required',
-            'created_by' => 'exists:users,id',
-        ];
-        if ($request->input('parent_id') > 0) {
-            $validatorRules['parent_id'] = 'exists:groups,id';
-        }
-        if ($request->input('avatar') != '') {
-            $validatorRules['avatar'] = 'url';
-        }
-        $validated = $request->validate($validatorRules);
-
         
         // csak bejelentkezett user használhatja
         if (\Auth::user() == false) {
-            return redirect('/groups/0/0/0')->with('error',__('accessViolation'));
+            return redirect('/')->with('error',__('accessViolation'));
         }
         $user = \Auth::user();
-        // ha új felvitel akkor csak a parent group tagja használhatja
-        if ($request->input('id') == 0) {
-            $member = \DB::table('group_members')
-            ->where('group_id','=',$request->input('parent_id'))
-            ->where('user_id','=',$user->id)
-            ->where('rank','in',['member','admin'])->first();
-            if (($member == false) & ($user->current_team_id <> 0)) {
-                return redirect('/groups/0/0/0')->with('error',__('accessViolation'));
-            }
-            $creator = \Auth::user();
-        }
-        // ha modositás akkor csak az aktuáis group adminja használhatja
-        if ($request->input('id') > 0) {
-            $member = \DB::table('group_members')
-            ->where('group_id','=',$request->input('id'))
-            ->where('user_id','=',$user->id)
-            ->where('status','=','admin');
-            if (($member == false) & ($user->current_team_id <> 0)) {
-                return redirect('/groups/0/0/0')->with('error',__('accessViolation'));
-            }
-        }
-        $model = new \App\Models\Groups();
-        if ($request->input('id') > 0) {
-            $model = $model->find($request->input('id'));
-            $model->updated_at = date('Y-m-d');
-        } else {
-            $model->created_at = date('Y-m-d');
-            $model->created_by = \Auth::user()->id;
-        }
-        $model->id = $request->input('id');
-        $model->parent_id = $request->input('parent_id');
-        $model->name = $request->input('name');
-        $model->description = $request->input('description');
-        $model->avatar = $request->input('avatar');
-        $model->status = $request->input('status');
-        $model->config = $request->input('config');
-        $model->created_at =$request->input('created_at');
-        $model->created_by =$request->input('created_by');
-        $model->activated_at =$request->input('activated_at','');
-        $model->closed_at =$request->input('closed_at','');
-        $model->save();
         
-        $url = '/groups/'.$model->parent_id.'/0/0';
-        if ($model->errorMsg == '') {
-            // felvivő user az új group adminja
-            if (\DB::table('group_members')->insert([
-               "id" => 0,
-               "group_id" => $model->id,
-               "user_id" => \Auth::user()->id,
-               "status" => "active",
-               "rank" => "admin",
-                "activated_at" => date('Y-m-d'),
-                "created_at" => date('Y-m-d'),
-                "created_by" => \Auth::user()->id
-                ])) {
-                    return redirect($url)->with('success', __('groups.saved') );
-                } else {
-                    return redirect($url)->with('error', 'db error in save member record');
-                }
-        } else {
-            return redirect(\URL::previous())->with('error', $model->errorMsg);
+        // csak a parent group vagy project admin használhatja
+        if ($request->input('parentType') == 'group') {
+            $member = \DB::table('group_members')
+            ->where('group_id','=',$request->input('parentId'))
+            ->where('user_id','=',$user->id)
+            ->where('rank','=','admin')->first();
+            if ((!$member) & ($user->current_team_id != 0)) {
+                return redirect('/')->with('error',__('accessViolation'));
+            }
         }
-        return 'group form';
-    }
+        if ($request->input('parentType') == 'project') {
+            $member = \DB::table('project_members')
+            ->where('project_id','=',$request->input('parentId'))
+            ->where('user_id','=',$user->id)
+            ->where('rank','=','admin')->first();
+            if ((!$member) & ($user->current_team_id != 0)) {
+                return redirect('/')->with('error',__('accessViolation'));
+            }
+        }
+        
+        $memberUser = \DB::table('users')->where('name','=',$request->input('name'))->first();
+        $modelName = "\\App\Models\\".ucFirst($request->input('parentType')).'_members';
+        if ($request->input('rank','') != '') {
+            // új felvitel
+            // nézzük nincs-e már ilyen?
+            $idName = $request->input('parentType').'_id';
+            $model = new $modelName ();
+            $record = $model->where($idName,'=',$request->input('parentId'))
+            ->where('user_id','=',$memberUser->id)
+            ->where('rank','=',$request->input('rank'))->first();
+            if (!$record) {
+                // - nics, felvisszük
+                $model = new $modelName ();
+                $model->id = 0;
+                $model->$idName = $request->input('parentId');
+                $model->user_id = $memberUser->id;
+                $model->rank = $request->input('rank');
+                $model->status = 'active';
+                $model->created_at = date('Y-m-d H:i:s');
+                $model->created_by = $user->id;
+                $model->save();
+            }
+        }
+        
+        // modositások
+        $inputs = $request->all();
+        foreach ($inputs as $fn => $fv) {
+            if (substr($fn,0,7) == 'status_') {
+                $id = (int) substr($fn,7,10);
+                $model = new $modelName ();
+                $record = $model->where('id','=',$id)->first();
+                $record->status = $fv;
+                $record->save();
+            }
+        }
+        
+        $url = '/members/'.$request->input('parentType').'/'.$request->input('parentId');
+        return redirect($url)->with('success', __('Saved') );
+   }
     
 }

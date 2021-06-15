@@ -16,7 +16,7 @@ function avatar($profile_photo_path) {
 ?>
 <x-guest-layout>
       <!-- 
-        params: members,parentType,parent,admin,
+        params: members,parentType,parent,admin,users
             order,orderDir,filterStr,
             parentPath
       -->
@@ -97,9 +97,16 @@ function avatar($profile_photo_path) {
 								</a>
 				            </td>
 				            <td>
-				              {{ __('members.'.$member->ranks) }}
+				              <?php 
+				              $w = explode(',',$member->ranks);
+				              for ($i=0; $i<count($w); $i++) {
+				                  $w[$i] = __('members.'.$w[$i]);
+				              }
+				              $member->ranks = implode(',',$w);
+				              ?>
+				              {{ $member->ranks }}
 				              @if ($member->current_team_id === 0)
-				              	&nbsp;{{ __('members.sysadmin') }}
+				              	,{{ __('members.sysadmin') }}
 				              @endif
 				            </td>
 				        </tr>
@@ -107,6 +114,27 @@ function avatar($profile_photo_path) {
 				    </tbody>
 				</table>
 				{{ $members->links() }}
+				@if (\Auth::user())
+    				@if (($admin->id > 0) | (\Auth::user()->current_team_id == 0))
+    					<form class="form" method="post"
+    					   action="{{ \URL::to('/') }}/member/add">
+    					   @csrf
+    					   <input type="hidden" name="parentType" value="{{ $parentType }}" />
+    					   <input type="hidden" name="parentId" value="{{ $parentId }}" />
+    					   <div class="form-group">
+    					   	  <label>{{ __('members.newUser') }}</label>
+    					   	  <select name="user" class="form-control">
+    					   	    @foreach ($users as $user)
+    					   	    <option value="$user->id">{{ $user->name }}</option>
+    					   	    @endforeach
+    					   	  </select>
+                				<button type="submit" class="btn btn-primary">
+                					<em class="fa fa-check"></em>&nbsp;{{ __('Save') }}
+                				</button>&nbsp;
+    					   </div>
+    					</form>
+    				@endif
+				@endif
             </div>
         </div>
     </div>

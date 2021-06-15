@@ -63,6 +63,34 @@ class MessagesController extends Controller {
                     $result = true;
                 }
             }
+            if ($parentType == 'groupmember') {
+                $parent = \DB::table('group_members')->where('id','=',$parentId)->first();
+                $member = \DB::table('group_members')
+                ->where('group_id','=',$parent->group_id)
+                ->where('user_id','=', \Auth::user()->id)
+                ->whereIn('rank',["member","admin"])
+                ->where('status','=','active')
+                ->orderBy('rank','asc')
+                ->first();
+                if ($member) {
+                    $this->memberRank = $member->rank;
+                    $result = true;
+                }
+            }
+            if ($parentType == 'projectmember') {
+                $parent = \DB::table('project_members')->where('id','=',$parentId)->first();
+                $member = \DB::table('project_members')
+                ->where('project_id','=',$parent->project_id)
+                ->where('user_id','=', \Auth::user()->id)
+                ->whereIn('rank',["member","admin"])
+                ->where('status','=','active')
+                ->orderBy('rank','asc')
+                ->first();
+                if ($member) {
+                    $this->memberRank = $member->rank;
+                    $result = true;
+                }
+            }
             // privát üzenet csak regisztráltaknak engedélyezett
             // product üzenet minden regisztrált felhasználónak engedélyezett
             // eseményhez minden regisztrált felhasználónak enegedélyezett

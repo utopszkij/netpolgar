@@ -113,7 +113,7 @@ function option($act, $value) {
     	
 		  	
     	
-    	<div class="form-buttons">
+    	<div class="buttons">
     		<button type="submit" class="btn btn-primary">
     			<em class="fa fa-check"></em>&nbsp;{{ __('groups.save') }}
     		</button>&nbsp;
