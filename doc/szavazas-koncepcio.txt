@@ -1,0 +1,93 @@
+Célkitüzés:
+
+- Anonim és nyilt szavazások támogatása,
+- anonim szavazásoknál az adatbázis ne tartalmazzon infokat arról ki hogyan szavazott
+- online és offline vegyes szavazások támogatása
+- preferenciális / egy ikszes / több ikszes / Igen-nem / érték felosztó
+  szavazások támogatása
+
+Köncpció
+--------
+A szavazás létrehozásakor a program generál egy véletlenszerű RSA kulcspárt, 
+amiből a privát kulcsot azonnal megsemmisiti, 
+(a publik kulcsot a továbbiakban: "poll_key"-nek nevezem). 
+Ugyanekkor generálja a "szavazó lapokat" ez minden szavazásra jogosulthoz egy-egy 
+rekord tartalma:
+    szavazás ID
+    szavazó lap ID (ballot_key)
+    user.id (csak nyilt szavazásnál van kitöltve)
+    szavazás módja (online-offline, képviselő utján)
+    képviselők (a szavazás témakör fáján felfelé haladva a user
+    képviselőinek generált szavazó lapok ballot_key adatai)
+A szavazó lapok legenerálása után a poll_key adatot megsemmisitjük
+(adatbázisban nem tároljuk))
+
+Leadott szavazat:
+	 szavazás ID
+	 szavazó lap ID
+	 hogyan szavazott (online, offline, képviselője által)
+	 képviselő szavazó lap ID
+	 opció ID
+	 szavazat érték
+    
+A "ballott_key" úgy képződik, hogy a "user.id" -t a "poll_key" segitségével 
+RSA -val kodoljuk. Így biztositott, hogy:
+- egy szavazáson belül minden szavazólapnak egyedi kulcsa van, ennek
+  segitségével megakadályozható a dupla szavazás,
+- a "ballot_key" -ből nem fejthető vissza a "user.id" így anonim szavvazásnál
+  nem tudható meg, ki hogyan szavazott  
+  
+A szavazó lapokat offline szavazáshoz ki is lehet nyomtatni 
+(a ballott_key-t vonalkodként is). Off line szavazás rögzitésénél a vonalkod 
+beolvasásával (vagy a ballot_key beirásával) rögzithető a szavazás ténye 
+(meggondolandó, hogy maga a szavazat is vonalkodban is legyen). Példa 
+nyomtatott több x -es szavazólapp:
+
++-----------------------------------------+
+|    szavazás leírása                     |
+|    vonalkód                             |  
+|    poll_key                             |
+|                                         |
+|               szavazó lap               |
+| vonalkód                                |
+| ballot_key                              | 
+|                                         |
+|1. [ ] vonalkód 1. opció leírása         |
+|2. [ ] vonalkód 2. opció leírása         | 
+|3. [ ] vonalkód 2. opció leírása         |
+|Több opció is bejelölhető "x" beírásával | 
++-----------------------------------------+
+Értelemszerüen hasonló az egy X-es szavazólap is,
+és az Igen-nem es is (itt két opció van Igen és Nem)
+
+Mivel a "poll_key" -t nem tároljuk a szavazó lapok csak a generálás
+folyamata közben nyomtathatóak ki, utólag nem. EZ NAGY PROBLÉMA!
+
+
+Az értékfelosztásos és preferenciális szavazást azt hiszem csak online szavazólapon
+tudom elképzelni (sorrendbe rendezés, illetve csuszkák amik szumma 100% -t adnak)
+ 
+
+Az offline szavazat rögzitése:
+1. ballot_key vonalkod beolvasása (vagy beirása)
+2. a beikszelt opciók vonalkodjainak beolvasása (vagy beirása)
+3. OK button
+
+Likvid demokrácia müködési koncepció
+------------------------------------
+
+Minden user, minden témakörhöz választhat egy-egy képviselőt magának.
+
+Ha a szavazás lezárulásakor egy szavazásra jogosult nem szavazott
+(a "ballot_key" -hez nincs "leadott szavazat" rekord):
+    -- megnézzük ki a usernek a felsőbb témakörree vonatkozó képviselője,
+    -- ha van ezzel leadott szavazat akkor ezt tekintjük a user szavazatának is
+       (gneráljuk a "szavazat" rekordokat)
+       ha nincs akkor ezt a két lépést ismételjük egészen addig amig
+       nem találunk szavazatot vagy felértünk a témakör fa tetejére.
+  
+  
+     
+    
+    
+    

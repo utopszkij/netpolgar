@@ -1,0 +1,6 @@
+https://www.laravelcode.com/post/laravel-8-crud-application-tutorial-with-example
+
+- egyetlen roote van definiálva
+- a controller methodusok nem tartalmaznak adatbázis müveleteket
+- a model is nagyon minimális
+ 

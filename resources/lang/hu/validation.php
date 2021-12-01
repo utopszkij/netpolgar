@@ -133,6 +133,7 @@ return [
     |
     */
 
+	 'adminRequired' => '"admin" tisztség szükséges.', 
     'custom' => [
         'name' => [
             'required' => 'A nevet meg kell adni',
@@ -142,11 +143,17 @@ return [
         ],
         'config' => [
             'required' => 'A beállításokat (konfigurációt) meg kell adni',
-            'json' => 'nem szabályos JSON string'
+            'json' => 'a beállítás nem szabályos JSON string'
         ],
         'avatar' => [
             'url' => 'Az avatar kép web cím nem jó',
-        ]
+        ],
+        'description' => [
+            'required' => 'A leírást meg kell adni',
+        ],
+        'ranks' => [
+            'required' => 'A tisztségeket meg kell adni',
+        ],
     ],
 
     /*

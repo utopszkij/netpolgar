@@ -8,8 +8,18 @@ return [
     'user' => 'Személyes',
     'search' => 'Keresés',
     'clearSearch' => 'Összes',
+    'moderation' => 'Moderálás',
     'notrecords' => 'Nincs listázandó adat',
     'online' => 'Jelenleg on-line',
     'enableBtn' => 'Engedélyezem',
-    'help' => 'Üzenet íráshoz kattints a "Join meeting" gombra majd a <em class="far fa-comment-alt"></em> ikonra!'
+    'help' => 'Üzenet íráshoz kattints a "Join meeting" gombra majd a <em class="far fa-comment-alt"></em> ikonra!',
+    'target' => 'Üzenet címzetje',
+    'sender' => 'Üzenet feladója',
+    'value' => 'Üzenet szövege',
+    'created_at' => 'Időpont',
+    'moderatorinfo' => 'moderátor megjegyzése',
+    'moderatorForm' => 'Üzenet moderálás',
+    'moderationSaved' => 'Moderálás tárolva',
+    'save' => 'Tárolás',
+    'cancel' => 'Mégsem'
 ];

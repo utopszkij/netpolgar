@@ -9,6 +9,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\Validator;
+use App\Rules\JsonRule;
 
 /**
  * csoportok kezelő controller osztály
@@ -270,6 +271,11 @@ class GroupsController extends Controller {
         } else {
             return redirect('/groups/0/0/0')->with('error',__('notFound'));
         }
+    }
+    
+    protected function is_json($string,$return_data = false) {
+        $data = json_decode($string);
+        return (json_last_error() == JSON_ERROR_NONE) ? ($return_data ? $data : TRUE) : FALSE;
     }
     
     /**

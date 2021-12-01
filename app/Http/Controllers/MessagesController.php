@@ -24,34 +24,70 @@ use Illuminate\Validation\Validator;
  */
 class MessagesController extends Controller {
 
+    protected $memberRank = '';
+    
     /**
      * bejelntkezett user jogosult üzenet kezelésre?
+     * beállítja a $memberRank -ot is.
      * @param string $parentType
      * @param int $id
      * @return boolean
      */
-    protected function checkAccessRight(string $parentType, int $id) {
+    protected function checkAccessRight(string $parentType, int $parentId) {
         $result = false;
+        $this->memberRank = '';
         if (\Auth::user()) {
             if ($parentType == 'group') {
                 $member = \DB::table('group_members')
-                ->where('group_id','=',$id)
+                ->where('group_id','=',$parentId)
                 ->where('user_id','=', \Auth::user()->id)
                 ->whereIn('rank',["member","admin"])
                 ->where('status','=','active')
+                ->orderBy('rank','asc')
                 ->first();
                 if ($member) {
+                    $this->memberRank = $member->rank;
                     $result = true;
                 }
             }
             if ($parentType == 'project') {
                 $member = \DB::table('project_members')
-                ->where('project_id','=',$id)
+                ->where('project_id','=',$parentId)
                 ->where('user_id','=', \Auth::user()->id)
                 ->whereIn('rank',["member","admin"])
                 ->where('status','=','active')
+                ->orderBy('rank','asc')
                 ->first();
                 if ($member) {
+                    $this->memberRank = $member->rank;
+                    $result = true;
+                }
+            }
+            if ($parentType == 'groupmember') {
+                $parent = \DB::table('group_members')->where('id','=',$parentId)->first();
+                $member = \DB::table('group_members')
+                ->where('group_id','=',$parent->group_id)
+                ->where('user_id','=', \Auth::user()->id)
+                ->whereIn('rank',["member","admin"])
+                ->where('status','=','active')
+                ->orderBy('rank','asc')
+                ->first();
+                if ($member) {
+                    $this->memberRank = $member->rank;
+                    $result = true;
+                }
+            }
+            if ($parentType == 'projectmember') {
+                $parent = \DB::table('project_members')->where('id','=',$parentId)->first();
+                $member = \DB::table('project_members')
+                ->where('project_id','=',$parent->project_id)
+                ->where('user_id','=', \Auth::user()->id)
+                ->whereIn('rank',["member","admin"])
+                ->where('status','=','active')
+                ->orderBy('rank','asc')
+                ->first();
+                if ($member) {
+                    $this->memberRank = $member->rank;
                     $result = true;
                 }
             }
@@ -233,6 +269,72 @@ class MessagesController extends Controller {
         } else {
             return '';
         }
+    }
+    
+    /**
+     * üzenet moderátor képernyő
+     * @param Request $request
+     * @param int $id
+     */
+    public function moderator(Request $request, int $id) {
+        // jogosult moderálni?
+        $model = new \App\Models\Messages();
+        $message = $model->where('id','=',$id)->first();
+        if ($message) {
+            if ($this->checkAccessRight($message->parent_type, $message->parent_id)) {
+                if ($this->memberRank == 'admin') {
+                    $parentTable = \DB::table($message->parent_type.'s');
+                    $parent = $parentTable->where('id','=',$message->parent_id)->first();
+                    $userModel = new \App\Models\User();
+                    $sender = $userModel->where('id','=',$message->user_id)->first();
+                    $result = view('moderator',[
+                        "message" => $message,
+                        "parent" => $parent,
+                        "sender" => $sender
+                    ]);
+                } else {
+                    $result = redirect(\URL::previous())->with('error',__('accessViolation').'(1)');
+                }
+            } else {
+                $result = redirect(\URL::previous())->with('error',__('accessViolation').'(2)');
+            }
+        } else {
+            $result = redirect(\URL::previous())->with('error',__('notFound'));
+        }
+        return $result;
+    }
+    
+    /**
+     * üzenet moderálás utáni tárolása
+     * @param Request $request (id, value, moderatorinfo)
+     */
+    public function moderationsave(Request $request) {
+        $id = $request->input('id');
+        $model = new \App\Models\Messages();
+        $message = $model->where('id','=',$id)->first();
+        if ($message) {
+            if ($this->checkAccessRight($message->parent_type, $message->parent_id)) {
+                if ($this->memberRank == 'admin') {
+                    $message->value = $request->input('value');
+                    $message->moderatorinfo = $request->input('moderatorinfo');
+                    $message->moderated_by = \Auth::user()->id;
+                    $message->updated_at = date('Y-m-d H:i:s');
+                    if ($message->save()) {
+                        $result = redirect(\URL::to('/').'/messages/'.$message->parent_type.'/'.
+                            $message->parent_id)->with('success',__('messages.moderationSaved'));
+                    } else {
+                        $result = redirect(\URL::previous())->with('error',$message->errorMsg);
+                    }
+                } else {
+                    $result = redirect(\URL::previous())->with('error',__('accessViolation').'(1)');
+                }
+            } else {
+                $result = redirect(\URL::previous())->with('error',__('accessViolation').'(2)');
+            }
+        } else {
+            $result = redirect(\URL::previous())->with('error',__('notFound'));
+        }
+        return $result;
     }
 }
 

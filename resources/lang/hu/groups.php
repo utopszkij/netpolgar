@@ -14,7 +14,7 @@ return [
     'subgroups' => 'Alcsoportok',
     'projects' => 'Projektek',
     'products' => 'Termékek',
-    'votes' => 'Szavazások',
+    'votes' => 'Eldöntendő kérdések, szavazások',
     'messages' => 'Beszélgetések',
     'events' => 'Események',
     'files' => 'Fileok',

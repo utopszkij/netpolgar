@@ -5,20 +5,23 @@ nav .logo {display:inline-block; height:30px; width:auto; border-radius:15px}
 nav .dropdown-menu[data-bs-popper] {left:-60px}
 nav .dropdown-menu form {margin-left:15px}
 .header {margin:1px;}
-main {padding-top:50px;}
+main {padding-top:50px; padding-left:10px; min-height:500px}
 .pageContainer {padding:0px 10px 10px 10px; min-height:500px}
 p {display:block; width:100%; margin:5px;}
 h1 {font-size:22pt; font-weight:bold; margin:20px 0px 20px 0px}
-h2 {font-size:20pt; font-weight:bold; margin:14px 0px 14xp 0px}
-h3 {font-size:18pt; font-weight:bold; margin:12px 0px 01px 0px}
+h2 {font-size:20pt; font-weight:bold; margin:14px 0px 14px 0px}
+h3 {font-size:18pt; font-weight:bold; margin:12px 0px 10px 0px}
 h4 {font-size:16pt; font-weight:bold; margin:10px 0px 10px 0px}
 h5 {font-size:14pt; font-weight:bold; margin:10px 0px 10px 0px}
+.table-bordered th {background-color:silver}
 .title {text-align:center}
 .submenuIcon {display:none}
 .avatar {height:26px; display:inline-block; width:auto;}
 .filters label {width:150px; text-align:right; margin:2px}
 .searchForm {margin:10px 0px 10px 0px}
 thead {background-color: silver; color:black}
+.btn {width:auto; margin:5px;}
+.fas {margin-right:10px}
 .btn-disabled {background-color:silver; border-style:solid; border-width:1px; cursor:default}
 .form-group {vertical-align:middle; margin:2px;}
 .form-group label {display:inline-block; width:150px; text-align:right; margin:2px; }
@@ -27,6 +30,15 @@ thead {background-color: silver; color:black}
 .form-group textarea {display:inline-block; width:auto; margin:2px}
 .submenu ul {border-style:solid; border-width:1px}
 .submenu li {border-style:solid; border-width:0px 0px 1px 0px; padding:2px}
+input, textarea, select {max-width:98%}
+.formButtons {margin:10px 0px 0px 0px}
+
+.pathItem {display:inlie-block; width:auto; margin:0px; padding:0px;}
+.pathItem .fas {margin-right: 0px }
+
+#teamContainer .logo {display:inline-block; height:32px; width:auto}
+#teamContainer #teamMenu {background-color:black; color:white; line-height:220%}
+#teamContainer #teamMenu a {color:white}
 
 /* welcome */
 .welcome .descriptionBtn {font-size:22pt}
@@ -55,15 +67,20 @@ footer {background:silver; padding:10px; margin-top:20px}
 	background-color:#d0d0d0; text-align:right; padding:10px;
 }
 
+.subMenuIcon {display:none; cursor:pointer}
 @media (max-width:575px) {
 	.form-group label {display:block; text-align:left }
 	.form-group input {display:block; width:auto; margin:2px}
 	.form-group select {display:block; width:auto; margin:2px}
 	.form-group textarea {display:block; width:auto; margin:2px}
 	a {color: blue}
+	#teamMenu span {display:none}
+	.subMenuIcon {display:block; text-align:right}
 }
 @media (max-width:991px) {
 	.submenuIcon {display:inline-block}
 	.submenu {display:none}
 	a {color: blue}
+	#teamMenu span {display:none}
+	.subMenuIcon {display:block; text-align:right}
 }

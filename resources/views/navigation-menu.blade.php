@@ -14,7 +14,7 @@ function validate_gravatar($email) {
 
 if (Auth::user()) {
 	$user = Auth::user();
-	if (Auth::user()->profile_phptp_path == '') {
+	if (Auth::user()->profile_photo_path == '') {
 		if (validate_gravatar($user->email)) {
 			$avatar = 'https://gravatar.com/avatar/'.md5($user->email);
 		} else {
@@ -41,7 +41,8 @@ if (Auth::user()) {
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="{{ URL::to('/') }}/groups/0/0/0">
+          <a class="nav-link active" aria-current="page" 
+          	href="{{ URL::to('/parents/0/teams') }}">
           	{{ __('navigation.groups') }}
           </a>
         </li>
@@ -56,10 +57,12 @@ if (Auth::user()) {
           </a>
         </li>
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" 
+            _data-bs-toggle="dropdown" _aria-expanded="false"
+            onclick="$('#msgDropdown').toggle(); false">
             {{ __('navigation.kommunikation') }}
           </a>
-          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown" id="msgDropdown">
             <li><a class="dropdown-item" href="#">{{ __('navigation.privatmsg') }}</a></li>
             <li><a class="dropdown-item" href="#">{{ __('navigation.forum') }}</a></li>
             <li><a class="dropdown-item" href="#">{{ __('navigation.voks') }}</a></li>
@@ -70,11 +73,14 @@ if (Auth::user()) {
       <ul class="navbar-nav mb-2 mb-lg-0">
       	@auth
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" 
+            _data-bs-toggle="dropdown"  _aria-expanded="false"
+            onclick="$('#loginDropdown0').toggle(); false">
             <img src="{{ $avatar }}" class="logo" />
             {{ Auth::user()->name }}
           </a>
-          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown" id="loginDropdown0"
+            style="right:20px">
             <li><a class="dropdown-item" href="{{ URL::to('/user/profile') }}">
             	{{ __('navigation.profile') }}
             </a></li>
@@ -88,10 +94,13 @@ if (Auth::user()) {
         </li>
       	@else
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" 
+          	_data-bs-toggle="dropdown" _aria-expanded="false" 
+          	onclick="$('#loginDropdown1').toggle(); false">
             {{ __('navigation.enter') }}
           </a>
-          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown" id="loginDropdown1" 
+          style="right:20px;">
             <li><a class="dropdown-item" href="{{ URL::to('/login') }}">
             	{{ __('navigation.login') }}
             	</a></li>
