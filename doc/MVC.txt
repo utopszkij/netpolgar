@@ -51,6 +51,22 @@ app/Models/Compname.php
 		...	
 	}
 
+	alapértelmezett metodusok:
+	
+	$record = $model->create(["name" => value, ....])
+	
+	$bool = $model->where("id","=",value)
+	              ->save(["name" => value, ....])
+	              
+   $bool = $model->where(.....)->first();
+
+   $bool = $model->where(.....)->delete();
+   
+   $paginateResult = $model->where(....)
+    								->.....   								...
+    								->paginate($limit)
+   	              
+
 Controller
 ----------
 php artisan make:controller CompnameController
@@ -61,22 +77,29 @@ app/Http/Controllers/CompnameController.php
 	use Illuminate\Http\Request;
 	
 	class CompnameController extends Controller
+
 		// lista
 		public function index(string $parent = '0') {
 			...
 			return view('compname.index',	["p1" => "...", ....]);
 			...
 		}
+
 		// add new form
 	   public function create(string $parent = '0') {..}
+	   
 	   // új rekord tárolása
     	public function store(Request $request) {..}
+
     	// megjelenító form
     	public function show($compname) {..}
+
     	// módosító form
     	public function edit($compname) {..}
+
     	// módosítás tárolása
     	public function update(Request $request, Team $compname) {..}
+
     	// törlés végrehajtása
     	public function destroy($compname) {..}
 	}

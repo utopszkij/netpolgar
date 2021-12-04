@@ -30,10 +30,6 @@ class CreateMembersTable extends Migration
             //----
             $table->foreign('created_by')->references('id')->on('users');
             $table->foreign('user_id')->references('id')->on('users');
-            //----
-            $table->index(['parent_type', 'parent']);
-            $table->index(['user_id']);
-
         });
     }
 

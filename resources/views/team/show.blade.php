@@ -20,7 +20,7 @@
             <em class="fas fa-reply"></em>
             <span>{{ __('team.back') }}</span><br />
          </a>
-			<a href="{{ URL::to('/construction') }}" title="Tagok">
+			<a href="{{ URL::to('/member/list/teams/'.$team->id) }}" title="Tagok">
 				<em class="fas fa-users"></em>
 				<span>{{ __('team.members') }}</span><br />			
 			</a>
@@ -80,6 +80,16 @@
 
 	       <div class="col-11 col-md-10">
              <h3>
+             	{{ $team->name }}
+		        @if (in_array('active_admin',$info->userRank))
+	            &nbsp;<a href="{{ route('teams.edit',['team' => $team->id]) }} ">
+						<em class="fas fa-edit" title="{{ __('team.edit') }}"></em>                
+   	            @endif
+   	          </a>
+             </h3>
+         </div>
+
+        	<div class="col-11 col-md-10">
              	@if ($team->status == 'active')
              	<em class="fas fa-check"></em>
              	@endif
@@ -89,34 +99,44 @@
              	@if ($team->status == 'closed')
              	<em class="fas fa-lock"></em>
              	@endif
-             	{{ $team->name }}
-		          @if (in_array('admin',$info->userRank))
-	             &nbsp;<a href="{{ route('teams.edit',['team' => $team->id]) }} ">
-						<em class="fas fa-edit" title="{{ __('team.edit') }}"></em>                
-   	          </a>
-   	          @endif
-             </h3>
-         </div>
-
-        	<div class="col-11 col-md-10">
-        		{{ __('team.'.$team->status) }}
-        		@if (count($info->userRank) > 0) 
-        		,&nbsp;{{ implode(',',$info->userRank) }} vagy&nbsp;
+	        	{{ __('team.'.$team->status) }}
+	        	&nbsp;&nbsp;&nbsp;&nbsp;
+        		@if (count($info->userRank) > 0)
+        		@php 
+				for ($i=0; $i<count($info->userRank); $i++) {
+					$info->userRank[$i] = __('team.'.$info->userRank[$i]);				
+				}        		
+        		@endphp 
+        		{{ implode(',',$info->userRank) }} vagy&nbsp;
         		@endif
         		@if ((count($info->userRank) == 0) & ($team->status == 'active'))
-        			<a class="btn btn-primary" href="" title="Csatlakozok a csoporthoz">
+        			<form action="{{ URL::to('/member/store') }}"
+        				style="display:inline-block; width:auto">
+        			<input type="hidden" name="parent_type" value="teams" />
+        			<input type="hidden" name="parent" value="{{ $team->id }}" />
+        			<input type="hidden" name="rank" value="member" />
+        			<button type="submit" class="btn btn-primary" title="Csatlakozok a csoporthoz">
         				<em class="fas fa-sign-in-alt"></em>
 						{{ __('team.signin') }}        				
-        			</a>
+        			</button>
+        			</form>
         		@endif
         		@if ((count($info->userRank) > 0) & ($team->status == 'active'))
-        			<a class="btn btn-danger" href="" title="Kilépek a csoportból">
+        			<form action="{{ URL::to('/member/doexit') }}"
+        				style="display:inline-block; width:auto">
+        			<input type="hidden" name="parent_type" value="teams" />
+        			<input type="hidden" name="parent" value="{{ $team->id }}" />
+        			<input type="hidden" name="rank" value="member" />
+        			<button type="submit" class="btn btn-primary" title="Csatlakozok a csoporthoz">
         				<em class="fas fa-sign-out-alt"></em>
 						{{ __('team.signout') }}        				
-        			</a>
+        			</button>
+        			</form>
         		@endif
-
-        		@if ((count($info->userRank) > 0) & ($team->status == 'active'))
+        		@if ((in_array('active_member',$info->userRank) | 
+        		      in_array('active_admin',$info->userRank)
+        		     ) & ($team->status == 'active')
+        		    )
         			<a class="btn btn-danger" href="" title="a csoport lezárását javaslom">
         				@if ($info->userDisLiked)
         				<em class="fas fa-check"></em>

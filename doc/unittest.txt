@@ -1,0 +1,28 @@
+cd projectRoot
+
+php artisan test
+
+a tests/Feature/valamiTest.php fájlokat futtatja 
+
+vagy 
+
+php artisan test tests/Featire/valamiTest.php  egy teszt file futtatása
+
+A teszt fájlokban a __construct lefut minden egyes test 
+method végrehajtása előtt.
+
+Teszt ha redirect -et várunk:
+
+	$redirect = $controller->method(....);
+	$this->assertGreaterTahan ('vártstr' , $redirect->content())
+	
+Teszt ha view -aktiválást várunk:
+
+	$view = $controller->method(....);
+	$viewData = $view->getData();
+	$this->assertEquals('valami.vártView' , $view->getName())
+	ezenkivül $viewData  array elemei is tesztelhetőek
+				 
+	
+
+

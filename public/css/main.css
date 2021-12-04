@@ -40,6 +40,10 @@ input, textarea, select {max-width:98%}
 #teamContainer #teamMenu {background-color:black; color:white; line-height:220%}
 #teamContainer #teamMenu a {color:white}
 
+#memberContainer .logo {display:inline-block; height:32px; width:auto}
+#memberContainer #memberMenu {background-color:black; color:white; line-height:220%}
+#memberContainer #memberMenu a {color:white}
+
 /* welcome */
 .welcome .descriptionBtn {font-size:22pt}
 .welcome .leiras {margin:2%; width:90%}
