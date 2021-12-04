@@ -20,13 +20,22 @@ class TeamController extends Controller
         			 ->where('parent','=',$parent)
         			 ->orderBy('name')
         			 ->paginate(5);
-    	  $info = Team::getInfo((int)$parent);
+    	$info = Team::getInfo((int)$parent);
         return view('team.index',
         	["data" => $data,
         	"parent" => $parent,
         	"info" => $info])
          ->with('i', (request()->input('page', 1) - 1) * 5);
     }
+
+	 protected function userMember(array $userRank): bool {
+	 	return (in_array('active_member',$userRank) | 
+	 	        in_array('active_admin',$userRank));
+	 }	
+
+	 protected function userAdmin(array $userRank): bool {
+	 	return in_array('active_admin',$userRank);
+	 }	
 
     /**
      * Show the form for creating a new resource.
@@ -39,10 +48,9 @@ class TeamController extends Controller
     	  $team = Team::emptyRecord();
     	  $team->parent = $parent;	
     	  $info = Team::getInfo($parent);
-
-    		// csak csoport tag vihet fel
+    		// csak parent csoport tag vihet fel
     		if ((!\Auth::user()) | 
-    		    (count($info->userRank) == 0) | 
+    		    (!$this->userMember($info->userRank)) | 
     		    ($info->parentClosed)) {
 				return redirect()->route('parents.teams.index', ['parent' => $parent])
 			                 ->with('error',__('team.accessDenied'));
@@ -53,45 +61,27 @@ class TeamController extends Controller
          "info" => $info]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request 
-     *         ['id','parent', 'name','description','avatar','config']
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-    		// jogosultság ellenörzés
-    		$info = Team::getInfo($request->input('parent'));
-    		if ((!\Auth::user()) | 
-    		    (count($info->userRank) == 0) |
-    		    ($info->status != 'active') |
-    		    ($info->parentClosed)) {
-				return redirect()->route('parents.teams.index', ['parent' => $teamArr['parent']])
-			                 ->with('error',__('team.accessDenied'));
-    		}
-
-			// tartalmi ellenörzések 
-			$request->validate([
-				'name' => 'required',
-				'ranks' => ['required', new RanksRule()],
-				'description' => 'required'
-			]);
-	      // ranks -ban admin kötelező!
-
+	 /**
+	 * team rekord irása az adatbázisba a $request-be lévő információkból
+	 * @param int $id
+	 * @param Request $request
+	 * @return string, $id created new record id
+	 */	 
+	 protected Function saveOrStore(int &$id, Request $request): string {	
 			// rekord array kialakitása
 			$teamArr = [];
 			$teamArr['parent'] = $request->input('parent');
 			$teamArr['name'] = $request->input('name');
 			$teamArr['description'] = $request->input('description');
 			$teamArr['avatar'] = $request->input('avatar');
-			$teamArr['status'] = 'proposal';
-			if (\Auth::user()) {
-				$teamArr['created_by'] = \Auth::user()->id;
-			} else {
-				$teamArr['created_by'] = 0;
-			}		
+			if ($id == 0) {
+				$teamArr['status'] = 'proposal';
+				if (\Auth::user()) {
+					$teamArr['created_by'] = \Auth::user()->id;
+				} else {
+					$teamArr['created_by'] = 0;
+				}		
+			}
 			   
 			// config kialakitása
 			$config = new \stdClass();
@@ -106,42 +96,105 @@ class TeamController extends Controller
 			$config->subTeamActivate = $request->input('subTeamActivate');
 			$config->debateActivate = $request->input('debateActivate');
 			$teamArr['config'] = JSON_encode($config);
-			        
 
 			// teams rekord tárolás az adatbázisba
 			$errorInfo = '';
 			try {
-			 	$teamRec = Team::create($teamArr);
+				$model = new Team();
+				if ($id == 0) {
+			 		$teamRec = $model->create($teamArr);
+			 		$id = $teamRec->id;
+			 	} else {
+					$model->where('id','=',$id)->update($teamArr);			 	
+			 	}	
 			} catch (\Illuminate\Database\QueryException $exception) {
 			    $errorInfo = $exception->errorInfo;
-			}			
-			
-			// a létrehozó (bejelentkezett) user "admin" tagja a csoportnak
-			// members rekord tárolás az adatbázisba
-			if ($errorInfo == '') {
+			}	
+			return $errorInfo;		
+	 }	
+
+	 /**
+	 * bejelentkezett user legyen admin -ja az $id team -nek
+	 * @param int $id
+	 * @return string
+	 */
+    protected function addAdmin(int $id): string {		
 				$memberArr = [];
 				$memberArr['parent_type'] = 'teams';
-				$memberArr['parent'] = $teamRec->id;
+				$memberArr['parent'] = $id;
 				$memberArr['user_id'] = \Auth::user()->id;
 				$memberArr['rank'] = 'admin';
 				$memberArr['status'] = 'active';
 				$memberArr['created_by'] = \Auth::user()->id;
+				$errorInfo = '';
 				try {
 					Member::create($memberArr);
 				} catch (\Illuminate\Database\QueryException $exception) {
 			     $errorInfo = $exception->errorInfo;
-				}			
+				}
+				return $errorInfo;			
+	 }		
+
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request 
+     *         ['id','parent', 'name','description','avatar','config']
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+    		// jogosultság ellenörzés
+    		$info = Team::getInfo($request->input('parent'));
+    		if ((!\Auth::user()) | 
+    		    (!$this->userMember($info->userRank)) |
+    		    ($info->parentClosed)) {
+				return redirect()->route('parents.teams.index', ['parent' => $request->input('parent')])
+			    ->with('error',__('team.accessDenied'));
+    		}
+
+			// tartalmi ellenörzések 
+			$request->validate([
+				'name' => 'required',
+				'ranks' => ['required', new RanksRule()],
+				'description' => 'required'
+			]);
+
+			// team rekord kiirása
+			$id = 0;
+			$errorInfo = $this->saveOrStore($id,$request);
+			
+			// a létrehozó (bejelentkezett) user "admin" tagja a csoportnak
+			// members rekord tárolás az adatbázisba
+			if ($errorInfo == '') {
+				$errorInfo = $this->addAdmin($id);
 			}    
 
 		   // result kialakitása			
 			if ($errorInfo == '') { 
-				$result = redirect()->route('parents.teams.index', ['parent' => $teamArr['parent']])
+				$result = redirect()->route('parents.teams.index', ['parent' => $request->input('parent')])
 			                 ->with('success',__('team.successSave') );
 			} else {
-				$result = redirect()->route('parents.teams.index', ['parent' => $teamArr['parent']])
+				$result = redirect()->route('parents.teams.index', ['parent' => $request->input('parent')])
 			                 ->with('error',$errorInfo);
 			}
 			return $result;                 
+    }
+    
+    /**
+    * team->config json string dekodolása
+    * @param Team $team
+    * @return void
+    */      
+    
+    protected function decodeConfig(Team &$team) {
+    	  $team->config = JSON_decode($team->config);
+    	  if (!isset($team->config->ranks)) {
+    	  		$team->config->ranks = ['admin','manager','president','moderator'];
+    	  } else if (is_string($team->config->ranks)) {
+				$team->config->ranks = explode(',',$team->config->ranks);
+    	  }
     }
 
     /**
@@ -153,11 +206,8 @@ class TeamController extends Controller
     public function show(Team $team)
     {
     	  $info = Team::getInfo($team->id); 
-    	  $team->config = JSON_decode($team->config);
-    	  if (!isset($team->config->ranks)) {
-    	  		$team->config->ranks = ['admin','manager','president','moderator'];
-    	  }
-    	  if ($info->parentClosed) {
+		  $this->decodeConfig($team, $info);
+     	  if ($info->parentClosed) {
 				$team->status = 'closed';    	  
     	  }	
         return view('team.show',
@@ -175,23 +225,23 @@ class TeamController extends Controller
     public function edit(Team $team)
     {
     	  $info = Team::getInfo($team->id);
+		  $this->decodeConfig($team, $info);
     	  if ($info->parentClosed) {
 				$team->status = 'closed';    	  
     	  }	
+
+		  // Jogosultság ellenörzés
     	  if ((!\Auth::user()) |
-    	      (!in_array('admin',$info->userRank)) |
+    	      (!$this->userAdmin($info->userRank)) |
     	      ($info->parentClosed) |
     	      ($team->status == 'closed')) {
 	        return redirect()->route('parents.teams.index', ['parent' => $team->parent])
                         ->with('error',__('team.accessDenied'));
     	  } 	
-    	  $team->config = JSON_decode($team->config);	
-    	  if (!isset($team->config->ranks)) {
-    	  		$team->config->ranks = ['admin','manager','president','moderator'];
-    	  }
+
         return view('team.form',
         	["team" => $team,
-          "info" => $info
+             "info" => $info
         	]);
     }
 
@@ -207,7 +257,7 @@ class TeamController extends Controller
     	// jogosultság ellenörzés	
     	$info = Team::getInfo($team->id);
     	if ((!\Auth::user()) | 
-    	    (!in_array('admin',$info->userRank)) |
+    	    (!$this->userAdmin($info->userRank)) |
     	    ($info->parentClosed) |
     	    ($request->input('status') == 'closed')) {
 	        return redirect()->route('parents.teams.index', ['parent' => $team->parent])
@@ -220,55 +270,20 @@ class TeamController extends Controller
 				'ranks' => ['required', new RanksRule()],
             'description' => 'required',
       ]);
-      // ranks -ban admin kötelező!
-        
-  		// rekord array kialakitása
-			$teamArr = [];
-			$teamArr['parent'] = $request->input('parent');
-			$teamArr['name'] = $request->input('name');
-			$teamArr['description'] = $request->input('description');
-			$teamArr['avatar'] = $request->input('avatar');
-			$teamArr['status'] = 'proposal';
-			if (\Auth::user()) {
-				$teamArr['created_by'] = \Auth::user()->id;
-			} else {
-				$teamArr['created_by'] = 0;
-			}		
-			   
-			// config kialakitása
-			$config = new \stdClass();
-			$config->ranks = explode(',',$request->input('ranks'));
-			$config->close = $request->input('close');
-			$config->memberActivate = $request->input('memberActivate');
-			$config->memberExclude = $request->input('memberExclude');
-			$config->rankActivate = $request->input('rankActivate');
-			$config->rankClose = $request->input('rankClose');
-			$config->projectActivate = $request->input('projectActivate');
-			$config->productActivate = $request->input('productActivate');
-			$config->subTeamActivate = $request->input('subTeamActivate');
-			$config->debateActivate = $request->input('debateActivate');
-			$teamArr['config'] = JSON_encode($config);
-			        
 
-			// teams rekord tárolás az adatbázisba
-			$errorInfo = '';
-			try {
-			 	$model = new Team();
-			 	$model->update($teamArr);
-			} catch (\Illuminate\Database\QueryException $exception) {
-			    $errorInfo = $exception->errorInfo;
-			}			
+		// team rekord kiirása
+		$id = $team->id;
+		$errorInfo = $this->saveOrStore($id, $request);
 		
-			// result kialakítása		
-			if ($errorInfo == '') {
-        		$result = redirect()->route('parents.teams.index', ['parent' => $teamArr['parent']])
-                        ->with('success',__('team.successSave'));
-			} else {
-        		$result = redirect()->route('parents.teams.index', ['parent' => $teamArr['parent']])
-                        ->with('error',$errorInfo);
-			}
-			
-			return $result;                        
+		// result kialakítása		
+		if ($errorInfo == '') {
+      	$result = redirect()->route('parents.teams.index', ['parent' => $team->parent])
+                      ->with('success',__('team.successSave'));
+		} else {
+      	$result = redirect()->route('parents.teams.index', ['parent' => $team->parent])
+                      ->with('error',$errorInfo);
+		}
+		return $result;                        
     }
 
     /**
@@ -282,9 +297,9 @@ class TeamController extends Controller
     	// jogosultság ellenörzés	
     	$info = Team::getInfo($team->id);
     	if ((!\Auth::user()) | 
-    	    (in_array('admin',$info->userRank)) |
+    	    (!$this->userAdmin($info->userRank)) |
     	    ($info->parentClosed) |
-    	    ($request->input('status') == 'closed')) {
+    	    ($team->status == 'closed')) {
 	        return redirect()->route('parents.teams.index', ['parent' => $team->parent])
                         ->with('error',__('team.accessDenied'));
     	} 	

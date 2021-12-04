@@ -5,6 +5,7 @@ use App\Http\Controllers;
 use App\Http\Controllers\SocialController;
 use App\Http\Controllers\GroupsController;
 use App\Http\Controllers\TeamController;
+use App\Http\Controllers\MemberController;
 use App\Http\Controllers\MessagesController;
 use App\Http\Controllers\MembersController;
 
@@ -20,7 +21,13 @@ use App\Http\Controllers\MembersController;
 */
 
 Route::get('/construction', function() { return view('construction'); } );
+
 Route::resource('parents.teams', TeamController::class)->shallow();
+
+Route::get('/member/list/{parent_type}/{parent}', [MemberController::class, 'index']);
+Route::get('/member/{member}', [MemberController::class, 'show']);
+Route::get('/member/store', [MemberController::class, 'store']);
+Route::get('/member/doexit', [MemberController::class, 'doExit']);
 
 
 Route::get('/', function () { return view('welcome'); });
@@ -42,9 +49,6 @@ Route::get('/message/moderator/{id}',[MessagesController::class, 'moderator']);
 Route::post('/message/savemoderation',[MessagesController::class, 'moderationsave']);
 Route::get('/messageadd/{parentType}/{parentId}/{txt}',[MessagesController::class, 'add']);
 
-Route::get('/members/{parentType}/{id}',[MembersController::class, 'list']);
-Route::get('/member/form/{parentType}/{parentId}/{name}',[MembersController::class, 'form']);
-Route::post('/member/save',[MembersController::class, 'save']);
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
     return view('dashboard');

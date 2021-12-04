@@ -7,7 +7,6 @@ Készültség: 1%  v0.04-alpha
 Verzió történet:
    v0.04 2021.05.   Laravel változat
 
-
 [Élő demo](https://netpolgar.hu)
 
 ![Logo](public/img/logo.png)
@@ -51,10 +50,12 @@ php artisan migrate
 ```
 php artisan serve
 ```
-## tests
+## php unit tests
 ```
 php artisan test
 ```
+Megjegyzés: unit test fájlok: tests/Feature/xxxxTest.php
+
 ## Feltöltés WEB szerverre
 
 1. MYSQL adatbázis létrehozása (utf8m4_hunagrain_ci illesztéssel) és kezdeti feltöltése (parancssori mysql vagy phpmyadmin -al)

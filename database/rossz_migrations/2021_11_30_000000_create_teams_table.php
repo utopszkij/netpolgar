@@ -1,12 +1,12 @@
 <?php
 
-// csoport tagok
+// csoportok
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateMembersTable extends Migration
+class CreateTeamsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -15,13 +15,14 @@ class CreateMembersTable extends Migration
      */
     public function up()
     {
-        Schema::create('members', function (Blueprint $table) {
+        Schema::create('teams', function (Blueprint $table) {
             $table->id();
-            $table->string('parent_type'); // 'team'|'project'|'product'|'debate'
-            $table->biginteger('parent')->unsigned()->nullable();  // tuljdonos csoport
-            $table->biginteger('user_id')->unsigned()->nullable();  // felehasználó
-            $table->string('rank')->nullable();  // funció 'member' | 'admin' ...
-            $table->string('status')->nullable(); // 'suggestion' | 'active' | 'closed' | 'suspended'
+            $table->biginteger('parent')->unsigned()->nullable();  // fa szerkezet, tuljdonos
+            $table->string('name')->nullable();  // megnevezés
+            $table->mediumtext('description')->nullable(); // leírás
+            $table->string('avatar')->nullable();  // avatar kép url
+            $table->string('status')->nullable(); // 'proposal' | 'active' | 'closed' | 'suspended'
+            $table->mediumtext('config')->nullable(); // beállítások json
 				$table->date('activated_at')->nullable();            
 				$table->date('closed_at')->nullable();            
             $table->timestamp('created_at')->useCurrent();
@@ -29,11 +30,6 @@ class CreateMembersTable extends Migration
             $table->biginteger('created_by')->unsigned();
             //----
             $table->foreign('created_by')->references('id')->on('users');
-            $table->foreign('user_id')->references('id')->on('users');
-            //----
-            $table->index(['parent_type', 'parent']);
-            $table->index(['user_id']);
-
         });
     }
 
@@ -44,6 +40,6 @@ class CreateMembersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('members');
+        Schema::dropIfExists('teams');
     }
 }

@@ -47,6 +47,7 @@ class Team extends Model
     public static function getInfo(int $id) {
     	// parentClosed ha bármelyik path elem closed
     	// path: [{id,name},...} 
+    	// userRank [ 'active_member', 'proposal_admin', ...]
 		$result = JSON_decode('{
 			"status":"active",
 			"path":[],
@@ -63,8 +64,8 @@ class Team extends Model
 		if ($id == 0) {
 			$result->status = 'active';
 			if (\Auth::user()) {
-				$result->userRank = ['member'];
-				$result->userParentRank = ['member'];
+				$result->userRank = ['active_member'];
+				$result->userParentRank = ['active_member'];
 			}	
 			return $result;
 		}
@@ -94,10 +95,9 @@ class Team extends Model
 			$items = $t->where('parent','=',$id)
 						 ->where('parent_type','=','teams')
 						 ->where('user_id','=',\Auth::user()->id)
-						 ->where('status','=','active')
 						 ->get();
 			foreach ($items as $item) {
-				$result->userRank[] = $item->rank;			
+				$result->userRank[] = $item->status.'_'.$item->rank;			
 			}
 							 
 			if (count($result->path) > 0) {

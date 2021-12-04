@@ -17,8 +17,8 @@ class CreatePasswordResetsTable extends Migration
             $table->string('email')->index();
             $table->string('token');
             $table->timestamp('created_at')->nullable();
-        }\n);
-    }\n
+        });
+    }
 
     /**
      * Reverse the migrations.
@@ -28,5 +28,5 @@ class CreatePasswordResetsTable extends Migration
     public function down()
     {
         Schema::dropIfExists('password_resets');
-    }\n
-}\n
+    }
+}
