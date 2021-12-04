@@ -76,6 +76,13 @@ class SocialController extends Controller {
 	}
 	
     public function loginWithSocial(string $socName, string $field) {
+    	
+			// itt lehetne egyszer használatos remembercode -ot generálni és tárolni a user rekorba.
+			// valahol a backend fő programjában minden aktivizálásnál
+			//  - az elavult (túl régi) remember kodokat törli. 
+			//  - frissiti a user moddate -t 
+			// a logout -ba is be kell tenni a remembercode törlését   	
+    	
         try {
             $user = Socialite::driver($socName)->user();
             $isUser = User::where($field, $user->id)->first();

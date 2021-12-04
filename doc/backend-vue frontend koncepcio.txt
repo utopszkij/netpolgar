@@ -1,0 +1,27 @@
+1. loginnál (akár szociál akár nem) kreál egy véletlenszerü tOKEN -t amit a
+    user rekorba tárol (remember_token mező) és a updated_at is modosul
+    
+2. logout funkció (valószinüleg saját controllerrel lesz megoldva)
+    törli a remember_token mezőt
+    
+3. a backend minden hivásnál törli az elavult (túl régen nem használt)
+   remember_token értékeket
+
+4. a backend minden hivásnál ellenörzi a remember_token -t, és frissiti a
+   updated_at mértékét
+   
+   
+backend hívások:
+
+minden hivás jogosultság ellenörzést végez; megkapja a userToken -t 
+(ha notlogged akkor ''), valamint azokat az adatokat amik a kérés 
+végrehajtásához és a jogosultság ellenörzéshez szükségesek.
+
+Vagy egy külső URL hivást értelmező root (könyvjelzözéshez és seo -hoz kel,
+a főmenü akciói is igy lesznek megoldva)
+
+siteurl/run/{p1?}/{p2?}/{p3?}/{p4?}/{p5?}/{p6?}
+
+siteurl/run/group/list/{ownerId}
+siteurl/run/group/details/{groupId}
+....

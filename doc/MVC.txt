@@ -1,0 +1,109 @@
+Laravel MVC struktúra
+======================
+
+Példa "compname" nevü komponens
+
+Adatbázis tábla létrehozás
+--------------------------
+database/migrations/dátum_00000_create_compnames_table.php
+
+	használta: php artisan migrate
+	
+URL értelmezés
+--------------
+routes/web.php
+	<?php
+	....
+	use App\Http\Controllers\CompnameController;
+	...
+	Route::resource('compnames', CompnameController::class);
+		 GET /compnames   							index method hívás
+		 GET /compnames/{compname}   				show method hívás
+		 GET /compnames/create 						create method hívás
+		 GET /compnames/{compname}/edit		  	edit method hívás
+		 POST /compnames/store						store method hívás
+		 POST /compnames/save						ssave method hívás
+		 
+	vagy
+
+	Route::resource('p.compnames', CompnameController::class)->shallow();
+		 GET /p/{p/}compnames						index method hívás
+		 GET /compnames/{compname}   				show method hívás
+		 GET /p/{p}/compnames/create				create method hívás
+		 GET /compnames/{compname}/edit		  	edit method hívás
+		 POST /compnames/store						store method hívás
+		 POST /compnames/save						ssave method hívás
+
+
+	megjegyzés URL rootolásnál a "compname" nevű url paramétereket
+	a laravel "compnames" tábla ID -nek tekinti és a komponensnek
+	az adatbázisból beolvasott tábla rekordot adja át.
+
+Adat model
+----------
+php artisan make:model Compname
+app/Models/Compname.php
+	<?php
+	namespace App\Models;
+	use Illuminate\Database\Eloquent\Factories\HasFactory;
+	use Illuminate\Database\Eloquent\Model;
+	class Compname extends Model {
+		...	
+	}
+
+Controller
+----------
+php artisan make:controller CompnameController
+app/Http/Controllers/CompnameController.php
+	<?php
+	namespace App\Http\Controllers;
+	use App\Models\CompName;
+	use Illuminate\Http\Request;
+	
+	class CompnameController extends Controller
+		// lista
+		public function index(string $parent = '0') {
+			...
+			return view('compname.index',	["p1" => "...", ....]);
+			...
+		}
+		// add new form
+	   public function create(string $parent = '0') {..}
+	   // új rekord tárolása
+    	public function store(Request $request) {..}
+    	// megjelenító form
+    	public function show($compname) {..}
+    	// módosító form
+    	public function edit($compname) {..}
+    	// módosítás tárolása
+    	public function update(Request $request, Team $compname) {..}
+    	// törlés végrehajtása
+    	public function destroy($compname) {..}
+	}
+
+Viewerek
+--------
+resources/views/compname/xxxxx.blade.php
+	<x-guest-layout>  
+		....
+   	{{ __('compname.token') }}
+		...
+	</x-guest-layout>  
+	
+Egyedi form validátor szabályok
+-------------------------------
+php artisan make:rule RuleName
+app/Rules/RuleName.php	
+	
+Nyelvi konstansok
+-----------------
+	
+	komponens specifikus {{ __('compname.token') }} formában használható:
+	resources/lang/hu/compname.php
+	
+	globális {{ __('token') }} formában használható:
+	resources/hu.json
+	
+	validátor hibaüzenetek
+	resources/lang/hu/validation.php
+	

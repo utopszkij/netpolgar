@@ -84,31 +84,30 @@ A hibaüzenetek testre szabhatóak a lang/lngkod/validation.php -ben:
 Egyedi validátor kezelés a controllerben:
 -----------------------------------------
 
+
+https://www.nicesnippets.com/blog/laravel-8-custom-validation-rules-example
+
+php artisan make:rule ValamiRule
+
+app/Rules/ValamiRule.php  file készül
+
+controllerbe:
+
+....
+use App\Rules\ValamiRule;
+....
 public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'title' => 'required|unique:posts|max:255',
-            'body' => 'required',
+    	$request->validate([
+            'name' => 'required',
+            'age' => [
+                'required', 
+                new ValamiRule()
+            ]
         ]);
 
-	    $validator->after(function ($validator) {
-        	if (...$validator->data['fieldName'] használható....) {
-            	$validator->errors()->add('fieldName', 'Something is wrong with this field!');
-        	}
-    	});
-
-        if ($validator->fails()) {
-            return redirect('form')
-                        ->withErrors($validator)
-                        ->withInput();
-        }
-
-        // validator success; store 
-        .....
+    	dd("continue...");
     }
-
-}
-
 
 
  

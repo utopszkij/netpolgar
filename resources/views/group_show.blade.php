@@ -120,7 +120,7 @@ function option(string $act, string $value) {
    				</a>
    			</li>	
    			@if ($member)
-       			@if ($member->rank == 'admin'))
+       			@if ($member->rank == 'admin')
        			<li>
        				<a href="{{ URL::to('/') }}/group/form/{{ $group->id }}/{{ $group->parent_id }}">
        					<em class="fa fa-edit">&nbsp;</em>{{ __('groups.edit') }}
@@ -130,7 +130,7 @@ function option(string $act, string $value) {
    			@endif
    		</ul>
    	</div>
-    <div id="formShow" method="post" 
+    <form id="formShow" method="post" 
     	action="{{ URL::to('/') }}/group/save" class="form col-lg-9">
     	@csrf
     	<input type="hidden" name="id" value="{{ $group->id }}" />
@@ -237,7 +237,7 @@ function option(string $act, string $value) {
     	@endif
     		
     	</div>
-    </div>
+    </form>
 </div>  
 <script type="text/javascript">
 function avatarChange() {
