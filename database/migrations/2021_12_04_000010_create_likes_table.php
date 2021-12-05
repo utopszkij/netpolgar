@@ -22,6 +22,7 @@ class CreateLikesTable extends Migration
             $table->biginteger('user_id')->unsigned()->nullable();  // felehasználó
             $table->string('like_type')->nullable();  // funció 'member' | 'admin' ...
             $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent();
             $table->index(['parent_type', 'parent']);
             $table->index(['user_id']);
 

@@ -50,7 +50,8 @@
 			</a>
 			<a href="{{ URL::to('/construction') }}" title="Döntések">
 				<em class="fas fa-check"></em>
-				<span>{{ __('team.decisions') }}</span><br />			
+				<span        		    
+				>{{ __('team.decisions') }}</span><br />			
 			</a>
 			<a href="{{ URL::to('/construction') }}" title="Fájlok">
 				<em class="fas fa-folder-open"></em>
@@ -81,7 +82,7 @@
 	       <div class="col-11 col-md-10">
              <h3>
              	{{ $team->name }}
-		        @if (in_array('active_admin',$info->userRank))
+		        @if ((in_array('active_admin',$info->userRank)) & ($team->status != 'closed'))
 	            &nbsp;<a href="{{ route('teams.edit',['team' => $team->id]) }} ">
 						<em class="fas fa-edit" title="{{ __('team.edit') }}"></em>                
    	            @endif
@@ -103,11 +104,12 @@
 	        	&nbsp;&nbsp;&nbsp;&nbsp;
         		@if (count($info->userRank) > 0)
         		@php 
+        		$info->transUserRank = [];
 				for ($i=0; $i<count($info->userRank); $i++) {
-					$info->userRank[$i] = __('team.'.$info->userRank[$i]);				
+					$info->transUserRank[$i] = __('team.'.$info->userRank[$i]);				
 				}        		
         		@endphp 
-        		{{ implode(',',$info->userRank) }} vagy&nbsp;
+        		{{ implode(',',$info->transUserRank) }} vagy&nbsp;
         		@endif
         		@if ((count($info->userRank) == 0) & ($team->status == 'active'))
         			<form action="{{ URL::to('/member/store') }}"
@@ -133,11 +135,11 @@
         			</button>
         			</form>
         		@endif
-        		@if ((in_array('active_member',$info->userRank) | 
-        		      in_array('active_admin',$info->userRank)
-        		     ) & ($team->status == 'active')
-        		    )
-        			<a class="btn btn-danger" href="" title="a csoport lezárását javaslom">
+        		@if ((in_array('active_member', $info->userRank) | in_array('active_admin',$info->userRank)) & 
+        		     ($team->status == 'active')) 
+        			<a class="btn btn-danger" 
+        			   href="{{ \URL::to('/dislike/teams/'.$team->id) }}" 
+        			   title="a csoport lezárását javaslom">
         				@if ($info->userDisLiked)
         				<em class="fas fa-check"></em>
         				@endif
@@ -147,7 +149,9 @@
         			</a>
         		@endif
         		@if ((count($info->userParentRank) > 0) & ($team->status == 'proposal'))
-        			<a class="btn btn-success" href="" title="a csoport aktiválását javaslom">
+        			<a class="btn btn-success" 
+        			   href="{{ \URL::to('/like/teams/'.$team->id) }}" 
+        			   title="a csoport aktiválását javaslom">
         				@if ($info->userLiked)
         				<em class="fas fa-check"></em>
         				@endif

@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Like extends Model
 {
     use HasFactory;
+    use HasFactory;
+    protected $fillable = [
+        'parent_type', 'parent', 'user_id', 'like_type'
+    ];
+    
 }

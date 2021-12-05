@@ -233,10 +233,18 @@ class TeamTest extends TestCase
     
     public function test_destroy() {
        // csak szintaktikai teszt, nincs használva ez a method 
-  	   $team = new \App\Models\Team();
-  	   $team = $team->where('name','=','testTeam1')->first();
-  	   $this->controller->destroy($team);
-       $this->assertEquals(1,1);
+        $team = new \App\Models\Team();
+        $team = $team->where('name','=','testTeam1')->first();
+        $this->controller->destroy($team);
+        $this->assertEquals(1,1);
+    }
+    
+    public function test_checkStatus() {
+        $team = new \App\Models\Team();
+        $team = $team->where('name','=','testTeam1')->first();
+        $model = new \App\Models\Team();
+        $model->checkStatus($team->id);
+        $this->assertEquals(1,1);
     }
     
     public function test_end() {
