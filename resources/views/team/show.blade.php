@@ -123,7 +123,8 @@
         			</button>
         			</form>
         		@endif
-        		@if ((count($info->userRank) > 0) & ($team->status == 'active'))
+        		@if ((count($info->userRank) > 0) & 
+        		     ($team->status == 'active') & ($team->id != 1))
         			<form action="{{ URL::to('/member/doexit') }}"
         				style="display:inline-block; width:auto">
         			<input type="hidden" name="parent_type" value="teams" />
@@ -136,7 +137,7 @@
         			</form>
         		@endif
         		@if ((in_array('active_member', $info->userRank) | in_array('active_admin',$info->userRank)) & 
-        		     ($team->status == 'active')) 
+        		     ($team->status == 'active') & ($team->id != 1) ) 
         			<a class="btn btn-danger" 
         			   href="{{ \URL::to('/dislike/teams/'.$team->id) }}" 
         			   title="a csoport lezárását javaslom">

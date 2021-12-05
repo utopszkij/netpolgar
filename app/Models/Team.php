@@ -160,7 +160,7 @@ class Team extends Model
 			"likeReq":0,
 			"disLikeCount":0,
 			"disLikeReq":0,
-            "meberCount":0
+            "memberCount":0
 		}');
 		if ($id == 0) {
 			$result->status = 'active';

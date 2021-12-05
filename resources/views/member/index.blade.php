@@ -38,12 +38,12 @@
             	</a>
             </td>
             <td>
-            @if (count($info->userRank) > 0)
+            @if (count($info->userRank) > 0) 
             	@if (($value->status == 'proposal') & ($value->rank == 'member'))
             	   @if (in_array($value->id, $info->userLiked))
             	   <em class="fas -fa-check"></em>	
             	   @endif
-            		<a href="">
+            		<a href="{{ \URL::to('/like/members/'.$value->id) }}">
             			<em class="fas fa-thumbs-up"></em>
             			{{ $info->likeCount }} / {{ $info->likeReqMember }}
             			{{ __('member.like') }}
@@ -53,7 +53,7 @@
             	   @if (in_array($value->id, $info->userLiked))
             	   <em class="fas -fa-check"></em>	
             	   @endif
-            		<a href="">
+            		<a href="{{ \URL::to('/like/members/'.$value->id) }}">
             			<em class="fas fa-thumbs-up"></em>
             			{{ $info->likeCount }} / {{ $info->likeReqRank }}
             			{{ __('member.like') }}
@@ -63,7 +63,7 @@
             	   @if (in_array($value->id, $info->userDisLiked))
             	   <em class="fas -fa-check"></em>	
             	   @endif
-            		<a href="">
+            		<a href="{{ \URL::to('/dislike/members/'.$value->id) }}">
             			<em class="fas fa-thumbs-down"></em>
             			{{ $info->disLikeCount }} / {{ $info->disLikeReqMember }}
             			{{ __('member.disLikeMember') }}
@@ -73,7 +73,7 @@
             	   @if (in_array($value->id, $info->userDisLiked))
             	   <em class="fas -fa-check"></em>	
             	   @endif
-            		<a href="">
+            		<a href="{{ \URL::to('/dislike/members/'.$value->id) }}">
             			<em class="fas fa-thumbs-down"></em>
             			{{ $info->disLikeCount }} / {{ $info->disLikeReqRank }}
             			{{ __('member.disLikeRank') }}
