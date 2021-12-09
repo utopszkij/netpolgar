@@ -4,9 +4,28 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class LikeController extends Controller
-{
+class LikeController extends Controller {
     /**
+     * szükség esetén a parent rekord status modositása a like /dislike szám szarint
+     * @param string $parentType
+     * @param unknown $parent
+     */
+    protected function checkStatus(string $parentType, $parent) {
+        if ($parentType == 'teams') {
+            $parentModel = new \App\Models\Team();
+        }
+        if ($parentType == 'members') {
+            $parentModel = new \App\Models\Member();
+        }
+        if ($parentType == 'messages') {
+            $parentModel = new \App\Models\Message();
+        }
+        if (method_exists($parentModel, 'checkStatus')) {
+            $parentModel->checkStatus($parent);
+        }
+    }
+    
+     /**
      * a bejelentkezett felhasználó a like ikonra kattintott
      * - ha korábban már lájkolta akkor törli azt a likes táblából
      * - ha korábban még nem lájkolta a akkor létrehozza a likes táblában
@@ -37,15 +56,7 @@ class LikeController extends Controller
                     "like_type" => "like"
                 ]);
             }
-            if ($parent_type == 'teams') {
-                $parentModel = new \App\Models\Team();
-            }
-            if ($parent_type == 'members') {
-                $parentModel = new \App\Models\Member();
-            }
-            if (method_exists($parentModel, 'checkStatus')) {
-                $parentModel->checkStatus($parent);
-            }
+            $this->checkStatus($parent_type, $parent);
         }
         return \Redirect::back();
     }
@@ -82,17 +93,62 @@ class LikeController extends Controller
                     "like_type" => "dislike"
                 ]);
             }
-            if ($parent_type == 'teams') {
-                $parentModel = new \App\Models\Team();
-            }
-            if ($parent_type == 'members') {
-                $parentModel = new \App\Models\Member();
-            }
-            if (method_exists($parentModel, 'checkStatus')) {
-                $parentModel->checkStatus($parent);
-            }
+            $this->checkStatus($parent_type, $parent);
         }
         return \Redirect::back();
+    }
+    
+    /**
+     * like/dislike user lisita megjelenítése
+     * @param string $parentType
+     * @param string $parent
+     * @return laravel view
+     */
+    public function likeInfo(string $parentType, string $parent) {
+        
+        $likeUsers = \App\Models\Like::select('users.id', 'users.name', 'users.profile_photo_path', 'users.email')
+        ->leftJoin('users','users.id','=','likes.user_id')
+        ->where('parent_type', '=', $parentType)
+        ->where('parent', '=',$parent)
+        ->where('like_type','=','like')
+        ->orderBy('name')
+        ->get();
+        
+        $disLikeUsers = \App\Models\Like::select('users.id', 'users.name', 'users.profile_photo_path', 'users.email')
+        ->leftJoin('users','users.id','=','likes.user_id')
+        ->where('parent_type', '=', $parentType)
+        ->where('parent', '=', $parent)
+        ->where('like_type','=','dislike')
+        ->orderBy('name')
+        ->get();
+        
+        $parentTable = \DB::table($parentType);
+        $parent = $parentTable->where('id','=',$parent)->first();
+        if (!$parent) {
+            echo 'Ftaal error in likeInfo. parent not found'; exit();
+        }
+
+        // $parent -be kell 'name' !
+        if ($parentType == 'members') {
+            $parent->name = '?';
+            $groupTable = \DB::table($parent->parent_type);
+            $group = $groupTable->where('id','=',$parent->parent)->first();
+            if ($group) {
+                $parent->name = $group->name;
+            }
+            $userTable = \DB::table('users');
+            $user = $userTable->where('id','=',$parent->user_id)->first();
+            if ($user) {
+                $parent->name .= ' / '.$user->name;
+            }
+        }
+        if ($parentType == 'messages') {
+            $parent->name = $parent->value;
+        }
+        return view('like.info',["likeUsers" => $likeUsers,
+                                "disLikeUsers" => $disLikeUsers,
+                                "parentType" => $parentType,
+                                "parent" => $parent]);
     }
     
 }

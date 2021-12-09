@@ -5,10 +5,10 @@
 		<div class="leiras">
 	         <img src="{{ URL::to('/') }}/img/logo.png" 
 	            	style="display:inline-block; float:left; margin:0 10px 0 10px; width:300px " />
-	         <h2>Welcome-hu.blade IDE JÖHET A vue fő program</h2>   	
+	         <h2>Áttekintés</h2>   	
 				<h3 class="western"><a name="description"></a>
-				A Netpolgár egy virtuális közösségi tér vagyis E-demokrácia
-				felület.</h3>
+				A Netpolgár egy virtuális közösségi tér. E-demokrácia, projekt menedzser,
+				virtuális piactér, fájl tároló és kommunikációs felület.</h3>
 				<h4 class="western">Ez egy pártoktól,
 				szervezetektől független civil kezdeményezés.</h4>
 				<p>Célja egy alternatív hierarchia mentes, egyenrangú autonóm

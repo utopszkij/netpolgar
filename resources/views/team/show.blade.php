@@ -36,7 +36,7 @@
 				<em class="fas fa-shopping-basket"></em>
 				<span>{{ __('team.products') }}</span><br />			
 			</a>
-			<a href="{{ URL::to('/construction') }}" title="Beszégetés">
+		    <a href="{{ URL::to('/message/tree/teams/'.$team->id) }}" title="Beszégetés">
 				<em class="fas fa-comments"></em>
 				<span>{{ __('team.comments') }}</span><br />			
 			</a>
@@ -145,7 +145,9 @@
         				<em class="fas fa-check"></em>
         				@endif
         				<em class="fas fa-thumbs-down"></em>
-        				({{ $info->disLikeCount }}/{{ $info->disLikeReq}})
+        				<a href="{{ \URL::to('/likeinfo/teams/'.$team->id) }}">
+	        				({{ $info->disLikeCount }}/{{ $info->disLikeReq}})
+        				</ä>a>
 						{{ __('team.dislike') }}
         			</a>
         		@endif
@@ -157,7 +159,9 @@
         				<em class="fas fa-check"></em>
         				@endif
         				<em class="fas fa-thumbs-up"></em>
-        				({{ $info->likeCount }}/{{ $info->likeReq}})
+        				<a href="{{ \URL::to('/likeinfo/teams/'.$team->id) }}">
+	        				({{ $info->likeCount }}/{{ $info->likeReq}})
+	        			</a>	
 						{{ __('team.like') }}
         			</a>
         		@endif
