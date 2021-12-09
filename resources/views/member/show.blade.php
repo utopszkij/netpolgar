@@ -33,7 +33,7 @@
 				<em class="fas fa-shopping-basket"></em>
 				<span>{{ __('member.products') }}</span><br />			
 		 </a>
-		 <a href="{{ URL::to('/construction') }}" title="Beszégetés">
+		 <a href="{{ URL::to('/message/list/members/'.$team->id) }}" title="Beszégetés">
 				<em class="fas fa-comments"></em>
 				<span>{{ __('member.comments') }}</span><br />			
 		 </a>

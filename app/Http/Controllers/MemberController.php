@@ -22,7 +22,6 @@ class MemberController extends Controller
 				echo 'Fatal error parent not fouund '.$parent_type.'/',$parentId; exit();		 
 		 }
 
-
    	  $model = new Member();	
         $data = $model->select(['members.id',
         								  'members.user_id',

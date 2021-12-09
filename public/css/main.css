@@ -63,6 +63,26 @@ input, textarea, select {max-width:98%}
 .messageItem {margin:4px; border-width:1px 1px 1px; padding:2px;}
 .sendTime {color:#A0A0A0}
 
+#messages a {color:blue}
+#messages .level0 {margin-left:0px}
+#messages .level1 {margin-left:20px}
+#messages .level2 {margin-left:40px}
+#messages .level3 {margin-left:60px}
+#messages .level4 {margin-left:80px}
+#messages .moderatorInfo {color:red}
+#messages em.fas {margin-right:0px;}
+#messages .strong a {color:green}
+#messages .msgHeader {background-color:#bfd8f2; color:#5f6b77; 
+	border-radius:10px 10px 0px 0px; padding:10px 10px 0px 10px}
+#messages .msgBody {background-color:#bfd8f2; padding:0px 10px 0px 10px}
+#messages .msgFooter {background-color:#bfd8f2; color:#5f6b77;
+	border-radius: 0px 0px 10px 10px; padding:0px 10px 0px 10px; margin-bottom:4px}
+#messages childs {margin-left:10px;}	
+#messages .msgInfo {display:inline-block; width:auto; margin-right:15px}
+#messages .contra {background-color:#f28c8c}
+#messages .protest {color:red}
+#messages .replyTo {font-weight:bolder}
+
 footer {background:silver; padding:10px; margin-top:20px}
 #cookieEnable {position:fixed; z-index:999; bottom:0px; left:0px; width:100%;
 	background-color:silver; opacity:0.9; padding:20px; text-align:right;

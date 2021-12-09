@@ -1,0 +1,93 @@
+
+
+1. alapértelmezett config: order:DESC
+                           extractLevel:2
+                           extractItem:2
+                     
+Rotes
+
+	message/list/parentType/parentId
+	
+			beolvassuk a legfrissebb 5 olvasatlan üzenet
+			(ha nincs öt olvasatlan akkor hozzá olvassa
+			a legfrissebb olvasottakat is) kiirása:
+			
+			
+         <div class="level1">   
+	         <a id="prev_id">korábbi üzenetek</a>  
+         	<p>id #parent szöveg user xdb válaszdátum</p>
+	         <div class="level2">   
+	         	<a id="prev_id">korábbi üzenetek</a>  
+ 		        	<p>id #parent szöveg user dátum xdb válasz</p>
+		         <div class="level3">   
+		         	<a id="prev_id">korábbi üzenetek</a>  
+   	      		<p>id #parent szöveg user dátum xdb válasz  OLVASATLAN
+   	      		<a id="next_id">további üzenetek</a> 
+      	   	</div>	
+         	</div>	
+         	<a id="next_id">további üzenetek</a>  
+         </div>
+         
+         figyelem ismétlés mentesség!
+			tárolja adatbázisba, hogy melyik üzeneteket látta már a user.	
+	
+	      A "korábbi üzenetek"
+	        "további üzenetek"
+	        a link helyére  tölt be AJAX -al <p>...</p> listát
+	        
+	        a "xdb válasz" az alatta lévő level -be
+	        tölt be <p>....</p> listát akorábbi tartalmat felülirva
+
+
+                           
+2. megjelenités
+   2.1 beolvassa az utolsó 5 a user által még nem olvasott bejegyzést
+       (ha nincs ebből 5 akkor az utolsó ötöt) 
+   2.2 beolvassa mindegyikhez parentPath -ot
+   2.3 megjeleniti a 10 üzenet path -ot
+       ha egy egy megjelenitett szinten további üzenetek is vannak akkor
+       link elözők, továbbiak. Figyelem duplán ne jelenitsen meg üzenetet!
+       
+       
+   showMessage(msgId)
+   	if (ez a msgId még nem lett megjelenitve)
+	      msg = getMsg(id)
+	      elozok = $m->where(parent = msg.parent)
+	                 ->where(created_by < msg.created_by)
+	                 ->where(id <> msg.id)
+	      tovabbiak = $m->where(parent = msg.parent)
+	                 ->where(created_by > msg.created_by)
+	                 ->where(id <> msg.id)
+	      megjelenités
+	      jelzi az adatbázisba, hogy mér olvasta a user
+	      jelzi memoriába, hogy ez a msg már meg lett jelenítve
+         
+         <div class="level1">   
+            korábbi üzenetek  
+         	id #parent szöveg user dátum
+	         <div class="level2">   
+	         	korábbi üzenetek  
+ 		        	id #parent szöveg user dátum
+		         <div class="level3">   
+	         		korábbi üzenetek
+   	      		id #parent szöveg user dátum    ez a msgId 
+      	   		további üzenetek
+      	   	</div>	
+         		további üzenetek
+         	</div>	
+         	további üzenetek	     
+         </div>
+            
+         Azstilus a 5. mélység után a style nem csusztatja beljebb    
+                     
+               
+   get utolsoOlvasatlnok [{id, parents}, ...]
+   get utolsoOlvasottak  [{id, parents}, ...]           
+   megjelenitendok merge utolsoOlvasatlnok+utolsoOlvasottak
+	midegyikhez beolvassuk megjelitendok[i]->parents -et
+	foreach megjelenitendok
+		foreach megjeneitendo->parents
+			showMesage
+			
+	    
+                 

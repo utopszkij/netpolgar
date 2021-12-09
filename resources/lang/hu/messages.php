@@ -1,9 +1,9 @@
 <?php
 return [
   	'list' => 'Üzenetek',
-  	'group' => 'Csoport',
-  	'project' => 'Projekt',
-    'product' => 'Termék',
+  	'teams' => 'Csoport',
+  	'projects' => 'Projekt',
+    'products' => 'Termék',
     'event' => 'Esemény',
     'user' => 'Személyes',
     'search' => 'Keresés',
@@ -12,14 +12,22 @@ return [
     'notrecords' => 'Nincs listázandó adat',
     'online' => 'Jelenleg on-line',
     'enableBtn' => 'Engedélyezem',
-    'help' => 'Üzenet íráshoz kattints a "Join meeting" gombra majd a <em class="far fa-comment-alt"></em> ikonra!',
+    'help' => 'Engedélyezd a kamera és mikrofon használatát. 
+        Kattints a "Join meeting" gombra és vide chat -elhetsz. 
+        Üzenet íráshoz kattints a  <em class="far fa-comment-alt"></em> ikonra!',
     'target' => 'Üzenet címzetje',
-    'sender' => 'Üzenet feladója',
+    'sender' => 'Üzenet feladója',                
     'value' => 'Üzenet szövege',
     'created_at' => 'Időpont',
     'moderatorinfo' => 'moderátor megjegyzése',
     'moderatorForm' => 'Üzenet moderálás',
     'moderationSaved' => 'Moderálás tárolva',
     'save' => 'Tárolás',
-    'cancel' => 'Mégsem'
+    'cancel' => 'Mégsem',
+    'replyCount' => 'db válasz',
+    'newReply' => 'válasz írása',
+    'protest' => 'kifogásolom',
+    'send' => 'küldés',
+    'saved' => 'üzenet tárolva',
+    'accessDenied' => 'nem vagy jogosult erre' 
 ];
