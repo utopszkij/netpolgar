@@ -205,6 +205,18 @@ class TeamController extends Controller
      */
     public function show(Team $team)
     {
+          // id=1 "regisztráltak" csoport speciális kezelése:
+          // minden regisztrált user automatikusan tag
+          if ($team->id == 1) {
+            \DB::statement('insert into members (parent_type, parent, user_id, `status`, `rank`, created_by) 
+              select "teams", 1, users.id, "active", "member", users.id
+              from users
+              left outer join members on members.parent_type = "teams" and
+                                        members.parent = 1 and members.user_id = users.id
+              where members.id is null
+            ');  
+          }
+          
     	  $info = Team::getInfo($team->id); 
 		  $this->decodeConfig($team, $info);
      	  if ($info->parentClosed) {

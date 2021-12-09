@@ -16,7 +16,7 @@ return [
     'proposal_moderator' => 'javasolt moderátor',
     'proposal_president' => 'javasolt elnök',
     
-    'members' => 'Tagok',
+    'members' => 'tagjai',
     'details' => 'Tag adatlap',
   	'rank' => 'tisztség',
   	'id' => 'Azonosító',

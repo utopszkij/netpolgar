@@ -29,21 +29,29 @@ class Member extends Model
     	return $result;
     }
     
+    /**
+     * 
+     * @param string $parent_type
+     * @param object $parent
+     * @param array $data [{user_id, rank, status},...]
+     * @return object
+     */
     public static function getInfo(string $parent_type, $parent, $data) {
-      $result = JSON_decode('{
+        $config = JSON_decode($parent->config);
+        $result = JSON_decode('{
         		"ranks":[],
         		"userRank":[],
-				"likeCount":0,
+				"likeCount":[],
 				"likeReqMember":0,
 				"likeReqRank":0,
-				"disLikeCount":0,
+				"disLikeCount":[],
 				"disLikeReqMember":0,        
 				"disLikeReqRank":0,
 				"userLiked":[],
 				"userDisLiked":[]        
-      }');
-      $userRank = [];
-		if (\Auth::user()) {
+        }');
+        $userRank = [];
+        if (\Auth::user()) {
 		  		$user = \Auth::user();
 		  		foreach ($data as $m) {
 					if (($m->user_id == $user->id) & ($m->status == 'active')) {
@@ -52,8 +60,8 @@ class Member extends Model
 		  		}
 		}	        			 
 		$result->userRank = $userRank;	
-      $ranks = [];	
-      if (isset($parent->config)) {
+        $ranks = [];	
+        if (isset($parent->config)) {
 				$config = JSON_decode($parent->config);
 				if (is_string($config->ranks)) {
 					$config->ranks = explode(',',$config->ranks);				
@@ -61,9 +69,124 @@ class Member extends Model
             if (isset($config->ranks)) {
 					$ranks = $config->ranks;         
         		}
-      }	
-		$result->ranks = $ranks;
-		return $result;
+        }	
+	    $result->ranks = $ranks;
+	    
+	    // memberCount lekérése
+	    $t = \DB::table('members');
+	    $memberCount = $t->selectRaw('distinct user_id')
+	    ->where('parent_type','=',$parent_type)
+	    ->where('parent','=',$parent->id)
+	    ->count();
+	    
+	    // likeReqMember, likeReqRank, disLikeReqMemberm diLikeReqRank képzése
+	    $result->likeReqMember = $config->memberActivate;
+	    $result->disLikeReqMember = round($config->memberExclude * $memberCount / 100);
+	    $result->likeReqRank = round($config->rankActivate * $memberCount / 100);
+	    $result->disLiikeReqRank = round($config->rankClose * $memberCount / 100);
+	    
+	    // likeCount és disLikeCount tömbök feltöltése (index = data index)
+	    $result->likeCount = [];
+	    $result->disLikeCount = [];
+	    foreach ($data as $key => $m) {
+	        $model = new \App\Models\Like();
+	        $result->likeCount[$key] = $model->where('parent_type','=','members')
+	        ->where('parent','=', $m->id)
+	        ->where('like_type','=','like')
+	        ->count();
+	        $result->disLikeCount[$key] = $model->where('parent_type','=','members')
+	        ->where('parent','=', $m->id)
+	        ->where('like_type','=','dislike')
+	        ->count();
+	    }
+	    
+	    // userLiked, userDisLiked tömbök feltöltése (index data index)
+	    $user = \Auth::user();
+	    $result->userLiked = [];
+	    $result->userDisLiked = [];
+	    foreach ($data as $key => $m) {
+	        if ($user) {
+    	        $model = new \App\Models\Like();
+    	        $result->userLiked[$key] = ( $model->where('parent_type','=','members')
+    	        ->where('parent','=', $m->id)
+    	        ->where('like_type','=','like')
+    	        ->where('user_id','=',$user->id)
+    	        ->count() >= 1);
+    	        $result->userDisLiked[$key] = ($model->where('parent_type','=','members')
+    	        ->where('parent','=', $m->id)
+    	        ->where('like_type','=','dislike')
+    	        ->where('user_id','=',$user->id)
+    	        ->count() >= 1);
+	        } else {
+	            $result->userLiked[$key] = false;
+	            $result->userDisLiked[$key] = false;
+	        }
+	    }
+	    
+	  return $result;
+    }
+    
+    /**
+     * like/dilike ellenörzés, ha szülséges status modosítás
+     * @param string $teamId
+     * @return void
+     */
+    public function checkStatus(string $memberId):void {
+        $model = new \App\Models\Member();
+        $member = $model->where('id','=',$memberId)->first();
+        if ($member) {
+            
+            $m = \DB::table('likes');
+            $likeCount = $m->where('parent_type','=','members')
+            ->where('parent','=',$member->id)
+            ->where('like_type','=','like')
+            ->count();
+            
+            $m = \DB::table('likes');
+            $disLikeCount = $m->where('parent_type','=','members')
+            ->where('parent','=',$member->id)
+            ->where('like_type','=','like')
+            ->count();
+            
+            $m = \DB::table('members');
+            $memberCount = $m->selectRaw('distinct user_id')
+                            ->where('parent_type','=',$member->parent_type)
+                            ->where('parent','=',$member->parent)
+                            ->where('rank','=','member')
+                            ->where('status','=','active')
+                            ->count(); 
+            
+            // $config beolvasása {memberActivate, memberExclude, rankActivate, rankClose}
+            if ($member->parent_type == 'teams') {
+                $parentModel = new \App\Models\Team();
+            }
+            $parent = $parentModel->where('id','=',$member->parent)->first();
+            if (!$parent) {
+                echo 'Fatal error parent not found'; exit();
+            }
+            $config = JSON_decode($parent->config);
+            
+            if (($member->status == 'proposal') &
+                ($member->rank == 'member') &
+                ($likeCount >= $config->memberActivate)) {
+                    $model->where('id','=',$member->id)->update(['status' => 'active']);
+            }
+            if (($member->status == 'proposal') &
+                ($member->rank != 'member') &
+                ($likeCount >= round($config->rankActivate * $memberCount / 100))) {
+                        $model->where('id','=',$member->id)->update(['status' => 'active']);
+            }
+            if (($member->status == 'activel') &
+                ($member->rank == 'member') &
+                ($disLikeCount >= round($config->memberExclude * $memberCount / 100))) {
+                    $model->where('id','=',$member->id)->update(['status' => 'excluded']);
+            }
+            if (($member->status == 'activel') &
+                ($member->rank != 'member') &
+                ($disLikeCount >= round($config->rankClose * $memberCount / 100))) {
+                    $model->where('id','=',$member->id)->update(['status' => 'closed']);
+            }
+        } // member exists
     }
     
 }

@@ -217,5 +217,5 @@ class MemberController extends Controller
 		}
 		return $result;	
     }
-    
+   
 }
