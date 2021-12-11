@@ -13,4 +13,5 @@ return [
     'enter' => 'Belépés',
    	'login' => 'Bejelentkezés',
    	'register' => 'Regisztráció',
+    'messages' => 'Privát üzenetek'
 ];

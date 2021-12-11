@@ -4,6 +4,7 @@ return [
   	'teams' => 'Csoport',
   	'projects' => 'Projekt',
     'products' => 'Termék',
+    'users' => 'Privát',
     'event' => 'Esemény',
     'user' => 'Személyes',
     'search' => 'Keresés',
@@ -29,5 +30,12 @@ return [
     'protest' => 'kifogásolom',
     'send' => 'küldés',
     'saved' => 'üzenet tárolva',
-    'accessDenied' => 'nem vagy jogosult erre' 
+    'accessDenied' => 'nem vagy jogosult erre',
+    'notModerator' => 'Nincs moderátor',
+    'protestSended' => 'Kifigás elküldve a moderátor(ok)nak.',
+    'protestForm' => 'Kifogás bejelentése',
+    'first'=> '<em class="fas fa-backward"></em>',
+    'previous' => '<em class="fas fa-caret-left"></em>',
+    'next' => '<em class="fas fa-caret-right"></em>',
+    'last' => '<em class="fas fa-forward"></em>'
 ];

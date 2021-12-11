@@ -171,7 +171,7 @@
 				<img src="{{ $team->avatar }}" alt="logo" title="logo"
 					style="float:right; width:25%" />        		
             <div style="width:70%">
-            	<pre>{!! $team->description !!}</pre>
+            	{!! str_replace("\n",'<br />',$team->description) !!}
             	<h4>Beállítások</h4>
 					<div class="config" style="display:inline-block; width:500px">
 						  tisztségek:  {{ implode(',',$team->config->ranks) }}<br />	

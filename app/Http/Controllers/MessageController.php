@@ -79,6 +79,9 @@ class MessageController extends Controller {
      * @param int $userId
      */
     protected function setReaded(int $messageId, int $userId) {
+        if ($messageId <= 0) {
+            return;
+        }
         $table = \DB::table('msgreads');
         $rec = $table->where('msg_id','=',$messageId)
                      ->where('user_id','=',$userId)
@@ -92,6 +95,34 @@ class MessageController extends Controller {
     }
     
     /**
+     * lapozó linkek kialakítása
+     * @param int $offset
+     * @param int $total
+     * @param string $parentType
+     * @param record $parent
+     * @return array
+     */
+    protected function buildLinks(int $offset, int $total, string $parentType, $parent): array {
+        $links = [];
+        if ($offset > 0) {
+            $links[] = ["first", __('messages.first'), \URL::to('/messages/tree/'.$parentType.'/'.$parent->id.'/0') ];
+        }
+        if ($offset >= 0) {
+            $links[] = ["previos", __('messages.previous'), \URL::to('/messages/tree/'.$parentType.'/'.$parent->id.'/'.(max($offset-10,0))) ];
+        }
+        $links[] = ["actual", 
+            '<em class="fas">'.(round(($offset/10)+0.5) + 1).'</em>', 
+            \URL::to('/messages/tree/'.$parentType.'/'.$parent->id.'/'.($offset-10)) ];
+        if ($offset < ($total - 10)) {
+            $links[] = ["next", __('messages.next'), \URL::to('/messages/tree/'.$parentType.'/'.$parent->id.'/'.($offset+10)) ];
+        }
+        if ($offset < ($total - 10)) {
+            $links[] = ["last", __('messages.last'), \URL::to('/messages/tree/'.$parentType.'/'.$parent->id.'/'.($total-10)) ];
+        }
+        return $links;
+    }
+    
+    /**
      * üzenetek fa szerkezetű lapozható megjelenitője
      */
     public function tree(Request $request, string $parentType, int $parent, int $offset = -1) {
@@ -102,15 +133,24 @@ class MessageController extends Controller {
             $userId = 0;
             $avatar = '';
         }
+        
+        // privát üzenetek közül csak a saját üzeneteit olvashatja
+        if (($parentType == 'users') & ($parent != $userId)) {
+            return \Redirect::back()->with('error',__('messages.accessDenied'));
+        }
+        
         $moderator = $this->isModerator($parentType, $parent);
         $member = $this->isMember($parentType, $parent);
         $parentTable = \DB::table($parentType);
         $parent = $parentTable->where('id','=',$parent)->first();
-        
+        if (!$parent) {
+            echo 'Fatal error parent not found'; 
+        }
         $model = new \App\Models\Message();
         $model->getTreeItem($parentType, $parent->id, 0, 0);
         $model->setPathNotReaded();
         $model->treeTruncate();
+        
         $total = count($model->tree);
         
         // ha $offset alapértelmezett akkor az utolsó lapot jelenitem meg
@@ -121,37 +161,33 @@ class MessageController extends Controller {
             }
         }
         $model->tree = array_splice($model->tree, $offset, 10);
-        $model->getInfo();
         foreach ($model->tree as $treeItem) {
+            $model->getInfo($treeItem);
             $this->setReaded($treeItem->id, $userId);
         }
         
         $path = [];
-        if (($total > 0) & ($offset > 0)) {
+        if ($total > 0)  {
             $rec = $model->tree[0];
             while ($rec->replyTo[0] > 0) {
-                $rec = \DB::table('messages.id, messages.value, users.name')
-                ->leftJoin('users','users.id','messages.user_id')
-                ->where('messages.id','=',$rec->replayTo[0])->first();
-                $path[] = $rec;
+                $rec = \DB::table('messages')->where('id','=',$rec->replyTo[0])->first();
+                if ($rec) {
+                    $model->getInfo($rec);
+                    $path[] = $rec;
+                } else {
+                    $rec = new \stdClass();
+                    $rec->replyTo = [0,''];
+                }
             }
-            array_reverse($path);
+            $path = array_reverse($path);
+            $level = 0;
+            foreach ($path as $pathItem) {
+                $pathItem->level = $level;
+                $level++;
+            }
         }
         
-        $links = [];
-        if ($offset > 0) {
-            $links[] = ["first", __('messages.first'), \URL::to('/messages/tree/'.$parentType.'/'.$parent->id.'/0') ];
-        }
-        if ($offset >= 10) {
-            $links[] = ["previos", __('messages.previos'), \URL::to('/messages/tree/'.$parentType.'/'.$parent->id.'/'.($offset-10)) ];
-        }
-        $links[] = ["actual", (($offset/10) + 1), \URL::to('/messages/tree/'.$parentType.'/'.$parent->id.'/'.($offset-10)) ];
-        if ($offset < ($total - 10)) {
-            $links[] = ["next", __('messages.next'), \URL::to('/messages/tree/'.$parentType.'/'.$parent->id.'/'.($offset+10)) ];
-        }
-        if ($offset < ($total - 10)) {
-            $links[] = ["last", __('messages.last'), \URL::to('/messages/tree/'.$parentType.'/'.$parent->id.'/'.($total-10)) ];
-        }
+        $links = $this->buildLinks($offset, $total, $parentType, $parent);
         
         return view('message.tree',[
            "avatar" => $avatar, 
@@ -166,6 +202,88 @@ class MessageController extends Controller {
            "links" => $links
         ]);        
     }
+    
+    /**
+     * üzenetek lista formájú lapozható megjelenitője
+     */
+    public function list(Request $request, string $parentType, int $parent, int $replyTo, int $offset = -1) {
+        if (\Auth::user()) {
+            $userId = \Auth::user()->id;
+            $avatar = $this->avatar(\Auth::user()->profile_photo_path, \Auth::user()->email);
+        } else {
+            $userId = 0;
+            $avatar = '';
+        }
+        
+        // privát üzenetek közül csak a saját üzeneteit olvashatja
+        if (($parentType == 'users') & ($parent != $userId)) {
+            return \Redirect::back()->with('error',__('messages.accessDenied'));
+        }
+        
+        $moderator = $this->isModerator($parentType, $parent);
+        $member = $this->isMember($parentType, $parent);
+        $parentTable = \DB::table($parentType);
+        $parent = $parentTable->where('id','=',$parent)->first();
+        if (!$parent) {
+            echo 'Fatal error parent not found'; exit();
+        }
+        
+        // Ha itt olvasnám be a path -ot, akkor a model->getListItem-nek tudnám a kezdő level értéket adni
+        $path = [];
+        $rec = \DB::table('messages')->where('id','=', $replyTo)->first();
+        if ($rec) {
+            $path[] = $rec;
+            while ($rec->reply_to > 0) {
+                $rec = \DB::table('messages')->where('id','=', $rec->reply_to)->first();
+                
+                if ($rec) {
+                    $path[] = $rec;
+                } else {
+                    $rec = new \stdClass();
+                    $rec->replyTo = 0;
+                }
+            }
+           $path = array_reverse($path);
+        }
+        $model = new \App\Models\Message();
+        $level = 0;
+        foreach ($path as $pathItem) {
+            $pathItem->level = $level;
+            $model->getInfo($pathItem);
+            $level++;
+        }
+        $model->getListItem($parentType, $parent->id, $replyTo, $level);
+        $total = count($model->tree);
+        
+        // ha $offset alapértelmezett akkor az utolsó lapot jelenitem meg
+        if ($offset < 0) {
+            $offset = $total - 10;
+            if ($offset < 0 ) {
+                $offset = 0;
+            }
+        }
+        $model->tree = array_splice($model->tree, $offset, 10);
+        foreach ($model->tree as $treeItem) {
+            $model->getInfo($treeItem);
+            $this->setReaded($treeItem->id, $userId);
+        }
+                
+        $links = $this->buildLinks($offset, $total, $parentType, $parent);
+        
+        return view('message.tree',[
+            "avatar" => $avatar,
+            "parentType" => $parentType,
+            "parentId" => $parent->id,
+            "parent" => $parent,
+            "member" => $member,
+            "moderator" => $moderator,
+            "path" => $path,
+            "tree" => $model->tree,
+            "total" => $total,
+            "links" => $links
+        ]);
+    }
+    
     
     /**
      * új üzenet tárolása és olvasottság jelzés
@@ -190,8 +308,11 @@ class MessageController extends Controller {
         $backURL = $request->input('backURL','');
         
         $moderator = $this->isModerator($parent_type, $parent);
-        $member = $this->isMember($parent_type, $parent);
-        
+        if ($parent_type == 'users') {
+            $member = true;
+        } else {
+            $member = $this->isMember($parent_type, $parent);
+        }
         
         if ($messageId == 0) {
             // new message
@@ -210,7 +331,6 @@ class MessageController extends Controller {
                         'moderator_info' => $moderatorInfo,
                         'moderated_by' => $moderatorId
                     ]);
-                    $this->setReaded($newMessageId, $userId);
                     $result = \Redirect::back()->with('success',__('messages.saved'));
                 } catch (\Illuminate\Database\QueryException $exception) {
                     $errorInfo = $exception->errorInfo;
@@ -271,6 +391,61 @@ class MessageController extends Controller {
             echo 'Fatal error message not found'; exit();
         }
         return $result;
+    }
+    
+    /**
+     * üzenet kifogásolás
+     * @param string $messageId
+     */
+    public function protest(string $messageId) {
+        $message = \DB::table('messages')->where('id','=',$messageId)->first();
+        if ($message) {
+            $moderators = \DB::table('members')
+                ->where('parent_type','=',$message->parent_type)
+                ->where('parent','=',$message->parent)
+                ->whereIn('rank',['admin','moderator'])
+                ->get();
+                if (count($moderators) > 0) {
+                    return view('message.protest',[
+                        'myMessage' => $message,
+                        'moderators' => $moderators
+                    ]);
+                } else {
+                    return \Redirect::back()->with('error',__('messages.notModerator'));
+                }
+        } else {
+            echo 'fatal error message not found'; exit();
+        }
+    }
+    
+    /**
+     * üzenet kifogásolás tárolása; privát üzenet küldése a moderátoroknak
+     * @param Request $request
+     * @return unknown
+     */
+    public function saveprotest(Request $request) {
+        if (\Auth::user()) {
+            $userId = \Auth::user()->id;
+        } else {
+            $userId = 0;
+        }
+        $moderators = explode(',',$request->input('moderators'));
+        $messageId = $request->input('messageId');
+        $txt = $request->input('txt');
+        foreach ($moderators as $moderator) {
+            $newMessageId = \DB::table('messages')->insertGetId([
+                'parent_type' => 'users',
+                'parent' => $moderator,
+                'msg_type' => '',
+                'reply_to' => 0,
+                'value' => $txt."\n".\URL::to('/message/moderal/'.$messageId),
+                'user_id' => $userId,
+                'moderator_info' => '',
+                'moderated_by' => 0
+            ]);
+            
+        }
+        return \Redirect::to(\URL::to('/'))->with('success',__('messages.protestSended'));
     }
     
 }
