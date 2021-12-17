@@ -28,6 +28,7 @@ Route::get('/member/list/{parent_type}/{parent}', [MemberController::class, 'ind
 Route::get('/member/{member}', [MemberController::class, 'show']);
 Route::get('/member/store', [MemberController::class, 'store']);
 Route::get('/member/doexit', [MemberController::class, 'doExit']);
+Route::get('/member/user/{userId}', [MemberController::class, 'user']);
 
 Route::get('/like/{parentType}/{parent}', [LikeController::class, 'like']);
 Route::get('/dislike/{parentType}/{parent}', [LikeController::class, 'disLike']);
@@ -40,9 +41,12 @@ Route::get('/policy2', function () { return view('policy2'); });
 Route::get('/policy3', function () { return view('policy3'); });
 Route::get('/terms', function () { return view('terms'); });
             
-Route::get('/message/tree/{parentType}/{parentId}',[MessageController::class, 'tree']);
+Route::get('/message/tree/{parentType}/{parentId}/{offset?}',[MessageController::class, 'tree']);
 Route::get('/message/moderal/{messageId}',[MessageController::class, 'moderal']);
 Route::post('/message/store',[MessageController::class, 'store']);
+Route::get('/message/protest/{messageId}',[MessageController::class, 'protest']);
+Route::post('/message/saveprotest',[MessageController::class, 'saveprotest']);
+Route::get('/message/list/{parentType}/{parentId}/{replyTo}/{offset?}',[MessageController::class, 'list']);
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
     return view('dashboard');

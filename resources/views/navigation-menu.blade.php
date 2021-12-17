@@ -83,7 +83,12 @@ if (Auth::user()) {
             style="right:20px">
             <li><a class="dropdown-item" href="{{ URL::to('/user/profile') }}">
             	{{ __('navigation.profile') }}
-            </a></li>
+           		</a>
+           	</li>
+            <li><a class="dropdown-item" href="{{ URL::to('/message/tree/users/'.\Auth::user()->id) }}">
+            	{{ __('navigation.messages') }}
+           		</a>
+           	</li>
             <li>
             	<form method="post" id="logoutForm" action="{{ URL::to('/logout') }}">
             		@csrf

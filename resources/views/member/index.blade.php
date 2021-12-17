@@ -4,9 +4,11 @@
         <div class="col-lg-12 margin-tb">
             <div class="pull-left">
                 <h2>
-                <a href="/{{ $parent_type }}/{{ $parent->id }}">
-                {{ $parent->name}}
-                </a> {{ __('member.members') }}</h2>
+                    <a href="/{{ $parent_type }}/{{ $parent->id }}">
+                    	<em class="fas fa-hand-point-right"></em>{{ $parent->name}}
+                    </a>
+	                {{ __('member.members') }}
+                </h2>
             </div>
         </div>
     </div>

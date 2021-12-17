@@ -117,5 +117,3 @@ a "storage" legyen irható is a web szerver számára.
 
 (ez a link tartalmazza  a  facebook, goggle, github konfigurálási utmutatót is)
 
-
-

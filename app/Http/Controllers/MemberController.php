@@ -85,6 +85,23 @@ class MemberController extends Controller
             echo 'Fatal error parent not found'; exit();
         }
     }
+    
+    /** user adatlap megjelenítése
+     * 
+     * @param string $userId
+     * @return laravel view
+     */
+    public function user(string $userId) {
+        $t = \DB::table('members');
+        $member = $t->where('user_id','=',$userId)
+                    ->where('parent_type', '=', 'teams')
+                    ->where('parent','=','1')
+                    ->first();
+        if (!$member) {
+            echo 'Fatal error member not found'; exit();
+        }
+        return $this->show($member->id);
+    }
    
 	 /**
 	 * új rekord tárolása (jelentkezés tagnak vagy tisztségviselőnek)

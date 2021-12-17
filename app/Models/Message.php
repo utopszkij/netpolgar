@@ -9,7 +9,8 @@ class Message extends Model
 {
     use HasFactory;
     
-    protected $fillable = array('parent_type', 'parent', 'reply_to', 'user_id', 'value', 'msg_type', 'moderated_by', 'moderator_info');
+    protected $fillable = ['parent_type', 'parent', 'reply_to', 
+        'user_id', 'value', 'msg_type', 'moderated_by', 'moderator_info'];
     
     public $tree = [];
     
@@ -18,7 +19,13 @@ class Message extends Model
         $this->tree = [];
     }
     
-    protected function avatar($profile_photo_path, $email) {
+    /**
+     * user avatar url képzése
+     * @param string $profile_photo_path
+     * @param string $email
+     * @return string
+     */
+    protected function avatar($profile_photo_path, $email): string {
         if ($profile_photo_path != '') {
             $result = URL::to('/').$user->profile_photo_path;
         } else {
@@ -28,14 +35,6 @@ class Message extends Model
         return $result;
     }
    
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
-    protected $hidden = [
-    ];
-
     public function init() {
         $result = JSON_decode('{
             "parent_type":"",
@@ -54,29 +53,48 @@ class Message extends Model
     /**
      * Teljes üzenet fa beolvasása $this->tree -be [{id, level, reply_to, readed}, ...]
      * Rekurziv
-     * @param array $tree
+     * @param string $parentType
      * @param int $parent
      * @param int $replyTo
      * @param int $level
-     * @return void
+     * @return int válaszok száma
      */
     public function getTreeItem(string $parentType,
-        int $parent, int $replyTo, int $level) {
+        int $parent, int $replyTo, int $level):int {
             if (\Auth::user()) {
                 $userId = \Auth::user()->id;
             } else {
                 $userId = 0;
             }
-            $recs = \DB::select('select messages.id, messages.reply_to, msgreads.id as readed
+            if ($replyTo > 0) {
+                $recs = \DB::select('select messages.id, messages.reply_to, msgreads.id as readed
                 from messages
                 left outer join msgreads
                      on msgreads.msg_id = messages.id and
                         msgreads.user_id = '.$userId.'
-                where messages.reply_to = '.$replyTo.' and
-                messages.parent_type = "'.$parentType.'" and
-                messages.parent = '.$parent.'
+                where messages.reply_to = '.$replyTo.' 
                 order by messages.id ASC');
-            
+            } else if ($parentType == 'users') {
+                $recs = \DB::select('select messages.id, messages.reply_to, msgreads.id as readed
+                    from messages
+                    left outer join msgreads
+                         on msgreads.msg_id = messages.id and
+                            msgreads.user_id = '.$userId.'
+                    where messages.reply_to = '.$replyTo.' and
+                          messages.parent_type = "'.$parentType.'" and
+                          (messages.parent = '.$parent.' or messages.user_id = '.$parent.')
+                    order by messages.id ASC');
+            } else {
+                $recs = \DB::select('select messages.id, messages.reply_to, msgreads.id as readed
+                    from messages
+                    left outer join msgreads
+                         on msgreads.msg_id = messages.id and
+                            msgreads.user_id = '.$userId.'
+                    where messages.reply_to = '.$replyTo.' and
+                    messages.parent_type = "'.$parentType.'" and
+                    messages.parent = '.$parent.'
+                    order by messages.id ASC');
+            }
             // var_dump($recs); 
             
             foreach ($recs as $rec) {
@@ -86,87 +104,165 @@ class Message extends Model
                 $this->tree[$i]->replyTo = $rec->reply_to;
                 $this->tree[$i]->level = $level;
                 $this->tree[$i]->readed = ($rec->readed > 0);
-                $this->getTreeItem($parentType, $parent, $rec->id, ($level+1));
+                $this->tree[$i]->replyCount = $this->getTreeItem($parentType, $parent, $rec->id, ($level+1));
             }
+            return count($recs);
     }
     
     /**
-     * messages információk kiegészítése 
+     * üzenet lista beolvasása $this->tree -be [{id, level, reply_to, readed}, ...]
+     * @param string $parentType
+     * @param int $parent
+     * @param int $replyTo
+     * @param int $level
+     * @return elemek száma
      */
-    public function getInfo() {
-        for ($i=0; $i<count($this->tree); $i++) {
-            $rec = $this->tree[$i];
+    public function getListItem(string $parentType,
+        int $parent, int $replyTo, int $level):int {
+            if (\Auth::user()) {
+                $userId = \Auth::user()->id;
+            } else {
+                $userId = 0;
+            }
+            if ($replyTo > 0) {
+                $recs = \DB::select('select messages.id, messages.reply_to, 0 as readed
+                    from messages
+                    where messages.reply_to = '.$replyTo.' 
+                    order by messages.id ASC');
+            } else if ($parentType == 'users') {
+                $recs = \DB::select('select messages.id, messages.reply_to, 0 as readed
+                    from messages
+                    where messages.reply_to = '.$replyTo.' and
+                          messages.parent_type = "'.$parentType.'" and
+                          (messages.parent = '.$parent.' or messages.user_id = '.$parent.')
+                    order by messages.id ASC');
+                
+            } else {
+                $recs = \DB::select('select messages.id, messages.reply_to, 0 as readed
+                    from messages
+                    where messages.reply_to = '.$replyTo.' and
+                          messages.parent_type = "'.$parentType.'" and
+                          messages.parent = '.$parent.'
+                    order by messages.id ASC');
+            }
+            foreach ($recs as $rec) {
+                $i = count($this->tree);
+                $this->tree[$i] = new \stdClass();
+                $this->tree[$i]->id = $rec->id;
+                $this->tree[$i]->replyTo = $rec->reply_to;
+                $this->tree[$i]->level = $level;
+                $this->tree[$i]->readed = ($rec->readed > 0);
+                $this->tree[$i]->replyCount = 
+                    \DB::table('messages')
+                    ->where('parent_type','=', $parentType)
+                    ->where('parent','=', $parent)
+                    ->where('reply_to','=', $rec->id)
+                    ->count();
+            }
+            return count($recs);
+    }
+    
+    
+    /**
+     * $rec messages információk kiegészítése
+     * @param object $rec input: {id, ...} 
+     * output: {id, userId, creatorUser, avatar, replyTo[id,name], time, text, stile
+     *   replyCount, likeCount, disLikeCount, userLiked, userDisLiked, likeStyle, disLikeStyle} 
+     */
+    public function getInfo(&$rec) {
             if ($rec->id > 0) {
                 $message = \DB::table('messages')->where('id','=',$rec->id)->first();
                 if ($message) {
+                    $rec->userId = $message->user_id;
                     $creatorUser = \DB::table('users')
                     ->where('id','=',$message->user_id)
                     ->first();
                     if ($creatorUser) {
-                        $this->tree[$i]->creator = $creatorUser->name;
-                        $this->tree[$i]->avatar = $this->avatar($creatorUser->profile_photo_path, $creatorUser->email);
+                        $rec->user_id = $creatorUser->id;
+                        $rec->creator = $creatorUser->name;
+                        $rec->avatar = $this->avatar($creatorUser->profile_photo_path, $creatorUser->email);
                     } else {
-                        $this->tree[$i]->creator = '?';
-                        $this->tree[$i]->avatar = '?';
+                        $rec->user_id = 0;
+                        $rec->creator = '?';
+                        $rec->avatar = '?';
                     }
-                    $this->tree[$i]->replyTo = [$message->reply_to,''];
-                    $replyMessage = \DB::table('messages')
-                    ->where('id','=',$message->reply_to)
-                    ->first();
-                    if ($replyMessage) {
-                        $replyUser = \DB::table('users')
-                        ->where('id','=',$replyMessage->user_id)
+                    $rec->replyTo = [$message->reply_to,'',0];
+                    
+                    if (($message->parent_type == 'users') &
+                        ($message->reply_to == 0)) {
+                            $replyUser = \DB::table('users')->where('id','=',$message->parent)->first();
+                            if ($replyUser) {
+                                $rec->replyTo[1] = $replyUser->name.':';
+                                $rec->replyTo[2] = $replyUser->id;
+                            }
+                    } else if ($message->reply_to > 0) {
+                        $replyMessage = \DB::table('messages')
+                        ->where('id','=',$message->reply_to)
                         ->first();
-                        if ($replyUser) {
-                            $this->tree[$i]->replyTo[1] = $replyUser->name.':';
+                        if ($replyMessage) {
+                            $replyUser = \DB::table('users')
+                            ->where('id','=',$replyMessage->user_id)
+                            ->first();
+                            if ($replyUser) {
+                                $rec->replyTo[1] = $replyUser->name.':';
+                                $rec->replyTo[2] = $replyUser->id;
+                            }
                         }
                     }
-                    $this->tree[$i]->time = $message->created_at;
-                    $this->tree[$i]->replyTo[0] = $message->reply_to;
-                    $this->tree[$i]->text = $message->value;
-                    $this->tree[$i]->style = $message->msg_type;
-                    $this->tree[$i]->moderatorInfo = $message->moderator_info;
+
+                    $rec->time = $message->created_at;
+                    $rec->text = $message->value;
+                    $rec->style = $message->msg_type;
+                    $rec->moderatorInfo = $message->moderator_info;
                     
-                    $this->tree[$i]->likeCount = \DB::table('likes')
+                    $rec->likeCount = \DB::table('likes')
                     ->where('parent_type','=','messages')
                     ->where('parent','=',$message->id)
                     ->where('like_type','=','like')
                     ->count();
-                    $this->tree[$i]->disLikeCount = \DB::table('likes')
+                    $rec->disLikeCount = \DB::table('likes')
                     ->where('parent_type','=','messages')
                     ->where('parent','=',$message->id)
-                    ->where('like_type','=','dislike')
+                    ->where('like_type','=','dislike')            
+                    
                     ->count();
-                    $this->tree[$i]->userLiked = false;
-                    $this->tree[$i]->userDisLiked = false;
-                    $this->tree[$i]->likeStyle = '';
-                    $this->tree[$i]->disLikeStyle = '';
+                    $rec->userLiked = false;
+                    $rec->userDisLiked = false;
+                    $rec->likeStyle = '';
+                    $rec->disLikeStyle = '';
                     $user = \Auth::user();
                     if ($user) {
-                        $this->tree[$i]->userLiked = (\DB::table('likes')
+                        $rec->userLiked = (\DB::table('likes')
                             ->where('parent_type','=','messages')
                             ->where('parent','=',$message->id)
                             ->where('user_id','=',$user->id)
                             ->where('like_type','=','like')
                             ->count() > 0);
-                        $this->tree[$i]->userDisLiked = (\DB::table('likes')
+                        $rec->userDisLiked = (\DB::table('likes')
                             ->where('parent_type','=','messages')
                             ->where('parent','=',$message->id)
                             ->where('user_id','=',$user->id)
                             ->where('like_type','=','dislike')
                             ->count() > 0);
                     }
-                    if ($this->tree[$i]->userLiked) {
-                        $this->tree[$i]->likeStyle = 'strong';
+                    if ($rec->userLiked) {
+                        $rec->likeStyle = 'strong';
                     }
-                    if ($this->tree[$i]->userDisLiked) {
-                        $this->tree[$i]->disLikeStyle = 'strong';
+                    if ($rec->userDisLiked) {
+                        $rec->disLikeStyle = 'strong';
+                    }
+                    if (!isset($rec->replyCount)) {
+                        $rec->replyCount =
+                            \DB::table('messages')
+                            ->where('parent_type','=', $message->parent_type)
+                            ->where('parent','=', $message->parent)
+                            ->where('reply_to','=', $message->id)
+                            ->count();
                     }
                 } // message
-            } else { // id > 0
-                $this->tree[$i]->replyTo = [$this->tree[$i]->replyTo,''];
+            } else { // if id > 0 
+                $rec->replyTo = [$rec->replyTo,'',0];
             }
-        } // for
     }
     
     /**
@@ -190,14 +286,14 @@ class Message extends Model
     }
     
     /**
-     * olvasatlan elemek száma
+     * olvasott elemek száma
      * @param array $tree
      * @return int
      */
-    protected function notReadedCount() {
+    protected function readedCount() {
         $result = 0;
         for ($i=0; $i < count($this->tree); $i++) {
-            if (!$this->tree[$i]->readed) {
+            if ($this->tree[$i]->readed) {
                 $result++;
             }
         }
@@ -209,34 +305,44 @@ class Message extends Model
      * @param array $tree
      * @return void
      */
-    protected function delFirstNotReaded() {
+    protected function delFirstReaded() {
         $i = 0;
+        
+        // első olvasott elem keresése
         $item = false;
         while (($i < count($this->tree)) & (!$item)) {
-            if (!$this->tree[$i]->readed) {
+            if ($this->tree[$i]->readed) {
                 $item = $this->tree[$i];
             } else {
                 $i++;
             }
         }
+        
         if ($item) {
-            // közvetlen és közvetett gyermekeinek megszámolása
-            $j = $i + 1;
-            while (($j < count($this->tree)) & ($this->tree[$j]->level > $item->level)) {
-                $j++;
+            // közvetlen és közvetett gyermekeinek megszámolása és törlése
+            if ($i == (count($this->tree) - 1)) {
+                $db = 0;
+            } else {
+                $j = $i + 1;
+                while (($j < count($this->tree)) & ($this->tree[$j]->level > $item->level)) {
+                    $j++;
+                }
+                $db = $j - $i - 1; // ennyi gyermeke van
+                // közvetlen és közvetett gyermekeinek törlése
+                array_splice($this->tree, $i + 1, $db);
             }
-            $db = $j - $i - 1; // ennyi gyermeke van
-            // közvetlen és közvetett gyermekeinek törlése
-            array_splice($this->tree, $i + 1, $db);
-            // a $item elem törlése vagy "excluded" jelzés
+                        
+            // a $item elem törlése vagy "excluded" jelzése
             if ($i > 0) {
                 if ($this->tree[$i-1]->id < 0) {
                     array_splice($this->tree, $i, 1);
                 } else {
                     $this->tree[$i]->id = -1; // ez jelzi, hogy "excluded"
+                    $this->tree[$i]->readed = false;
                 }
             } else {
                 $this->tree[$i]->id = -1; // ez jelzi, hogy "excluded"
+                $this->tree[$i]->readed = false;
             }
         }
     }
@@ -245,8 +351,10 @@ class Message extends Model
      * fa méret csökkentése
      */
     public function treeTruncate() {
-        while ((count($this->tree) > 100) & ($this->notReadedCount() > 0)) {
-            $this->delFirstNotReaded();
+        $i = 0;
+        while ((count($this->tree) > 100) & ($this->readedCount() > 0) & ($i < 50)) {
+            $this->delFirstReaded();
+            $i++;
         }
     }
     

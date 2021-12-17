@@ -22,6 +22,8 @@ return [
   	'id' => 'Azonosító',
   	'name' => 'Név',
     'status' => 'Státusz',
+    'msg' => 'Privát üzenet',
+    'send' => 'Küld',
     
     'back' => 'vissza',
     'groups' => 'csoportok',
