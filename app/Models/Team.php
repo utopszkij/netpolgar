@@ -88,7 +88,13 @@ class Team extends Model
             $config->subTeamActivate = 2;
         }
         $result->likeReq = $config->subTeamActivate;
+        if ($result->likeReq > $result->memberCount) {
+            $result->likeReq = $result->memberCount;
+        }
         $result->disLikeReq = round($config->close * $result->memberCount / 100);
+        if ($result->disLikeReq > $result->memberCount) {
+            $result->disLikeReq = $result->memberCount;
+        }
     }
         
     /**

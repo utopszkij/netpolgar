@@ -85,15 +85,19 @@ function miniMarkdown($s) {
 	@endforeach
 	</div>
 	
-	<div class="paginator">
+	<table style="width:auto;" class="paginator">
+	<tr>
 	@foreach ($links as $link)
+		<td class="paginatorItem">
 		@if ($link[0] == 'actual')
 		<a class="{{ $link[0] }}">{!! $link[1] !!}</a>
 		@else
 		<a href="{{ $link[2] }}" class="{{ $link[0] }}">{!! $link[1] !!}</a>
 		@endif
+		</td>
 	@endforeach
-	</div>
+	</tr>
+	</table>
 	
 	@if (($member) & ($parentType != 'users'))
 	<div class="row newMsg">

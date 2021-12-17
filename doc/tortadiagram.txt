@@ -1,0 +1,15 @@
+https://www.jqueryscript.net/chart-graph/Minimalist-jQuery-Pie-Chart-Plugin-Piegraph.html
+
+
+<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="jquery.piegraph.js"></script>
+
+<div id="chart">
+</div>
+
+$("#chart").chart({
+  data :new Array(40, 40, 45, 30, 25),
+  labels :new Array("A","B","C","D","E"),
+  width : 400,
+  height : 200
+}); 

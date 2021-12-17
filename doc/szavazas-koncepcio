@@ -1,0 +1,53 @@
+
+polls
+	id
+	parent_type
+	parent
+	name
+	status  proposal|debate|vote|closed
+	config
+		voksType    prefer|prefer_acceptable|one|more|yesno
+		secret      igen/nem
+		likvid      igen/nem
+		debateStart ennyi támogató like kell
+		debateMinTime óra
+		voteStart   dateTime
+		   (modosulhat ha a debateStart link későn jön össze)
+		voteEnd     date
+		valid       %
+		success     %
+	created_by
+	created_at
+	updated_at
+	
+poll_options
+	id
+	poll_id
+	name
+	created_by
+	created_at
+	updated_at
+
+poll_votes
+	ballot  - egyedi képzett szavazat azonosító (nem egyedi poll_votes id) 
+	poll_id
+	option_id
+	position
+	user_id  - titkos szavazásnál nincs kitöltve
+		
+poll_voters
+	id    - ebből képződik a a "ballot"
+	poll_id
+	user_id
+	
+	ballot képzés id -ből:
+	
+		ballot = md5(id);
+		ballot[$config->code[0]] = $id[0];
+		ballot[$config->code[2]] = $id[1];
+		ballot[$config->code[3]] = $id[2];
+		ballot .= copy($id,3,100);
+		
+		$config->code egy ismétlés mentes 3 jegyű kód
+					
+			

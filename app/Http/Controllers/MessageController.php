@@ -104,21 +104,23 @@ class MessageController extends Controller {
      */
     protected function buildLinks(int $offset, int $total, string $parentType, $parent): array {
         $links = [];
-        if ($offset > 0) {
-            $links[] = ["first", __('messages.first'), \URL::to('/messages/tree/'.$parentType.'/'.$parent->id.'/0') ];
+        $page = 1;
+        $w = 0;
+        $links[] = ["first", __('messages.first'), \URL::to('/message/tree/'.$parentType.'/'.$parent->id.'/0') ];
+        while ($w < $total) {
+            if (($w >= $offset - 20) & ($w <= $offset + 20)) {
+                 if ($w == $offset) {
+                     $links[] = ["actual", $page, \URL::to('/message/tree/'.$parentType.'/'.$parent->id.'/'.$w) ];
+                 } else {
+                     $links[] = ["other", $page, \URL::to('/message/tree/'.$parentType.'/'.$parent->id.'/'.$w) ];
+                 }
+             }
+            $w = $w + 10;
+            $page++;
         }
-        if ($offset >= 0) {
-            $links[] = ["previos", __('messages.previous'), \URL::to('/messages/tree/'.$parentType.'/'.$parent->id.'/'.(max($offset-10,0))) ];
-        }
-        $links[] = ["actual", 
-            '<em class="fas">'.(round(($offset/10)+0.5) + 1).'</em>', 
-            \URL::to('/messages/tree/'.$parentType.'/'.$parent->id.'/'.($offset-10)) ];
-        if ($offset < ($total - 10)) {
-            $links[] = ["next", __('messages.next'), \URL::to('/messages/tree/'.$parentType.'/'.$parent->id.'/'.($offset+10)) ];
-        }
-        if ($offset < ($total - 10)) {
-            $links[] = ["last", __('messages.last'), \URL::to('/messages/tree/'.$parentType.'/'.$parent->id.'/'.($total-10)) ];
-        }
+        $page = $page - 1;
+        $w = $w - 10;
+        $links[] = ["last", __('messages.last'), \URL::to('/message/tree/'.$parentType.'/'.$parent->id.'/'.$w) ];
         return $links;
     }
     
@@ -155,11 +157,12 @@ class MessageController extends Controller {
         
         // ha $offset alapértelmezett akkor az utolsó lapot jelenitem meg
         if ($offset < 0) {
-            $offset = $total - 10;
-            if ($offset < 0 ) {
-                $offset = 0;
+            $offset = 0;
+            while ($offset < count($model->tree)) {
+                $offset = $offset + 10;
             }
         }
+        
         $model->tree = array_splice($model->tree, $offset, 10);
         foreach ($model->tree as $treeItem) {
             $model->getInfo($treeItem);
@@ -256,12 +259,14 @@ class MessageController extends Controller {
         $total = count($model->tree);
         
         // ha $offset alapértelmezett akkor az utolsó lapot jelenitem meg
+        // ha $offset alapértelmezett akkor az utolsó lapot jelenitem meg
         if ($offset < 0) {
-            $offset = $total - 10;
-            if ($offset < 0 ) {
-                $offset = 0;
+            $offset = 0;
+            while ($offset < count($model->tree)) {
+                $offset = $offset + 10;
             }
         }
+        
         $model->tree = array_splice($model->tree, $offset, 10);
         foreach ($model->tree as $treeItem) {
             $model->getInfo($treeItem);
@@ -286,7 +291,8 @@ class MessageController extends Controller {
     
     
     /**
-     * új üzenet tárolása és olvasottság jelzés
+     * új üzenet tárolása és olvasottság jelzés,
+     * moderálás tárolása
      * csak bejelentkezett csoport member használhatja
      * @param Request $request
      * @return laravel redirect

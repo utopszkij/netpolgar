@@ -1,6 +1,18 @@
 https://www.laravelcode.com/post/laravel-8-crud-application-tutorial-with-example
 
-- egyetlen roote van definiálva
+1. adatbázis tábla létrehozása
+
+   migrate.php készítése
+   
+   php artisan migrate
+
+2. roote
+
+	Route::resource('tableName', PostController::class);
+
+
+3. php artisan make:controller {ContName}Controller --resource --model={ContName}
+
 - a controller methodusok nem tartalmaznak adatbázis müveleteket
 - a model is nagyon minimális
  

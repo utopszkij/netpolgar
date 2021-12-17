@@ -3,11 +3,12 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers;
 use App\Http\Controllers\SocialController;
-use App\Http\Controllers\GroupsController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\LikeController;
+use App\Http\Controllers\PollController;
+use App\Http\Controllers\OptionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -47,6 +48,18 @@ Route::post('/message/store',[MessageController::class, 'store']);
 Route::get('/message/protest/{messageId}',[MessageController::class, 'protest']);
 Route::post('/message/saveprotest',[MessageController::class, 'saveprotest']);
 Route::get('/message/list/{parentType}/{parentId}/{replyTo}/{offset?}',[MessageController::class, 'list']);
+
+Route::get('/{parentType}/{parent}/{statuses}/polls',[PollController::class, 'index']);
+Route::get('/{parentType}/{parent}/{statuses}/polls/create',[PollController::class, 'create']);
+Route::get('/polls/{poll}',[PollController::class, 'show']);
+Route::get('/polls/{poll}/edit',[PollController::class, 'edit']);
+Route::post('/polls',[PollController::class, 'store']);
+Route::post('/polls/{poll}',[PollController::class, 'update']);
+
+Route::get('/{poll}/options/create',[OptionController::class, 'create']);
+Route::get('/options/{option}/edit',[OptionController::class, 'edit']);
+Route::post('/options',[OptionController::class, 'store']);
+Route::post('/options/{option}',[OptionController::class, 'update']);
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
     return view('dashboard');
