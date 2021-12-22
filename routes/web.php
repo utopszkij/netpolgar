@@ -9,6 +9,7 @@ use App\Http\Controllers\MessageController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\PollController;
 use App\Http\Controllers\OptionController;
+use App\Http\Controllers\VoteController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,8 +27,8 @@ Route::get('/construction', function() { return view('construction'); } );
 Route::resource('parents.teams', TeamController::class)->shallow();
 
 Route::get('/member/list/{parent_type}/{parent}', [MemberController::class, 'index']);
-Route::get('/member/{member}', [MemberController::class, 'show']);
 Route::get('/member/store', [MemberController::class, 'store']);
+Route::get('/member/{member}', [MemberController::class, 'show']);
 Route::get('/member/doexit', [MemberController::class, 'doExit']);
 Route::get('/member/user/{userId}', [MemberController::class, 'user']);
 
@@ -61,6 +62,14 @@ Route::get('/options/{option}/edit',[OptionController::class, 'edit']);
 Route::post('/options',[OptionController::class, 'store']);
 Route::post('/options/{option}',[OptionController::class, 'update']);
 
+Route::get('/{poll}/votes/create',[VoteController::class, 'create']);
+Route::get('{poll}/votes/getform',[VoteController::class, 'getform']);
+Route::post('/votes/show',[VoteController::class, 'show']);
+Route::get('{poll}/votes',[VoteController::class, 'list']);
+Route::post('/votes',[VoteController::class, 'store']);
+Route::get('{poll}/votes/csv',[VoteController::class, 'csv']);
+
+
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
     return view('dashboard');
 })->name('dashboard');
@@ -82,11 +91,4 @@ Route::get('auth/google', [SocialController::class, 'googleRedirect']);
 Route::get('auth/google/callback', [SocialController::class, 'loginWithGoogle']);
 Route::get('auth/github', [SocialController::class, 'githubRedirect']);
 Route::get('auth/github/callback', [SocialController::class, 'loginWithGithub']);
-
-/*
-* univerzális vue aktivizáló route
-*/
-Route::get('run/{p1?}/{p2?}/{p3?}/{p4?}/{p5?}/{p6?}', function () {
-	include 'vueRun.php';	 
-	 });
 

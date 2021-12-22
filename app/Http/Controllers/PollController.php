@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use \App\Models\Poll;
+use \App\Models\Vote;
 use \App\Rules\LiquedRule;
 
 
@@ -271,6 +272,9 @@ class PollController extends Controller {
         $this->decodeConfig($poll);
         $parent = \DB::table($poll->parent_type)->where('id','=',$poll->parent)->first();
         $info = Poll::getInfo($poll);
+        $voteModel = new \App\Models\Vote();
+        $voteInfo = $voteModel->getInfo($poll);
+        
         $options = \DB::table('options')->where('poll_id','=',$poll->id)->get();
         return view('poll.show',
             ["poll" => $poll,
@@ -278,7 +282,8 @@ class PollController extends Controller {
              "info" => $info,   
              "options" => $options,
              "userMember" => $this->userMember($poll->parent_type, $poll->parent),
-             "userAdmin" => $this->userAdmin($poll)   
+             "userAdmin" => $this->userAdmin($poll),
+             "voteInfo" => $voteInfo,
         ]);
     }
     
@@ -350,10 +355,10 @@ class PollController extends Controller {
             
         // result kialakítása
         if ($errorInfo == '') {
-                $result = redirect()->to('/poll/list/'.$poll->parent_type.'/'.$poll->parent.'/'.$statuses)
+                $result = redirect()->to('/polls/'.$poll->id)
                 ->with('success',__('poll.successSave'));
         } else {
-                $result = redirect()->to('/poll/list/'.$poll->parent_type.'/'.$poll->parent.'/'.$statuses)
+                $result = redirect()->to('/polls/'.$poll->id)
                 ->with('error',$errorInfo);
         }
         return $result;

@@ -70,6 +70,7 @@
 		    	@if ($item->id != $team->id)
 		    	<var class="pathItem">
 					<a href="{{ route('teams.show',["team" => $item->id]) }}">
+						<em class="fas fa-hand-point-right"></em>
 						&nbsp;{!! $pathSeparator !!}&nbsp;{{ $item->name }} 			
 					</a>    	
 		    	</var>

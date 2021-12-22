@@ -30,8 +30,8 @@ class Poll extends Model
                 "pollType":"pref",
                 "secret":false,
                 "liquied":true,
-                "debateStart":10,
-                "optionActivate":2,
+                "debateStart":60,
+                "optionActivate":60,
                 "debateDays":10,
                 "voteDays":10,
                 "valid":30
@@ -119,8 +119,10 @@ class Poll extends Model
             ->where('parent','=', $poll->id)->where('like_type','=','like')->count();
         $result->memberCount = \DB::table('members')->where('parent_type','=', $poll->parent_type)
             ->where('parent','=', $poll->parent)->where('status','=','active')->count();
-        $result->voteCount = \DB::table('votes')
-            ->select('ballot_id')->where('poll_id','=', $poll->id)->groupBy('ballot_id')->count();
+        $result->voteCount = count((\DB::table('votes')
+            						->select('ballot_id')
+            						->where('poll_id','=', $poll->id)
+            						->groupBy('ballot_id')->get()));
         $result->likeReq = round($poll->config->debateStart * $result->memberCount / 100);
         $result->likeReq = min($result->likeReq, $result->memberCount);
         Poll::getUserInfo($result, $poll);

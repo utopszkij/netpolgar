@@ -31,6 +31,23 @@ class MessageController extends Controller {
                     $result = true;
                 }
             }
+            if ($parentType == 'polls') {
+            	 $poll = \DB::table('polls')
+            	 	->where('id','=',$parentId)->first();
+					 if ($poll) {            	
+	                $member = \DB::table('members')
+	                ->where('parent_type','=',$poll->parent_type)
+	                ->where('parent','=',$poll->parent)
+	                ->where('user_id','=', \Auth::user()->id)
+	                ->whereIn('rank',["moderator","admin"])
+	                ->where('status','=','active')
+	                ->orderBy('rank','asc')
+	                ->first();
+	                if ($member) {
+	                    $result = true;
+	                }
+             	}
+            }
             
             // first user a system admin, ő is moderátor
             $firstUser = \DB::table('users')->orderBy('id')->first();
@@ -59,13 +76,30 @@ class MessageController extends Controller {
                     $result = true;
                 }
             }
+            if ($parentType == 'polls') {
+            	 $poll = \DB::table('polls')
+            	 	->where('id','=',$parentId)->first();
+            	 if ($poll) {
+	                $member = \DB::table('members')
+	                ->where('parent_type','=',$poll->parent_type)
+	                ->where('parent','=',$poll->parent)
+	                ->where('user_id','=', \Auth::user()->id)
+	                ->whereIn('rank',["member","admin"])
+	                ->where('status','=','active')
+	                ->orderBy('rank','asc')
+	                ->first();
+	                if ($member) {
+	                    $result = true;
+	                }
+             	 }
+            }
         }
         return $result;
     }
     
     protected function avatar($profile_photo_path, $email) {
         if ($profile_photo_path != '') {
-            $result = URL::to('/').$user->profile_photo_path;
+            $result = \URL::to('/').$profile_photo_path;
         } else {
             $result = 'https://gravatar.com/avatar/'.md5($email).
             '?d='.\URL::to('/img/noavatar.png');
@@ -146,19 +180,18 @@ class MessageController extends Controller {
         $parentTable = \DB::table($parentType);
         $parent = $parentTable->where('id','=',$parent)->first();
         if (!$parent) {
-            echo 'Fatal error parent not found'; 
+            echo 'Fatal error parent not found'; exit();
         }
         $model = new \App\Models\Message();
         $model->getTreeItem($parentType, $parent->id, 0, 0);
         $model->setPathNotReaded();
         $model->treeTruncate();
-        
         $total = count($model->tree);
         
         // ha $offset alapértelmezett akkor az utolsó lapot jelenitem meg
         if ($offset < 0) {
             $offset = 0;
-            while ($offset < count($model->tree)) {
+            while ($offset < (count($model->tree) - 10)) {
                 $offset = $offset + 10;
             }
         }

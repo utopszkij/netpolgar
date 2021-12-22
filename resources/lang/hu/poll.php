@@ -32,7 +32,9 @@ return [
     '1' => 'Igen',
     '0' => 'Nem',
     'like' => 'Vita indítását támogatom',
+    'liked' => 'Vita indítását támogatták',
     'optionLike' => 'szavazólapra vételét támogatom',
+    'optionLiked' => 'szavazólapra vételét támogatták',
     
     
     'id' => 'Azonosító',

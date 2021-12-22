@@ -44,14 +44,11 @@
     </div>
  
  	@if ($poll->id > 0)
-    <form action="{{ \URL::to('/polls/'.$poll->id) }}" method="POST">
+    <form action="{{ \URL::to('/polls/'.$poll->id) }}" method="post">
    @else
-    <form action="{{ \URL::to('/polls') }}" method="POST">
+    <form action="{{ \URL::to('/polls') }}" method="post">
    @endif 
    @csrf
- 	@if ($poll->id > 0)
-     @method('PUT')
-	@endif   
          <input type="hidden" name="id" value="{{ $poll->id }}" class="form-control" placeholder="">
          <input type="hidden" name="parent_type" value="{{ $poll->parent_type }}" class="form-control" placeholder="">
          <input type="hidden" name="parent" value="{{ $poll->parent }}" class="form-control" placeholder="">
@@ -112,9 +109,6 @@
 						<option	value="pref"{{ selected('pref',$poll->config->pollType) }}>
 							{{ __('poll.pref') }}
 						</option>
-						<option	value="partition"{{ selected('partition',$poll->config->pollType) }}>
-							{{ __('poll.partition') }}
-						</option>
 					</select>				
                 </div>
            </div>
@@ -151,7 +145,7 @@
             <div class="col-xs-12 col-sm-12 col-md-12">
                 <div class="form-group">
                 	A vita akkor indul meg ha a javaslatot a tagok
-                	<input type="number" name="debateStart" min="1" max="100" 
+                	<input type="number" name="debateStart" min="0" max="100" 
                 		value="{{ $poll->config->debateStart }}" 
                 		style="sidth:50px" />%-a támogatja.
                 </div>
@@ -159,7 +153,7 @@
             <div class="col-xs-12 col-sm-12 col-md-12">
                 <div class="form-group">
                 	Egy javasolt opció akkor kerül fel a "szavazó lapra" ha a javaslatot a tagok
-                	<input type="number" name="optionActivate" min="1" max="100" 
+                	<input type="number" name="optionActivate" min="0" max="100" 
                 		value="{{ $poll->config->optionActivate }}" 
                 		style="sidth:50px" />%-a támogatja.
                 </div>
@@ -169,7 +163,7 @@
             <div class="col-xs-12 col-sm-12 col-md-12">
                 <div class="form-group">
                 	<label>A vita időtartama:</label>
-                	<input type="number" name="debateDays" min="1" max="100" 
+                	<input type="number" name="debateDays" min="0" max="100" 
                 		value="{{ $poll->config->debateDays }}" 
                 		style="sidth:50px" />nap
                 </div>
@@ -179,7 +173,7 @@
             <div class="col-xs-12 col-sm-12 col-md-12">
                 <div class="form-group">
                 	<label>A szavazás időtartama:</label>
-                	<input type="number" name="voteDays" min="1" max="100" 
+                	<input type="number" name="voteDays" min="0" max="100" 
                 		value="{{ $poll->config->voteDays }}" 
                 		style="sidth:50px" />nap
                 </div>
@@ -189,7 +183,7 @@
             <div class="col-xs-12 col-sm-12 col-md-12">
                 <div class="form-group">
                 	<label>Érvényességi küszöb:</label>
-                	<input type="number" name="valid" min="1" max="100" 
+                	<input type="number" name="valid" min="0" max="100" 
                 		value="{{ $poll->config->valid }}" 
                 		style="sidth:50px" />% -os részvétel a szavazáson
                 </div>

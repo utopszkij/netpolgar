@@ -11,6 +11,7 @@ class LikeController extends Controller {
      * @param unknown $parent
      */
     protected function checkStatus(string $parentType, $parent) {
+    	$parentModel = false;
         if ($parentType == 'teams') {
             $parentModel = new \App\Models\Team();
         }
@@ -20,8 +21,16 @@ class LikeController extends Controller {
         if ($parentType == 'messages') {
             $parentModel = new \App\Models\Message();
         }
-        if (method_exists($parentModel, 'checkStatus')) {
+        if ($parentType == 'polls') {
+            $parentModel = new \App\Models\Poll();
+        }
+        if ($parentType == 'options') {
+            $parentModel = new \App\Models\Option();
+        }
+        if ($parentModel) {
+        	if (method_exists($parentModel, 'checkStatus')) {
             $parentModel->checkStatus($parent);
+        	}
         }
     }
     

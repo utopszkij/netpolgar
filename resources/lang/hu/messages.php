@@ -3,6 +3,7 @@ return [
   	'list' => 'Üzenetek',
   	'teams' => 'Csoport',
   	'projects' => 'Projekt',
+  	'polls' => 'Vita',
     'products' => 'Termék',
     'users' => 'Privát',
     'event' => 'Esemény',
@@ -34,8 +35,8 @@ return [
     'notModerator' => 'Nincs moderátor',
     'protestSended' => 'Kifigás elküldve a moderátor(ok)nak.',
     'protestForm' => 'Kifogás bejelentése',
-    'first'=> '<em class="fas fa-backward"></em>',
-    'previous' => '<em class="fas fa-caret-left"></em>',
-    'next' => '<em class="fas fa-caret-right"></em>',
-    'last' => '<em class="fas fa-forward"></em>'
+    'first'=> '&lsaquo;&lsaquo;',
+    'previous' => '&lsaquo;',
+    'next' => '&rsaquo;',
+    'last' => '&rsaquo;&rsaquo;'
 ];

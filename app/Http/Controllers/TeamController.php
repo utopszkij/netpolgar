@@ -16,7 +16,7 @@ class TeamController extends Controller
      */
     public function index(string $parent = '0')
     {
-        $data = Team::latest()
+        $data = \DB::table('teams')
         			 ->where('parent','=',$parent)
         			 ->orderBy('name')
         			 ->paginate(5);

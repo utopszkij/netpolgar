@@ -39,7 +39,10 @@ function miniMarkdown($s) {
     $s = preg_replace($img, '<img src="$0)" />', $s);
     $s = str_replace('img(','http',$s);
     $s = str_replace('))','',$s);
-    
+
+    $s = str_replace(':)','<em class="fas fa-grin"></em>',$s);
+    $s = str_replace(':(','<em class="fas fa-frown"></em>',$s);
+    $s = str_replace(':|','<em class="fas fa-flushed"></em>',$s);
     return $s;
 }
 
@@ -48,10 +51,15 @@ function miniMarkdown($s) {
 <x-guest-layout>
 <div id="messages" class="pageContainer row messagesTree">
 	<p> </p>
-	<h2>{{ $parent->name }}</h2>
+	<h2>
+		<a href="{{ \URL::to('/'.$parentType.'/'.$parent->id) }}">
+			<em class="fas fa-hand-point-right"></em>
+			{{ $parent->name }}
+		</a>
+	</h2>
 	<p> {{ __('messages.'.$parentType) }}</p>
-   	<h3><a href="{{ \URL::to('/message/tree/'.$parentType.'/'.$parentId) }}">
-   		<em class="fas fa-hand-point-right"></em>{{ __('messages.list') }}</a>
+   	<h3>
+   		{{ __('messages.list') }}
    	</h3>
 	
 	<div class="paths">
@@ -85,19 +93,21 @@ function miniMarkdown($s) {
 	@endforeach
 	</div>
 	
-	<table style="width:auto;" class="paginator">
-	<tr>
+	<nav>
+	<ul class="pagination pull-right">
 	@foreach ($links as $link)
-		<td class="paginatorItem">
 		@if ($link[0] == 'actual')
-		<a class="{{ $link[0] }}">{!! $link[1] !!}</a>
+		<li class="page-item active" title="{{ $link[1] }}">
+		<span class="page-link">{!! $link[1] !!}</span>
+		</li>
 		@else
-		<a href="{{ $link[2] }}" class="{{ $link[0] }}">{!! $link[1] !!}</a>
+		<li class="page-item" title="{{ $link[1] }}">
+		<a href="{{ $link[2] }}" class="page-link">{!! $link[1] !!}</a>
+		</li>
 		@endif
-		</td>
 	@endforeach
-	</tr>
-	</table>
+	</ul>
+	</nav>
 	
 	@if (($member) & ($parentType != 'users'))
 	<div class="row newMsg">
@@ -116,6 +126,7 @@ function miniMarkdown($s) {
     		dölt betüs: <strong>*...*</strong> ,
     		kép: <strong>![](http...)</strong>, 
     		link: <strong>http....</strong>
+    		:(,   :),  :|
     	</p>
 	</form>
 	</div>

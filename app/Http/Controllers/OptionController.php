@@ -97,7 +97,8 @@ class OptionController extends Controller {
 	* @return laravel redirect vagy view
 	*/
    public function edit(Option $option) {
-		$poll = \App\Models\Poll::where('id','=', $option->poll_id);
+		$poll = \App\Models\Poll::where('id','=', $option->poll_id)
+			->first();
 		if ($poll) {
 			$poll->config = JSON_decode($poll->config);
   			$parent = \DB::table($poll->parent_type)
@@ -169,10 +170,10 @@ class OptionController extends Controller {
 	 * @param Request (optionId, name, backUrl)
 	 * @return laravel redirect
 	 */
-    public function update(Request $request) {
+    public function update(Request $request, $option) {
    	$option = \App\Models\Option::where('id','=', $request->input('optionId'))->first();
    	if ($option) {
-   		$poll = \App\Models\Poll::where('id','=', $option->poll_id);
+   		$poll = \App\Models\Poll::where('id','=', $option->poll_id)->first();
    		if ($poll) {
    			$poll->config = JSON_decode($poll->config);
 	  			$parent = \DB::table($poll->parent_type)

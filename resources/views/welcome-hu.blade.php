@@ -15,6 +15,14 @@
 				egyedekből álló együttműködési rendszer kimunkálása,
 				gyakorlati kipróbálása. 
 				</p>
+				<div style="float:right; width:auto">
+					<h4>Teszt bejelentkezések:</h4>
+					<ul>
+						<li>teszt1.teeszt.hu psw: 12345678</li>					
+						<li>teszt2.teeszt.hu psw: 12345678</li>					
+						<li>teszt3.teeszt.hu psw: 12345678</li>					
+					</ul>				
+				</div>
 				<div class="tartalom">
 				<h4 class="western"><a name="description1"></a>Tartalomjegyzék</h4>
 				<ul>

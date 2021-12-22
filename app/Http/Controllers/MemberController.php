@@ -57,7 +57,7 @@ class MemberController extends Controller
         $t = \DB::table('members');
         $member = $t->where('id','=',$memberId)->first();
         if (!$member) {
-            echo 'Fatal error member not found'; exit();
+            echo 'Fatal error member not found (show)'; exit();
         }
         
         $t = \DB::table($member->parent_type);
@@ -98,7 +98,7 @@ class MemberController extends Controller
                     ->where('parent','=','1')
                     ->first();
         if (!$member) {
-            echo 'Fatal error member not found'; exit();
+            echo 'Fatal error member not found(1)'; exit();
         }
         return $this->show($member->id);
     }
@@ -119,6 +119,7 @@ class MemberController extends Controller
     	    ($rank == '')) {
 			echo 'Fatal error'; exit();    	
     	}
+    	
     	// csak bejelentkezett usernél megengedett
     	if (\Auth::user()) {
     		$m = \DB::table('members');
@@ -136,15 +137,16 @@ class MemberController extends Controller
 	    				->where('user_id','=',$user->id)
 	    				->first();
 				if (!$w) {	    				
-		    		$modelArr = [];
-		    		$modelArr['parent_type'] = $parent_type;
-		    		$modelArr['parent'] = $parent->id;
-		    		$modelArr['rank'] = $rank;
-		    		$modelArr['user_id'] = $user->id;
-		    		$modelArr['created_by'] = $user->id;
-		    		$modelArr['status'] = 'proposal';
 		    		$model = new Member();
-		    		$model->create($modelArr);
+		    		$memberArr = [];
+		    		$memberArr['parent_type'] = $parent_type;
+		    		$memberArr['parent'] = $parent->id;
+		    		$memberArr['rank'] = $rank;
+		    		$memberArr['user_id'] = $user->id;
+		    		$memberArr['created_by'] = $user->id;
+		    		$memberArr['status'] = 'proposal';
+		    		$member = $model->create($memberArr);
+		    		$model->checkStatus($member->id);
 		    		$result = redirect(\URL::to('/'.$parent_type.
 		    		'/'.$parent->id));
 	    		} else {

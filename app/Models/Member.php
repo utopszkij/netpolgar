@@ -133,19 +133,19 @@ class Member extends Model
 					}		  		
 		  		}
 		}	        			 
-        $result->ranks = [];	
-        if (isset($parent->config)) {
+      $result->ranks = [];	
+      if (isset($parent->config)) {
 				$config = JSON_decode($parent->config);
 				if (is_string($config->ranks)) {
 					$config->ranks = explode(',',$config->ranks);				
 				}        
             if (isset($config->ranks)) {
-					$ranks = $config->ranks;         
+					$result->ranks = $config->ranks;         
         		}
-        }	
-	    Member::getReqs($result, $parent_type, $parent, $config);
-	    Member::getLikeDisLikeCounts($result, $data);
-	  return $result;
+      }	
+	   Member::getReqs($result, $parent_type, $parent, $config);
+	   Member::getLikeDisLikeCounts($result, $data);
+	   return $result;
     }
     
     /**

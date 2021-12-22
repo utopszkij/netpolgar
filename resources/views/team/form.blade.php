@@ -105,7 +105,7 @@
 						  <input type="number" min="1" max="100" 
 						  name="close" value="{{ $team->config->close }}" />
 						  % támogatottság kell a csoport lezárásához,<br />
-						  <input type="number" min="1" max="100" 
+						  <input type="number" min="0" max="100" 
 						  name="memberActivate" value="{{ $team->config->memberActivate }}" />
 						  fő támogató kell tag felvételéhez,<br />
 						  <input type="number" min="1" max="100" 
@@ -123,10 +123,10 @@
 						  <input type="number" min="1" max="100" 
 						  name="productActivate" value="{{ $team->config->productActivate }}" />
 						  % támogatottság kell termék közzé tételéhez,<br />
-						  <input type="number" min="1" max="100" 
+						  <input type="number" min="0" max="100" 
 						  name="subTeamActivate" value="{{ $team->config->subTeamActivate }}" />
 						  fő támogató kell alcsoport aktiválásához,<br />
-						  <input type="number" min="1" max="100" 
+						  <input type="number" min="0" max="100" 
 						  name="debateActivate" value="{{ $team->config->debateActivate }}" />
 						  fő támogató kell eldöntendő vita inditásához
 						</div>

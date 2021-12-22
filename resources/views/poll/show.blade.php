@@ -8,36 +8,8 @@
 		 }	
 		 
 		 function getOptionInfo($option) {
-			$result = JSON_decode('{"likeCount":0, "likeReq":1, "userLiked":true}');
-			$poll = \Db::table('polls')->where('id','=',$option->poll_id)
-				->first();
-			$poll->config = JSON_decode($poll->config);
-			if (!isset($poll->config->optionActivate)) {
-				$poll->config->optionActivate = 2;			
-			}	
-			$memberCount = \Db::table('members')
-				->select('user_id')
-				->where('parent_type','=',$poll->parent_type)
-				->where('parent','=',$poll->parent)
-				->where('status','=','active')
-				->groupBy('user_id')
-				->count();
-			$result->likeReq = round($memberCount * $poll->config->optionActivate / 100);	
-			$user = \Auth::user();
-			if ($user) {
-				$result->likeCount = \Db::table('likes')
-				->where('parent_type','=','options')
-				->where('parent','=',$option->id)
-				->where('like_type','=','like')
-				->count();
-				$result->userLiked = (\Db::table('likes')
-				->where('parent_type','=','options')
-				->where('parent','=',$option->id)
-				->where('like_type','=','like')
-				->where('user_id','=',$user->id)
-				->count() > 0);
-			} 
-			return $result;		 
+			$model = new \App\Models\Option();
+			return $model->getInfo($option);		 
 		 }
 	@endphp	 
 
@@ -72,15 +44,15 @@
             <em class="fas fa-reply"></em>
             <span>{{ __('poll.back') }}</span><br />
          </a>
-		 <a href="{{ URL::to('/message/tree/poll/'.$poll->id) }}" title="Beszégetés">
+		 <a href="{{ URL::to('/message/tree/polls/'.$poll->id) }}" title="Beszégetés">
 				<em class="fas fa-comments"></em>
 				<span>{{ __('poll.comments') }}</span><br />			
 		 </a>
-		 <a href="{{ URL::to('/polls/'.$poll->id.'/votes') }}" title="Beszégetés">
+		 <a href="{{ URL::to('/'.$poll->id.'/votes') }}" title="Szavazatok">
 				<em class="fas fa-list"></em>
 				<span>{{ __('poll.votes') }}</span><br />			
 		 </a>
-		 <a href="{{ URL::to('/polls/'.$poll->id.'/votes') }}" title="Beszégetés">
+		 <a href="{{ URL::to('/'.$poll->id.'/votes/getform') }}" title="Szavazatom">
 				<em class="fas fa-search"></em>
 				<span>{{ __('poll.check') }}</span><br />			
 		 </a>
@@ -104,7 +76,7 @@
              		 ($poll->status == 'proposal') | ($poll->status == 'debate'))
 	            &nbsp;<a href="{{ \URL::to('/polls/'.$poll->id.'/edit') }} ">
 						<em class="fas fa-edit" title="{{ __('poll.edit') }}"></em>
-				@endif		                
+					@endif		                
    	          </a>
              </h3>
          </div>
@@ -133,7 +105,7 @@
             	{!! str_replace("\n",'<br />',$poll->description) !!}
 		</div>
 		
-   	@if ($poll->status == 'proposal')
+   	@if (($poll->status == 'proposal') & ($info->userMember))
 	    <div class="col-11 col-md-10">
    			<a href="{{ \URL::to('/like/polls/'.$poll->id) }}" 
    			   title="a vita megnyitását javaslom">
@@ -144,10 +116,19 @@
         	</a>
         	<a href="{{ \URL::to('/likeinfo/polls/'.$poll->id) }}">
    				({{ $info->likeCount }}/{{ $info->likeReq}})
-	        </a>	
+	      </a>	
 			{{ __('poll.like') }}
-        </div>		
-   		@endif
+       </div>
+      @else
+	    <div class="col-11 col-md-10">
+     	   <em class="fas fa-thumbs-up"></em>
+        	</a>
+        	<a href="{{ \URL::to('/likeinfo/polls/'.$poll->id) }}">
+   				({{ $info->likeCount }}/{{ $info->likeReq}})
+	      </a>	
+			{{ __('poll.liked') }}
+       </div>
+   	@endif
    		
    		<div class="row">
    			<div class="col-12">
@@ -180,7 +161,7 @@
    		</div>
    		<div class="row">
    			<div class="col-12">
-                	Egy opció javaslat akkor kerül a "svazó lapra" ha a javaslatot a tagok
+                	Egy opció javaslat akkor kerül a "szavazó lapra" ha a javaslatot a tagok
                 	{{ $poll->config->optionActivate }}%-a támogatja.
    			</div>
    		</div>
@@ -220,13 +201,23 @@
 			  {{ $option->name }}
 			  @if (($userMember) & 
 			       ($option->status == 'proposal')) 
+			      <a href="{{ \URL::to('/like/options/'.$option->id) }}"> 
 			  		@if ($optionInfo->userLiked)
 			  			<em class="fas fa-thumbs-up liked"></em>
 			  		@else
 			  			<em class="fas fa-thumbs-up"></em>
 			  		@endif 
+			  		</a>
+			  		<a href="{{ \URL::to('/likeinfo/options/'.$option->id) }}">
 			  		{{ $optionInfo->likeCount }} / {{ $optionInfo->likeReq }}
+			  		</a>
 			  		{{ __('poll.optionLike') }}
+			  @else
+		  			<em class="fas fa-thumbs-up"></em>
+			  		<a href="{{ \URL::to('/likeinfo/options/'.$option->id) }}">
+			  		{{ $optionInfo->likeCount }} / {{ $optionInfo->likeReq }}
+			  		</a>
+			  		{{ __('poll.optionLiked') }}
 			  @endif					  
 			  @if ($userAdmin)
 			  <a href="{{ \URL::to('/options/'.$option->id.'/edit') }}">
@@ -250,9 +241,12 @@
 		@endif		
 		@endif
 		
-		@if (($poll->status == 'vote') & ($info->userMember) & (!$info->userVoted))
+		@if (($poll->status == 'vote') & 
+		     ($info->userMember) &  
+		     (!$info->userVoted)
+		    )
 		<div class="row">
-			<a href="" class="btn btn-primary">
+			<a href="{{ \URL::to('/'.$poll->id.'/votes/create') }}" class="btn btn-primary">
 				<em class="fas fa-envelope-open-text"></em>
 				{{ __('poll.voteNow') }}
 			</a>

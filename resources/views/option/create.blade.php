@@ -17,13 +17,13 @@
     </div>
 	 <h3>
 		<a href="{{ \URL::to('/'.$poll->parent_type.'/'.$poll->parent) }}">
-			<em class="fas fa.hand-point-right"></em>
+			<em class="fas fa-hand-point-right"></em>
 			{{ $parent->name }}
 		</a>		 
 	 </h3>
 	 <h4>
 		<a href="{{ \URL::to('/polls/'.$poll->id) }}">
-			<em class="fas fa.hand-point-right"></em>
+			<em class="fas fa-hand-point-right"></em>
 			{{ $poll->name }}
 		</a>		 
 	 </h4>
