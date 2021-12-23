@@ -20,7 +20,7 @@
 				<div class="col-sm-6  footer-links">
 					<ul>
 					<li><i class="bx bx-chevron-right"></i>
-						<a href="{{ \URL::to('/textpage/impressum') }}">
+						<a href="{{ \URL::to('/impressum') }}">
 						<em class="fa fa-info-circle"></em> {{ __('footer.impressum') }}
 						</a></li>
 					<li><i class="bx bx-chevron-right"></i>

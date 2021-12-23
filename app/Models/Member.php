@@ -43,6 +43,7 @@ class Member extends Model
         $memberCount = $t->selectRaw('distinct user_id')
         ->where('parent_type','=',$parentType)
         ->where('parent','=',$parent->id)
+        ->where('status','=','active')
         ->count();
         $result->memberCount = $memberCount;
         // likeReqMember, likeReqRank, disLikeReqMemberm diLikeReqRank képzése
@@ -158,6 +159,7 @@ class Member extends Model
         $member = $model->where('id','=',$memberId)->first();
         if ($member) {
             
+            
             $m = \DB::table('likes');
             $likeCount = $m->where('parent_type','=','members')
             ->where('parent','=',$member->id)
@@ -167,26 +169,35 @@ class Member extends Model
             $m = \DB::table('likes');
             $disLikeCount = $m->where('parent_type','=','members')
             ->where('parent','=',$member->id)
-            ->where('like_type','=','like')
+            ->where('like_type','=','dislike')
             ->count();
             
             $m = \DB::table('members');
             $memberCount = $m->selectRaw('distinct user_id')
                             ->where('parent_type','=',$member->parent_type)
                             ->where('parent','=',$member->parent)
-                            ->where('rank','=','member')
                             ->where('status','=','active')
                             ->count(); 
+
+
             
             // $config beolvasása {memberActivate, memberExclude, rankActivate, rankClose}
             if ($member->parent_type == 'teams') {
                 $parentModel = new \App\Models\Team();
             }
+            if ($member->parent_type == 'projects') {
+                $parentModel = new \App\Models\Project();
+            }
+            
             $parent = $parentModel->where('id','=',$member->parent)->first();
             if (!$parent) {
                 echo 'Fatal error parent not found'; exit();
             }
             $config = JSON_decode($parent->config);
+            
+            if ($memberCount < $config->memberActivate) {
+					$config->memberActivate = $memberCount;            
+            }
             
             if (($member->status == 'proposal') &
                 ($member->rank == 'member') &
@@ -198,12 +209,12 @@ class Member extends Model
                 ($likeCount >= round($config->rankActivate * $memberCount / 100))) {
                         $model->where('id','=',$member->id)->update(['status' => 'active']);
             }
-            if (($member->status == 'activel') &
+            if (($member->status == 'active') &
                 ($member->rank == 'member') &
                 ($disLikeCount >= round($config->memberExclude * $memberCount / 100))) {
                     $model->where('id','=',$member->id)->update(['status' => 'excluded']);
             }
-            if (($member->status == 'activel') &
+            if (($member->status == 'active') &
                 ($member->rank != 'member') &
                 ($disLikeCount >= round($config->rankClose * $memberCount / 100))) {
                     $model->where('id','=',$member->id)->update(['status' => 'closed']);

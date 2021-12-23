@@ -38,6 +38,9 @@ class MemberController extends Controller
         ->paginate(5);
 
         $info = $model->getInfo($parent_type, $parent, $data);
+		 foreach ($data as $d1) {
+			$model->checkStatus($d1->id);		 
+		 }	        		
         		 
         return view('member.index',
             ["data" => $data,

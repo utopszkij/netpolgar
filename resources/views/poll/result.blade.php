@@ -4,11 +4,13 @@
 	@else
 	<h3>{{ __('poll.result') }}</h3>
 	@endif
-	<h4>Leadott szavazatok száma: {{ $info->voteCount }} / {{ $info->memberCount }}
-	 -- {{ round($info->voteCount / $info->memberCount * 100) }}%</h4>
-	@if (round($info->voteCount / $info->memberCount * 100) >= $poll->config->valid)
-	<p>Érvényes szavazás</p>
-	@endif
+	@if ($info->memberCount > 0)
+		<h4>Leadott szavazatok száma: {{ $info->voteCount }} / {{ $info->memberCount }}
+		 -- {{ round($info->voteCount / $info->memberCount * 100) }}%</h4>
+		@if (round($info->voteCount / $info->memberCount * 100) >= $poll->config->valid)
+			<p>Érvényes szavazás</p>
+		@endif
+	@endif 
 	<div class="row">
 		<div style="display:inline-block; width: 350px">
 			<canvas id="myCanvas"></canvas>

@@ -15,7 +15,7 @@ return [
     'proposal_manager' => 'javasolt vezető',
     'proposal_moderator' => 'javasolt moderátor',
     'proposal_president' => 'javasolt elnök',
-    
+    'closed' => 'visszahívott',
     'members' => 'tagjai',
     'details' => 'Tag adatlap',
   	'rank' => 'tisztség',
@@ -34,7 +34,7 @@ return [
     
    'active' => 'aktiv',
    'proposal' => 'javaslat',
-   'exluded' => 'kizárt',
+   'excluded' => 'kizárt',
    'closed' => 'lezárt',
    
    'like' => 'támogatom',

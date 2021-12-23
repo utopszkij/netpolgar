@@ -48,6 +48,23 @@ class MessageController extends Controller {
 	                }
              	}
             }
+            if ($parentType == 'projects') {
+            	 $project = \DB::table('projects')
+            	 	->where('id','=',$parentId)->first();
+					 if ($project) {            	
+	                $member = \DB::table('members')
+	                ->where('parent_type','=','projects')
+	                ->where('parent','=',$project->id)
+	                ->where('user_id','=', \Auth::user()->id)
+	                ->whereIn('rank',["moderator","admin"])
+	                ->where('status','=','active')
+	                ->orderBy('rank','asc')
+	                ->first();
+	                if ($member) {
+	                    $result = true;
+	                }
+             	}
+            }
             
             // first user a system admin, ő is moderátor
             $firstUser = \DB::table('users')->orderBy('id')->first();
@@ -83,6 +100,23 @@ class MessageController extends Controller {
 	                $member = \DB::table('members')
 	                ->where('parent_type','=',$poll->parent_type)
 	                ->where('parent','=',$poll->parent)
+	                ->where('user_id','=', \Auth::user()->id)
+	                ->whereIn('rank',["member","admin"])
+	                ->where('status','=','active')
+	                ->orderBy('rank','asc')
+	                ->first();
+	                if ($member) {
+	                    $result = true;
+	                }
+             	 }
+            }
+            if ($parentType == 'projects') {
+            	 $project = \DB::table('projects')
+            	 	->where('id','=',$parentId)->first();
+            	 if ($project) {
+	                $member = \DB::table('members')
+	                ->where('parent_type','=','projects')
+	                ->where('parent','=',$project->id)
 	                ->where('user_id','=', \Auth::user()->id)
 	                ->whereIn('rank',["member","admin"])
 	                ->where('status','=','active')

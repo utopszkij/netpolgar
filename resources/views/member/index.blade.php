@@ -27,7 +27,7 @@
 				   md5($value->email).
 				   '?d='.urlencode('https://www.pinpng.com/pngs/m/341-3415688_no-avatar-png-transparent-png.png');
 			 } else {
-			 	$value->profile_photo_path = '/'.$value->profile_photo_path;
+			 	$value->profile_photo_path = \URL::to('/storage/app/public').'/'.$value->profile_photo_path;
 			 }        
         @endphp
         <tr>

@@ -117,8 +117,11 @@ class Poll extends Model
         $model = new \App\Models\Like();
         $result->likeCount = $model->where('parent_type','=','polls')
             ->where('parent','=', $poll->id)->where('like_type','=','like')->count();
-        $result->memberCount = \DB::table('members')->where('parent_type','=', $poll->parent_type)
-            ->where('parent','=', $poll->parent)->where('status','=','active')->count();
+        $result->memberCount = \DB::table('members')
+        		->where('parent_type','=', $poll->parent_type)
+            ->where('parent','=', $poll->parent)
+            ->where('status','=','active')
+            ->count();
         $result->voteCount = count((\DB::table('votes')
             						->select('ballot_id')
             						->where('poll_id','=', $poll->id)
