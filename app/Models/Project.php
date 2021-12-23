@@ -21,7 +21,7 @@ class Project extends Model
 			"name":"",
 			"parent":0,
 			"description":"",
-			"avatar":"/img/team.png",
+			"avatar":"/img/project.png",
 			"deadline":"'.date('Y-m-d').'",
 			"status":"proposal",
 			"config":{

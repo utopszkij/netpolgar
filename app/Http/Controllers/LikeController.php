@@ -27,6 +27,9 @@ class LikeController extends Controller {
         if ($parentType == 'options') {
             $parentModel = new \App\Models\Option();
         }
+        if ($parentType == 'projects') {
+            $parentModel = new \App\Models\Project();
+        }
         if ($parentModel) {
         	if (method_exists($parentModel, 'checkStatus')) {
             $parentModel->checkStatus($parent);

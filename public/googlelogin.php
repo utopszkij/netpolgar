@@ -29,10 +29,10 @@
 // include_once __DIR__.'/../config.php';
 
 DEFINE('SITEURL','http://szakacskonyv.great-site.net');
-DEFINE('FB_SECRET','1204bb1836372f6ceff89f6d9da49e7c'); 
+DEFINE('FB_SECRET',''); 
 DEFINE('GOOGLE_APPID',
-'733649779699-itoqvgojsrpf3c47ojt42ueuhsdg5suh.apps.googleusercontent.com');
-DEFINE('GOOGLE_SECRET','Q-3h6qDzROdzlPn3l5fBHDWj');
+'');
+DEFINE('GOOGLE_SECRET','');
 DEFINE('GOOGLE_REDIRECT','https://netpolgar.hu/googlelogin.php');
 
 

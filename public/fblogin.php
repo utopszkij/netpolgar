@@ -6,8 +6,8 @@
 // jelen változat a netpolgar.hu fő könyvtárba töltendő fel (ehez van fb login app)
 
 DEFINE('SITEURL','http://szakacskonyv.great-site.net');
-DEFINE('FB_APPID','482318802821364');
-DEFINE('FB_SECRET','1204bb1836372f6ceff89f6d9da49e7c');
+DEFINE('FB_APPID','');
+DEFINE('FB_SECRET','');
 DEFINE('FB_REDIRECT','https://netpolgar.hu/fblogin.php');
 
 

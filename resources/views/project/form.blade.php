@@ -37,10 +37,10 @@
 			</a>    	
 	 </div>    
  
- 	@if ($project->id > 0)
-    <form action="{{ \URL::to('/projects/store') }}" method="POST">
+ 	@if ($project->id <= 0)
+    <form action="{{ \URL::to('/projects') }}" method="POST">
    @else
-    <form action="{{ \URL::to('/projects/update/'.$project->id) }}" method="POST">
+    <form action="{{ \URL::to('/projects/'.$project->id) }}" method="POST">
    @endif 
    @csrf
          <input type="hidden" name="id" value="{{ $project->id }}" class="form-control" placeholder="">

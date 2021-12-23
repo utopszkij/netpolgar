@@ -16,7 +16,7 @@
 		</h3>	    	
 	 </div>    
 
-    @if (($info->status == 'active') & 
+    @if (($team->status == 'active') &
          (count($info->userParentRank) > 0) &
          (!$info->parentClosed))
     <div class="row buttons">

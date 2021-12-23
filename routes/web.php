@@ -75,8 +75,8 @@ Route::get('/{team}/projects',[ProjectController::class, 'index']);
 Route::get('/{team}/projects/create',[ProjectController::class, 'create']);
 Route::get('/projects/{project}',[ProjectController::class, 'show']);
 Route::get('/projects/{project}/edit',[ProjectController::class, 'edit']);
-Route::post('/projects',[VoteController::class, 'store']);
-Route::post('/projects/{project}',[VoteController::class, 'update']);
+Route::post('/projects',[ProjectController::class, 'store']);
+Route::post('/projects/{project}',[ProjectController::class, 'update']);
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
     return view('dashboard');

@@ -159,6 +159,7 @@ class Member extends Model
         $member = $model->where('id','=',$memberId)->first();
         if ($member) {
             
+            
             $m = \DB::table('likes');
             $likeCount = $m->where('parent_type','=','members')
             ->where('parent','=',$member->id)
@@ -168,7 +169,7 @@ class Member extends Model
             $m = \DB::table('likes');
             $disLikeCount = $m->where('parent_type','=','members')
             ->where('parent','=',$member->id)
-            ->where('like_type','=','like')
+            ->where('like_type','=','dislike')
             ->count();
             
             $m = \DB::table('members');
@@ -177,16 +178,23 @@ class Member extends Model
                             ->where('parent','=',$member->parent)
                             ->where('status','=','active')
                             ->count(); 
+
+
             
             // $config beolvasása {memberActivate, memberExclude, rankActivate, rankClose}
             if ($member->parent_type == 'teams') {
                 $parentModel = new \App\Models\Team();
             }
+            if ($member->parent_type == 'projects') {
+                $parentModel = new \App\Models\Project();
+            }
+            
             $parent = $parentModel->where('id','=',$member->parent)->first();
             if (!$parent) {
                 echo 'Fatal error parent not found'; exit();
             }
             $config = JSON_decode($parent->config);
+            
             if ($memberCount < $config->memberActivate) {
 					$config->memberActivate = $memberCount;            
             }

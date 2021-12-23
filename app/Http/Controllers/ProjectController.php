@@ -6,6 +6,7 @@ use App\Models\Project;
 use App\Models\Team;
 use App\Models\Member;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Validator;
 use App\Rules\RanksRule;
 
 class ProjectController extends Controller
@@ -76,7 +77,7 @@ class ProjectController extends Controller
 	 protected Function saveOrStore(int &$id, Request $request): string {	
 			// rekord array kialakitása
 			$projectArr = [];
-			$projectArr['tem_id'] = $request->input('team_id');
+			$projectArr['team_id'] = $request->input('team_id');
 			$projectArr['name'] = $request->input('name');
 			$projectArr['description'] = $request->input('description');
 			$projectArr['avatar'] = $request->input('avatar');
@@ -150,15 +151,15 @@ class ProjectController extends Controller
     public function store(Request $request)
     {
     		// jogosultság ellenörzés
-    		$team = \DB::table('temas')
+    		$team = \DB::table('teams')
     		->where('id','=',$request->input('team_id','0'))
     		->first();
     		if (!$team) {
 				echo 'Fatal error team not exists'; exit();    		
     		}
-    		$info = Project::getInfo($project);
+    		$info = Project::getInfoFromTeam($team);
     		if ((!\Auth::user()) | 
-    		    (!$this->userMember($info->userRank)) |
+    		    (count($info->userParentRank) == 0) |
     		    ($info->parentClosed)) {
     		   return redirect()->to('/'.$team->id.'/projects')
     		   						->with('error',__('project.accessDenied')); 	
@@ -169,7 +170,7 @@ class ProjectController extends Controller
 				'name' => 'required',
 				'ranks' => ['required', new RanksRule()],
 				'description' => 'required',
-				'deadline' => 'requied'
+				'deadline' => 'required'
 			]);
 
 			// project rekord kiirása
@@ -216,7 +217,10 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
-        $team = \FB::table('teams')->where('id','=',$project->team_id)->fist();  
+        $team = \DB::table('teams')->where('id','=',$project->team_id)->first();  
+    		if (!$team) {
+				echo 'Fatal error team not exists'; exit();    		
+    		}
     	  $info = Project::getInfo($project); 
 		  $this->decodeConfig($project, $info);
      	  if ($info->parentClosed) {
