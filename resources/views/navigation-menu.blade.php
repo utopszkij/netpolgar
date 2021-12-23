@@ -46,29 +46,6 @@ if (Auth::user()) {
           	{{ __('navigation.groups') }}
           </a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">
-          	{{ __('navigation.Projects') }}
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">
-          	{{ __('navigation.market') }}
-          </a>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" 
-            _data-bs-toggle="dropdown" _aria-expanded="false"
-            onclick="$('#msgDropdown').toggle(); false">
-            {{ __('navigation.kommunikation') }}
-          </a>
-          <ul class="dropdown-menu" aria-labelledby="navbarDropdown" id="msgDropdown">
-            <li><a class="dropdown-item" href="#">{{ __('navigation.privatmsg') }}</a></li>
-            <li><a class="dropdown-item" href="#">{{ __('navigation.forum') }}</a></li>
-            <li><a class="dropdown-item" href="#">{{ __('navigation.voks') }}</a></li>
-            <li><a class="dropdown-item" href="#">{{ __('navigation.rules') }}</a></li>
-          </ul>
-        </li>
       </ul>
       <ul class="navbar-nav mb-2 mb-lg-0">
       	@auth

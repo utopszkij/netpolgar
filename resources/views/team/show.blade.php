@@ -28,7 +28,7 @@
 				<em class="fas fa-sitemap"></em>
 				<span>{{ __('team.subGroups') }}</span><br />			
 			</a>
-			<a href="{{ URL::to('/construction') }}" title="Projektek">
+			<a href="{{ URL::to('/'.$team->id.'/projects') }}" title="Projektek">
 				<em class="fas fa-cogs"></em>
 				<span>{{ __('team.projects') }}</span><br />			
 			</a>
