@@ -7,11 +7,12 @@
             </div>
         </div>
     </div>
-    <div class="row path" style="margin-top: 5px;">
+    <div class="row path" style="margin-top: 5px; margin-left:10px">
     @php $pathSeparator = ''; @endphp
     @foreach ($info->path as $item)
     	<var class="pathItem">
 			<a href="{{ route('teams.show',["team" => $item->id]) }}">
+				<em class="fas fa-hand-point-right"></em>
 				&nbsp;{!! $pathSeparator !!}&nbsp;{{ $item->name }} 			
 			</a>    	
     	</var>
@@ -58,7 +59,6 @@
     @else
     <div>{{ __('team.notrecord') }}</div>
     @endif  
-    {!! $data->links() !!}
-    
+    {!! $data->links('pagination') !!}
   </div>        
 </x-guest-layout>  

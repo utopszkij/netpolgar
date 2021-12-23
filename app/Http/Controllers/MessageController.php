@@ -31,6 +31,23 @@ class MessageController extends Controller {
                     $result = true;
                 }
             }
+            if ($parentType == 'polls') {
+            	 $poll = \DB::table('polls')
+            	 	->where('id','=',$parentId)->first();
+					 if ($poll) {            	
+	                $member = \DB::table('members')
+	                ->where('parent_type','=',$poll->parent_type)
+	                ->where('parent','=',$poll->parent)
+	                ->where('user_id','=', \Auth::user()->id)
+	                ->whereIn('rank',["moderator","admin"])
+	                ->where('status','=','active')
+	                ->orderBy('rank','asc')
+	                ->first();
+	                if ($member) {
+	                    $result = true;
+	                }
+             	}
+            }
             
             // first user a system admin, ő is moderátor
             $firstUser = \DB::table('users')->orderBy('id')->first();
@@ -59,13 +76,30 @@ class MessageController extends Controller {
                     $result = true;
                 }
             }
+            if ($parentType == 'polls') {
+            	 $poll = \DB::table('polls')
+            	 	->where('id','=',$parentId)->first();
+            	 if ($poll) {
+	                $member = \DB::table('members')
+	                ->where('parent_type','=',$poll->parent_type)
+	                ->where('parent','=',$poll->parent)
+	                ->where('user_id','=', \Auth::user()->id)
+	                ->whereIn('rank',["member","admin"])
+	                ->where('status','=','active')
+	                ->orderBy('rank','asc')
+	                ->first();
+	                if ($member) {
+	                    $result = true;
+	                }
+             	 }
+            }
         }
         return $result;
     }
     
     protected function avatar($profile_photo_path, $email) {
         if ($profile_photo_path != '') {
-            $result = URL::to('/').$user->profile_photo_path;
+            $result = \URL::to('/').$profile_photo_path;
         } else {
             $result = 'https://gravatar.com/avatar/'.md5($email).
             '?d='.\URL::to('/img/noavatar.png');
@@ -104,21 +138,23 @@ class MessageController extends Controller {
      */
     protected function buildLinks(int $offset, int $total, string $parentType, $parent): array {
         $links = [];
-        if ($offset > 0) {
-            $links[] = ["first", __('messages.first'), \URL::to('/messages/tree/'.$parentType.'/'.$parent->id.'/0') ];
+        $page = 1;
+        $w = 0;
+        $links[] = ["first", __('messages.first'), \URL::to('/message/tree/'.$parentType.'/'.$parent->id.'/0') ];
+        while ($w < $total) {
+            if (($w >= $offset - 20) & ($w <= $offset + 20)) {
+                 if ($w == $offset) {
+                     $links[] = ["actual", $page, \URL::to('/message/tree/'.$parentType.'/'.$parent->id.'/'.$w) ];
+                 } else {
+                     $links[] = ["other", $page, \URL::to('/message/tree/'.$parentType.'/'.$parent->id.'/'.$w) ];
+                 }
+             }
+            $w = $w + 10;
+            $page++;
         }
-        if ($offset >= 0) {
-            $links[] = ["previos", __('messages.previous'), \URL::to('/messages/tree/'.$parentType.'/'.$parent->id.'/'.(max($offset-10,0))) ];
-        }
-        $links[] = ["actual", 
-            '<em class="fas">'.(round(($offset/10)+0.5) + 1).'</em>', 
-            \URL::to('/messages/tree/'.$parentType.'/'.$parent->id.'/'.($offset-10)) ];
-        if ($offset < ($total - 10)) {
-            $links[] = ["next", __('messages.next'), \URL::to('/messages/tree/'.$parentType.'/'.$parent->id.'/'.($offset+10)) ];
-        }
-        if ($offset < ($total - 10)) {
-            $links[] = ["last", __('messages.last'), \URL::to('/messages/tree/'.$parentType.'/'.$parent->id.'/'.($total-10)) ];
-        }
+        $page = $page - 1;
+        $w = $w - 10;
+        $links[] = ["last", __('messages.last'), \URL::to('/message/tree/'.$parentType.'/'.$parent->id.'/'.$w) ];
         return $links;
     }
     
@@ -144,22 +180,22 @@ class MessageController extends Controller {
         $parentTable = \DB::table($parentType);
         $parent = $parentTable->where('id','=',$parent)->first();
         if (!$parent) {
-            echo 'Fatal error parent not found'; 
+            echo 'Fatal error parent not found'; exit();
         }
         $model = new \App\Models\Message();
         $model->getTreeItem($parentType, $parent->id, 0, 0);
         $model->setPathNotReaded();
         $model->treeTruncate();
-        
         $total = count($model->tree);
         
         // ha $offset alapértelmezett akkor az utolsó lapot jelenitem meg
         if ($offset < 0) {
-            $offset = $total - 10;
-            if ($offset < 0 ) {
-                $offset = 0;
+            $offset = 0;
+            while ($offset < (count($model->tree) - 10)) {
+                $offset = $offset + 10;
             }
         }
+        
         $model->tree = array_splice($model->tree, $offset, 10);
         foreach ($model->tree as $treeItem) {
             $model->getInfo($treeItem);
@@ -256,12 +292,14 @@ class MessageController extends Controller {
         $total = count($model->tree);
         
         // ha $offset alapértelmezett akkor az utolsó lapot jelenitem meg
+        // ha $offset alapértelmezett akkor az utolsó lapot jelenitem meg
         if ($offset < 0) {
-            $offset = $total - 10;
-            if ($offset < 0 ) {
-                $offset = 0;
+            $offset = 0;
+            while ($offset < count($model->tree)) {
+                $offset = $offset + 10;
             }
         }
+        
         $model->tree = array_splice($model->tree, $offset, 10);
         foreach ($model->tree as $treeItem) {
             $model->getInfo($treeItem);
@@ -286,7 +324,8 @@ class MessageController extends Controller {
     
     
     /**
-     * új üzenet tárolása és olvasottság jelzés
+     * új üzenet tárolása és olvasottság jelzés,
+     * moderálás tárolása
      * csak bejelentkezett csoport member használhatja
      * @param Request $request
      * @return laravel redirect

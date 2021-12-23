@@ -31,6 +31,79 @@ class Member extends Model
     
     /**
      * 
+     * @param object $result
+     * @param string $parentType
+     * @param object $parent
+     * @param object $config
+     * @return void $result modosul
+     */
+    public static function getReqs(&$result, string $parentType, $parent, $config) {
+        // memberCount lekérése
+        $t = \DB::table('members');
+        $memberCount = $t->selectRaw('distinct user_id')
+        ->where('parent_type','=',$parentType)
+        ->where('parent','=',$parent->id)
+        ->count();
+        $result->memberCount = $memberCount;
+        // likeReqMember, likeReqRank, disLikeReqMemberm diLikeReqRank képzése
+        $result->likeReqMember = $config->memberActivate;
+        $result->disLikeReqMember = round($config->memberExclude * $memberCount / 100);
+        $result->likeReqRank = round($config->rankActivate * $memberCount / 100);
+        $result->disLikeReqRank = round($config->rankClose * $memberCount / 100);
+        
+        $result->likeReqMember = min($result->likeReqMember,$memberCount);
+        $result->disLikeReqMember = min($result->disLikeReqMember,$memberCount);
+        $result->likeReqRank = min($result->likeReqRank,$memberCount);
+        $result->disLikeReqRank = min($result->disLikeReqRank,$memberCount);
+    }
+        
+    /**
+     * likeCount, disLikeYount, userLiked, userDisliked infok lekérése
+     * @param object $result
+     * @param object $data
+     * @return void $result modosul
+     */
+    public static function getLikeDisLikeCounts(&$result, $data) {
+        // likeCount és disLikeCount tömbök feltöltése (index = data index)
+        $result->likeCount = [];
+        $result->disLikeCount = [];
+        foreach ($data as $key => $m) {
+            $model = new \App\Models\Like();
+            $result->likeCount[$key] = $model->where('parent_type','=','members')
+            ->where('parent','=', $m->id)
+            ->where('like_type','=','like')
+            ->count();
+            $result->disLikeCount[$key] = $model->where('parent_type','=','members')
+            ->where('parent','=', $m->id)
+            ->where('like_type','=','dislike')
+            ->count();
+        }
+        // userLiked, userDisLiked tömbök feltöltése (index data index)
+        $user = \Auth::user();
+        $result->userLiked = [];
+        $result->userDisLiked = [];
+        foreach ($data as $key => $m) {
+            if ($user) {
+                $model = new \App\Models\Like();
+                $result->userLiked[$key] = ( $model->where('parent_type','=','members')
+                    ->where('parent','=', $m->id)
+                    ->where('like_type','=','like')
+                    ->where('user_id','=',$user->id)
+                    ->count() >= 1);
+                $result->userDisLiked[$key] = ($model->where('parent_type','=','members')
+                    ->where('parent','=', $m->id)
+                    ->where('like_type','=','dislike')
+                    ->where('user_id','=',$user->id)
+                    ->count() >= 1);
+            } else {
+                $result->userLiked[$key] = false;
+                $result->userDisLiked[$key] = false;
+            }
+        }
+    }
+    
+    /**
+     * 
      * @param string $parent_type
      * @param object $parent
      * @param array $data [{user_id, rank, status},...]
@@ -48,82 +121,31 @@ class Member extends Model
 				"disLikeReqMember":0,        
 				"disLikeReqRank":0,
 				"userLiked":[],
-				"userDisLiked":[]        
+				"userDisLiked":[],
+                "memberCount":0         
         }');
-        $userRank = [];
+        $result->userRank = [];
         if (\Auth::user()) {
 		  		$user = \Auth::user();
 		  		foreach ($data as $m) {
 					if (($m->user_id == $user->id) & ($m->status == 'active')) {
-						$userRank[] = $m->rank; 					
+						$result->userRank[] = $m->rank; 					
 					}		  		
 		  		}
 		}	        			 
-		$result->userRank = $userRank;	
-        $ranks = [];	
-        if (isset($parent->config)) {
+      $result->ranks = [];	
+      if (isset($parent->config)) {
 				$config = JSON_decode($parent->config);
 				if (is_string($config->ranks)) {
 					$config->ranks = explode(',',$config->ranks);				
 				}        
             if (isset($config->ranks)) {
-					$ranks = $config->ranks;         
+					$result->ranks = $config->ranks;         
         		}
-        }	
-	    $result->ranks = $ranks;
-	    
-	    // memberCount lekérése
-	    $t = \DB::table('members');
-	    $memberCount = $t->selectRaw('distinct user_id')
-	    ->where('parent_type','=',$parent_type)
-	    ->where('parent','=',$parent->id)
-	    ->count();
-	    
-	    // likeReqMember, likeReqRank, disLikeReqMemberm diLikeReqRank képzése
-	    $result->likeReqMember = $config->memberActivate;
-	    $result->disLikeReqMember = round($config->memberExclude * $memberCount / 100);
-	    $result->likeReqRank = round($config->rankActivate * $memberCount / 100);
-	    $result->disLiikeReqRank = round($config->rankClose * $memberCount / 100);
-	    
-	    // likeCount és disLikeCount tömbök feltöltése (index = data index)
-	    $result->likeCount = [];
-	    $result->disLikeCount = [];
-	    foreach ($data as $key => $m) {
-	        $model = new \App\Models\Like();
-	        $result->likeCount[$key] = $model->where('parent_type','=','members')
-	        ->where('parent','=', $m->id)
-	        ->where('like_type','=','like')
-	        ->count();
-	        $result->disLikeCount[$key] = $model->where('parent_type','=','members')
-	        ->where('parent','=', $m->id)
-	        ->where('like_type','=','dislike')
-	        ->count();
-	    }
-	    
-	    // userLiked, userDisLiked tömbök feltöltése (index data index)
-	    $user = \Auth::user();
-	    $result->userLiked = [];
-	    $result->userDisLiked = [];
-	    foreach ($data as $key => $m) {
-	        if ($user) {
-    	        $model = new \App\Models\Like();
-    	        $result->userLiked[$key] = ( $model->where('parent_type','=','members')
-    	        ->where('parent','=', $m->id)
-    	        ->where('like_type','=','like')
-    	        ->where('user_id','=',$user->id)
-    	        ->count() >= 1);
-    	        $result->userDisLiked[$key] = ($model->where('parent_type','=','members')
-    	        ->where('parent','=', $m->id)
-    	        ->where('like_type','=','dislike')
-    	        ->where('user_id','=',$user->id)
-    	        ->count() >= 1);
-	        } else {
-	            $result->userLiked[$key] = false;
-	            $result->userDisLiked[$key] = false;
-	        }
-	    }
-	    
-	  return $result;
+      }	
+	   Member::getReqs($result, $parent_type, $parent, $config);
+	   Member::getLikeDisLikeCounts($result, $data);
+	   return $result;
     }
     
     /**

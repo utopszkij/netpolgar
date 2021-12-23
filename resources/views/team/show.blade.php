@@ -40,15 +40,15 @@
 				<em class="fas fa-comments"></em>
 				<span>{{ __('team.comments') }}</span><br />			
 			</a>
-			<a href="{{ URL::to('/construction') }}" title="Viták, szavazások">
+			<a href="{{ URL::to('/teams/'.$team->id.'/proposal-debate/polls')  }}" title="Viták">
 				<em class="fas fa-retweet"></em>
 				<span>{{ __('team.debates') }}</span><br />			
 			</a>
-			<a href="{{ URL::to('/construction') }}" title="Viták, szavazások">
+			<a href="{{ URL::to('/teams/'.$team->id.'/vote/polls') }}" title="szavazások">
 				<em class="fas fa-balance-scale-left"></em>
 				<span>{{ __('team.polls') }}</span><br />			
 			</a>
-			<a href="{{ URL::to('/construction') }}" title="Döntések">
+			<a href="{{ URL::to('/teams/'.$team->id.'/closed/polls') }}" title="Döntések">
 				<em class="fas fa-check"></em>
 				<span        		    
 				>{{ __('team.decisions') }}</span><br />			
@@ -70,6 +70,7 @@
 		    	@if ($item->id != $team->id)
 		    	<var class="pathItem">
 					<a href="{{ route('teams.show',["team" => $item->id]) }}">
+						<em class="fas fa-hand-point-right"></em>
 						&nbsp;{!! $pathSeparator !!}&nbsp;{{ $item->name }} 			
 					</a>    	
 		    	</var>

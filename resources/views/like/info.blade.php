@@ -21,7 +21,7 @@
                             {{ $parent->name }}
                         </a> 
                     </h2>
-                    <h3>{{ __('lise.'.$parentType) }}</h3>
+                    <h3>{{ __('like.'.$parentType) }}</h3>
                 </div>
             </div>
         </div>

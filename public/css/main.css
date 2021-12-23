@@ -22,6 +22,7 @@ h5 {font-size:14pt; font-weight:bold; margin:10px 0px 10px 0px}
 thead {background-color: silver; color:black}
 .btn {width:auto; margin:5px;}
 .fas {margin-right:10px}
+.fa-frown, .fa-flushed, .fa-grin {color:orange}
 .btn-disabled {background-color:silver; border-style:solid; border-width:1px; cursor:default}
 .form-group {vertical-align:middle; margin:2px;}
 .form-group label {display:inline-block; width:150px; text-align:right; margin:2px; }
@@ -33,11 +34,14 @@ thead {background-color: silver; color:black}
 input, textarea, select {max-width:98%}
 .formButtons {margin:10px 0px 0px 0px}
 
-.paginator {padding:10px}
-.paginator a,
-.paginator var {border-style:solid; border-width:1px; border-color:black; text-align:center;
-  display:inline-block; width:30px; height:30px; padding:5px; margin:0px;}
-.paginator .actual {background-color:#d0d0e0}
+.paginator {display:block; padding:10px; float:right}
+.paginator .paginatorItem {display:inline-block; height:36px; width:36px;
+	border-style:solid; border-width:1px; border-color:black; margin:0px}
+.paginator a { 
+  text-align:center; vertical-align: baseline;
+  display:inline-block; width:32px; height:32px; padding:5px; margin:0px;}
+.paginator a.actual,
+nav.flex span > span > span.cursor-default {background-color:#d0d0e0}
 
 .pathItem {display:inlie-block; width:auto; margin:0px; padding:0px;}
 .pathItem .fas {margin-right: 0px }
@@ -90,6 +94,23 @@ input, textarea, select {max-width:98%}
 #messages .replyTo {font-weight:bolder}
 #messages img {max-width: 40%}
 
+#pollContainer .logo {display:inline-block; height:32px; width:auto}
+#pollContainer #pollMenu {background-color:black; color:white; line-height:220%}
+#pollContainer #pollMenu a {color:white}
+#pollContainer .liked {color:green}
+
+#voteForm ul {display:inline-block; width:auto;}
+#voteForm li {text-align:left}
+.voteTable {border-style:solid; border-width:2px; border-color:black; font-size:18pt}
+.voteTable tr {border-style:solid; border-width:2px 0px 0px 0px; border-color:black}
+.voteTable tr.eq {border-style:solid; border-width:0px 0px 0px 0px; border-color:black}
+.condorcetResult table {border-style:solid; border-width:1px; border-color:black;}
+.condorcetResult tr {border-style:solid; border-width:1px; border-color:black;}
+.condorcetResult td {border-style:solid; border-width:1px; border-color:black;}
+.condorcetResult th {background-color:#d0d0d0;
+	border-style:solid; border-width:1px; border-color:black;}
+.elfogadhato {display:none}	
+
 footer {background:silver; padding:10px; margin-top:20px}
 #cookieEnable {position:fixed; z-index:999; bottom:0px; left:0px; width:100%;
 	background-color:silver; opacity:0.9; padding:20px; text-align:right;
@@ -107,11 +128,13 @@ footer {background:silver; padding:10px; margin-top:20px}
 	a {color: blue}
 	#teamMenu span {display:none}
 	.subMenuIcon {display:block; text-align:right}
+	#pollMenu span {display:none}
 }
 @media (max-width:991px) {
 	.submenuIcon {display:inline-block}
 	.submenu {display:none}
 	a {color: blue}
 	#teamMenu span {display:none}
+	#pollMenu span {display:none}
 	.subMenuIcon {display:block; text-align:right}
 }

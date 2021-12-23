@@ -8,4 +8,6 @@ return [
     'teams' => 'csoport',
     'projects' => 'projekt',
     'products' => 'termék',
+    'polls' => 'vita',
+    'options' => 'opció'
 ];

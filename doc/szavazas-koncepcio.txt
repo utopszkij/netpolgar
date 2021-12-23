@@ -87,7 +87,57 @@ Ha a szavazás lezárulásakor egy szavazásra jogosult nem szavazott
        nem találunk szavazatot vagy felértünk a témakör fa tetejére.
   
   
-     
+Táblák
+======
+
+polls
+	id
+	parent_type
+	parent
+	name
+	description
+	status  (proposal|debate|voks|close|cancelled)
+	config  {debateReq, cancellReq, voksType, voksTime, secret, liquid}
+		voksType: yesno|onex|morex|pref|partition
+	cretaed_at
+	updated_at
+	created_by
+
+options
+	id
+	poll_id
+	name
+	description
+	status (proposal|active)
+	created_at
+	updated_at
+	created_by
+
+ballots
+	id   egyedi   
+		(képzése: insert into select szavazásra jogosult userek a tárolt psw szerinti sorrendben olvasva)
+	poll_id
+	user_id  	titkos szavazásnál a szavazat leadásakor törlődik
+
+acredites
+	id
+	parent_type
+	parent
+	user_id
+	acredited_id
+	created_at
+	updated_at
+
+vokses
+	 id
+	 poll_id
+	 ballot_id
+	 acredited_id  ha képviselő utján szavazott a képviselő user.id -je
+	 opció ID
+	 position
+	 created_at
+	 updated_at
+	 	     
     
     
     

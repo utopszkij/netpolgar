@@ -79,6 +79,7 @@ class Team extends Model
         $result->memberCount = $t->select('distinct user_id')
         ->where('parent_type','=','teams')
         ->where('parent','=',$team->id)
+        ->where('status','=','active')
         ->count();
         $config = JSON_decode($team->config);
         if (!isset($config->close)) {
@@ -88,7 +89,13 @@ class Team extends Model
             $config->subTeamActivate = 2;
         }
         $result->likeReq = $config->subTeamActivate;
+        if ($result->likeReq > $result->memberCount) {
+            $result->likeReq = $result->memberCount;
+        }
         $result->disLikeReq = round($config->close * $result->memberCount / 100);
+        if ($result->disLikeReq > $result->memberCount) {
+            $result->disLikeReq = $result->memberCount;
+        }
     }
         
     /**

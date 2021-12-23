@@ -2,7 +2,7 @@
 
 státusz: fejlesztés alatt
 
-Készültség: 1%  v0.04-alpha
+Készültség: 5%  v0.04-alpha
 
 Verzió történet:
    v0.04 2021.05.   Laravel változat
@@ -25,10 +25,17 @@ Minden felhasználónak van egy üzenőfala, fájl,kép és videó tároló ter�
 
 Sotware: Laravel  8.28.1 alapon készül. lásd: [laravel-readme.md](laravel-readme.md) és [laravel.com](http://laravel.com)
 
-További felhasznált szellemi termékek: [jQuery](http://jquery.com), [bootstrap](https://getbootstrap.com/), [Awesore fonts](https://fontawesome.com/),
-[pixabay](https://pixabay.com/),  [gravatar](http://gravatar.com), [facebook](http://facebook.com), [google](http://google.com), [github](http://github.com),
+### További felhasznált szellemi termékek: 
+[jQuery](http://jquery.com), 
+[bootstrap](https://getbootstrap.com/),
+[Awesore fonts](https://fontawesome.com/),
 [spatie cookie consent](https://github.com/spatie/laravel-cookie-consent), 
-[jitsin vide meating](https://jitsi.org/) 
+[jitsin vide meating](https://jitsi.org/) ,
+[pixabay](https://pixabay.com/),
+[gravatar](http://gravatar.com),
+[facebook](http://facebook.com),
+[google](http://google.com),
+[github](http://github.com),
 
 ## Licensz
 
@@ -45,6 +52,13 @@ mysql adatbázis létrehozása utf8mb4-hungaian_ci default rendezéssel
 .env file editásása (mysql elérés, smtp elérés, opcionálisan github, facebook, google login konfig)
 
 php artisan migrate
+## frissités
+
+composer update
+
+npm ipdate
+
+github -ról a sw legújabb "master" branch feltöltése a web szerverre
 
 ## lokális teszt futtatás
 ```

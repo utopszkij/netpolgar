@@ -33,10 +33,6 @@
 				<em class="fas fa-shopping-basket"></em>
 				<span>{{ __('member.products') }}</span><br />			
 		 </a>
-		 <a href="{{ URL::to('/message/tree/members/'.$parent->id) }}" title="Beszégetés">
-				<em class="fas fa-comments"></em>
-				<span>{{ __('member.comments') }}</span><br />			
-		 </a>
 		 <a href="{{ URL::to('/construction') }}" title="Fájlok">
 				<em class="fas fa-folder-open"></em>
 				<span>{{ __('member.files') }}</span><br />			

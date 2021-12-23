@@ -27,7 +27,7 @@ class Message extends Model
      */
     protected function avatar($profile_photo_path, $email): string {
         if ($profile_photo_path != '') {
-            $result = URL::to('/').$user->profile_photo_path;
+            $result = \URL::to('/storage/app/public/').'/'.$profile_photo_path;
         } else {
             $result = 'https://gravatar.com/avatar/'.md5($email).
             '?d='.\URL::to('/img/noavatar.png');
@@ -95,7 +95,6 @@ class Message extends Model
                     messages.parent = '.$parent.'
                     order by messages.id ASC');
             }
-            // var_dump($recs); 
             
             foreach ($recs as $rec) {
                 $i = count($this->tree);
