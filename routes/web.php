@@ -11,6 +11,7 @@ use App\Http\Controllers\PollController;
 use App\Http\Controllers\OptionController;
 use App\Http\Controllers\VoteController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\TaskController;
 
 /*
 |--------------------------------------------------------------------------
@@ -77,6 +78,14 @@ Route::get('/projects/{project}',[ProjectController::class, 'show']);
 Route::get('/projects/{project}/edit',[ProjectController::class, 'edit']);
 Route::post('/projects',[ProjectController::class, 'store']);
 Route::post('/projects/{project}',[ProjectController::class, 'update']);
+// tasks
+Route::get('/tasks/dragsave',[TaskController::class, 'dragsave']);
+Route::get('/{project}/tasks/create',[TaskController::class, 'create']);
+Route::get('/tasks/{task}',[TaskController::class, 'show']);
+Route::get('/tasks/{task}/edit',[TaskController::class, 'edit']);
+Route::get('/tasks/{task}/delete',[TaskController::class, 'destroy']);
+Route::post('/tasks',[TaskController::class, 'store']);
+Route::post('/tasks/{task}',[TaskController::class, 'update']);
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
     return view('dashboard');

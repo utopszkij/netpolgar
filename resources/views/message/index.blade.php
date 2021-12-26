@@ -24,7 +24,21 @@ if ($parent) {
 <x-guest-layout>
 <div id="messages" class="pageContainer row messagesBrowser">
 
-	<h2>{{ $parent->name }}</h2>
+	<h2>
+		<a href="{{ \URL::to('/'.$parentType.'/'.$parent->id) }}">
+  		<em class="fas fa-hand-point-right"></em>
+		@if ($parentType == 'teams')
+		<em class="fas fa-user-friends"></em>
+		@endif
+		@if ($parentType == 'projects')
+		<em class="fas fa-cogs"></em>
+		@endif
+		@if ($parentType == 'polls')
+		<em class="fas fa-retweet"></em>
+		@endif
+		&nbsp;{{ $parent->name }}
+		</a>
+	</h2>
 	<p> {{ __('messages.'.$parentType) }}</p>
    	<h3>{{ __('messages.list') }}</h3>
 

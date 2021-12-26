@@ -226,10 +226,36 @@ class ProjectController extends Controller
      	  if ($info->parentClosed) {
 				$project->status = 'closed';    	  
     	  }	
+    	  $tasks = \DB::table('tasks')
+    	  	->where('project_id','=',$project->id)
+    	  	->orderBy('status','asc')
+    	  	->orderBy('position','asc')
+    	  	->get();
+    	  foreach ($tasks as $task) {
+				if ($task->assign != 0) {
+					$u = \DB::table('users')
+						->where('id','=',$task->assign)
+						->first();
+					if ($u) {
+						if ($u->profile_photo_path != '') {
+							$task->assign=[$u->name,
+							\URL::to('/').'/storage/app/public/'.$u->profile_photo_path];
+						} else {
+							$task->assign=[$u->name,
+							'https://gravatar.com/avatar/'.md5($u->email)];
+						}	 					
+					} else {
+						$task->assign=['','']; 					
+					}					
+				} else {
+					$task->assign = ['',''];				
+				}    	  
+    	  }	
         return view('project.show',
         	["project" => $project,
         	 "team" => $team,
-        	 "info" => $info
+        	 "info" => $info,
+        	 "tasks" => $tasks
         	]);
     }
 

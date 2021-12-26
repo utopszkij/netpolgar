@@ -43,6 +43,14 @@ input, textarea, select {max-width:98%}
 .paginator a.actual,
 nav.flex span > span > span.cursor-default {background-color:#d0d0e0}
 
+#popup {display:none}
+#popupBg {display:block; position:fixed; z-index:98; opacity:0.8;
+	left:0px; top:0px; width:100%; height:100%;
+	background-color:silver;  text-align:center; vertical-align: middle;}
+#popupBody {display:block; position:fixed; z-index:99; opacity:1;
+	left:20%; top:20%; width:60%; height:auto;
+	background-color:white;  text-align:center;}
+
 .pathItem {display:inlie-block; width:auto; margin:0px; padding:0px;}
 .pathItem .fas {margin-right: 0px }
 

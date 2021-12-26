@@ -4,6 +4,7 @@ return [
   	'teams' => 'Csoport',
   	'projects' => 'Projekt',
   	'polls' => 'Vita',
+  	'tasks' => 'Feladat',
     'products' => 'Termék',
     'users' => 'Privát',
     'event' => 'Esemény',

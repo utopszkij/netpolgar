@@ -7,7 +7,13 @@
             	<h2>
             		<a href="{{ \URL::to('/'.$parentType.'/'.$parent->id) }}">
             		<em class="fas fa-hand-point-right"></em>
-            		{{ $parent->name }} {{ __('poll.'.$parentType) }}
+						@if ($parentType == 'teams')
+						<em class="fas fa-user-friends"></em>
+						@endif
+						@if ($parentType == 'projects')
+						<em class="fas fa-cogs"></em>
+						@endif
+            		&nbsp;{{ $parent->name }} 
             		</a>
             	</h2>
             	@if ($statuses == 'proposal-debate')

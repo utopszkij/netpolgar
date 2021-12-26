@@ -18,6 +18,7 @@
                 <div class="pull-left">
                     <h2>
                         <a href="/{{ $parentType }}/{{ $parent->id }}">
+                        	 <em class="fas fa-hand-point-right"></em>
                             {{ $parent->name }}
                         </a> 
                     </h2>
