@@ -7,8 +7,37 @@ use App\Models\Member;
 use Illuminate\Http\Request;
 use App\Rules\RanksRule;
 
-class TeamController extends Controller
-{
+class TeamController extends Controller {
+	
+	/**
+	* távoli file infok lekérdezése teljes letöltés nélkül
+	* csak 'http' -vel kezdödő linkeket ellenöriz
+	* @param string $url
+	* @return array ['fileExist', 'fileSize' ]
+	*/
+	protected function getRemoteFileInfo($url) {
+		if (substr($url,0,4) == 'http') {
+		   $ch = curl_init($url);
+		   curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+		   curl_setopt($ch, CURLOPT_HEADER, TRUE);
+		   curl_setopt($ch, CURLOPT_NOBODY, TRUE);
+		   $data = curl_exec($ch);
+		   $fileSize = curl_getinfo($ch, CURLINFO_CONTENT_LENGTH_DOWNLOAD);
+		   $httpResponseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		   curl_close($ch);
+		   $result = [
+	        'fileExists' => (int) $httpResponseCode == 200,
+	        'fileSize' => (int) $fileSize
+		   ];
+		} else {
+		   $result = [
+	        'fileExists' => 1,
+	        'fileSize' => 100
+		   ];
+		}
+		return $result;
+	}
+
     /**
      * Display a listing of the resource.
      *
@@ -19,13 +48,13 @@ class TeamController extends Controller
         $data = \DB::table('teams')
         			 ->where('parent','=',$parent)
         			 ->orderBy('name')
-        			 ->paginate(5);
+        			 ->paginate(8);
     	$info = Team::getInfo((int)$parent);
         return view('team.index',
         	["data" => $data,
         	"parent" => $parent,
         	"info" => $info])
-         ->with('i', (request()->input('page', 1) - 1) * 5);
+         ->with('i', (request()->input('page', 1) - 1) * 8);
     }
 
 	 protected function userMember(array $userRank): bool {
@@ -71,9 +100,15 @@ class TeamController extends Controller
 			// rekord array kialakitása
 			$teamArr = [];
 			$teamArr['parent'] = $request->input('parent');
-			$teamArr['name'] = $request->input('name');
-			$teamArr['description'] = $request->input('description');
-			$teamArr['avatar'] = $request->input('avatar');
+			$teamArr['name'] = strip_tags($request->input('name'));
+			$teamArr['description'] = strip_tags($request->input('description'));
+			$teamArr['avatar'] = strip_tags($request->input('avatar'));
+			$fileInfo = $this->getRemoteFileInfo($teamArr['avatar']);
+			if (($fileInfo['fileSize'] > 2000000) |
+			    ($fileInfo['fileSize'] < 10)) {
+				$teamArr['avatar'] = '/img/noimage.png';
+			} 
+			
 			if ($id == 0) {
 				$teamArr['status'] = 'proposal';
 				if (\Auth::user()) {
@@ -158,7 +193,16 @@ class TeamController extends Controller
 			$request->validate([
 				'name' => 'required',
 				'ranks' => ['required', new RanksRule()],
-				'description' => 'required'
+				'description' => 'required',
+				'close' => ['required','numeric','min:0','max:100'],         
+				'memberActivate' => ['required','numeric','min:0','max:100'],
+				'memberExclude' => ['required','numeric','min:0','max:100'],
+				'rankActivate' => ['required','numeric','min:0','max:100'],
+				'rankClose' => ['required','numeric','min:0','max:100'],
+				'projectActivate' => ['required','numeric','min:0','max:100'],
+				'productActivate' => ['required','numeric','min:0','max:100'],
+				'subTeamActivate' => ['required','numeric','min:0','max:100'],
+				'debateActivate' => ['required','numeric','min:0','max:100']
 			]);
 
 			// team rekord kiirása
@@ -281,6 +325,15 @@ class TeamController extends Controller
             'name' => 'required',
 				'ranks' => ['required', new RanksRule()],
             'description' => 'required',
+				'close' => ['required','numeric','min:0','max:100'],         
+				'memberActivate' => ['required','numeric','min:0','max:100'],
+				'memberExclude' => ['required','numeric','min:0','max:100'],
+				'rankActivate' => ['required','numeric','min:0','max:100'],
+				'rankClose' => ['required','numeric','min:0','max:100'],
+				'projectActivate' => ['required','numeric','min:0','max:100'],
+				'productActivate' => ['required','numeric','min:0','max:100'],
+				'subTeamActivate' => ['required','numeric','min:0','max:100'],
+				'debateActivate' => ['required','numeric','min:0','max:100']
       ]);
 
 		// team rekord kiirása

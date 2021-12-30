@@ -19,259 +19,214 @@
 
 <script src="tree.js"></script>
 <script>
+
+// nextId = 165
 var treeData = [
-  {
-    id: '0',
-    text: 'node-0',
-    children: [
-      {
-        id: '0-0',
-        text: 'node-0-0',
-        children: [
-          {id: '0-0-0', text: 'node-0-0-0'},
-          {id: '0-0-1', text: 'node-0-0-1'},
-          {id: '0-0-2', text: 'node-0-0-2'},
-        ],
-      },
-      {id: '0-1', text: 'node-0-1'},
-    ],
-  },
-  {
-    id: '1',
-    text: 'node-1',
-    children: [{id: '1-0', text: 'node-1-0'}, {id: '1-1', text: 'node-1-1'}],
-  },
-];
-
-// KSH nomnklatura 2021
-var treeData = [
-{"id":2000, "text":"Anyagi termékek", "children":[
-{"id": 1, "text":"Élő állatok, állati eredetü termékek", "children":[
-{"id":"1001","text":"Hús és élelmezési célra alkalmas vágási melléktermékek és belsőségek"},
-{"id":"1003","text":"Halak és rákfélék, puhatestű és más gerinctelen víziállatok"},
-{"id":"1004","text":"Tejtermékek; madártojás; természetes méz; máshol nem említett, élelmezési célra alkalmas állati eredetű élelmiszer"}, 
-{"id":"1005","text":"Máshol nem említett állati eredetű termékek"},
+{"id":"1", "text":"﻿Root", "children":[
+{"id":"2", "text":"﻿Anyagi termékek", "children":[
+	{"id":"3", "text":"Mezőgazdasági termékek", "children":[
+		{"id":"4", "text":"Élő állatok"},
+		{"id":"5", "text":"Növények"}, 
+		{"id":"6", "text":"Élelmiszerek", "children":[
+			{"id":"7", "text":"Húsok", "children":[
+				{"id":"8", "text":"Vörös húsok"},
+				{"id":"9", "text":"Fehér húsok"},
+				{"id":"11", "text":"Tenger gyümölcsei"},
+				{"id":"12", "text":"Egyéb húsok"}
+			]},
+			{"id":"13", "text":"Gyümölcsök"},
+			{"id":"14", "text":"Zöldségek"},
+			{"id":"15", "text":"Magvak"},
+			{"id":"16", "text":"Fűszerek"},
+			{"id":"17", "text":"Készételek", "children":[
+				{"id":"18", "text":"Sütemények"},
+				{"id":"19", "text":"Előételek"},
+				{"id":"20", "text":"Fő ételek"},
+				{"id":"21", "text":"Desszertek"},
+				{"id":"22", "text":"Egyéb készételek"}
+			]},
+			{"id":"23", "text":"Egyéb élelmiszerek"}
+		]},	
+		{"id":"24", "text":"Állati eredetű egyéb termékek (nem élelmiszer)"},
+		{"id":"25", "text":"Növényi eredetű egyéb termékek (nem élelmiszer)"},
+		{"id":"26", "text":"Egyéb mezőgazdasági termékek"}
+	]},
+	{"id":"27", "text":"Ipari termékek", "children":[
+		{"id":"28", "text":"Ásványok"},
+		{"id":"29", "text":"Vegyipari termékek"},
+		{"id":"30", "text":"Építőipari termékek"},
+		{"id":"31", "text":"Gépipari termékek", "children":[
+			{"id":"32", "text":"Járművek és alkatrészeik", "children":[
+				{"id":"33", "text":"Kerékpárok"},
+				{"id":"34", "text":"Rollerek"},
+				{"id":"35", "text":"Személyautók"},
+				{"id":"36", "text":"Haszongépjárművek"},
+				{"id":"37", "text":"Járműalkatrészek"},
+				{"id":"38", "text":"Egyéb jármű"}
+			]},
+			{"id":"39", "text":"Épületgépészeti termékek"},
+			{"id":"40", "text":"Kézi szerszámok"},
+			{"id":"41", "text":"Szerszámgépek"},
+			{"id":"42", "text":"Mezőgazdasági gépek"},
+			{"id":"43", "text":"Ipari gépek"},
+			{"id":"44", "text":"Egyéb gépipari termékek"}
+		]}, 
+		{"id":"45", "text":"Elektrotechnikai termékek", "children":[
+			{"id":"46", "text":"Elektrotechnikai alkatrészek, kábelek"},
+			{"id":"47", "text":"Multimédia", "children":[
+				{"id":"48", "text":"Rádió"},
+				{"id":"49", "text":"Televízió"},
+				{"id":"50", "text":"CD/DVD lejátszó"},
+				{"id":"51", "text":"Házi mozi"},
+				{"id":"52", "text":"HIFI"},
+				{"id":"53", "text":"Egyéb multimédia"}
+			]},
+			{"id":"54", "text":"Átviteltechnika"},
+			{"id":"55", "text":"Világítás technika"},
+			{"id":"56", "text":"Telefon", "children":[
+				{"id":"57", "text":"Vezetékes telefon"},
+				{"id":"58", "text":"Mobil telefon"},
+				{"id":"59", "text":"Okostelefon"},
+				{"id":"60", "text":"Egyéb telefon"}
+			]},
+			{"id":"61", "text":"Számítástechnika", "children":[
+				{"id":"62", "text":"PC"},
+				{"id":"63", "text":"Laptop, notebook"},
+				{"id":"64", "text":"Tablet"},
+				{"id":"65", "text":"Nyomtató"},
+				{"id":"66", "text":"Szkenner"},
+				{"id":"67", "text":"Kamera"},
+				{"id":"68", "text":"Multifunkciós nyomtató"},
+				{"id":"69", "text":"Monitor"},
+				{"id":"70", "text":"Billentyűzet"},
+				{"id":"71", "text":"Egér"},
+				{"id":"72", "text":"Hálózati eszköz"},
+				{"id":"73", "text":"Robotok"},
+				{"id":"74", "text":"Dronok"},
+				{"id":"75", "text":"Egyéb számítástechnikai termék"}
+			]},
+			{"id":"76", "text":"Egyéb elektrotechnikai termékek"}
+		]},
+		{"id":"77", "text":"Textilipari termékek", "children":[
+			{"id":"78", "text":"Szövetek"},
+			{"id":"79", "text":"Ruházat és kiegészítők", "children":[
+				{"id":"80", "text":"Férfi ruházat"},
+				{"id":"81", "text":"Női ruházat"},
+				{"id":"82", "text":"Fiú ruházat"},
+				{"id":"83", "text":"Leány ruházat"},
+				{"id":"84", "text":"Bébi ruházat"},
+				{"id":"85", "text":"Egyéb ruházat"},
+				{"id":"161", "text":"Ékszerek"}
+			]},
+			{"id":"86", "text":"Lakberendezési textilek", "children":[
+				{"id":"87", "text":"Függönyök"},
+				{"id":"88", "text":"Szőnyegek"},
+				{"id":"89", "text":"Bútorszövetek"},
+				{"id":"90", "text":"Ágyneműk"},
+				{"id":"91", "text":"Egyéb lakberendezési textil termékek"}
+			]},
+		{"id":"92", "text":"Papir ipari termékek"},
+		{"id":"93", "text":"Faipari termékek", "children":[
+			{"id":"94", "text":"Bútorok, butor alkatrészek"},
+			{"id":"95", "text":"Fűrész áru"},
+			{"id":"96", "text":"Farost lemez"},
+			{"id":"97", "text":"Egyéb faipari termékek"}
+		]},
+		{"id":"98", "text":"Bőripari termékek", "children":[
+			{"id":"99", "text":"Lábbelik", "children":[
+				{"id":"100", "text":"Férfi lábbelik"},
+				{"id":"101", "text":"Női lábbelik"},
+				{"id":"102", "text":"Fiú lábbelik"},
+				{"id":"103", "text":"Leány lábbelik"},
+				{"id":"104", "text":"Egyéb lábbelik"}
+			]},
+			{"id":"105", "text":"Övek"},
+			{"id":"106", "text":"Táskák"},
+			{"id":"107", "text":"Egyéb bőripari termékek"}
+		]},
+		{"id":"108", "text":"Egészségügyi, szépségápolási termékek", "children":[
+			{"id":"109", "text":"Gyógyszerek"},
+			{"id":"110", "text":"Szépségápolási termékek"},
+			{"id":"111", "text":"Egészségügyi termékek"},
+			{"id":"112", "text":"Egyéb eü. szépségápolási termékek"}
+		]},
+		{"id":"113", "text":"Optikai termékek", "children":[
+			{"id":"114", "text":"Fényképező gépek és alkatészeik"},
+			{"id":"115", "text":"Videó kamerák és alkatrészeik"},
+			{"id":"116", "text":"Egyéb optikai termékek"}
+		]},
+		{"id":"117", "text":"Sportszerek"},
+		{"id":"118", "text":"Játékok"},
+		{"id":"119", "text":"Egyéb ipari termékek"}
+	]},
+	{"id":"120", "text":"Egyéb anyagi termékek"}
+	]},
+]},	
+{"id":"121", "text":"Szolgáltatások", "children":[
+	{"id":"122", "text":"Humán szolgáltatások", "children":[
+		{"id":"123", "text":"Fodrászat, kozmetika, kéz és lábápolás"},
+		{"id":"124", "text":"Masszázs"},
+		{"id":"125", "text":"Lelki segítség nyújtás"},
+		{"id":"126", "text":"Jóga, sport oktatás, trenírozás"},
+		{"id":"127", "text":"Egyéb humán szolgáltatás"}]},
+	{"id":"128", "text":"Oktatás"},
+	{"id":"129", "text":"Ingatlan bérbeadás"},
+	{"id":"130", "text":"Utazási, közlekedési, szállítási szolgáltatás"},
+	{"id":"131", "text":"Lakás karbantartás, takarítás", "children":[
+		{"id":"132", "text":"Takarítás"},
+		{"id":"133", "text":"Víz szerelés"},
+		{"id":"134", "text":"Gáz szerelés"},
+		{"id":"135", "text":"Villanyszerelés"},
+		{"id":"136", "text":"Festés, mázolás"},
+		{"id":"137", "text":"Klíma berendezés telepítés, javítás"},
+		{"id":"138", "text":"Nyilászáró csere, javítás"},
+		{"id":"139", "text":"Burkolás"},
+		{"id":"140", "text":"Kőműves munkák"},
+		{"id":"141", "text":"Egyéb lakás karbantartás"}]},
+	{"id":"142", "text":"Kertápolás, medence karbantartás"},
+	{"id":"143", "text":"Szaktanácsadás"},
+	{"id":"144", "text":"Képviselet"},
+	{"id":"145", "text":"Marketing, propaganda"},
+	{"id":"146", "text":"Családsegítés"},
+	{"id":"147", "text":"Egyéb szolgáltatások"}
 ]},
-
-{"id":2, "text":"Növényi termékek", children:[
-{"id":1006, "text":"Élő fák és más növények; hagymák, gumók, gyökerek és hasonlók; vágott virágok és díszítőlombozat"},
-{"id":1007, "text":"Élelmezési célra alkalmas zöldségfélék, és egyes gyökerek és gumók"},
-{"id":1008, "text":"Élelmezési célra alkalmas gyümölcs és diófélék; citrusfélék vagy a dinnyefélék héja"},
-{"id":1009, "text":"Kávé, tea, matétea és fűszerek"},
-{"id":1010, "text":"Gabonafélék"},
-{"id":1011, "text":"Malomipari termékek; maláta; keményítők; inulin; búzasikér"},
-{"id":1012, "text":"Olajos magvak és olajtartalmú gyümölcsök; különféle magvak és gyümölcsök; ipari vagy gyógynövények; szalma és takarmány"},
-{"id":1013, "text":"Sellak; mézga, gyanta és más növényi nedv és kivonat"},
-{"id":1014, "text":"Növényi eredetű nyersanyag fonásra; máshol nem említett növényi termékek"},
+{"id":"148", "text":"Szellemi termékek", "children":[
+	{"id":"149", "text":"Művészeti alkotások", "children":[
+		{"id":"150", "text":"Papír alapú könyvek, folyóiratok, ujságok, írások"},
+		{"id":"151", "text":"Fotók"},
+		{"id":"152", "text":"On-line irodalmi anyagok"},
+		{"id":"153", "text":"Tárgyiasult képzőművészeti alkotások"},
+		{"id":"154", "text":"On-lie képzőművészeti alkotások"},
+		{"id":"155", "text":"Egyéb művészeti alkotások"}
+	]},
+	{"id":"156", "text":"Szoftverek"},
+	{"id":"157", "text":"Oktató anyagok"},
+	{"id":"158", "text":"Tanulmányok"},
+	{"id":"159", "text":"Egyéb szellemi termékek"}
 ]},
-
-{"id":3, "text":"Állati vagy növényi zsír és olaj és ezek bontási termékei; elkészített ételzsír; állati vagy növényi eredetű viasz", "children":[
-{"id":1015, "text":"Állati vagy növényi zsír és olaj és ezek bontási termékei; elkészített ételzsír; állati vagy növényi eredetű viasz"}, 
-]},
-
-{"id":4, "text":"Élelmiszer-készítmények; italok, alkoholtartalmú folyadékok és ecet; dohány és elkészített dohánypótlók", "children":[
-{"id":1016, "text":"Húsból, halból vagy rákféléből, puhatestűből, vagy más gerinctelen víziállatból készült termékek"},
-{"id":1017, "text":"Cukor és cukoráruk"},
-{"id":1018, "text":"Kakaó és kakaókészítmények"},
-{"id":1019, "text":"Gabona, liszt, keményítő vagy tej felhasználásával készült termékek; cukrászati termékek"},
-{"id":1020, "text":"Zöldségfélékből, gyümölcsből, diófélékből vagy más növényrészekből előállított készítmények"},
-{"id":1022, "text":"Italok, alkoholtartalmú folyadékok és ecet"},
-{"id":1023, "text":"Az élelmiszeripar melléktermékei és hulladékai; elkészített állati takarmány"},
-{"id":1021, "text":"Különféle ehető készítmények"},
-{"id":1024, "text":"Dohány és feldolgozott dohánypótló"},
-]},
-
-{"id":5, "text":"Ásványi termékek", "children":[
-{"id":1025, "text":"Só; kén; földek és kövek; gipsz, mész és cement"},
-{"id":1026, "text":"Ércek, salakok és hamu"},
-{"id":1027, "text":"Ásványi tüzelőanyagok, ásványi olajok és ezek desztillációs termékei; bitumenes anyagok; ásványi viaszok"},
-]},
-
-{"id":6, "text":"A vegyipar vagy vele rokon iparok termékei", "children":[
-{"id":1028, "text":"Szervetlen vegyi anyagok; szervetlen vagy szerves vegyületek nemesfémből, ritkaföldfémből, radioaktív elemekből vagy izotópokból"},
-{"id":1029, "text":"Szerves vegyi anyagok"},
-{"id":1030, "text":"Gyógyszeripari termékek"},
-{"id":1031, "text":"Trágyázószerek"},
-{"id":1032, "text":"Cserző- vagy színezőkivonatok; tanninok és származékaik; színezékek, pigmentek és más színező anyagok; festékek és lakkok; gitt és más masztix (simító- és tömítőanyagok); tinták"},
-{"id":1033, "text":"Illóolajok és rezinoidok; illatszerek, szépség- vagy testápoló készítmények"},
-{"id":1034, "text":"Szappan, szerves felületaktív anyagok, mosószerek, kenőanyagok, műviaszok, elkészített viaszok, fényesítő- vagy polírozóanyagok, gyertya és hasonló termékek, mintázópaszta, „fogászati viasz” és gipszalapú fogászati készítmények"},
-{"id":1035, "text":"Fehérjeanyagok; átalakított keményítők; enyvek; enzimek"},
-{"id":1036, "text":"Robbanóanyagok; pirotechnikai készítmények; gyufák; piroforos ötvözetek; egyes gyúlékony anyagok"},
-{"id":1037, "text":"Fényképészeti vagy mozgófényképészeti termékek"},
-]},
-
-{"id":7, "text":"Műanyagok és ezekből készült áruk; gumi és ebből készült áruk", "children":[
-{"id":1039, "text":"Műanyagok és ezekből készült áruk"},
-{"id":1040, "text":"Gumi és ebből készült áruk"},
-]},
-
-{"id":8, "text":"Nyersbőr, kikészített bőr, szőrme és ezekből készült áruk; nyerges- és szíjgyártóáruk; utazási cikkek, kézitáskák és hasonló tartók; állati bélből készült áruk (a selyemhernyóbélből készült áruk kivételével)", "children":[
-{"id":1041, "text":"Nyersbőr (a szőrme kivételével) és kikészített bőr"},
-{"id":1042, "text":"Bőráruk; nyerges- és szíjgyártóáruk; utazási cikkek, kézitáskák és hasonló tartók; állati bélből készült áruk (a selyemhernyóbélből készült áruk kivételével)"},
-{"id":1043, "text":"Szőrme és műszőrme; ezekből készült áruk"},
-]},
-
-{"id":9, "text":"Fa és faipari termékek; faszén; parafa és parafaáruk; szalmából, eszpartófűből vagy más fonásanyagokból készült áruk; kosárkötő- és fonásáruk", "children":[
-{"id":1044, "text":"Fa és faipari termékek; faszén"},
-{"id":1046, "text":"Szalmából, eszpartófűből vagy más fonásanyagból készült áruk; kosárkötő- és fonásáruk"},
-]},
-
-{"id":10, "text":"Papíripari rostanyag fából vagy más cellulóztartalmú anyagból; visszanyert (hulladék és használt) papír vagy karton; papír és karton és ezekből készült áruk", "children":[
-{"id":1047, "text":"Papíripari rostanyag fából vagy más cellulóztartalmú anyagból; visszanyert (hulladék és használt) papír vagy karton"},
-{"id":1048, "text":"Papír és karton; papíripari rostanyagból, papírból vagy kartonból készült áruk"},
-{"id":1049, "text":"Könyvek, újságok, képek és más nyomdaipari termékek; kéziratok, gépírásos szövegek és tervrajzok"},
-]},
-
-{"id":11, "text":"Textilipari alapanyagok és textiláruk", "children":[
-{"id":1052, "text":"Pamut"},
-{"id":1053, "text":"Más növényi textilszálak; papírfonal és papírfonalból szőtt szövet"},
-{"id":1054, "text":"Szintetikus vagy mesterséges végtelen szálak (végtelen műszálak); szintetikus vagy mesterséges textilanyagból készült szalag és hasonlók"},
-{"id":1055, "text":"Szintetikus vagy mesterséges vágott szálak (vágott műszálak)"},
-{"id":1056, "text":"Vatta, nemez és nem szőtt textília; különleges fonalak; zsineg, kötél, hajókötél és kábel, valamint ezekből készült áruk"},
-{"id":1057, "text":"Szőnyegek és más textil padlóborítók"},
-{"id":1058, "text":"Különleges szövetek; bolyhos szövetek; csipke; kárpit; paszomány; hímzés"},
-{"id":1059, "text":"Impregnált, bevont, beborított vagy réteges szövetek; műszaki textiláru"},
-{"id":1060, "text":"Kötött vagy hurkolt kelmék"},
-{"id":1061, "text":"Kötött vagy hurkolt ruházati cikkek, kellékek és tartozékok"},
-{"id":1062, "text":"Ruházati cikkek, kellékek és tartozékok, a kötött vagy hurkolt áruk kivételével"}, 
-{"id":1063, "text":"Más készáru textilanyagból; készletek; használt ruha és használt textiláru; rongy"},
-]},
-
-{"id":12, "text":"Lábbeli, fejfedő, esernyők, napernyők, sétabotok, botszékek, ostorok, lovaglókorbácsok és ezek alkatrészei; kikészített tollak és ebből készült áruk; művirágok; emberhajból készült áruk", "children":[
-{"id":1064, "text":"Lábbeli, lábszárvédő és hasonló áruk; ezek alkatrészei"},
-{"id":1065, "text":"Kalap és más fejfedők, valamint ezek alkatrészei"},
-{"id":1066, "text":"Esernyők, napernyők, sétabotok, botszékek, ostorok, lovaglókorbácsok és ezek alkatrészei"},
-{"id":1067, "text":"Kikészített toll és pehely, valamint ezekből készült áruk; művirágok; emberhajból készült áruk"},
-]},
-
-{"id":13, "text":"Kőből, gipszből, cementből, azbesztből, csillámból vagy hasonló anyagokból készült áruk; kerámiatermékek; üvegek és üvegáruk", "children":[
-{"id":1068, "text":"Kőből, gipszből, cementből, azbesztből, csillámból vagy hasonló anyagokból készült áruk"},
-{"id":1069, "text":"Kerámiatermékek"},
-{"id":1070, "text":"Üveg és üvegáruk"},
-]},
-
-{"id":14, "text":"Természetes vagy tenyésztett gyöngyök, drágakövek vagy féldrágakövek, nemesfémek, nemesfémmel plattírozott fémek és ezekből készült áruk; ékszerutánzatok; érmék", "children":[
-{"id":1071, "text":"Természetes vagy tenyésztett gyöngyök, drágakövek vagy féldrágakövek, nemesfémek, nemesfémmel plattírozott fémek és ezekből készült áruk; ékszerutánzatok; érmék"},
-]},
-
-{"id":15, "text":"Nem nemesfémek és ezekből készült áruk", "children":[
-{"id":1072, "text":"Vas és acél"},
-{"id":1073, "text":"Vas- vagy acéláruk"},
-{"id":1074, "text":"Réz és ebből készült áruk"},
-{"id":1075, "text":"Nikkel és ebből készült áruk"},
-{"id":1076, "text":"Alumínium és ebből készült áruk"},
-{"id":1077, "text":"(A harmonizált rendszerben történő későbbi felhasználásra fenntartva)"},
-{"id":1078, "text":"Ólom és ebből készült áruk"},
-{"id":1079, "text":"Cink és ebből készült áruk"},
-{"id":1080, "text":"Ón és ebből készült áruk"},
-{"id":1081, "text":"Más nem nemesfém; cermet; ezekből készült áruk"},
-{"id":1082, "text":"Szerszámok, késművesáruk, evőeszközök, kanál és villa nem nemesfémből; mindezek részei nem nemesfémből"},
-{"id":1083, "text":"Máshol nem említett különféle áruk nem nemesfémből"},
-]},
-
-{"id":16,"text":"Gépek és mechanikus berendezések; villamossági cikkek; ezek alkatrészei; hangfelvevő és -lejátszó készülékek, kép- és hangfelvevő és -lejátszó készülékek televízióhoz; ezek alkatrészei és tartozékai", "children":[
-{"id":1084, "text":"Atomreaktorok, kazánok, gépek és mechanikus berendezések; ezek alkatrészei"},
-{"id":1085, "text":"Elektromos gépek és elektromos felszerelések és ezek alkatrészei; hangfelvevő és -lejátszó, televíziós kép- és hangfelvevő és -lejátszó készülékek és ezek alkatrészei és tartozékai"},
-]},
-
-{"id":17, "text":"Járművek, légi járművek, vízi járművek és szállítás céljára szolgáló felszerelések", "children":[
-{"id":1086, "text":"Vasúti mozdonyok vagy villamos-motorkocsik, sínhez kötött járművek és alkatrészeik; vasúti vagy villamosvágány-tartozékok és -felszerelések és alkatrészeik; mindenféle mechanikus (beleértve az elektrome­ chanikusat is) közlekedési jelzőberendezés"},
-{"id":1087, "text":"Járművek és ezek alkatrészei és tartozékai, a vasúti vagy villamosvasúti sínhez kötött járművek kivételével"},
-{"id":1088, "text":"Légi járművek, űrhajók és ezek alkatrészei"},
-{"id":1089, "text":"Hajók, csónakok és más úszószerkezetek"},
-]},
-
-{"id":18,"text":"Optikai, fényképészeti, mozgófényképészeti, mérő-, ellenőrző, precíziós, orvosi vagy sebészeti műszerek és készülékek; órák és kisórák; hangszerek; mindezek alkatrészei és tartozékai", "children":[
-{"id":1090, "text":"Optikai, fényképészeti, mozgófényképészeti, mérő-, ellenőrző, precíziós, orvosi vagy sebészeti műszerek és készülékek; mindezek alkatrészei és tartozékai"},
-{"id":1091, "text":"Órák és kisórák és ezek alkatrészei"},
-{"id":1092, "text":"Hangszerek; mindezek alkatrészei és tartozékai"},
-]},
-
-{"id":19,"text":"Fegyverek és lőszerek; ezek alkatrészei és tartozékai", "children":[
-{"id":1093, "text":"Fegyverek és lőszerek; ezek alkatrészei és tartozékai"},
-]},
-
-{"id":20, "text":"Különféle áruk", "children":[
-{"id":1094, "text":"Bútor; ágyfelszerelés, matracok, ágybetétek, párnák és hasonló párnázott lakberendezési cikkek; máshol nem említett lámpák és világítófelszerelések; megvilágított jelzések, reklámfeliratok, névtáblák és hasonlók; előre gyártott épületek"},
-{"id":1095, "text":"Játékok, játékszerek és sporteszközök; mindezek alkatrészei és tartozékai"},
-{"id":1096, "text":"Különböző áruk"},
-]},
-
-{"id":21, "text":"Művészeti tárgyak, gyűjteménydarabok és régiségek", "children":[
-{"id":1097, "text":"Művészeti tárgyak, gyűjteménydarabok és régiségek"},
-{"id":1098, "text":"Komplett ipari létesítmények"},
-{"id":1099, "text":"Speciális Kombinált Nómenklatúra-kódok"},
+{"id":"160", "text":"Egyéb (másik főkategóriába nem sorolható dolgok)"}
 ]}
-]},
-{"id":2001, "text":"Szellemi termékek"}
 ];
 
-var myTree = new Tree('#container', {
-  data: treeData,
-  closeDepth:2,
-  onChange: function() {
-    window.setTimeout(onlyOne,300);
-  },
+
+var myTree = new Tree('#container',{
+	data: treeData,
+	closeDepth: 2
 });
 
-var lastSelect = '';
-var newId = 100;
+var lastSelect = false;
+
 
 $('.treejs-label').click(txtClick);
+$('.treejs-checkbox').css('display','none');
 
 function txtClick() {
-	console.log(this);
-	
-	console.log(this.parentNode.nodeId); // EZ IGY JÓ!
-}
-
-function onlyOne() {
-/*
-    if (myTree.values.length > 1) {
-		sel = '';
-		for(var i=0; i<myTree.values.length; i++) {
-			if (myTree.values[i] != lastSelect) {
-				sel = myTree.values[i];			
-			}		
-		}
-		lastSelect = sel;
-		myTree.values = [sel];
-    } else if (myTree.values.length == 1) {
-		lastSelect = myTree.values[0]    
-    } else {
-    	lastSelect = '';
-    }
-*/    
-}
-
-function addSibling(arr) {
-   if (lastSelect == '') return;
-	var i = -1;
-	for (var j=0; j<arr.length; j++) {
-		if (arr[j].id == lastSelect) {
-			i = j;		
-		}	
+	if (lastSelect) {
+		lastSelect.style.backgroundColor = 'transparent';
 	}
-	if (i >= 0) {
-		console.log('splice előtt',arr,i);
-		arr.splice(i+1, 0, {"id":newId, "text":"item"+newId} );
-		console.log('splice után',arr,i);
-		newId++;
-		var myTree = new Tree('#container', {
-		  data: treeData,
-		  onChange: function() {
-		    window.setTimeout(onlyOne,300);
-		  },
-		});
-	} else {
-		for (var j=0; j < arr.length; j++) {
-			if (arr[j].children != undefined) {
-				addSibling(arr[j].children);
-			}			
-		}
-	}
+	this.style.backgroundColor = 'orange';
+	lastSelect = this;
 }
-
 
 </script>
 </html>

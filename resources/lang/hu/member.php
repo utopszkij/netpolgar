@@ -1,17 +1,17 @@
 <?php
 return [
     'member' => 'tag',
-    'admin' => 'adminsztrátor',
+    'admin' => 'adminisztrátor',
     'manager' => 'vezető',
     'moderator' => 'moderátor',
     'president' => 'elnök',
     'active_member' => 'tag',
-    'active_admin' => 'adminsztrátor',
+    'active_admin' => 'adminisztrátor',
     'active_manager' => 'vezető',
     'active_moderator' => 'moderátor',
     'active_president' => 'elnök',
     'proposal_member' => 'javasolt tag',
-    'proposal_admin' => 'javasolt adminsztrátor',
+    'proposal_admin' => 'javasolt adminisztrátor',
     'proposal_manager' => 'javasolt vezető',
     'proposal_moderator' => 'javasolt moderátor',
     'proposal_president' => 'javasolt elnök',
@@ -32,7 +32,7 @@ return [
     'comments' => 'beszélgetések',
     'files' => 'fájlok',
     
-   'active' => 'aktiv',
+   'active' => 'aktív',
    'proposal' => 'javaslat',
    'excluded' => 'kizárt',
    'closed' => 'lezárt',
@@ -41,12 +41,12 @@ return [
    'disLikeMember' => 'kizárását javaslom',
    'disLikeRank' => 'tisztségből visszahívását javaslom',
    'aspirantRank' => 'tisztségviselőnek jelentkezek',
-   'accessDenied' => 'Ez a müvelet számodra nem engedélyezett. :(',
-   'successSave' => 'Csoport adatok sikeressen tárolva.',
+   'accessDenied' => 'Ez a művelet számodra nem engedélyezett. :(',
+   'successSave' => 'Csoport adatok sikeresen tárolva.',
    'signout' => 'Lemondok',
     
    'exists' => 'Már tag/tisztségviselő vagy, vagy már jelentkeztél',
    'notLogged' => 'Nincs bejelentkezve',
    'notActive' => 'A csoport nem aktív ',
-   'youAreAdmin' => 'Te vagy az egyetlen "admin", nem léphesz ki, nem mondhatsz le' 
+   'youAreAdmin' => 'Te vagy az egyetlen "admin", nem léphetsz ki, nem mondhatsz le' 
 ];

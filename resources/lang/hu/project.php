@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 return [
   	'team' => 'Csoport',
   	'teams' => 'Csoportok',
@@ -42,7 +42,7 @@ return [
    'events' => 'Események',
    'files' => 'Fileok',
     
-   'active' => 'aktiv',
+   'active' => 'aktív',
    'closed' => 'lezárt',
    'proposal' => 'javaslat',
    'deleted' => 'törölt',
@@ -55,7 +55,7 @@ return [
     'notrecord' => 'Nincsenek projektek',
     'show' => 'Megnéz',
     'search' => 'Keresés',
-    'clearSearch' => 'Kerrső szöveg törlése',
+    'clearSearch' => 'Kereső szöveg törlése',
     'add' => 'Új projekt javaslat',
     'edit' => 'Projekt adat módosítás',
     'delete' => 'Projekt törlése',
@@ -68,7 +68,7 @@ return [
     'signin' => 'csatlakozok a projekthez',
     'like' => 'a projekt aktiválását javaslom',
     'dislike' => 'a projekt lezárását javaslom',
-    'accessDenied' => 'Ez a müvelet számodra nem engedélyezett. :(',
-    'successSave' => 'Projekt adatok sikeressen tárolva.' 
+    'accessDenied' => 'Ez a művelet számodra nem engedélyezett. :(',
+    'successSave' => 'Projekt adatok sikeresen tárolva.' 
     
 ];

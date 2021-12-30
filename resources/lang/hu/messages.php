@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 return [
   	'list' => 'Üzenetek',
   	'teams' => 'Csoport',
@@ -18,7 +18,7 @@ return [
     'help' => 'Engedélyezd a kamera és mikrofon használatát. 
         Kattints a "Join meeting" gombra és vide chat -elhetsz. 
         Üzenet íráshoz kattints a  <em class="far fa-comment-alt"></em> ikonra!',
-    'target' => 'Üzenet címzetje',
+    'target' => 'Üzenet címzettje',
     'sender' => 'Üzenet feladója',                
     'value' => 'Üzenet szövege',
     'created_at' => 'Időpont',
@@ -34,7 +34,7 @@ return [
     'saved' => 'üzenet tárolva',
     'accessDenied' => 'nem vagy jogosult erre',
     'notModerator' => 'Nincs moderátor',
-    'protestSended' => 'Kifigás elküldve a moderátor(ok)nak.',
+    'protestSended' => 'Kifogás elküldve a moderátor(ok)nak.',
     'protestForm' => 'Kifogás bejelentése',
     'first'=> '&lsaquo;&lsaquo;',
     'previous' => '&lsaquo;',

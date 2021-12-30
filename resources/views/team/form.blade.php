@@ -79,6 +79,7 @@
                 <div class="form-group">
                     <label>{{ __('team.avatar') }}:</label>
                     <input type="text" name="avatar" value="{{ $team->avatar }}" class="form-control" placeholder="URL">
+                    max 1M
                 </div>
             </div>
          </div>

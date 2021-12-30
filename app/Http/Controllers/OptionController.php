@@ -143,7 +143,7 @@ class OptionController extends Controller {
 				if ($this->checkAccessRight('add',$poll, $info)) {
 					\App\Models\Option::create([
 						'poll_id' => $request->input('pollId'),
-						'name' => $request->input('name'),
+						'name' => strip_tags($request->input('name')),
 						'decription' => '',
 						'status' => 'proposal',
 						'created_by' => \Auth::user()->id				
@@ -184,7 +184,7 @@ class OptionController extends Controller {
 						$model = new \App\Models\Option();
 						$model->where('id','=',$request->input('optionId'))
 						->update([
-							'name' => $request->input('name')
+							'name' => strip_tags($request->input('name'))
 						]);
 						$result = redirect()->to($request->input('backUrl'))
 						->with('success',__('poll.saved'));    	

@@ -21,7 +21,7 @@ class ProjectController extends Controller
         $data = \DB::table('projects')
         			 ->where('team_id','=',$team->id)
         			 ->orderBy('name')
-        			 ->paginate(5);
+        			 ->paginate(8);
       if (count($data) > 0) {   			 
     		$info = Project::getInfo($data[0]);
     	} else {
@@ -31,7 +31,7 @@ class ProjectController extends Controller
         	["data" => $data,
         	"team" => $team,
         	"info" => $info])
-         ->with('i', (request()->input('page', 1) - 1) * 5);
+         ->with('i', (request()->input('page', 1) - 1) * 8);
     }
 
 	 protected function userMember(array $userRank): bool {
@@ -67,6 +67,36 @@ class ProjectController extends Controller
           "team" => $team,
          "info" => $info]);
     }
+    
+	/**
+	* távoli file infok lekérdezése teljes letöltés nélkül
+	* csak 'http' -vel kezdödő linkeket ellenöriz
+	* @param string $url
+	* @return array ['fileExist', 'fileSize' ]
+	*/
+	protected function getRemoteFileInfo($url) {
+		if (substr($url,0,4) == 'http') {
+		   $ch = curl_init($url);
+		   curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+		   curl_setopt($ch, CURLOPT_HEADER, TRUE);
+		   curl_setopt($ch, CURLOPT_NOBODY, TRUE);
+		   $data = curl_exec($ch);
+		   $fileSize = curl_getinfo($ch, CURLINFO_CONTENT_LENGTH_DOWNLOAD);
+		   $httpResponseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		   curl_close($ch);
+		   $result = [
+	        'fileExists' => (int) $httpResponseCode == 200,
+	        'fileSize' => (int) $fileSize
+		   ];
+		} else {
+		   $result = [
+	        'fileExists' => 1,
+	        'fileSize' => 100
+		   ];
+		}
+		return $result;
+	}
+    
 
 	 /**
 	 * project rekord irása az adatbázisba a $request-be lévő információkból
@@ -78,9 +108,15 @@ class ProjectController extends Controller
 			// rekord array kialakitása
 			$projectArr = [];
 			$projectArr['team_id'] = $request->input('team_id');
-			$projectArr['name'] = $request->input('name');
-			$projectArr['description'] = $request->input('description');
-			$projectArr['avatar'] = $request->input('avatar');
+			$projectArr['name'] = strip_tags($request->input('name'));
+			$projectArr['description'] = strip_tags($request->input('description'));
+			$projectArr['avatar'] = strip_tags($request->input('avatar'));
+			$fileInfo = $this->getRemoteFileInfo($projectArr['avatar']);
+			if (($fileInfo['fileSize'] > 2000000) |
+			    ($fileInfo['fileSize'] < 10)) {
+				$projectArr['avatar'] = '/img/noimage.png';
+			} 
+
 			$projectArr['deadline'] = $request->input('deadline');
 			if ($id == 0) {
 				$projectArr['status'] = 'proposal';
@@ -170,7 +206,7 @@ class ProjectController extends Controller
 				'name' => 'required',
 				'ranks' => ['required', new RanksRule()],
 				'description' => 'required',
-				'deadline' => 'required'
+				'deadline' => ['required','date_format:Y-m-d']
 			]);
 
 			// project rekord kiirása
@@ -321,7 +357,7 @@ class ProjectController extends Controller
             'name' => 'required',
 				'ranks' => ['required', new RanksRule()],
             'description' => 'required',
-            'deadline' => 'required'
+				'deadline' => ['required','date_format:Y-m-d']
       ]);
 
 		// project rekord kiirása

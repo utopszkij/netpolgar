@@ -32,12 +32,15 @@
     </div>
     @endif
      
-    <table class="table table-bordered">
+    <table class="table table-bordered indexTable">
+    	<thead>
         <tr>
             <th>{{ __('team.status') }}</th>
             <th>{{ __('team.name') }}</th>
             <th>{{ __('team.description') }}</th>
         </tr>
+       </thead>
+       <tbody> 
         @foreach ($data as $key => $value)
         @php if ($value->avatar == '') $value->avatar = URL::to('/').'/img/team.png'; @endphp
         <tr>
@@ -51,10 +54,13 @@
             <td>{{ \Str::limit($value->description, 100) }}</td>
         </tr>
         @endforeach
+       </tbody> 
     </table>
     @if (count($data) > 0)
     <div class="row help">
-		Részletekért és további lehetőségért kattints a csoport nevére!				
+    	<div class="col-12">
+			Részletekért és további lehetőségért kattints a csoport nevére!
+		</div>				
     </div>
     @else
     <div>{{ __('team.notrecord') }}</div>

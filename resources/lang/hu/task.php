@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 return [
   	'tasks' => 'Feladatok',
   	'task' => 'Feladat',
@@ -9,7 +9,7 @@ return [
   	'name' => 'Leírás',
    'status' => 'Státusz',
    'deadline' => 'Határidő', 
-   'type' => 'Tipus',
+   'type' => 'Típus',
    'assign' => 'Felelős',
    'waiting' => 'Várakoztatva',
    'active' => 'Megkezdhető',
@@ -30,7 +30,7 @@ return [
     'saved' => 'Adat tárolva',
     'close' => 'Bezár',
     'ok' => 'Rendben',
-    'successSave' => 'Projekt feladat adatok sikeressen tárolva.',
+    'successSave' => 'Projekt feladat adatok sikeresen tárolva.',
     'accessDenied' => 'Hozzáférés nem engedélyezett' 
     
 ];

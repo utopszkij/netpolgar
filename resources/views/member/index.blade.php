@@ -13,13 +13,16 @@
         </div>
     </div>
 
-    <table class="table table-bordered">
+    <table class="table table-bordered indexTable">
+    	<thead>
         <tr>
             <th>{{ __('member.status') }}</th>
             <th>{{ __('member.rank') }}</th>
             <th>{{ __('member.name') }}</th>
             <th></th>
         </tr>
+      </thead>
+      <tbody>  
         @foreach ($data as $key => $value)
         @php 
 			 if ($value->profile_photo_path == '') {
@@ -108,6 +111,7 @@
             </td>
         </tr>
         @endforeach
+       </tbody> 
     </table>
     <p class="help">További részletekért kattints a névre!</p>
     {!! $data->links() !!}

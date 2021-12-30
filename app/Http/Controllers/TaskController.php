@@ -55,7 +55,7 @@ class TaskController extends Controller {
 			// rekord array kialakitása
 			$taskArr = [];
 			$taskArr['project_id'] = $request->input('project_id');
-			$taskArr['name'] = $request->input('name');
+			$taskArr['name'] = strip_tags($request->input('name'));
 			$taskArr['deadline'] = $request->input('deadline');
 			$taskArr['type'] = $request->input('type');
 			$taskArr['status'] = $request->input('status');

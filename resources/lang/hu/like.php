@@ -10,5 +10,5 @@ return [
     'products' => 'termék',
     'polls' => 'vita',
     'options' => 'opció',
-    'tasks' => 'fealadat'
+    'tasks' => 'feladat'
 ];
