@@ -43,6 +43,18 @@
         </div>
     </div>
  
+ 	<h3>
+		<a href="{{ \URL::to('/'.$poll->parent_type.'/'.$poll->parent) }}">
+			<em class="fas fa-hand-point-right"></em>
+			@if ($poll->parent_type == 'teams')
+			<em class="fas fa-user-friends"></em>
+			@endif
+			@if ($poll->parent_type == 'projects')
+			<em class="fas fa-cogs"></em>
+			@endif
+			&nbsp;{{ $parent->name }}
+		</a> 	
+ 	</h3>
  	@if ($poll->id > 0)
     <form action="{{ \URL::to('/polls/'.$poll->id) }}" method="post">
    @else

@@ -46,6 +46,12 @@ if (Auth::user()) {
           	{{ __('navigation.groups') }}
           </a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link" aria-current="page" 
+          	href="{{ URL::to('/products/list/0') }}">
+          	{{ __('navigation.market') }}
+          </a>
+        </li>
       </ul>
       <ul class="navbar-nav mb-2 mb-lg-0">
       	@auth

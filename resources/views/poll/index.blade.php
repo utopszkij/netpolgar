@@ -7,7 +7,13 @@
             	<h2>
             		<a href="{{ \URL::to('/'.$parentType.'/'.$parent->id) }}">
             		<em class="fas fa-hand-point-right"></em>
-            		{{ $parent->name }} {{ __('poll.'.$parentType) }}
+						@if ($parentType == 'teams')
+						<em class="fas fa-user-friends"></em>
+						@endif
+						@if ($parentType == 'projects')
+						<em class="fas fa-cogs"></em>
+						@endif
+            		&nbsp;{{ $parent->name }} 
             		</a>
             	</h2>
             	@if ($statuses == 'proposal-debate')
@@ -35,27 +41,35 @@
     </div>
     @endif
      
-    <table class="table table-bordered">
+    <table class="table table-bordered indexTable">
+    	<thead>
         <tr>
             <th>{{ __('poll.status') }}</th>
             <th>{{ __('poll.name') }}</th>
             <th>{{ __('poll.description') }}</th>
         </tr>
+      </thead>
+      <tbody>  
         @foreach ($data as $key => $value)
         <tr>
             <td>{{ __('poll.'.$value->status) }}</td>
             <td>
+            	<h4>
             	<a href="{{ \URL::to('/polls/'.$value->id) }}">
             	{{ $value->name }}
             	</a>
+            	</h4>
             </td>
-            <td>{{ \Str::limit($value->description, 100) }}</td>
+            <td>{{ \Str::limit($value->description, 90) }}</td>
         </tr>
         @endforeach
+      </tbody>  
     </table>
     @if (count($data) > 0)
     <div class="row help">
-		{{ __('poll.indexHelp') }}				
+    	<div class="col-12">
+			{{ __('poll.indexHelp') }}
+		</div>				
     </div>
     @else
     <div>{{ __('poll.notrecord') }}</div>

@@ -9,5 +9,6 @@ return [
     'projects' => 'projekt',
     'products' => 'termék',
     'polls' => 'vita',
-    'options' => 'opció'
+    'options' => 'opció',
+    'tasks' => 'feladat'
 ];

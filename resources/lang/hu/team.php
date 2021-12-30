@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 return [
   	'team' => 'Csoport',
   	'teams' => 'Csoportok',
@@ -41,7 +41,7 @@ return [
    'events' => 'Események',
    'files' => 'Fileok',
     
-   'active' => 'aktiv',
+   'active' => 'aktív',
    'closed' => 'lezárt',
    'proposal' => 'javaslat',
    'deleted' => 'törölt',
@@ -55,7 +55,7 @@ return [
     'show' => 'Megnéz',
     'open' => 'Alcsoportok',
     'search' => 'Keresés',
-    'clearSearch' => 'Kerrső szöveg törlése',
+    'clearSearch' => 'Kereső szöveg törlése',
     'add' => 'Új csoport javaslat',
     'edit' => 'Csoport adat módosítás',
     'delete' => 'Csoport törlése',
@@ -68,7 +68,7 @@ return [
     'signin' => 'csatlakozok a csoporthoz',
     'like' => 'a csoport aktiválását javaslom',
     'dislike' => 'a csoport lezárását javaslom',
-    'accessDenied' => 'Ez a müvelet számodra nem engedélyezett. :(',
-    'successSave' => 'Csoport adatok sikeressen tárolva.' 
+    'accessDenied' => 'Ez a művelet számodra nem engedélyezett. :(',
+    'successSave' => 'Csoport adatok sikeresen tárolva.' 
     
 ];

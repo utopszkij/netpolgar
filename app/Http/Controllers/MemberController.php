@@ -35,7 +35,7 @@ class MemberController extends Controller
         ->where('members.parent','=',$parent->id)
         ->orderBy('rank', 'asc')
         ->orderBy('name', 'asc')
-        ->paginate(5);
+        ->paginate(8);
 
         $info = $model->getInfo($parent_type, $parent, $data);
 		 foreach ($data as $d1) {
@@ -48,7 +48,7 @@ class MemberController extends Controller
                 "parent" => $parent,
                 "info" => $info
             ])
-            ->with('i', (request()->input('page', 1) - 1) * 5);
+            ->with('i', (request()->input('page', 1) - 1) * 8);
     }
     
 	/**

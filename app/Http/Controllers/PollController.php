@@ -76,7 +76,7 @@ class PollController extends Controller {
 	        ->where('parent','=',$parent->id)
 	        ->whereIn('status', explode('-',$statuses))
 	        ->orderBy('created_at')
-	        ->paginate(5);
+	        ->paginate(8);
 	        $updated = false;
 	        foreach ($data as $item) {
 	        	  $oldStatus = $item->status;	
@@ -95,7 +95,7 @@ class PollController extends Controller {
              "statuses" => $statuses,   
              'userMember' => $this->userMember($parentType, $parent->id)
             ])
-            ->with('i', (request()->input('page', 1) - 1) * 5);
+            ->with('i', (request()->input('page', 1) - 1) * 8);
     }
     
     /**
@@ -144,8 +144,8 @@ class PollController extends Controller {
         $pollArr = [];
         $pollArr['parent_type'] = $request->input('parent_type');
         $pollArr['parent'] = $request->input('parent');
-        $pollArr['name'] = $request->input('name');
-        $pollArr['description'] = $request->input('description');
+        $pollArr['name'] = strip_tags($request->input('name'));
+        $pollArr['description'] = strip_tags($request->input('description'));
         if ($id == 0) {
             $pollArr['status'] = 'proposal';
             if (\Auth::user()) {
@@ -210,7 +210,12 @@ class PollController extends Controller {
         $request->validate([
             'name' => 'required',
             'description' => 'required',
-            'liquied' => new LiquedRule()
+            'liquied' => new LiquedRule(),
+            'debateStart' => ['numeric','min:0','max:100'],
+            'optionActivate' => ['numeric','min:0','max:100'],
+            'debateDays' => ['numeric','min:0','max:500'],
+            'voteDays' => ['numeric','min:0','max:500'],
+            'valid' => ['numeric','min:0','max:100']
         ]);
         
         $id = 0;    
@@ -346,7 +351,12 @@ class PollController extends Controller {
         $request->validate([
             'name' => 'required',
             'description' => 'required',
-            'liquied' => new LiquedRule()
+            'liquied' => new LiquedRule(),
+            'debateStart' => ['numeric','min:0','max:100'],
+            'optionActivate' => ['numeric','min:0','max:100'],
+            'debateDays' => ['numeric','min:0','max:500'],
+            'voteDays' => ['numeric','min:0','max:500'],
+            'valid' => ['numeric','min:0','max:100']
         ]);
         
         // poll rekord kiirása

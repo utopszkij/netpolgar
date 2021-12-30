@@ -11,6 +11,7 @@
     	<h3>
 			<a href="{{ \URL::to('/teams/'.$team->id) }}">
 				<em class="fas fa-hand-point-right"></em>
+				<em class="fas fa-user-friends"></em>
 				&nbsp;{{ $team->name }} 			
 			</a>
 		</h3>	    	
@@ -28,13 +29,16 @@
     </div>
     @endif
      
-    <table class="table table-bordered">
+    <table class="table table-bordered indexTable">
+    	<thead>
         <tr>
             <th>{{ __('project.status') }}</th>
             <th>{{ __('project.deadline') }}</th>
             <th>{{ __('project.name') }}</th>
             <th>{{ __('project.description') }}</th>
         </tr>
+      </thead>
+      <tbody>  
         @foreach ($data as $key => $value)
         @php if ($value->avatar == '') $value->avatar = URL::to('/').'/img/team.png'; @endphp
         <tr>
@@ -49,10 +53,13 @@
             <td>{{ \Str::limit($value->description, 100) }}</td>
         </tr>
         @endforeach
+      </tbody>  
     </table>
     @if (count($data) > 0)
     <div class="row help">
-		Részletekért és további lehetőségért kattints a project nevére!				
+    	<div class="col-12">
+			Részletekért és további lehetőségért kattints a project nevére!
+		</div>				
     </div>
     @else
     <div>{{ __('project.notrecord') }}</div>

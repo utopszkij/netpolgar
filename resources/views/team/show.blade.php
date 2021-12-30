@@ -32,7 +32,7 @@
 				<em class="fas fa-cogs"></em>
 				<span>{{ __('team.projects') }}</span><br />			
 			</a>
-			<a href="{{ URL::to('/construction') }}" title="Termékek">
+			<a href="{{ URL::to('/products/list/'.$team->id) }}" title="Termékek">
 				<em class="fas fa-shopping-basket"></em>
 				<span>{{ __('team.products') }}</span><br />			
 			</a>
@@ -112,7 +112,9 @@
         		@endphp 
         		{{ implode(',',$info->transUserRank) }} vagy&nbsp;
         		@endif
-        		@if ((count($info->userRank) == 0) & ($team->status == 'active'))
+        		@if (\Auth::user())
+        		@if ((count($info->userRank) == 0) & 
+        		     ($team->status == 'active')) 
         			<form action="{{ URL::to('/member/store') }}"
         				style="display:inline-block; width:auto">
         			<input type="hidden" name="parent_type" value="teams" />
@@ -123,6 +125,7 @@
 						{{ __('team.signin') }}        				
         			</button>
         			</form>
+        		@endif
         		@endif
         		@if ((count($info->userRank) > 0) & 
         		     ($team->status == 'active') & ($team->id != 1))

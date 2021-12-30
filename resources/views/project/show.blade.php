@@ -1,7 +1,6 @@
 <x-guest-layout>  
 
    @php if ($project->avatar == '') $project->avatar = URL::to('/').'/img/project.png'; @endphp
-team
 	<div id="projectContainer">
     <div class="row">
         <div class="col-lg-12 margin-tb">
@@ -55,6 +54,7 @@ team
 		    <div class="col-11 col-md-10 path" style="margin-top: 5px;">
 					<a href="{{ \URL::to('/teams/'.$team->id) }}">
 						<em class="fas fa-hand-point-right"></em>
+						<em class="fas fa-user-friends"></em>
 						&nbsp;{{ $team->name }} 			
 					</a>    	
 			 </div>    
@@ -177,6 +177,17 @@ team
 	</div>    
     
    <!-- task can-ban table -->
+   @php
+   
+   	$statuses = [
+   		"waiting",
+   		"active",
+   		"inwork",
+   		"canControl",
+   		"closed"
+   	];
+   	
+   @endphp
    <style type="text/css">
    	.states {margin: 10px 0px 0px 5px}
 		.state {min-height:500px; width:19%; min-width:200px; padding:4px; 
@@ -188,51 +199,69 @@ team
 			background-color:#c0d0c0;
 			opacity:1; z-index:1; cursor:pointer}
 		id {display:inline-block; width:auto; font-weight:bold}
-		title {display:block; font-weight:bold}  
-		desc {display:block;}
+		name {display:block; font-weight:bold}  
+		pos {display:none}
+		status {display:none}
 		type {display:inline-block; width:auto}  
 		assign {display:inline-block; width:auto}  
 		req {display:inline-block; width:auto; font-weight:bold}
+		task img {display:inline-block; width:auto; height:32px;}
+		.bug {background-color: red; color: white}
+		.info {background-color: orange; color: black}
+		.proposal {background-color: green; color: white}
+		.task {background-color: blue; color: white}
    </style>
-   <div class="row states" id="states">
-   	<div class="state waiting" id="waiting">
-   		<h2>Várakoztatva</h2>
-				<task id="1">
-			  		<p>#<id>1</id> Határidő: <deadLine>2021.12.31.</deadLine></p>
-			  		<title>első task</title>
-			  		<desc>első task leírása</desc>
-			  		<p>
-			  			<type class="bug">&nbsp;</type>
-			  			<assign><img src="" avatar="" title=""/></assign>
-			  		</p>
-				</task>    		
-   	</div>
-   	<div class="col-2 state active" id="active">
-   		<h2>Megkezdhető</h2>
-				<task id="2">
-			  		<p>#<id>2</id> Határidő: <deadLine>2022.12.31.</deadLine></p>
-			  		<title>második task</title>
-			  		<desc>második task leírása</desc>
-			  		<p>
-			  			<type class="bug">&nbsp;</type>
-			  			<assign><img src="" avatar="" title=""/></assign>
-			  		</p>
-				</task>    		
-   	</div>
-   	<div class="col-2 state inwork" id="inwork">
-   		<h2>Munkában</h2>
-   	</div>
-   	<div class="col-2 state canControl" id="canControl">
-   		<h2>Ellenörizendő</h2>
-   	</div>
-   	<div class="col-2 state closed" id="closed">
-   		<h2>Kész</h2>
-   	</div>
-   </div> 
-   <div style="display:none">
-		<iframe id="hideIfrm" name="hideIfrm"></iframe>   
+   <div class="row">
+   	<h2>{{ __('task.tasks') }}</h2>
    </div>
-
+   @if ($info->userAdmin)
+   	<a href="{{ \URL::to('/'.$project->id.'/tasks/create') }}" class="btn btn-primary">
+   		<em class="fas fa-plus"></em>&nbsp;{{ __('task.add') }}
+   	</a>
+   @endif
+   <div class="row states" id="states">
+   	@foreach ($statuses as $status)
+   	<div class="state {{ $status }}" id="{{ $status }}">
+   		<h2>{{ __('task.'.$status) }}</h2>
+   			@foreach ($tasks as $task)
+	   			@if ($task->status == $status)
+						<task id="{{ $task->id }}">
+					  		<p>#<id>{{ $task->id }}</id>
+					  		{{ __('task.deadline') }} 
+					  		<deadLine>{{ $task->deadline }}</deadLine></p>
+					  		<name>{{ $task->name }}</name>
+					  		<pos>{{ $task->position }}</pos>
+					  		<status>{{ __('task.'.$task->status) }}</status>
+					  		<assign style="display:none">{{ $task->assign[0] }}</assign>
+					  		<p>
+					  			<type class="{{ $task->type }}">
+					  				{{ __('task.'.$task->type) }}
+					  			</type>
+					  			@if ($task->assign[0] != "")
+					  			<br /><img src="{{ $task->assign[1] }}" title="avatar"/>{{ $task->assign[0] }}
+					  			@endif
+					  		</p>
+						</task>    		
+					@endif
+   			@endforeach
+   	</div>
+   	@endforeach
+   </div> 
+   <div class="row help">
+		<div class="col-12">
+			Projekt menedzser új feladatot vihet fel, törölhet, bármit módosíthat.
+			A többi tag:
+			<ul>
+				<li>Magához rendelhet olyan feladatot ami még nincs máshoz rendelve</li>
+				<li>A hozzá rendelt feledatotk státuszát modosíthatja</li>
+				<li>Hozá rendelt feladot "elengedhet"</li>			
+			</ul>		
+		</div>   
+   </div>
+   <div style="display:none">
+		<iframe id="hideIfrm" style="height:300px; width:300px" name="hideIfrm"></iframe>   
+   </div>
+   
    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
    <script>
 		var atDragging = false;   
@@ -263,15 +292,29 @@ team
 		}
   
      	function taskDrop(event,ui) {
-				console.log(event);
-				console.log(ui);
 				if (ui.offset.top < $('#active').position().top) {
-					console.log('out of range');
+					// területen kivül
+			      ui.draggable[0].style.left = '0px';	
+			      ui.draggable[0].style.top = '0px';	
 					return;
 				}
 				if (atDragging) {
 					return;				
 				}
+				@if (\Auth::user()) 
+					// ha nem admin akkor csak a sajátmagához rendeltet mozgathatja
+					@if (!$info->userAdmin)
+						if (ui.draggable.find('assign').html() != "{{ \Auth::user()->name }}") {
+					      ui.draggable[0].style.left = '0px';	
+					      ui.draggable[0].style.top = '0px';	
+							return;
+						}
+					@endif
+				@else
+			      ui.draggable[0].style.left = '0px';	
+			      ui.draggable[0].style.top = '0px';	
+					return;
+				@endif	
 				
 				// calculate newState
 				var newState = '';
@@ -300,26 +343,48 @@ team
 		      ui.draggable.insertAfter('#'+newState+' '+beforeSelector);
 		      ui.draggable[0].style.left = '0px';	
 		      ui.draggable[0].style.top = '0px';	
+				ui.draggable.find('status').html(newState);
 
-				// tárol adatbázisba
-				$('#hideIfrm').src = "{{ \URL::to('/') }}" +'/tasks/'+ui.draggable.id +
-				  '/edit?status='+newState;
+				// az összes task status és pos  frissitése
+				// és a tároláshoz szükséges url adat kialakitása
+				var i = 0;
+				var p = 0;
+				var t = 0;
+				var s = '';
+				var task = false;
+				var state = false;
+				var states = $('.state');
+				for (i=0; i<states.length; i++) {
+					state = states[i]; // DOM element
+					p = 0;
+					t = state.firstChild; // DOM element
+					while (t) {
+						if (t.id) {
+							task = $('#'+t.id); // JQuery object
+							task.find('pos').html(p);
+							s += t.id+','+state.id+','+p+',';
+							p++;						
+						}
+						t = t.nextSibling;					
+					}				
+				} 
 				
+				// tárol adatbázisba
+				// az összes task statust és poziciót küldeni kell
+				$('#hideIfrm').attr('src',"{{ \URL::to('/tasks/dragsave') }}"+"?data="+s);
+				// alert('{{ \URL::to('/tasks/dragsave') }}?data='+s);
      	}
 
 		$(function() {
 			// init
 			
-			if (window.innerWidth < 1100) {
-				$('#states').css('display','none');
-				alert('A task menedzser funkció csak 1100px -nél szélesebb képernyőn müködik!');
-			}
-			if ($('body').droppable != undefined) {
-		    	$('body').droppable({drop: taskDrop});
-   		}
-		 	if ($('task').draggable != undefined) {
-        		$('task').draggable({drop: taskDrop}); 
+			@if (($info->userAdmin) | ($info->userMember))
+			if (window.innerWidth >= 1100) {
+			    	$('body').droppable({drop: taskDrop});
+	        		$('task').draggable({drop: taskDrop}); 
        	}
+       	@endif
+       	
        	$('task').mousedown(function(){
 	      	atDragging = true;
 				this.style.zIndex = 99;      
@@ -329,29 +394,12 @@ team
 				this.style.zIndex = 1;
       	});
       	$('task').click(function() {
-      		console.log('task click', this);
-      		// képerníő megjelenítése
-				// taskId = $('#taskId').val(this.id);
-				// taskAssigned = $('#taskAssigned').val();
-				// taskType = $('#taskType').val();      	
-				// taskDeadLine = $('#taskDeadLine').val();      	
-      		// users select opciók
-      		
-      		// OK click: modosit a task dom elemet és
-      		// tárol adatbáziba
+      		@if ($info->userMember | $info->userAdmin)
+      		location = "{{ \URL::to('/tasks') }}/"+this.id+"/edit";
+      		@else
+      		location = "{{ \URL::to('/tasks') }}/"+this.id;
+      		@endif
       	});
-      	/*
-      	$('#taskFormOk').cick(function() {
-				var taskId = $('#taskId').val();
-				var taskAssigned = $('#taskAssigned').val();
-				var taskType = $('#taskType').val();      	
-				var taskDeadLine = $('#taskDeadLine').val();      	
-				// task dom elem modositása (avatar!)
-				
-				// tárolás adatbázisba a rejtett iframe -t használva
-				
-      	});
-      	*/
       });  
    </script> 
     

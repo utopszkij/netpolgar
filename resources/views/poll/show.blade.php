@@ -20,7 +20,13 @@
                 <h2>
                 	<a href="{{ \URL::to('/'.$poll->parent_type.'/'.$parent->id) }}">
                 		<em class="fas fa-hand-point-right"></em>
-                		{{ $parent->name }}
+							@if ($poll->parent_type == 'teams')
+							<em class="fas fa-user-friends"></em>
+							@endif
+							@if ($poll->parent_type == 'projects')
+							<em class="fas fa-cogs"></em>
+							@endif
+                		&nbsp;{{ $parent->name }}
                 	</a>
                 </h2>
             </div>

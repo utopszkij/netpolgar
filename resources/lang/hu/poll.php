@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 return [
   	'teams' => 'csoport',
     'projects' => 'projekt',
@@ -10,22 +10,22 @@ return [
     
     'status' => 'Státusz',
     'debate' => 'Vita',
-    'active' => 'aktiv',
+    'active' => 'aktív',
     'closed' => 'lezárt szavazás',
     'proposal' => 'javasolt vita',
     'proposalOption' => 'javasolt opció',
     'canceled' => 'megszakított vita',
     'vote' => 'szavazás',
     
-  	'config' => 'Bállítások',
-    'pollType' => 'Tipus',
+  	'config' => 'Beállítások',
+    'pollType' => 'Típus',
     'yesno' => 'Igen/Nem',
     'onex' => 'Egy választható',
     'morex' => 'Több választható',
     'pref' => 'Sorba rendező',
     'prtition' => 'Felosztó',
     'secret' => 'Titkos',
-    'public' => 'Nyilt',
+    'public' => 'Nyílt',
     'liquied' => 'Likvid',
     'yes' => 'Igen',
     'no' => 'Nem',
@@ -59,9 +59,9 @@ return [
     'saved' => 'Adat tárolva',
     'ok' => 'Rendben',
     'voteNow' => 'Most szavazok',
-    'accessDenied' => 'Ez a müvelet számodra nem engedélyezett. :(',
-    'liquiedSecretError' => 'likvid opció csak nyilt szavazásnál megengedett',
-    'successSave' => 'adatok sikeressen tárolva.',
+    'accessDenied' => 'Ez a művelet számodra nem engedélyezett. :(',
+    'liquiedSecretError' => 'likvid opció csak nyílt szavazásnál megengedett',
+    'successSave' => 'adatok sikeresen tárolva.',
     'result' => 'Eredmény',
     'subResult' => 'Rész eredmény', 
 ];

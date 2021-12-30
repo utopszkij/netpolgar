@@ -1,0 +1,36 @@
+﻿<?php
+return [
+  	'tasks' => 'Feladatok',
+  	'task' => 'Feladat',
+  	'bug' => 'Hiba',
+  	'info' => 'Információ',
+  	'proposal' => 'javaslat',
+  	'id' => 'Azonosító',
+  	'name' => 'Leírás',
+   'status' => 'Státusz',
+   'deadline' => 'Határidő', 
+   'type' => 'Típus',
+   'assign' => 'Felelős',
+   'waiting' => 'Várakoztatva',
+   'active' => 'Megkezdhető',
+   'inwork' => 'Munkában',
+   'canControl' => 'Tesztelendő',
+   'closed' => 'Lezárt',
+   'back' => 'Vissza', 
+   'deleted' => 'törölt',
+   'paused' => 'szüneteltetett',
+    
+    'show' => 'Megnéz',
+    'add' => 'Új Feladat felvitele',
+    'edit' => 'Projekt feladat módosítás',
+    'delete' => 'Projekt feladat törlése',
+    'details' => 'Projekt feladat adatlap',
+    'save' => 'Tárolás',
+    'cancel' => 'Mégsem',
+    'saved' => 'Adat tárolva',
+    'close' => 'Bezár',
+    'ok' => 'Rendben',
+    'successSave' => 'Projekt feladat adatok sikeresen tárolva.',
+    'accessDenied' => 'Hozzáférés nem engedélyezett' 
+    
+];

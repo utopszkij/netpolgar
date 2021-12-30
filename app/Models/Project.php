@@ -37,7 +37,9 @@ class Project extends Model
 			"created_at":"1900-01-01",
 			"closed_at":"1900-01-01",
 			"updated_at":"1900-01-01",
-			"created_by":0
+			"created_by":0,
+			"userAdmin":false,
+			"userMember":false
     	}');
     	return $result;
     }
@@ -140,7 +142,9 @@ class Project extends Model
          "memberCount":0,
          "userParentRank":[],
 			"parentClosed":false,        
-         "parentMemberCount":0
+         "parentMemberCount":0,
+         "userMember":false,
+         "userAdmin":false
 		}');
 		$result->status = 'active';
 		if ($team->status == 'closed') {
@@ -153,12 +157,14 @@ class Project extends Model
         ->where('status','=','active')
         ->count();
       $t = \DB::Table('members');
-      $items = $t->where('parent','=',$team->id)
-            ->where('parent_type','=','teams')
-            ->where('user_id','=',\Auth::user()->id)
-            ->get();
-      foreach ($items as $item) {
-         $result->userParentRank[] = $item->status.'_'.$item->rank;
+      if (\Auth::user()) {
+	      $items = $t->where('parent','=',$team->id)
+	            ->where('parent_type','=','teams')
+	            ->where('user_id','=',\Auth::user()->id)
+	            ->get();
+	      foreach ($items as $item) {
+	         $result->userParentRank[] = $item->status.'_'.$item->rank;
+	      }
       }
 		return $result;
 	 }    
@@ -175,6 +181,30 @@ class Project extends Model
 		Project::getLikeInfo($result, $project);
 		$result->status = $project->status;
       Project::getRanks($result, $project);
+      $user = \Auth::user();
+      if ($user) {
+			$result->userMember = (\DB::table('members')
+											->where('parent_type','=','projects')
+											->where('parent','=',$project->id)
+											->where('user_id','=',$user->id)
+											->where('status','=','active')
+											->count() > 0);
+			$result->userAdmin = (\DB::table('members')
+											->where('parent_type','=','projects')
+											->where('parent','=',$project->id)
+											->where('user_id','=',$user->id)
+											->where('rank','=','admin')
+											->where('status','=','active')
+											->count() > 0);
+			// az első user is admin
+			$firstUser = \DB::table('users')
+							->orderBy('id')
+							->first();
+			if ($firstUser->id == $user->id) {
+				$result->userAdmin = true;			
+				$result->userMember = true;			
+			}																		      
+      }
 		return $result;
     }
     

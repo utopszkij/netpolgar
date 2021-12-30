@@ -1,0 +1,232 @@
+<html>
+<script
+  src="https://code.jquery.com/jquery-3.6.0.min.js"
+  integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+  crossorigin="anonymous"></script>
+
+  <style type="text/css">
+  .treejs-label {display:inline-block; max-width:400px; margin-top:5px}
+  </style>	
+<body>
+	<h2>tree</h2>
+	<button type="button" onclick="">edit</button>
+	<button type="button" onclick="">delete</button>
+	<button type="button" onclick="addSibling(treeData)">+sibling</button>
+	<button type="button" onclick="">+child</button>
+	Must only one selected!
+	<div id="container"></div>
+</body>
+
+<script src="tree.js"></script>
+<script>
+
+// nextId = 165
+var treeData = [
+{"id":"1", "text":"﻿Root", "children":[
+{"id":"2", "text":"﻿Anyagi termékek", "children":[
+	{"id":"3", "text":"Mezőgazdasági termékek", "children":[
+		{"id":"4", "text":"Élő állatok"},
+		{"id":"5", "text":"Növények"}, 
+		{"id":"6", "text":"Élelmiszerek", "children":[
+			{"id":"7", "text":"Húsok", "children":[
+				{"id":"8", "text":"Vörös húsok"},
+				{"id":"9", "text":"Fehér húsok"},
+				{"id":"11", "text":"Tenger gyümölcsei"},
+				{"id":"12", "text":"Egyéb húsok"}
+			]},
+			{"id":"13", "text":"Gyümölcsök"},
+			{"id":"14", "text":"Zöldségek"},
+			{"id":"15", "text":"Magvak"},
+			{"id":"16", "text":"Fűszerek"},
+			{"id":"17", "text":"Készételek", "children":[
+				{"id":"18", "text":"Sütemények"},
+				{"id":"19", "text":"Előételek"},
+				{"id":"20", "text":"Fő ételek"},
+				{"id":"21", "text":"Desszertek"},
+				{"id":"22", "text":"Egyéb készételek"}
+			]},
+			{"id":"23", "text":"Egyéb élelmiszerek"}
+		]},	
+		{"id":"24", "text":"Állati eredetű egyéb termékek (nem élelmiszer)"},
+		{"id":"25", "text":"Növényi eredetű egyéb termékek (nem élelmiszer)"},
+		{"id":"26", "text":"Egyéb mezőgazdasági termékek"}
+	]},
+	{"id":"27", "text":"Ipari termékek", "children":[
+		{"id":"28", "text":"Ásványok"},
+		{"id":"29", "text":"Vegyipari termékek"},
+		{"id":"30", "text":"Építőipari termékek"},
+		{"id":"31", "text":"Gépipari termékek", "children":[
+			{"id":"32", "text":"Járművek és alkatrészeik", "children":[
+				{"id":"33", "text":"Kerékpárok"},
+				{"id":"34", "text":"Rollerek"},
+				{"id":"35", "text":"Személyautók"},
+				{"id":"36", "text":"Haszongépjárművek"},
+				{"id":"37", "text":"Járműalkatrészek"},
+				{"id":"38", "text":"Egyéb jármű"}
+			]},
+			{"id":"39", "text":"Épületgépészeti termékek"},
+			{"id":"40", "text":"Kézi szerszámok"},
+			{"id":"41", "text":"Szerszámgépek"},
+			{"id":"42", "text":"Mezőgazdasági gépek"},
+			{"id":"43", "text":"Ipari gépek"},
+			{"id":"44", "text":"Egyéb gépipari termékek"}
+		]}, 
+		{"id":"45", "text":"Elektrotechnikai termékek", "children":[
+			{"id":"46", "text":"Elektrotechnikai alkatrészek, kábelek"},
+			{"id":"47", "text":"Multimédia", "children":[
+				{"id":"48", "text":"Rádió"},
+				{"id":"49", "text":"Televízió"},
+				{"id":"50", "text":"CD/DVD lejátszó"},
+				{"id":"51", "text":"Házi mozi"},
+				{"id":"52", "text":"HIFI"},
+				{"id":"53", "text":"Egyéb multimédia"}
+			]},
+			{"id":"54", "text":"Átviteltechnika"},
+			{"id":"55", "text":"Világítás technika"},
+			{"id":"56", "text":"Telefon", "children":[
+				{"id":"57", "text":"Vezetékes telefon"},
+				{"id":"58", "text":"Mobil telefon"},
+				{"id":"59", "text":"Okostelefon"},
+				{"id":"60", "text":"Egyéb telefon"}
+			]},
+			{"id":"61", "text":"Számítástechnika", "children":[
+				{"id":"62", "text":"PC"},
+				{"id":"63", "text":"Laptop, notebook"},
+				{"id":"64", "text":"Tablet"},
+				{"id":"65", "text":"Nyomtató"},
+				{"id":"66", "text":"Szkenner"},
+				{"id":"67", "text":"Kamera"},
+				{"id":"68", "text":"Multifunkciós nyomtató"},
+				{"id":"69", "text":"Monitor"},
+				{"id":"70", "text":"Billentyűzet"},
+				{"id":"71", "text":"Egér"},
+				{"id":"72", "text":"Hálózati eszköz"},
+				{"id":"73", "text":"Robotok"},
+				{"id":"74", "text":"Dronok"},
+				{"id":"75", "text":"Egyéb számítástechnikai termék"}
+			]},
+			{"id":"76", "text":"Egyéb elektrotechnikai termékek"}
+		]},
+		{"id":"77", "text":"Textilipari termékek", "children":[
+			{"id":"78", "text":"Szövetek"},
+			{"id":"79", "text":"Ruházat és kiegészítők", "children":[
+				{"id":"80", "text":"Férfi ruházat"},
+				{"id":"81", "text":"Női ruházat"},
+				{"id":"82", "text":"Fiú ruházat"},
+				{"id":"83", "text":"Leány ruházat"},
+				{"id":"84", "text":"Bébi ruházat"},
+				{"id":"85", "text":"Egyéb ruházat"},
+				{"id":"161", "text":"Ékszerek"}
+			]},
+			{"id":"86", "text":"Lakberendezési textilek", "children":[
+				{"id":"87", "text":"Függönyök"},
+				{"id":"88", "text":"Szőnyegek"},
+				{"id":"89", "text":"Bútorszövetek"},
+				{"id":"90", "text":"Ágyneműk"},
+				{"id":"91", "text":"Egyéb lakberendezési textil termékek"}
+			]},
+		{"id":"92", "text":"Papir ipari termékek"},
+		{"id":"93", "text":"Faipari termékek", "children":[
+			{"id":"94", "text":"Bútorok, butor alkatrészek"},
+			{"id":"95", "text":"Fűrész áru"},
+			{"id":"96", "text":"Farost lemez"},
+			{"id":"97", "text":"Egyéb faipari termékek"}
+		]},
+		{"id":"98", "text":"Bőripari termékek", "children":[
+			{"id":"99", "text":"Lábbelik", "children":[
+				{"id":"100", "text":"Férfi lábbelik"},
+				{"id":"101", "text":"Női lábbelik"},
+				{"id":"102", "text":"Fiú lábbelik"},
+				{"id":"103", "text":"Leány lábbelik"},
+				{"id":"104", "text":"Egyéb lábbelik"}
+			]},
+			{"id":"105", "text":"Övek"},
+			{"id":"106", "text":"Táskák"},
+			{"id":"107", "text":"Egyéb bőripari termékek"}
+		]},
+		{"id":"108", "text":"Egészségügyi, szépségápolási termékek", "children":[
+			{"id":"109", "text":"Gyógyszerek"},
+			{"id":"110", "text":"Szépségápolási termékek"},
+			{"id":"111", "text":"Egészségügyi termékek"},
+			{"id":"112", "text":"Egyéb eü. szépségápolási termékek"}
+		]},
+		{"id":"113", "text":"Optikai termékek", "children":[
+			{"id":"114", "text":"Fényképező gépek és alkatészeik"},
+			{"id":"115", "text":"Videó kamerák és alkatrészeik"},
+			{"id":"116", "text":"Egyéb optikai termékek"}
+		]},
+		{"id":"117", "text":"Sportszerek"},
+		{"id":"118", "text":"Játékok"},
+		{"id":"119", "text":"Egyéb ipari termékek"}
+	]},
+	{"id":"120", "text":"Egyéb anyagi termékek"}
+	]},
+]},	
+{"id":"121", "text":"Szolgáltatások", "children":[
+	{"id":"122", "text":"Humán szolgáltatások", "children":[
+		{"id":"123", "text":"Fodrászat, kozmetika, kéz és lábápolás"},
+		{"id":"124", "text":"Masszázs"},
+		{"id":"125", "text":"Lelki segítség nyújtás"},
+		{"id":"126", "text":"Jóga, sport oktatás, trenírozás"},
+		{"id":"127", "text":"Egyéb humán szolgáltatás"}]},
+	{"id":"128", "text":"Oktatás"},
+	{"id":"129", "text":"Ingatlan bérbeadás"},
+	{"id":"130", "text":"Utazási, közlekedési, szállítási szolgáltatás"},
+	{"id":"131", "text":"Lakás karbantartás, takarítás", "children":[
+		{"id":"132", "text":"Takarítás"},
+		{"id":"133", "text":"Víz szerelés"},
+		{"id":"134", "text":"Gáz szerelés"},
+		{"id":"135", "text":"Villanyszerelés"},
+		{"id":"136", "text":"Festés, mázolás"},
+		{"id":"137", "text":"Klíma berendezés telepítés, javítás"},
+		{"id":"138", "text":"Nyilászáró csere, javítás"},
+		{"id":"139", "text":"Burkolás"},
+		{"id":"140", "text":"Kőműves munkák"},
+		{"id":"141", "text":"Egyéb lakás karbantartás"}]},
+	{"id":"142", "text":"Kertápolás, medence karbantartás"},
+	{"id":"143", "text":"Szaktanácsadás"},
+	{"id":"144", "text":"Képviselet"},
+	{"id":"145", "text":"Marketing, propaganda"},
+	{"id":"146", "text":"Családsegítés"},
+	{"id":"147", "text":"Egyéb szolgáltatások"}
+]},
+{"id":"148", "text":"Szellemi termékek", "children":[
+	{"id":"149", "text":"Művészeti alkotások", "children":[
+		{"id":"150", "text":"Papír alapú könyvek, folyóiratok, ujságok, írások"},
+		{"id":"151", "text":"Fotók"},
+		{"id":"152", "text":"On-line irodalmi anyagok"},
+		{"id":"153", "text":"Tárgyiasult képzőművészeti alkotások"},
+		{"id":"154", "text":"On-lie képzőművészeti alkotások"},
+		{"id":"155", "text":"Egyéb művészeti alkotások"}
+	]},
+	{"id":"156", "text":"Szoftverek"},
+	{"id":"157", "text":"Oktató anyagok"},
+	{"id":"158", "text":"Tanulmányok"},
+	{"id":"159", "text":"Egyéb szellemi termékek"}
+]},
+{"id":"160", "text":"Egyéb (másik főkategóriába nem sorolható dolgok)"}
+]}
+];
+
+
+var myTree = new Tree('#container',{
+	data: treeData,
+	closeDepth: 2
+});
+
+var lastSelect = false;
+
+
+$('.treejs-label').click(txtClick);
+$('.treejs-checkbox').css('display','none');
+
+function txtClick() {
+	if (lastSelect) {
+		lastSelect.style.backgroundColor = 'transparent';
+	}
+	this.style.backgroundColor = 'orange';
+	lastSelect = this;
+}
+
+</script>
+</html>

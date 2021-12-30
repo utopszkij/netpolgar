@@ -33,6 +33,8 @@
  
     <div class="row">
 			<a href="{{ \URL::to('/teams/'.$team->id) }}">
+				<em class="fas fa-hand-point-right"></em>
+				<em class="fas fa-user-friends"></em>
 				&nbsp;{{ $team->name }} 			
 			</a>    	
 	 </div>    
