@@ -121,27 +121,23 @@ Route::post('/tasks/{task}',[TaskController::class, 'update']);
 *   3. ha mindegyik tétel success2 akkor az order is "success"  
 */
 Route::get('/products/list/{teamId}',[ProductController::class, 'list']);
-//    ?categories, serach, page, order, orderdir - sessinban is lehetnek
 Route::get('/products/create/{team}',[ProductController::class, 'create']);
-//    csak a team adminoknak engedélyezett 
 Route::get('/products/{product}/add/{quantity}',[ProductController::class,'add']);
-//    csak a team adminoknak engedélyezett
-Route::post('/products',[ProductController::class, 'store']);
 Route::get('/products/{product}',[ProductController::class, 'show']);
 Route::get('/products/{product}/edit',[ProductController::class, 'edit']);
-//    csak a team adminoknak engedélyezett 
-Route::post('/products/{product}',[ProductController::class, 'update']);
 Route::get('/products/{product}/delete',[ProductController::class, 'delete']);
-//    csak a team adminoknak engedélyezett 
+Route::post('/products',[ProductController::class, 'store']);
+Route::post('/products/{product}',[ProductController::class, 'update']);
 
 // megjegyzés:product like/dislike csak a teljesitett mgrendelés vevőknek engedélyezett
 // product comment a team tagoknak és a teljesitett megrendelés vevőinek engedyélyezett
 
-Route::get('/carts/add/{product}/{quatity}',[CartController::class, 'add']);
-// ha van open cart azt folytatja, egyébként újat kezd
-Route::get('/carts/{order}',[CartController::class, 'show']);
-Route::get('/carts/{order}/{itemId}/delete',[CartController::class, 'delete']);
-Route::get('/carts/{order}/clear',[CartController::class, 'clear']);
+Route::get('/carts/add',[CartController::class, 'add']);
+// ha van open cart azt folytatja, egyébként újat kezd 
+// ?produc_id= &quatity=x
+Route::get('/carts/list',[CartController::class, 'show']);
+Route::get('/carts/{itemId}/delete',[CartController::class, 'delete']);
+Route::get('/carts/clear',[CartController::class, 'clear']);
 // show, delete, clear csak a tulajdonosnak engedélyezett
 
 Route::get('/orders/list',[OrderController::class, 'list']);

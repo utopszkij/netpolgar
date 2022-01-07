@@ -51,7 +51,10 @@ mysql adatbázis létrehozása utf8mb4-hungaian_ci default rendezéssel
 
 .env file editásása (mysql elérés, smtp elérés, opcionálisan github, facebook, google login konfig)
 
+php artisan key:generate
+
 php artisan migrate
+
 ## frissités
 
 composer update

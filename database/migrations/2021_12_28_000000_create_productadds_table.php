@@ -18,9 +18,11 @@ class CreateProductaddsTable extends Migration
         Schema::create('productadds', function (Blueprint $table) {
             $table->id();
             $table->biginteger('product_id')->unsigned()->nullable();
-            $table->string('category')->nullable();  // megnevezés
-            $table->index(['product_id']);
-            $table->index(['category']);
+            $table->double('quantity')->nullable();  
+            $table->biginteger('usert_id')->unsigned()->nullable();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent()->nullable();
+				$table->index('product_id');
         });
     }
 

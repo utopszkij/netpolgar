@@ -85,11 +85,12 @@
 	@endphp
 
 	<div id="products">
+		@if (\Auth::user())
 		<div class="row">
 			<div class="col-12">
 				<var><big><strong>{{ __('product.title') }}</strong></big></var>
 				<var style="float:right">
-					<a class="btn btn-success">
+					<a class="btn btn-success" href="{{ \URL::to('/carts/list') }}">
 						<em class="fas fa-shopping-basket"></em>
 						&nbsp;{{ __('product.basket') }}
 					</a>
@@ -97,6 +98,7 @@
 				</var>			
 			</div>		
 		</div>
+		@endif
 		<div class="row">
 			<div class="col-12 col-md-3">
 				<div id="submenu">
@@ -125,6 +127,7 @@
 					value="{{ $categories}}" />
 				<div>
 					{{ __('product.sort') }}:
+					{{ $order }}
 					<select name="order" onchange="$('#formRefresh').submit()">
 						<option value="name,asc"{{ selected('name,asc',$order) }}>ABC</option>					
 						<option value="price,asc"{{ selected('price,asc',$order) }}>{{ __('product.priceASC') }}</option>					
@@ -137,110 +140,119 @@
 						&nbsp;{{ __('product.add') }}					
 					</a>
 					@endif
-				</div>
-				<div class="col-12 col-md-9">
-					{{ __('product.search') }}: <input type="text" id="search" name="search"
-								 value="{{ $search}}" />
-					<button class="btn btn-secondary">
-						<em class="fa fa-search"></em>				
-					</button>
+					<div style="display:inline-block; width:auto">					
+						{{ __('product.search') }}: <input type="text" id="search" name="search"
+									 value="{{ $search}}" />
+						<button class="btn btn-secondary">
+							<em class="fa fa-search"></em>				
+						</button>
+					</div>
 					<button type="button" class="btn btn-secondary"
 						onclick="$('#search').val(''); $('#formRefresh').submit();">
 						<em class="fa fa-times"></em>				
 					</button>
 				</div>
 				</form>
-				@if (count($data) > 0)
-				@foreach ($data as $product)
-				<div class="productsItem {{ $product->status }}">
-					<h3>{{ $product->name }}
-						@if ($userAdmin)
-						<a href="">
-							<em class="fas fa-edit"></em>					
-						</a>
-						@endif
-					</h3>
-					<p class="imgContainer"> 
-						<img src="{{ $product->avatar }}" />
-					</p>	
-					<p>{{ __('product.price') }}:
-					<strong>{{ $product->price }}</strong>
-					&nbsp;&nbsp;&nbsp;
-					{{ __('product.stock') }}:
-					{{ $product->stock }}
-					&nbsp;{{ $product->unit}}</p>
-					<div>{!!  evaluation($product->value) !!}					
-					</div>
-					<p>
-						<input type="number" value="1" class="quantity" />
-						<a class="btn btn-primary">
-							<em class="fas fa-caret-right"></em>						
-							<em class="fas fa-shopping-basket"></em>						
-							{{ __('product.addToBasket') }}
-						</a>
-					</p>										
-				</div>
+				@if ($data->total > 0)
+				@foreach ($data->items as $key => $product)
+					@if (($key >= $data->offset) &
+					     ($key < ($data->offset + $data->perPage)))				
+						<div class="productsItem {{ $product->status }}">
+							<h3><a href="{{ \URL::to('/products/'.$product->id) }}">
+									{{ $product->name }}
+								 </a>
+								@if ($userAdmin)
+								<a href="{{ \URL::to('/products/'.$product->id.'/edit') }}">
+									<em class="fas fa-edit"></em>					
+								</a>
+								@endif
+							</h3>
+							<a href="{{ \URL::to('/products/'.$product->id) }}">
+								<p class="imgContainer"> 
+									<img src="{{ $product->avatar }}" />
+								</p>	
+								<p>{{ __('product.price') }}:
+								<strong>{{ $product->price }}</strong>
+								&nbsp;&nbsp;&nbsp;
+								{{ __('product.stock') }}:
+								{{ $product->stock }}
+								&nbsp;{{ $product->unit}}</p>
+							</a>
+							<div>{!!  evaluation($product->value) !!}					
+							</div>
+							<p>
+		                	<form action="/carts/add" method="get">
+		                	   <input type="hidden" 
+		                	   	name="product_id" value="{{ $product->id }}" />
+		               		<input name="quantity" type="number" value="1" class="quantity" />
+									<button type="submit" class="btn btn-primary">
+										<em class="fas fa-caret-right"></em>						
+										<em class="fas fa-shopping-basket"></em>						
+										{{ __('product.addToBasket') }}
+									</button>
+								</form>	
+							</p>										
+						</div>
+					@endif	
 				@endforeach
 				@else 
 					{{ __('product.notRecord') }}
 				@endif
 			</div>
 		</div>
-   	 @if (count($data) > 0)
-	   	 {!! $data->links('pagination') !!}
-   	 @endif
+		<div class="row">
+			<div class="col-12">
+				<nav>
+		         <ul class="pagination pull-right">
+		    	 	@php
+	    	 		$p = 1;
+		    	 	if ($data->currentPage > 1) {
+	    	 			$url = \URL::to('/products/list/'.$teamId).'?page=0';
+               	echo '<li class="page-item" title="első lap">
+                    <a class="page-link" 
+                    href="'.$url.'">&lsaquo;&lsaquo;</a></li>';
+		    	 	}
+		    	 	if ($data->total > $data->perPage) {
+		    	 		$offset = 0;
+		    	 		$p = 1;
+		    	 		while ($offset < $data->total) {
+		    	 			if (($p > ($data->currentPage - 3)) &
+		    	 			    ($p < ($data->currentPage + 3))) {
+			    	 			$url = \URL::to('/products/list/'.$teamId).'?page='.$p;
+			    	 			if ($p == $data->currentPage) {
+									echo '<li class="page-item active">
+											<span class="page-link">'.$p.'</span></li>';
+			    	 			} else {
+									echo '<li class="page-item">
+											<a class="page-link" href="'.$url.'">
+											'.$p.'</a></li>';
+								}			
+							}
+							$p++;
+							$offset = $offset + $data->perPage;    	 		
+		    	 		}
+		    	 	}
+		    	 	if ($data->currentPage < ($p - 1)) {
+	    	 			$url = \URL::to('/products/list/'.$teamId).'?page='.($p-1);
+               	echo '<li class="page-item" title="első lap">
+                    <a class="page-link" 
+                    href="'.$url.'">&rsaquo;&rsaquo;</a></li>';
+		    	 	}
+			  	 	@endphp
+			  	 	</ul>
+		  	 	</nav>
+	  	 	</div>
+	  	 </div>
 	 </div> 
 	 
 	 <script src="/js/tree.js"></script>
-	 <script>
-	 
+	 <script type="text/javascript">
 	 var treeData =
 	 @php  include(storage_path().'/categories.json') @endphp
 	 ;
-	 var myTree = new Tree('#tree',{
-		data: treeData,
-		closeDepth: 2,
-		onChange: treeChange
-		
-	 });
-
-	 var changeTimer = false;
-	 var firstChange = true;
 	 var categories = "{{ $categories }}";
-	 var values = categories.split(',');
-	 myTree.values = values;	 
-	 	 
-	 function treeChange() {
-		if (changeTimer) {
-			clearTimeout(changeTimer);		
-		}
-		$('#categories').val( myTree.values.toString() );
-		console.log('treeChanged');
-		console.log($('#categories').val());
-		console.log(myTree.selectedNodes);
-		if (!firstChange) {
-			changeTimer = window.setTimeout(refresh,1000);
-		}	
-		
-		var s = '';
-		for (var i = 0; i < myTree.selectedNodes.length; i++) {
-			var node = myTree.selectedNodes[i];
-			if (node.status == 2) {
-				s += '- '+node.text+'<br />';
-			}
-		}
-		$('#treeValues').html(s);
-		firstChange = false; 	 
-	 }
-	 
-	 function refresh() {
-		console.log('refresh');	 
-		$('#formRefresh').submit();
-	 }
-	 
-	 function treeIkonClick() {
-		$('#tree').toggle();
-		$('#treeValues').toggle();	 
-	 }
-	 </script>       
+	 var doRefresh = true;
+	 </script>
+	 <script src="/js/categories.js"></script>
+	 	
 </x-guest-layout>  
