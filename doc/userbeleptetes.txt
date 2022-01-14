@@ -1,0 +1,2 @@
+a routes/web.php
+-ben a bejelentkezést igénylő belépési pontok végére: ->middleware('auth')

@@ -55,15 +55,14 @@
         @endforeach
       </tbody>  
     </table>
-    @if ($data->total > 0)
+    @if (count($data) > 0)
     <div class="row help">
     	<div class="col-12">
 			Részletekért és további lehetőségért kattints a project nevére!
 		</div>				
     </div>
     
-    {--  paginator --}
-    {{ paginator $data->currentPage.' '.$data->perPage.' '.$data->total }}
+    {!! $data->links('pagination') !!}
     @else
     <div>{{ __('project.notrecord') }}</div>
     @endif  

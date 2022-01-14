@@ -1,3 +1,6 @@
+<?php		
+		use App\Models\Minimarkdown;
+?>
 		<div class="msg level{{ $treeItem->level }}">
 			@php 
 			// params: $treeItem, $parentType, $parent, $parentId 
@@ -20,7 +23,7 @@
 					</a>
 				</div>
 				@endif	
-			  	{!! miniMarkdown($treeItem->text) !!} 
+			  	{!! Minimarkdown::miniMarkdown($treeItem->text) !!} 
 				@if ($treeItem->moderatorInfo != '')
 				<div class="moderatorInfo">{{ $treeItem->moderatorInfo }}</div>
 				@endif			  	

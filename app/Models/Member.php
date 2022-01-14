@@ -30,7 +30,7 @@ class Member extends Model
     }
     
     /**
-     * 
+     * like/dilike konfig szerint szükséges számának képzése
      * @param object $result
      * @param string $parentType
      * @param object $parent
@@ -150,7 +150,7 @@ class Member extends Model
     }
     
     /**
-     * like/dilike ellenörzés, ha szülséges status modosítás
+     * like/dislike ellenörzés, ha szülséges status modosítás
      * @param string $teamId
      * @return void
      */
@@ -222,4 +222,151 @@ class Member extends Model
         } // member exists
     }
     
+	 /**
+	 * lapozható adat objekt lekérése
+	 * @param string $parent_type
+	 * @param int $parent
+	 * @param int $pageSize
+	 * @return object
+	 */
+  	 public function getData(string $parent_type, 
+  	 	int $parentId, int $pageSize) {	         
+        return  $this->select(['members.id',
+        								  'members.user_id',
+										  'members.rank',
+										  'members.status',
+										  'users.name',
+										  'users.email',
+										  'users.profile_photo_path'])
+	        ->leftJoin('users','users.id','=','members.user_id')
+	        ->where('members.parent_type','=',$parent_type)
+	        ->where('members.parent','=',$parentId)
+	        ->orderBy('rank', 'asc')
+	        ->orderBy('name', 'asc')
+	        ->paginate($pageSize);
+	 }	        
+    
+	 /**
+	 * tag tisztségeinek lekérése
+	 * @param Member $member
+	 * @return array { status_rank, ....}
+	 */
+    public function getRanks(Member $member): array {       
+            $ranks = [];
+            $t = \DB::table('members');
+            $members = $t->where('parent_type','=',$member->parent_type)
+                        ->where('parent','=',$member->parent)
+                        ->where('user_id','=',$member->user_id)
+                        ->get();
+            foreach ($members as $m) {
+                $ranks[] = __('member.'.$m->status.'_'.$m->rank);                
+            }
+            return $ranks;
+    } 
+    
+   /**
+   * új members rekord tárolása az adatbázisba
+   * @param string $parent_type
+   * @param int $parentId
+   * @param string $rank
+   * @param User $user
+   * @return string hibajelzés vagy üres
+   */
+	public function createRecord(string $parent_type, 
+		int $parentId, string $rank, User $user): string {
+		$result = '';
+		try {
+ 			$memberArr = [];
+ 			$memberArr['parent_type'] = $parent_type;
+ 			$memberArr['parent'] = $parentId;
+ 			$memberArr['rank'] = $rank;
+ 			$memberArr['user_id'] = $user->id;
+ 			$memberArr['created_by'] = $user->id;
+ 			$memberArr['status'] = 'proposal';
+ 			$member = $this->create($memberArr);
+			$this->checkStatus($member->id);
+		} catch (\Illuminate\Database\QueryException $exception) {
+		    $result = JSON_encode($exception->errorInfo);
+		}	
+ 		return $result;
+	}	
+	
+	/**
+	 * egy rekord olvasása az adatbázisból
+	 * @param string $parent_type
+	 * @param int $parentId
+	 * @param string $rank
+	 * @param int $userId
+	 * @return object|false
+	 */ 
+	public static function getRecord(string $parent_type, int $parentId,
+		string $rank, int $userId) {
+		return  \DB::table('members')
+				->where('parent_type','=',$parent_type)
+				->where('parent','=',$parentId)
+				->where('rank','=',$rank)
+				->where('user_id','=',$userId)
+				->first();
+	} 
+
+	/** a megadott userId-n kivül másik admin keresése
+	 * @param string $parent_id
+	 * @param int $parentId
+	 * @param int $userId
+	 * @return object|false
+	 */ 
+	public static function getOtherAdmin(string $parent_type, int $parentId,
+		int $userId) {
+		return \DB::table('members')
+		    ->where('parent_type','=',$parent_type)
+		    ->where('parent','=',$parentId)
+		    ->where('rank','=','admin')
+		    ->where('status','=','active')
+		    ->where('user_id','<>',$userId)->first();
+	}	    
+   		
+	/** a megadott rank vagy az összes rank rekordok törlése
+	 * @param string $parent_id
+	 * @param int $parentId
+	 * @param int $userId
+	 * @param string $rank  vagy 'all'
+	 * @return bool
+	 */ 
+	public static function deleteRecords(string $parent_type, int $parentId,
+		int $userId, $rank) {	
+		if ($rank == 'all') {
+			$result = \DB::table('members')
+				->where('parent_type','=',$parent_type)
+				->where('parent','=',$parentId)
+				->where('user_id','=',$userId)
+				->delete();
+		} else {
+			$result = \DB::table('members')
+				->where('parent_type','=',$parent_type)
+				->where('parent','=',$parentId)
+				->where('user_id','=',$userId)
+				->where('rank','=',$rank)
+				->delete();
+		}		
+		return $result;
+	}    	
+	
+    /**
+    * parent rekord beolvasása
+    * @param string $parent_type
+    * @param int $parentId
+    * @return object
+    */
+    public static function getParent(string $parent_type, int $parentId) {
+		$result = \DB::table($parent_type)
+			->where('id','=',$parentId)    
+			->first();
+		if (!$result) {
+			echo 'Fatal error parent not found'; exit();		
+		}	
+    	return $result;
+    }
+			
+	
+
 }

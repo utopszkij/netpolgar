@@ -11,7 +11,7 @@ class Product extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 'description', 'team_id', 
+        'name', 'description', 'parent_type', 'parent', 
         'avatar', 'price', 'currency', 'vat', 'type', 'stock', 'unit', 'status'
     ];
     
@@ -19,7 +19,8 @@ class Product extends Model
     	$result = JSON_decode('{
 			"id":0,
 			"name":"",
-			"team_id":0,
+			"parent_type": "teams",
+			"parent":0,
 			"description":"",
 			"avatar":"/img/noimage.png",
 			"status":"active",
@@ -68,7 +69,7 @@ class Product extends Model
 	        $t = \DB::table('members');
 	        $result->userAdmin = ($t->select('distinct user_id')
 	        ->where('parent_type','=','teams')
-	        ->where('parent','=',$product->team_id)
+	        ->where('parent','=',$product->parent)
 	        ->where('status','=','active')
 	        ->where('user_id','=',$user->id)
 	        ->where('rank','=','admin')
@@ -77,7 +78,7 @@ class Product extends Model
         $t = \DB::table('members');
         $result->memberCount = $t->select('distinct user_id')
         ->where('parent_type','=','teams')
-        ->where('parent','=',$product->team_id)
+        ->where('parent','=',$product->parent)
         ->where('status','=','active')
         ->count();
     }
@@ -188,16 +189,22 @@ class Product extends Model
 	 public static function getData($teamId,	$orderArr, 
 			$search,	$categories, $userAdmin, $page, $perPage
 		) {
+		$user = \Auth::user();
+		if ($user) {
+			$userId = $user->id;
+		} else {
+			$userId = 0;			
+		}	
 		$sql = '
 		select products.id, products.name, products.avatar, products.price,
 			   products.stock, products.unit, products.status,
-		       avg(evaluations.value) value
+		       avg(evaluations.value) value, products.parent_type, products.parent
 		from products       
 		left outer join evaluations on evaluations.product_id = products.id       
 		left outer join productcats on productcats.product_id = products.id
 		where 1 ';
 		if (!$userAdmin) {
-			$sql .= ' and products.status = "active"';		
+			$sql .= ' and (products.status = "active" or (products.parent_type = "users" and products.parent = '.$userId.'))';		
 		}
 		if ($search != '') {
 			$sql .= ' and products.name like "%'.$search.'%" ';
@@ -206,7 +213,7 @@ class Product extends Model
 			$sql .= ' and productcats.category in ('.$categories.') ';
 		}	  
 		if ($teamId > 0) {
-		 	$sql .= ' and products.team_id = '.$teamId.' ';
+		 	$sql .= ' and products.parent = '.$teamId.' and products.parent_type = "teams" ';;
 		}      
 		$sql .= '
 		group by products.id, products.name, products.avatar, products.price,

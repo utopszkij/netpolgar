@@ -5,54 +5,17 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use \App\Models\Poll;
 use \App\Models\Vote;
-use \App\Rules\LiquedRule;
 
 
 class PollController extends Controller {
+
+	protected $model = false;
+
+	function __construcT() {
+		$this->model = new Poll();
+	}	
+
     
-    /**
-     * Bejelntkezett user tag a parent -ben?
-     * @param string $parentType
-     * @param string $parent
-     * @return bool
-     */
-    protected function userMember(string $parentType, int $parentId):bool {
-        if (\Auth::user()) {
-            $result = (\DB::table('members')
-                ->where('parent_type','=',$parentType)
-                ->where('parent','=',$parentId)
-                ->where('user_id','=',\Auth::user()->id)
-                ->where('status','=','active')
-                ->count() > 0);
-        } else {
-            $result = false;
-        }
-        return $result;
-    }
-
-    /**
-     * Bejelntkezett user admin ebben a szavazásban?
-     * @param Poll $poll
-     * @return bool
-     */
-    protected function userAdmin($poll):bool {
-        if (\Auth::user()) {
-            $result = (\DB::table('members')
-                ->where('parent_type','=',$poll->parent_type)
-                ->where('parent','=',$poll->parent)
-                ->where('user_id','=',\Auth::user()->id)
-                ->where('rank','=','admin')
-                ->where('status','=','active')
-                ->count() > 0);
-            if (\Auth::user()->id == $poll->created_by) {
-            	$result = true;
-            }    
-        } else {
-            $result = false;
-        }
-        return $result;
-    }
-
     /**
      * Display a listing of the resource.
      * @param string $parentType
@@ -61,39 +24,15 @@ class PollController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function index(string $parentType, string $parent, string $statuses) {
-        $parent = \DB::table($parentType)->where('id','=',$parent)->first();
-        if (!$parent) {
-            echo 'fatal error parent not found'; exit();
-        }
-        $model = new \App\Models\Poll();
-
-		  // adat lekérés, poll statuszok ellenörzése
-		  $updated = true;
-		  $counter = 0;
-		  while (($updated) & ($counter < 20)) {	
-	        $data = $model->latest()
-	        ->where('parent_type','=',$parentType)
-	        ->where('parent','=',$parent->id)
-	        ->whereIn('status', explode('-',$statuses))
-	        ->orderBy('created_at')
-	        ->paginate(8);
-	        $updated = false;
-	        foreach ($data as $item) {
-	        	  $oldStatus = $item->status;	
-	           $item->status = $model->checkStatus($item->id);
-	           if ($item->status != $oldStatus) {
-						$updated = true;           
-	           }
-	        }
-	        $counter++;
-        }
-        
+        $parent = Poll::getParent($parentType,$parent);
+	    // adat lekérés, poll statuszok ellenörzése
+		$data = $this->model->getData($parentType, $parent->id, $statuses, 8);
         return view('poll.index',
             ["data" => $data,
              "parentType" => $parentType,
              "parent" => $parent,
              "statuses" => $statuses,   
-             'userMember' => $this->userMember($parentType, $parent->id)
+             'userMember' => Poll::userMember($parentType, $parent->id)
             ])
             ->with('i', (request()->input('page', 1) - 1) * 8);
     }
@@ -106,81 +45,21 @@ class PollController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function create(string $parentType, string $parent, string $statuses)  {
-        $parent = \DB::table($parentType)->where('id','=',$parent)->first();
-        if (!$parent) {
-            echo 'fatal error parent not found'; exit();
-        }
-        
+        $parent = Poll::getParent($parentType,$parent);
         $poll = Poll::emptyRecord();
         $poll->parent_type = $parentType;
         $poll->parent = $parent->id;
         
-        // csak parent csoport tag vihet fel
-        if ((!\Auth::user()) |
-            (!$this->userMember($parentType, $parent->id))) {
-                return redirect()->to('/poll/list/'.$parentType,'/'.$parent->id.'/'.$statuses)
+        if (!$this->accessCheck('add',$parentType, $parent->id)) { 
+                return redirect()->to(\URL::to('/poll/list/'.$parentType,'/'.$parent->id.'/'.$statuses))
                 ->with('error',__('poll.accessDenied'));
-         }
-            
+		}		
          return view('poll.form',
                 ["parentType" => $parentType,
                  "parent" => $parent,
                  "poll" => $poll,
                  "statuses" => $statuses
                 ]);
-    }
-    
-    /**
-     * poll rekord irása az adatbázisba a $request-be lévő információkból
-     * @param int $id
-     * @param Request $request
-     * @return string, $id created new record id
-     */
-    protected Function saveOrStore(int &$id, Request $request): string {
-        $parentType = $request->input('parent_type');
-        $parent = $request->input('parent');
-            
-        // rekord array kialakitása
-        $pollArr = [];
-        $pollArr['parent_type'] = $request->input('parent_type');
-        $pollArr['parent'] = $request->input('parent');
-        $pollArr['name'] = strip_tags($request->input('name'));
-        $pollArr['description'] = strip_tags($request->input('description'));
-        if ($id == 0) {
-            $pollArr['status'] = 'proposal';
-            if (\Auth::user()) {
-                $pollArr['created_by'] = \Auth::user()->id;
-            } else {
-                $pollArr['created_by'] = 0;
-            }
-        }
-        
-        // config kialakitása
-        $config = new \stdClass();
-        $config->pollType = $request->input('pollType');
-        $config->secret = $request->input('secret');
-        $config->liquied = $request->input('liquied');
-        $config->debateStart = $request->input('debateStart');
-        $config->optionActivate = $request->input('optionActivate');
-        $config->debateDays = $request->input('debateDays');
-        $config->voteDays = $request->input('voteDays');
-        $config->valid = $request->input('valid');
-        $pollArr['config'] = JSON_encode($config);
-        
-        // poll rekord tárolás az adatbázisba
-        $errorInfo = '';
-        try {
-            $model = new Poll();
-            if ($id == 0) {
-                $pollRec = $model->create($pollArr);
-                $id = $pollRec->id;
-            } else {
-                $model->where('id','=',$id)->update($pollArr);
-            }
-        } catch (\Illuminate\Database\QueryException $exception) {
-            $errorInfo = $exception->errorInfo;
-        }
-        return $errorInfo;
     }
     
     
@@ -194,51 +73,22 @@ class PollController extends Controller {
         $parentType = $request->input('parent_type');
         $parentId = $request->input('parent');
         $statuses = $request->input('statuses');
-        $parent = \DB::table($parentType)->where('id','=',$parentId)->first();
+        $parent = Poll::getParent($parentType,$parentId);
         if (!$parent) {
             echo 'fatal error parent not found'; exit();
         }
         
         // csak parent csoport tag vihet fel
-        if ((!\Auth::user()) |
-            (!$this->userMember($parentType, $parent->id))) {
-                return redirect('/'.$parentType.'/'.$parent->id.'/'.$statuses.'/polls')
+        if (!$this->accessCheck('add',$parentType, $parent->id)) { 
+                return redirect()->to(\URL::to('/'.$parentType.'/'.$parent->id.'/'.$statuses.'/polls'))
                 ->with('error',__('poll.accessDenied'));
-            }
-        
-        // tartalmi ellenörzés
-        $request->validate([
-            'name' => 'required',
-            'description' => 'required',
-            'liquied' => new LiquedRule(),
-            'debateStart' => ['numeric','min:0','max:100'],
-            'optionActivate' => ['numeric','min:0','max:100'],
-            'debateDays' => ['numeric','min:0','max:500'],
-            'voteDays' => ['numeric','min:0','max:500'],
-            'valid' => ['numeric','min:0','max:100']
-        ]);
-        
+         }
+        $this->model->valid($request);
         $id = 0;    
-        $errorInfo = $this->saveOrStore($id, $request);
-        
+        $errorInfo = Poll::saveOrStore($id, $request);
         $pollType = $request->input('pollType');
         if (($errorInfo == '') & ($pollType == 'yesno')) {
-				$optionsTable = \DB::table('options');
-				$optionsTable->insert([
-					"poll_id" => $id, 
-					"name" => "Igen", 
-					"description" => "", 
-					"status" => "active",
-					"created_by" => \Auth::user()->id			
-				]);        
-				$optionsTable->insert([
-					"poll_id" => $id, 
-					"name" => "Nem", 
-					"description" => "", 
-					"status" => "active",
-					"created_by" => \Auth::user()->id			
-				]);        
-				
+			$this->model->addYesNoOptions($id);
         }
         
         // result kialakitása
@@ -275,7 +125,7 @@ class PollController extends Controller {
         $model = new \App\Models\Poll();
         $poll->status = $model->checkStatus($poll->id);
         $this->decodeConfig($poll);
-        $parent = \DB::table($poll->parent_type)->where('id','=',$poll->parent)->first();
+        $parent = Poll::getParent($poll->parent_type, $poll->parent);
         $info = Poll::getInfo($poll);
         $voteModel = new \App\Models\Vote();
         $voteInfo = $voteModel->getInfo($poll);
@@ -286,8 +136,8 @@ class PollController extends Controller {
              "parent" => $parent,
              "info" => $info,   
              "options" => $options,
-             "userMember" => $this->userMember($poll->parent_type, $poll->parent),
-             "userAdmin" => $this->userAdmin($poll),
+             "userMember" => Poll::userMember($poll->parent_type, $poll->parent),
+             "userAdmin" => Poll::userAdmin($poll),
              "voteInfo" => $voteInfo,
         ]);
     }
@@ -300,18 +150,14 @@ class PollController extends Controller {
      */
     public function edit(Poll $poll)   {
         $parentType = $poll->parent_type;
-        $parent = \DB::table($poll->parent_type)->where('id','=',$poll->parent)->first();
+        $parent = Poll::getParent($parentType,$poll->parent);
+
         $statuses = $poll->status;
         $this->decodeConfig($poll);
         
         // csak a admin modosíthat proposal és debate státuszban
-        if ((!\Auth::user()) |
-            (!$this->userAdmin($poll)) |
-            ($poll->status == 'voks') |
-            ($poll->status == 'closed') |
-            ($poll->status == 'canceled')
-            ) {
-                return redirect()->to('/poll/list/'.$parentType,'/'.$parent->id.'/'.$statuses)
+		if (!$this->accessCheck('edit',$parentType, $parent->id, $poll) {
+                return redirect()->to(\URL::to('/poll/list/'.$parentType,'/'.$parent->id.'/'.$statuses))
                 ->with('error',__('poll.accessDenied'));
         }
             
@@ -333,35 +179,21 @@ class PollController extends Controller {
      */
     public function update(Request $request, Poll $poll)   {
         $parentType = $poll->parent_type;
-        $parent = \DB::table($poll->parent_type)->where('id','=',$poll->parent)->first();
+        $parent = Poll::getParent($parentType,$poll->parent);
         $statuses = $request->input('statuses');
         
         // csak admin modosíthat proposal és debate státuszban
-        if ((!\Auth::user()) |
-            (!$this->userAdmin($poll)) |
-            ($poll->status == 'voks') |
-            ($poll->status == 'closed') |
-            ($poll->status == 'canceled')
-            ) {
-                return redirect()->to('/poll/list/'.$parentType,'/'.$parent->id.'/'.$statuses)
-                ->with('error',__('poll.accessDenied'));
+		if (!$this->accessCheck('edit',$parentType, $parent->id, $poll) {
+             return redirect()->to(\URL::to('/poll/list/'.$parentType,'/'.$parent->id.'/'.$statuses))
+             ->with('error',__('poll.accessDenied'));
         }
             
         // tartalmi ellenörzés
-        $request->validate([
-            'name' => 'required',
-            'description' => 'required',
-            'liquied' => new LiquedRule(),
-            'debateStart' => ['numeric','min:0','max:100'],
-            'optionActivate' => ['numeric','min:0','max:100'],
-            'debateDays' => ['numeric','min:0','max:500'],
-            'voteDays' => ['numeric','min:0','max:500'],
-            'valid' => ['numeric','min:0','max:100']
-        ]);
+        $this->model->valid($request);
         
         // poll rekord kiirása
         $id = $poll->id;
-        $errorInfo = $this->saveOrStore($id, $request);
+        $errorInfo = Poll::saveOrStore($id, $request);
             
         // result kialakítása
         if ($errorInfo == '') {
@@ -383,5 +215,31 @@ class PollController extends Controller {
     public function destroy(Poll $poll)  {
         // törlés itt nem megengedett
     }
+
+	/**
+	 * Hozzáférés engedélyezett?
+	 * @param string $action
+	 * @param string éparentType
+	 * @param int $parentId, 
+	 * @param Poll $poll
+	 * @return bool
+	 */ 
+    protected function accessCheck(string $action, string $parentType, 
+		int $parentId, $poll = false): bool {    
+		$result = false;
+		if ($action == 'add') {	
+			$result = ((\Auth::user()) &
+					   (Poll::userMember($parentType, $parentId))); 
+        }
+		if ($action == 'edit') {
+			$result =  ((\Auth::user()) &
+						(Poll::userAdmin($poll)) &
+						($poll->status != 'voks') &
+						($poll->status != 'closed') &
+						($poll->status != 'canceled'));
+		}
+        return $result;
+    }        
+
     
 }

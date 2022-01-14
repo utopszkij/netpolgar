@@ -2,7 +2,7 @@
 
 státusz: fejlesztés alatt
 
-Készültség: 5%  v0.04-alpha
+Készültség: 25%  v0.05-alpha
 
 Verzió történet:
    v0.04 2021.05.   Laravel változat

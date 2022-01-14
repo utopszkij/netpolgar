@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Like;
 
 class LikeController extends Controller {
     /**
@@ -48,25 +49,11 @@ class LikeController extends Controller {
     public function like(string $parent_type, string $parent) {
         $user = \Auth::user();
         if ($user) {
-            $model = new \App\Models\Like();
-            $exists = $model->where('parent_type','=',$parent_type)
-                            ->where('parent','=',$parent)
-                            ->where('user_id','=',$user->id)
-                            ->where('like_type','=','like')
-                            ->first();
+            $exists = Like::getRecord($parent_type, $parent, $user->id, 'like');
             if ($exists) {
-                $model->where('parent_type','=',$parent_type)
-                ->where('parent','=',$parent)
-                ->where('user_id','=',$user->id)
-                ->where('like_type','=','like')
-                ->delete();
+				 Like::delRecord($parent_type, $parent, $user->id, 'like');
             } else {
-                $model->create([
-                    "parent_type" => $parent_type,
-                    "parent" => $parent, 
-                    "user_id" => $user->id, 
-                    "like_type" => "like"
-                ]);
+				 Like::createRecord($parent_type, $parent, $user->id, 'like');
             }
             $this->checkStatus($parent_type, $parent);
         }
@@ -84,26 +71,11 @@ class LikeController extends Controller {
     public function disLike(string $parent_type, string $parent) {
         $user = \Auth::user();
         if ($user) {
-            $model = new \App\Models\Like();
-            $exists = $model->where('parent_type','=',$parent_type)
-            ->where('parent','=',$parent)
-            ->where('user_id','=',$user->id)
-            ->where('like_type','=','dislike')
-            ->first();
+            $exists = Like::getRecord($parent_type, $parent, $user->id, 'dislike');
             if ($exists) {
-                $model->where('parent_type','=',$parent_type)
-                ->where('parent','=',$parent)
-                ->where('user_id','=',$user->id)
-                ->where('like_type','=','dislike')
-                ->delete();
-                
+				 Like::delRecord($parent_type, $parent, $user->id, 'dislike');
             } else {
-                $model->create([
-                    "parent_type" => $parent_type,
-                    "parent" => $parent,
-                    "user_id" => $user->id,
-                    "like_type" => "dislike"
-                ]);
+				 Like::createRecord($parent_type, $parent, $user->id, 'dislike');
             }
             $this->checkStatus($parent_type, $parent);
         }
@@ -117,46 +89,10 @@ class LikeController extends Controller {
      * @return laravel view
      */
     public function likeInfo(string $parentType, string $parent) {
+        $likeUsers = Like::getList($parentType, $parent, 'like');
+        $disLikeUsers = Like::getList($parentType, $parent, 'dislike');
         
-        $likeUsers = \App\Models\Like::select('users.id', 'users.name', 'users.profile_photo_path', 'users.email')
-        ->leftJoin('users','users.id','=','likes.user_id')
-        ->where('parent_type', '=', $parentType)
-        ->where('parent', '=',$parent)
-        ->where('like_type','=','like')
-        ->orderBy('name')
-        ->get();
-        
-        $disLikeUsers = \App\Models\Like::select('users.id', 'users.name', 'users.profile_photo_path', 'users.email')
-        ->leftJoin('users','users.id','=','likes.user_id')
-        ->where('parent_type', '=', $parentType)
-        ->where('parent', '=', $parent)
-        ->where('like_type','=','dislike')
-        ->orderBy('name')
-        ->get();
-        
-        $parentTable = \DB::table($parentType);
-        $parent = $parentTable->where('id','=',$parent)->first();
-        if (!$parent) {
-            echo 'Ftaal error in likeInfo. parent not found'; exit();
-        }
-
-        // $parent -be kell 'name' !
-        if ($parentType == 'members') {
-            $parent->name = '?';
-            $groupTable = \DB::table($parent->parent_type);
-            $group = $groupTable->where('id','=',$parent->parent)->first();
-            if ($group) {
-                $parent->name = $group->name;
-            }
-            $userTable = \DB::table('users');
-            $user = $userTable->where('id','=',$parent->user_id)->first();
-            if ($user) {
-                $parent->name .= ' / '.$user->name;
-            }
-        }
-        if ($parentType == 'messages') {
-            $parent->name = $parent->value;
-        }
+		$parent = Like::getParent($parentType, $parent);
         return view('like.info',["likeUsers" => $likeUsers,
                                 "disLikeUsers" => $disLikeUsers,
                                 "parentType" => $parentType,

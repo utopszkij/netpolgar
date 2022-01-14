@@ -205,26 +205,28 @@
 					<strong>{{ __('poll.proposalOption') }}</strong>&nbsp;
 			  @endif
 			  {{ $option->name }}
-			  @if (($userMember) & 
-			       ($option->status == 'proposal')) 
-			      <a href="{{ \URL::to('/like/options/'.$option->id) }}"> 
-			  		@if ($optionInfo->userLiked)
-			  			<em class="fas fa-thumbs-up liked"></em>
-			  		@else
-			  			<em class="fas fa-thumbs-up"></em>
-			  		@endif 
-			  		</a>
-			  		<a href="{{ \URL::to('/likeinfo/options/'.$option->id) }}">
-			  		{{ $optionInfo->likeCount }} / {{ $optionInfo->likeReq }}
-			  		</a>
-			  		{{ __('poll.optionLike') }}
-			  @else
-		  			<em class="fas fa-thumbs-up"></em>
-			  		<a href="{{ \URL::to('/likeinfo/options/'.$option->id) }}">
-			  		{{ $optionInfo->likeCount }} / {{ $optionInfo->likeReq }}
-			  		</a>
-			  		{{ __('poll.optionLiked') }}
-			  @endif					  
+			  @if ($poll->config->pollType != 'yesno')
+				  @if (($userMember) & 
+					   ($option->status == 'proposal')) 
+					  <a href="{{ \URL::to('/like/options/'.$option->id) }}"> 
+						@if ($optionInfo->userLiked)
+							<em class="fas fa-thumbs-up liked"></em>
+						@else
+							<em class="fas fa-thumbs-up"></em>
+						@endif 
+						</a>
+						<a href="{{ \URL::to('/likeinfo/options/'.$option->id) }}">
+						{{ $optionInfo->likeCount }} / {{ $optionInfo->likeReq }}
+						</a>
+						{{ __('poll.optionLike') }}
+				  @else
+						<em class="fas fa-thumbs-up"></em>
+						<a href="{{ \URL::to('/likeinfo/options/'.$option->id) }}">
+						{{ $optionInfo->likeCount }} / {{ $optionInfo->likeReq }}
+						</a>
+						{{ __('poll.optionLiked') }}
+				  @endif				
+			  @endif	  
 			  @if ($userAdmin)
 			  <a href="{{ \URL::to('/options/'.$option->id.'/edit') }}">
 				<em class="fas fa-edit"></em>			  

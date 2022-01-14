@@ -145,7 +145,7 @@ class TeamTest extends TestCase
         
     public function test_store_notLogged() {
         \Auth::logout();
-        $request = new Request(["parent" => "0",
+        $request = new Request(["id" => 0, "parent" => "0",
             "name" => 'testTeam2',
             "description" => "testTeam2 description",
             "ranks" => "admin, manager",
@@ -159,11 +159,20 @@ class TeamTest extends TestCase
         $user = \App\Models\User::where('name','=','testUser1')->first();
         \Auth::loginUsingId($user->id, TRUE);
         
-        $request = new Request(["parent" => "0",
+        $request = new Request(["id" => 0, "parent" => "0",
             "name" => 'testTeam2',
             "description" => "testTeam2 description",
             "ranks" => "admin, manager",
-            "avatar" => 'testAvatar'
+            "avatar" => 'testAvatar',
+				'close' => 1,         
+				'memberActivate' => 1,
+				'memberExclude' => 1,
+				'rankActivate' => 1,
+				'rankClose' => 1,
+				'projectActivate' => 1,
+				'productActivate' => 1,
+				'subTeamActivate' => 1,
+				'debateActivate' => 1
         ]);
         $redirect = $this->controller->store($request);
         $this->assertGreaterThan( 0, strpos($redirect->content(),'parents/0/teams') );
@@ -182,7 +191,16 @@ class TeamTest extends TestCase
             "name" => 'testTeam1',
             "description" => "testTeam1 description",
             "ranks" => "admin, manager",
-            "avatar" => 'testAvatar'
+            "avatar" => 'testAvatar',
+				'close' => 1,         
+				'memberActivate' => 1,
+				'memberExclude' => 1,
+				'rankActivate' => 1,
+				'rankClose' => 1,
+				'projectActivate' => 1,
+				'productActivate' => 1,
+				'subTeamActivate' => 1,
+				'debateActivate' => 1
         ]);
         $redirect = $this->controller->update($request, $team);
         $this->assertGreaterThan( 0, strpos($redirect->content(),'parents/0/teams') );
@@ -202,7 +220,16 @@ class TeamTest extends TestCase
             "name" => 'testTeam1',
             "description" => "testTeam1 description",
             "ranks" => "admin, manager",
-            "avatar" => 'testAvatar'
+            "avatar" => 'testAvatar',
+				'close' => 1,         
+				'memberActivate' => 1,
+				'memberExclude' => 1,
+				'rankActivate' => 1,
+				'rankClose' => 1,
+				'projectActivate' => 1,
+				'productActivate' => 1,
+				'subTeamActivate' => 1,
+				'debateActivate' => 1
         ]);
         $redirect = $this->controller->update($request, $team);
         $this->assertGreaterThan( 0, strpos($redirect->content(),'parents/0/teams') );
@@ -222,7 +249,16 @@ class TeamTest extends TestCase
             "name" => 'testTeam1',
             "description" => "testTeam1 description javitva",
             "ranks" => "admin, manager",
-            "avatar" => 'testAvatar'
+            "avatar" => 'testAvatar',
+				'close' => 1,         
+				'memberActivate' => 1,
+				'memberExclude' => 1,
+				'rankActivate' => 1,
+				'rankClose' => 1,
+				'projectActivate' => 1,
+				'productActivate' => 1,
+				'subTeamActivate' => 1,
+				'debateActivate' => 1
         ]);
         $redirect = $this->controller->update($request, $team);
         $this->assertGreaterThan( 0, strpos($redirect->content(),'parents/0/teams') );

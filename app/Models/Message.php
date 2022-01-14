@@ -4,6 +4,7 @@ namespace App\Models;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 
 class Message extends Model
 {
@@ -18,6 +19,15 @@ class Message extends Model
         parent::__construct();
         $this->tree = [];
     }
+    
+    /**
+     * egy rekord olvasása az adatbázisból
+     * @param int $id
+     * @return object|false
+     */ 
+    public static function getRecord(int $id) {
+		return Message::where('id','=',$id)->first();
+	}
     
     /**
      * user avatar url képzése
@@ -170,7 +180,7 @@ class Message extends Model
      */
     public function getInfo(&$rec) {
             if ($rec->id > 0) {
-                $message = \DB::table('messages')->where('id','=',$rec->id)->first();
+                $message = $this->getRecord($rec->id);
                 if ($message) {
                     $rec->userId = $message->user_id;
                     $creatorUser = \DB::table('users')
@@ -223,7 +233,6 @@ class Message extends Model
                     ->where('parent_type','=','messages')
                     ->where('parent','=',$message->id)
                     ->where('like_type','=','dislike')            
-                    
                     ->count();
                     $rec->userLiked = false;
                     $rec->userDisLiked = false;
@@ -357,5 +366,355 @@ class Message extends Model
         }
     }
     
+    public static function isModerator(string $parentType, int $parentId): bool {
+        $result = false;
+        if (\Auth::user()) {
+            if ($parentType == 'teams') {
+                $member = \DB::table('members')
+                ->where('parent','=',$parentId)
+                ->where('parent_type','=',$parentType)
+                ->where('user_id','=', \Auth::user()->id)
+                ->whereIn('rank',["moderator","admin"])
+                ->where('status','=','active')
+                ->orderBy('rank','asc')
+                ->first();
+                if ($member) {
+                    $result = true;
+                }
+            }
+            if ($parentType == 'polls') {
+            	 $poll = \DB::table('polls')
+            	 	->where('id','=',$parentId)->first();
+					 if ($poll) {            	
+	                $member = \DB::table('members')
+	                ->where('parent_type','=',$poll->parent_type)
+	                ->where('parent','=',$poll->parent)
+	                ->where('user_id','=', \Auth::user()->id)
+	                ->whereIn('rank',["moderator","admin"])
+	                ->where('status','=','active')
+	                ->orderBy('rank','asc')
+	                ->first();
+	                if ($member) {
+	                    $result = true;
+	                }
+             	}
+            }
+            if ($parentType == 'projects') {
+            	 $project = \DB::table('projects')
+            	 	->where('id','=',$parentId)->first();
+					 if ($project) {            	
+	                $member = \DB::table('members')
+	                ->where('parent_type','=','projects')
+	                ->where('parent','=',$project->id)
+	                ->where('user_id','=', \Auth::user()->id)
+	                ->whereIn('rank',["moderator","admin"])
+	                ->where('status','=','active')
+	                ->orderBy('rank','asc')
+	                ->first();
+	                if ($member) {
+	                    $result = true;
+	                }
+             	}
+            }
+
+            if ($parentType == 'tasks') {
+					 $project = false;            	 
+            	 $task = \DB::table('tasks')
+            	 	->where('id','=',$parentId)->first();
+            	 if ($task) {	
+            	 	$project = \DB::table('projects')
+            	 		->where('id','=',$task->project_id)->first();
+            	 }		
+					 if ($project) {            	
+	                $member = \DB::table('members')
+	                ->where('parent_type','=','projects')
+	                ->where('parent','=',$project->id)
+	                ->where('user_id','=', \Auth::user()->id)
+	                ->whereIn('rank',["moderator","admin"])
+	                ->where('status','=','active')
+	                ->orderBy('rank','asc')
+	                ->first();
+	                if ($member) {
+	                    $result = true;
+	                }
+             	}
+            }
+            
+            if ($parentType == 'products') {
+            	 $product = \DB::table('products')
+            	 	->where('id','=',$parentId)->first();
+					 if ($product) {            	
+	                $member = \DB::table('members')
+	                ->where('parent_type','=','teams')
+	                ->where('parent','=',$product->team_id)
+	                ->where('user_id','=', \Auth::user()->id)
+	                ->whereIn('rank',["moderator","admin"])
+	                ->where('status','=','active')
+	                ->orderBy('rank','asc')
+	                ->first();
+	                if ($member) {
+	                    $result = true;
+	                }
+             	}
+            }
+
+            // first user a system admin, ő is moderátor
+            $firstUser = \DB::table('users')->orderBy('id')->first();
+            if ($firstUser) {
+                if ($firstUser->id == \Auth::user()->id) {
+                    $result = true;
+                }
+            }
+        }
+        return $result;
+    }
     
+    public static function isMember(string $parentType, int $parentId): bool {
+        $result = false;
+        if (\Auth::user()) {
+            if ($parentType == 'teams') {
+                $member = \DB::table('members')
+                ->where('parent','=',$parentId)
+                ->where('parent_type','=',$parentType)
+                ->where('user_id','=', \Auth::user()->id)
+                ->whereIn('rank',["member","admin"])
+                ->where('status','=','active')
+                ->orderBy('rank','asc')
+                ->first();
+                if ($member) {
+                    $result = true;
+                }
+            }
+            if ($parentType == 'polls') {
+            	 $poll = \DB::table('polls')
+            	 	->where('id','=',$parentId)->first();
+            	 if ($poll) {
+	                $member = \DB::table('members')
+	                ->where('parent_type','=',$poll->parent_type)
+	                ->where('parent','=',$poll->parent)
+	                ->where('user_id','=', \Auth::user()->id)
+	                ->whereIn('rank',["member","admin"])
+	                ->where('status','=','active')
+	                ->orderBy('rank','asc')
+	                ->first();
+	                if ($member) {
+	                    $result = true;
+	                }
+             	 }
+            }
+            if ($parentType == 'projects') {
+            	 $project = \DB::table('projects')
+            	 	->where('id','=',$parentId)->first();
+            	 if ($project) {
+	                $member = \DB::table('members')
+	                ->where('parent_type','=','projects')
+	                ->where('parent','=',$project->id)
+	                ->where('user_id','=', \Auth::user()->id)
+	                ->whereIn('rank',["member","admin"])
+	                ->where('status','=','active')
+	                ->orderBy('rank','asc')
+	                ->first();
+	                if ($member) {
+	                    $result = true;
+	                }
+             	 }
+            }
+            if ($parentType == 'tasks') {
+					 $project = false;            	 
+            	 $task = \DB::table('tasks')
+            	 	->where('id','=',$parentId)->first();
+            	 if ($task) {	
+            	 	$project = \DB::table('projects')
+            	 		->where('id','=',$task->project_id)->first();
+            	 }		
+					 if ($project) {            	
+	                $member = \DB::table('members')
+	                ->where('parent_type','=','projects')
+	                ->where('parent','=',$project->id)
+	                ->where('user_id','=', \Auth::user()->id)
+	                ->whereIn('rank',["member","admin"])
+	                ->where('status','=','active')
+	                ->orderBy('rank','asc')
+	                ->first();
+	                if ($member) {
+	                    $result = true;
+	                }
+             	}
+            }
+            if ($parentType == 'products') {
+            	 $product = \DB::table('products')
+            	 	->where('id','=',$parentId)->first();
+            	 // team member?	
+					 if ($product) {            	
+	                $member = \DB::table('members')
+	                ->where('parent_type','=','teams')
+	                ->where('parent','=',$product->team_id)
+	                ->where('user_id','=', \Auth::user()->id)
+	                ->whereIn('rank',["moderator","admin","member"])
+	                ->where('status','=','active')
+	                ->orderBy('rank','asc')
+	                ->first();
+	                if ($member) {
+	                    $result = true;
+	                }
+             	 }
+             	 // felhasználó?
+             	 $customer = \DB::table('orderitems')
+             	 	->leftJoin('orders','orders.id','orderitems.order_id')
+             	 	->where('orderitems.product_id','=',$product->id)
+             	 	->where('orderitems.status','=','success')
+             	 	->where('orders.user_id','=',\Auth::user()->id)
+             	 	->first();
+             	 if ($customer) {
+							$result = true;             	 
+             	 }	
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * olvasott jelzés beállítása
+     * @param int $messageId
+     * @param int $userId
+     */
+    public static function setReaded(int $messageId, int $userId) {
+        if ($messageId <= 0) {
+            return;
+        }
+        $table = \DB::table('msgreads');
+        $rec = $table->where('msg_id','=',$messageId)
+                     ->where('user_id','=',$userId)
+                     ->first();
+        if (!$rec) {
+            $table->insert([
+                "msg_id" => $messageId,
+                "user_id" => $userId
+            ]);
+        }
+    }
+    
+	/**
+	 * parent olvasása
+	 * @param string $parentType
+	 * @param int $parentId
+	 * @return object|false
+	 */ 
+    public static function getParent($parentType, $parentId) {
+        $parentTable = \DB::table($parentType);
+        $parent = $parentTable->where('id','=',$parentId)->first();
+        if (!$parent) {
+            echo 'Fatal error parent not found'; exit();
+        }
+        return $parent;
+    }    
+
+		
+	/**
+	 * ReplyTo path olvasása
+	 * @param int $replyTo
+	 * @return array
+	 */ 
+	public static function getReplyPath(int $replyTo):array {	
+		$path = [];
+		$rec = \DB::table('messages')->where('id','=', $replyTo)->first();
+		if ($rec) {
+			$path[] = $rec;
+			while ($rec->reply_to > 0) {
+				$rec = \DB::table('messages')->where('id','=', $rec->reply_to)->first();
+				
+				if ($rec) {
+					$path[] = $rec;
+				} else {
+					$rec = new \stdClass();
+					$rec->replyTo = 0;
+				}
+			}
+		   $path = array_reverse($path);
+		}
+		return $path;
+	}
+	
+	/**
+	 * Új message tárolása vagy moderálás tárolása
+	 * @param Request
+	 * @param bool $member
+	 * @param boll $moderator
+	 * @return string
+	 */ 
+	public function createOrUpdate(Request $request, bool $member, bool $moderator):string {
+		$errorInfo = '';
+        if (\Auth::user()) {
+            $userId = \Auth::user()->id;
+            $avatar = $this->avatar(\Auth::user()->profile_photo_path, \Auth::user()->email);
+        } else {
+            $userId = 0;
+            $avatar = '';
+        }
+        $parent_type = $request->input('parent_type');
+        $parent = $request->input('parent');
+        $msg_type = $request->input('msg_type');
+        $reply_to = $request->input('reply_to');
+        $value = $request->input('value');
+        $messageId = $request->input('messageId',0);
+        $backURL = $request->input('backURL','');
+        if ($messageId == 0) {
+            // new message
+            $moderatorInfo = '';
+            $moderatorId = 0;
+            if (($userId > 0) & ($member)) {
+                // $model = new \App\Models\Message();
+                try {
+                    $newMessageId = \DB::table('messages')->insertGetId([
+                        'parent_type' => $parent_type,
+                        'parent' => $parent,
+                        'msg_type' => '',
+                        'reply_to' => $reply_to,
+                        'value' => $value,
+                        'user_id' => $userId,
+                        'moderator_info' => $moderatorInfo,
+                        'moderated_by' => $moderatorId
+                    ]);
+                } catch (\Illuminate\Database\QueryException $exception) {
+                    $errorInfo = JSON_encode($exception->errorInfo);
+                }
+            } else {
+                $errorInfo = 'not logged or not member';
+            }
+        } else if ($moderator) {
+            // moderálás tárolása    
+            $moderatorInfo = $request->input('moderator_info','');
+            $moderatorId = $userId;
+            try {
+                \DB::table('messages')
+                ->where('id','=',$messageId)
+                ->update([
+                    'value' => $value,
+                    'moderator_info' => $moderatorInfo,
+                    'moderated_by' => $moderatorId
+                ]);
+            } catch (\Illuminate\Database\QueryException $exception) {
+                $errorInfo = JSON_encode($exception->errorInfo);
+            }
+        } else {
+            $errorInfo = __('messages.accesDenied');
+        }
+		return $errorInfo;
+	}
+
+	/**
+	 * moderátorok beolvasása
+	 * @param string $parentType
+	 * @param int $parentId
+	 * @return array
+	 */ 
+	public static function getModerators(string $parentType, int $parentId) {
+        return \DB::table('members')
+                ->where('parent_type','=',$parentType)
+                ->where('parent','=',$parentId)
+                ->whereIn('rank',['admin','moderator'])
+                ->get();
+    }            
+                
+
 }

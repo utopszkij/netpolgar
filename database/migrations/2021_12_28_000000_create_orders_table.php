@@ -15,7 +15,8 @@ class CreateOrdersTable extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->biginteger('user_id')->unsigned()->nullable();
+            $table->string('customer_type');
+            $table->biginteger('customer')->unsigned()->nullable();
             $table->string('status')->nullable(); // cart|order|ok|notok|success|canceled
             $table->mediumtext('description')->nullable();
             $table->mediumtext('address')->nullable();
@@ -23,7 +24,7 @@ class CreateOrdersTable extends Migration
             $table->mediumtext('confirmInfo')->nullable();
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->nullable();
-            $table->index(['user_id']);
+            $table->index(['customer_type','customer']);
         });
     }
 

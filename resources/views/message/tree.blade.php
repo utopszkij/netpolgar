@@ -6,7 +6,8 @@ if ($parent) {
     $parent_id = 0;
 }
 
-include_once \Config::get('view.paths')[0].'/minimarkdown.php';
+// include_once \Config::get('view.paths')[0].'/minimarkdown.php';
+use App\Models\Minimarkdown;
 
 ?>
 <script src="https://meet.jit.si/external_api.js"></script>

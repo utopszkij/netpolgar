@@ -32,11 +32,15 @@
     <div class="row path" style="margin-top: 5px;">
     	<div class="col-12">
     	<h3>
+    		@if ($team)
 			<a href="{{ \URL::to('/teams/'.$team->id) }}">
 				<em class="fas fa-hand-point-right"></em>
 				<em class="fas fa-users"></em>
 				{{ $team->name }}
 			</a>
+			@else
+				{{ $parentUser->name }}
+			@endif
 		</h3>	
 		</div>
 	 </div>    
@@ -62,7 +66,8 @@
 			   @endif 
 			   @csrf
 			        <input type="hidden" name="id" value="{{ $product->id }}" class="form-control" placeholder="">
-			        <input type="hidden" name="team_id" value="{{ $product->team_id }}" class="form-control" placeholder="">
+			        <input type="hidden" name="parent_type" value="{{ $product->parent_type }}" class="form-control" placeholder="">
+			        <input type="hidden" name="parent" value="{{ $product->parent }}" class="form-control" placeholder="">
 			        <input type="hidden" name="stock" value="{{ $product->stock }}" class="form-control" placeholder="">
 			        <input type="hidden" name="vat" value="{{ $product->vat }}" class="form-control" placeholder="">
 			        <input type="hidden" name="type" value="{{ $product->type }}" class="form-control" placeholder="">
@@ -141,10 +146,17 @@
 	              <button type="submit" class="btn btn-primary">
 	              		<em class="fas fa-check"></em>{{ __('product.save') }}
 	              </button>
-	              <a class="btn btn-secondary" href="{{ \URL::to('/products/list/'.$team->id) }}">
+	              @if ($product->parent_type == 'teams')
+	              <a class="btn btn-secondary" href="{{ \URL::to('/products/list/'.$product->parent) }}">
 	                  <em class="fas fa-ban"></em>
 	                  {{ __('product.cancel') }}
 	              </a>
+	              @else
+	              <a class="btn btn-secondary" href="{{ \URL::to('/products/list/0') }}">
+	                  <em class="fas fa-ban"></em>
+	                  {{ __('product.cancel') }}
+	              </a>
+	              @endif
 	            </div>
 			    </form>
 

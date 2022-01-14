@@ -105,11 +105,15 @@ include_once \Config::get('view.paths')[0].'/minimarkdown.php';
     <div class="row path" style="margin-top: 5px;">
     	<div class="col-12">
     	<h3>
+    		@if ($team)
 			<a href="{{ \URL::to('/teams/'.$team->id) }}">
 				<em class="fas fa-hand-point-right"></em>
 				<em class="fas fa-users"></em>
 				{{ $team->name }}
 			</a>
+			@else
+				{{ $parentUser->name }}
+			@endif
 		</h3>	
 		</div>
 	 </div>    

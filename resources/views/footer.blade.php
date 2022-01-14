@@ -32,7 +32,8 @@
 						<em class="fa fa-code"></em> {{ __('footer.source') }}
 						</a></li>
 					<li><i class="bx bx-chevron-right"></i>
-						<a href="{{ \URL::to('/bugreportform') }}">
+						<a href="mailto::tibor.fogler@gmail.com?subject=netpolgar hiabjelzés"
+						   onclick="$('#waiting').hide()">
 						<em class="fa fa-bug"></em> {{ __('footer.bugreport') }}
 						</a></li>
 					</ul>

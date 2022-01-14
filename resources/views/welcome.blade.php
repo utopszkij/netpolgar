@@ -7,16 +7,7 @@ if ($darab == 1) {
     $table->where('id','=',$user->id);
     $table->update(["current_team_id" => 0]);
 }
-
-// ha a sessionban van urlAfterLogin akkor menjen oda
-$urlAfterLogin = \Request::session()->get('urlAfterLogin','');
-	\Request::session()->put('urlAfterLogin','');
-
-if ($urlAfterLogin != '') {
-	echo '<script>window.location="'.$urlAfterLogin.'";</script>';
-}
 ?>
-@if ($urlAfterLogin == '')
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
@@ -74,4 +65,3 @@ if ($urlAfterLogin != '') {
 	    </div>    
     </body>
 </html>
-@endif

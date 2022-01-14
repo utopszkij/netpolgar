@@ -17,26 +17,30 @@ Adat lekérés
 filenév = tábla név 
 
 Model
+	adat elérés
 	  ->orderBy('tábla.mező',...)
-      ->offset(szám)
-      ->limit(szám)
-      ->join('tábla', 'tábla.mező' ,'=', 'tábla.mező','left outer')
-          vagy ->leftJoin('tábla', 'tábla.mező' ,'=', 'tábla.mező')
+     ->offset(szám)
+     ->limit(szám)
+     ->join('tábla', 'tábla.mező' ,'=', 'tábla.mező','left outer')
+         vagy ->leftJoin('tábla', 'tábla.mező' ,'=', 'tábla.mező')
 	  ->select('táblaa.név',.....)
-      ->where('tábla.mező','=',érték)
-      ->whereIn('mező',[érték,.....])
-      
-      ->get()                       - array -t add vissza
-      vagy
-      ->first()                     - egy objektumot ad vissza  
-      			->fieldname = value
-      			->save()
-      			->delete()
-      vagy
-      ->count()                     - egy számot ad vissza
-      vagy 
-      ->all()->delete()                    
+	  ->find($id)
+     ->where('tábla.mező','=',érték)
+     ->whereIn('mező',[érték,.....])
+	  ->get() 								array -t add vissza
+     ->first()                     - egy rekord objektumot ad vissza  
+     ->count()                     - egy számot ad vissza
+	  ->value('mezőnév')			  
+	  
+   adat tárolás, törlés		 	
+  	  ->fieldname = value
+     ->save()
+     ->delete()
+	  ->create(array)					  - record objektumot ad vissza
+	  ->update(array)               - bool -t ad vissza
+     ->all()->delete()                    
       		 ->count()
+
       		 
  Adat felvitel
  -------------
