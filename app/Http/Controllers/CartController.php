@@ -49,6 +49,18 @@ class CartController extends Controller {
 	* @return laravel redirekt
 	*/
    public function show() {
+	   
+	   /* EMAIL TEST
+		\Mail::to(\Auth::user()->email)
+		 		->send(new \App\Mail\OrderMail(1));						
+		if (\Mail::failures()) {
+		   echo  'mail send error.'; exit();
+		}
+        */
+
+	   
+	   
+	   
    	$user = \Auth::user();
    	if ($user) {
    		$items = Cart::getItems($user->id);
@@ -135,8 +147,6 @@ class CartController extends Controller {
 		string $txt): string {
 		$result = '';
 		// privát üzenet és email az érintett team rendszergazdáknak
-		$admins =  \DB::table('orderitems')
-		// privát üzenet küldése
 		\DB::table('messages')
 		->insert([
 				'parent_type' => 'users',					

@@ -29,7 +29,7 @@
 					<ul>
 						<li><p><a href="#fojellemzok">Fő jellemzők</a></p>
 						<li><p><a href="#csoportok">Csoport szervezés</a> (ß teszt) </p>
-						<li><p><a href="#projektek">Projekt	menedzselés (terv)</a></p>
+						<li><p><a href="#projektek">Projekt	menedzselés (ß teszt)</a></p>
 						<li><p><a href="#pacter">Virtuális piactér</a> (terv)</p>
 						<li><p><a href="#esemenyek">Esemény	szervezés</a> (terv)</p>
 						<li><p><a href="#vitak">Eszmecserék, viták lebonyolítása</a> (ß teszt)</p>
@@ -147,7 +147,7 @@
 				<p><br/></p>
 				</div>
 <a name="projektek">
-				<h5></a>Projekt menedzselés (terv)</h5>
+				<h5></a>Projekt menedzselés (ß teszt)</h5>
 				<div>
 				<p>A rendszer adminisztrátorok, csoport adminisztrátorok
 				projekteket indíthatnak. A projektek egy csoporthoz is
@@ -260,7 +260,7 @@
 				<p><br/></p>
 				<p>A szavazás közben
 				folyamatosan megtekinthetőek a rész eredmények és lekérhető a
-				már megadott szavazatokat tartalmazó CSV fájl (ez nem tartalmaz a
+				már megadott szavazatokat tartalmazó CSV fájl (ez nem tartalmaz agmail
 				szavazatot leadó személy azonosítására alkalmas adatot). Ezen
 				CSV fájl segítségével független ellenőrök ellenőrizhetik az
 				szavazat összesítés helyességét, illetve a szavazás különböző

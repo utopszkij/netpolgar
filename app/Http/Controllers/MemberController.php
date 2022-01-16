@@ -152,7 +152,7 @@ class MemberController extends Controller {
     	    ($user == false)) {
 			echo 'Fatal error'; exit();    	
     	}
-      $parent = Member::getParent($parent_type, $parent);
+      $parent = Member::getParent($parent_type, $parentId);
 		if ($parent->status == 'active') {
 			// van másik admin? 
 		    $otherAdmin = Member::getOtherAdmin($parent_type, $parent->id,
@@ -160,7 +160,7 @@ class MemberController extends Controller {
 			if ($rank == 'member') {
 				if ($otherAdmin) {
 					Member::deleteRecords($parent_type, $parentId,
-						$userId, 'all');
+						$user->id, 'all');
 					$result = redirect(\URL::to('/'.$parent_type.
 		    		'/'.$parent->id));
 				} else {

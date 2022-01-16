@@ -156,7 +156,7 @@ class PollController extends Controller {
         $this->decodeConfig($poll);
         
         // csak a admin modosíthat proposal és debate státuszban
-		if (!$this->accessCheck('edit',$parentType, $parent->id, $poll) {
+		if (!$this->accessCheck('edit',$parentType, $parent->id, $poll)) {
                 return redirect()->to(\URL::to('/poll/list/'.$parentType,'/'.$parent->id.'/'.$statuses))
                 ->with('error',__('poll.accessDenied'));
         }
@@ -183,7 +183,7 @@ class PollController extends Controller {
         $statuses = $request->input('statuses');
         
         // csak admin modosíthat proposal és debate státuszban
-		if (!$this->accessCheck('edit',$parentType, $parent->id, $poll) {
+		if (!$this->accessCheck('edit',$parentType, $parent->id, $poll)) {
              return redirect()->to(\URL::to('/poll/list/'.$parentType,'/'.$parent->id.'/'.$statuses))
              ->with('error',__('poll.accessDenied'));
         }
@@ -228,11 +228,11 @@ class PollController extends Controller {
 		int $parentId, $poll = false): bool {    
 		$result = false;
 		if ($action == 'add') {	
-			$result = ((\Auth::user()) &
+			$result = ((\Auth::check()) &
 					   (Poll::userMember($parentType, $parentId))); 
         }
 		if ($action == 'edit') {
-			$result =  ((\Auth::user()) &
+			$result =  ((\Auth::check()) &
 						(Poll::userAdmin($poll)) &
 						($poll->status != 'voks') &
 						($poll->status != 'closed') &

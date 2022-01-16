@@ -54,7 +54,7 @@ class ProjectController extends Controller
     	$project = Project::emptyRecord();
     	$project->team_id = $team->id;	
     	$info = Project::getInfoFromTeam($team);
-    	if (!$this->accessCheck('add', $info) {
+    	if (!$this->accessCheck('add', $info)){
     		   return redirect()->to('/'.$team->id.'/projects')
     		   						->with('error',__('project.accessDenied')); 	
    		}
@@ -117,7 +117,7 @@ class ProjectController extends Controller
 			$projectArr['deadline'] = $request->input('deadline');
 			if ($id == 0) {
 				$projectArr['status'] = 'proposal';
-				if (\Auth::user()) {
+				if (\Auth::check()) {
 					$projectArr['created_by'] = \Auth::user()->id;
 				} else {
 					$projectArr['created_by'] = 0;
@@ -156,7 +156,10 @@ class ProjectController extends Controller
 	 * @param int $id
 	 * @return string
 	 */
-    protected function addAdmin(int $id): string {		
+    protected function addAdmin(int $id): string {	
+		if (!\Auth::check()) {
+			return '';
+		}	
 				$memberArr = [];
 				$memberArr['parent_type'] = 'projects';
 				$memberArr['parent'] = $id;
@@ -191,7 +194,7 @@ class ProjectController extends Controller
 				echo 'Fatal error team not exists'; exit();    		
     		}
     		$info = Project::getInfoFromTeam($team);
-			if (!$this->accessCheck('add', $info) {
+			if (!$this->accessCheck('add', $info)) {
     		   return redirect()->to('/'.$team->id.'/projects')
    		   						->with('error',__('project.accessDenied')); 	
     		}
@@ -308,7 +311,7 @@ class ProjectController extends Controller
 				$project->status = 'closed';    	  
     	  }	
 
-		  if (!$this->accessCheck('edit', $info, $project) {
+		  if (!$this->accessCheck('edit', $info, $project)) {
     		   return redirect()->to('/'.$team->id.'/projects')
     		   						->with('error',__('project.accessDenied')); 	
     	  } 	
@@ -335,8 +338,8 @@ class ProjectController extends Controller
     	  }	
     	// jogosultság ellenörzés	
     	$info = Project::getInfo($project);
-	    if (!$this->accessCheck('edit', $info, $project) {
-    	   return redirect()->to('/'.$team->id.'/projects')
+	    if (!$this->accessCheck('edit', $info, $project)) {
+    	   return redirect()->to(\URL::to('/'.$team->id.'/projects'))
     		   						->with('error',__('project.accessDenied')); 	
     	} 	
     	  
@@ -354,10 +357,10 @@ class ProjectController extends Controller
 		
 		// result kialakítása		
 		if ($errorInfo == '') {
-    		 $result = redirect()->to('/'.$team->id.'/projects')
+    		 $result = redirect()->to(\URL::to('/'.$team->id.'/projects'))
                       ->with('success',__('project.successSave'));
 		} else {
-    		 $result = redirect()->to('/'.$team->id.'/projects')
+    		 $result = redirect()->to(\URL::to('/'.$team->id.'/projects'))
     		   						->with('error',__('project.accessDenied')); 	
 		}
 		return $result;                        
@@ -376,12 +379,12 @@ class ProjectController extends Controller
    	protected function accessCheck(string $action, $info, $project = false) {		  
 		$result = false;
     	if ($action == 'add') {
-    		$result = ((\Auth::user()) & 
+    		$result = ((\Auth::check()) & 
     		    (count($info->userParentRank) > 0) & 
     		    (!$info->parentClosed));
 		}
 		if ($action == 'edit') {
-    	  $result =  ((\Auth::user()) &
+    	  $result =  ((\Auth::check()) &
     	      ($this->userAdmin($info->userRank)) &
     	      (!$info->parentClosed) &
     	      ($project->status != 'closed')); 

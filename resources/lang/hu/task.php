@@ -21,7 +21,7 @@ return [
    'paused' => 'szüneteltetett',
     
     'show' => 'Megnéz',
-    'add' => 'Új Feladat felvitele',
+    'add' => 'Új Feladat vagy hibajelzés felvitele',
     'edit' => 'Projekt feladat módosítás',
     'delete' => 'Projekt feladat törlése',
     'details' => 'Projekt feladat adatlap',

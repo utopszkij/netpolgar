@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 
 class Option extends Model
 {
@@ -52,6 +53,34 @@ class Option extends Model
 			} 
 			return $result;		 
 	 }	    
+	 
+ 	 /**
+	 * poll kiegészitő információk lekérése
+	 * @param poll record $poll
+	 * @return object {userMember, userAdmin}
+	 */
+	 public static function getPollInfo($poll) {
+	 	$result = JSON_decode('{"userMember":false, "userAdmin":false}');
+	 	$user = \Auth::user();
+	 	if ($user) {
+		 	$result->userMember = (\DB::table('members')
+		 		->where('parent_type','=',$poll->parent_type)
+		 		->where('parent','=',$poll->parent)
+		 		->where('user_id','=',$user->id)
+		 		->where('status','=','active')->count() > 0);
+		 	$result->userAdmin = (\DB::table('members')
+		 		->where('parent_type','=',$poll->parent_type)
+		 		->where('parent','=',$poll->parent)
+		 		->where('user_id','=',$user->id)
+		 		->where('rank','=','admin')
+		 		->where('status','=','active')->count() > 0);
+		 	if ($user->id == $poll->created_by) {
+				$result->userAdmin = true;		 	
+		 	}	
+	 	}	 
+	 	return $result;
+	 }
+
     
     /**        
      * like szám lapján szükség szerint status modositás
@@ -73,5 +102,42 @@ class Option extends Model
    	}
     	return $result;
     }	
+
+	/** poll parent beolvasása
+	 * @param Poll $poll
+	 * @return object|false
+	 */ 
+ 	public static function getPollParent($poll) {	
+  		return \DB::table($poll->parent_type)
+  		->where('id','=',$poll->parent)->first();
+  	}		
+
+	public function updateOrCreate(Request $request):string {
+		$errorInfo = '';
+		if (\Auth::check()) {
+			try {
+				if ($request->input('optionId',0) == 0) {
+						$this->create([
+							'poll_id' => $request->input('pollId'),
+							'name' => strip_tags($request->input('name')),
+							'decription' => '',
+							'status' => 'proposal',
+							'created_by' => \Auth::user()->id				
+						]);
+				
+				} else {
+					$this->where('id','=',$request->input('optionId'))
+					->update([
+						'name' => strip_tags($request->input('name'))
+					]);
+				}
+			} catch (\Illuminate\Database\QueryException $exception) {
+			    $errorInfo = JSON_encode($exception->errorInfo);
+			}	
+		} else {
+			$errorInfo = 'not logged';
+		}
+		return $errorInfo;
+	}
 
 }

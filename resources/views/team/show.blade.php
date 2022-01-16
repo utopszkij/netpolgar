@@ -151,7 +151,7 @@
         				<em class="fas fa-thumbs-down"></em>
         				<a href="{{ \URL::to('/likeinfo/teams/'.$team->id) }}">
 	        				({{ $info->disLikeCount }}/{{ $info->disLikeReq}})
-        				</ä>a>
+        				</a>
 						{{ __('team.dislike') }}
         			</a>
         		@endif

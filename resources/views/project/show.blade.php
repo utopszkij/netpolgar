@@ -128,7 +128,7 @@
         				<em class="fas fa-thumbs-down"></em>
         				<a href="{{ \URL::to('/likeinfo/projects/'.$project->id) }}">
 	        				({{ $info->disLikeCount }}/{{ $info->disLikeReq}})
-        				</ä>a>
+        				</a>
 						{{ __('project.dislike') }}
         			</a>
         		@endif
@@ -214,11 +214,10 @@
    <div class="row">
    	<h2>{{ __('task.tasks') }}</h2>
    </div>
-   @if ($info->userAdmin)
-   	<a href="{{ \URL::to('/'.$project->id.'/tasks/create') }}" class="btn btn-primary">
+   <a href="{{ \URL::to('/'.$project->id.'/tasks/create') }}" class="btn btn-primary">
    		<em class="fas fa-plus"></em>&nbsp;{{ __('task.add') }}
-   	</a>
-   @endif
+   </a>
+   
    <div class="row states" id="states">
    	@foreach ($statuses as $status)
    	<div class="state {{ $status }}" id="{{ $status }}">

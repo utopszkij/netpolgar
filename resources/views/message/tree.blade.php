@@ -103,10 +103,13 @@ use App\Models\Minimarkdown;
     	</p>
 	</form>
 	</div>
-	<div class="row" class="chatBtn">
+	<div class="row" class="chatBtn" style="border-style:solid; margin:5px; padding:10px;">
+		<h4>Video chat</h4>
 		<button type="button" class="btn  btn-secondary" onclick="jitsiStart()">
 			<em class="fas fa-video"></em>&nbsp;<em class="fas fa-microphone"></em>&nbsp;Chat
 		</button>
+		A web böngésző biztonsági beállításai, egyes esetekben megadályozhatják ennek a funciónak a müködését.
+		Arra van szükség, hogy a web böngésző használhassa a mikrofont és a kamerát.
 	</div>
 	@endif
 	

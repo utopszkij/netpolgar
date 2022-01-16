@@ -9,39 +9,12 @@ use App\Models\Poll;
 class OptionController extends Controller {
 
 	 /**
-	 * poll kiegészitő információk lekérése
-	 * @param poll record $poll
-	 * @return object {userMember, userAdmin}
-	 */
-	 protected function getInfo($poll) {
-	 	$result = JSON_decode('{"userMember":false, "userAdmin":false}');
-	 	$user = \Auth::user();
-	 	if ($user) {
-		 	$result->userMember = (\DB::table('members')
-		 		->where('parent_type','=',$poll->parent_type)
-		 		->where('parent','=',$poll->parent)
-		 		->where('user_id','=',$user->id)
-		 		->where('status','=','active')->count() > 0);
-		 	$result->userAdmin = (\DB::table('members')
-		 		->where('parent_type','=',$poll->parent_type)
-		 		->where('parent','=',$poll->parent)
-		 		->where('user_id','=',$user->id)
-		 		->where('rank','=','admin')
-		 		->where('status','=','active')->count() > 0);
-		 	if ($user->id == $poll->created_by) {
-				$result->userAdmin = true;		 	
-		 	}	
-	 	}	 
-	 	return $result;
-	 }
-
-	 /**
 	 * jogosultság ellenörzés
-	 * @param poll record $poll
+	 * @param Poll record $poll
 	 * @param object $info
 	 * @return bool
 	 */	
-	 protected function checkAccessRight($action, $poll, $info):bool {
+	 protected function checkAccessRight(string $action, Poll $poll, $info):bool {
 	 	$result = true;
 	 	if (($poll->status != 'proposal') & ($poll->status != 'debate')) {
 			$result = false;	 	
@@ -65,10 +38,9 @@ class OptionController extends Controller {
 	 */
     public function create(Poll $poll) {
  		$poll->config = JSON_decode($poll->config);
-  			$parent = \DB::table($poll->parent_type)
-  			->where('id','=',$poll->parent)->first();
+ 		$parent = Option::getPollParent($poll);
 		if ($parent) {
-			$info = $this->getInfo($poll);
+			$info = Option::getPollInfo($poll);
 			if ($this->checkAccessRight('add',$poll, $info)) {
 				$model = new \App\Models\Option();
  				$options = $model->where('poll_id','=',$poll->id)
@@ -101,10 +73,9 @@ class OptionController extends Controller {
 			->first();
 		if ($poll) {
 			$poll->config = JSON_decode($poll->config);
-  			$parent = \DB::table($poll->parent_type)
-  			->where('id','=',$poll->parent)->first();
+			$parent = Option::getPollParent($poll);
 			if ($parent) {
-				$info = $this->getInfo($poll);
+				$info = Option::getPollInfo($poll);
 				if ($this->checkAccessRight('edit',$poll, $info)) {
     				$result = view('option.edit',[
     					'parent' => $parent,
@@ -136,20 +107,19 @@ class OptionController extends Controller {
     	$poll = \App\Models\Poll::where('id','=',$request->input('pollId'))->first();
     	if ($poll) {
     		$poll->config = JSON_decode($poll->config);
-  			$parent = \DB::table($poll->parent_type)
-  			->where('id','=',$poll->parent)->first();
+			$parent = Option::getPollParent($poll);
 			if ($parent) {
-				$info = $this->getInfo($poll);
+				$info = Option::getPollInfo($poll);
 				if ($this->checkAccessRight('add',$poll, $info)) {
-					\App\Models\Option::create([
-						'poll_id' => $request->input('pollId'),
-						'name' => strip_tags($request->input('name')),
-						'decription' => '',
-						'status' => 'proposal',
-						'created_by' => \Auth::user()->id				
-					]);
-					$result = redirect()->to($request->input('backUrl'))
-					->with('success',__('poll.saved'));    	
+					$model = new Option();
+					$errorInfo = $model->updateOrCreate($request);
+					if ($errorInfo == '') {				
+							$result = redirect()->to($request->input('backUrl'))
+							->with('success',__('poll.saved'));    	
+					} else {
+							$result = redirect()->back()
+							->with('error',$errorInfo);    	
+					}	
 				} else {
 					$result = redirect()->back()
 					->with('error',__('poll.accessDenied'));    	
@@ -176,18 +146,19 @@ class OptionController extends Controller {
    		$poll = \App\Models\Poll::where('id','=', $option->poll_id)->first();
    		if ($poll) {
    			$poll->config = JSON_decode($poll->config);
-	  			$parent = \DB::table($poll->parent_type)
-	  			->where('id','=',$poll->parent)->first();
+				$parent = Option::getPollParent($poll);
 				if ($parent) {
-					$info = $this->getInfo($poll);
+					$info = Option::getPollInfo($poll);
 					if ($this->checkAccessRight('edit',$poll, $info)) {
-						$model = new \App\Models\Option();
-						$model->where('id','=',$request->input('optionId'))
-						->update([
-							'name' => strip_tags($request->input('name'))
-						]);
-						$result = redirect()->to($request->input('backUrl'))
-						->with('success',__('poll.saved'));    	
+						$model = new Option();
+						$errorInfo = $model->updateOrCreate($request);
+						if ($errorInfo == '') {				
+							$result = redirect()->to($request->input('backUrl'))
+							->with('success',__('poll.saved'));    	
+						} else {
+							$result = redirect()->back()
+							->with('error',$errorInfo);    	
+						}	
 					} else {
 						$result = redirect()->back()
 						->with('error',__('poll.accessDenied'));    	
