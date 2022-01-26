@@ -67,11 +67,7 @@ class ProductController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function list(Request $request, $teamId)  {
-    	
-    	
-    	if (\URL::to('/') != 'http://localhost:8000') {
-	    	return redirect()->to('/construction');
-	   } 	
+	   
 		$order = $request->input('order', 
 										 $request->session()->get('productsOrder','name,asc'));
 		$orderArr = explode(',',$order);										     	
@@ -100,7 +96,9 @@ class ProductController extends Controller {
 				$categories, false, $page, 8);
 		}	
 		foreach ($data->items as $product) {
-			$product->userAdmin = $this->userAdmin($product);		
+			$product->userAdmin = $this->userAdmin($product);
+			// product készlet meghatározás
+			$product->stock = Product::getStock($product);
 		}	
       return view('product.index',
         	["data" => $data,
@@ -280,6 +278,7 @@ class ProductController extends Controller {
         }		
         $categories = Product::getCategories($product->id);									    
     	  $info = Product::getInfo($product); 
+    	$product->stock = Product::getStock($product);  
         return view('product.show',
         	["product" => $product,
         	 "parentUser" => $parentUser,
@@ -317,7 +316,7 @@ class ProductController extends Controller {
 					->first();        
         }		
     	  $categories = Product::getCategories($product->id);
-
+		$product->stock = Product::getStock($product);
         return view('product.form',
         	["product" => $product,
         	 "parentUser" => $parentUser,

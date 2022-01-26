@@ -3,7 +3,12 @@
     <div class="row" style="margin-top: 5rem;">
         <div class="col-lg-12 margin-tb">
             <div class="pull-left">
-                <h2>{{ __('team.teams') }}</h2>
+                <big>{{ __('team.teams') }}</big>	
+				&nbsp;
+				<a href="{{ \URL::to('/team/tree') }}">
+					<em class="fas fa-sitemap"></em>&nbsp;
+					{{ __('team.tree') }}
+				</a>
             </div>
         </div>
     </div>

@@ -206,7 +206,16 @@
 										{{ __('product.addToBasket') }}
 									</button>
 								</form>	
-							</p>										
+							</p>
+							@if ($product->userAdmin)
+							<p>
+								<a href="{{ \URL::to('/construction') }}">
+									<em class="fas fa-truck"></em>					
+									{{ __('product.stockEvents') }}
+								</a>
+							</p>	
+							@endif
+										
 						</div>
 					@endif	
 				@endforeach

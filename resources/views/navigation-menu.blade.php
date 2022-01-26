@@ -74,6 +74,10 @@ if (Auth::user()) {
             	{{ __('navigation.messages') }}
            		</a>
            	</li>
+            <li><a class="dropdown-item" href="{{ URL::to('/orders/list/?producer_type=users&producer='.\Auth::user()->id) }}">
+            	{{ __('navigation.orders') }}
+           		</a>
+           	</li>
             <li>
             	<form method="post" id="logoutForm" action="{{ URL::to('/logout') }}">
             		@csrf

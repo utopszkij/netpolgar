@@ -18,5 +18,9 @@ return [
     'send' => 'Megrendelés elküldése',
     'delete' => 'Törlés',
     'deleted' => 'Megrendelés tétel törölve',
-    'sureItemDel' => 'Biztos törölni akarod ezt a tételt?'
+    'sureItemDel' => 'Biztos törölni akarod ezt a tételt?',
+    'selectCustomerType' => 'Kinek a nevében vásárolsz?',
+    'bySelf' => 'saját nevemben, magánszemélyként',
+    'byTeam' => 'adminsiztrátoraként',
+    'ballance' => 'Folyószámla egyenleg'
 ];

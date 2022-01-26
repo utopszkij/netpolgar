@@ -1,5 +1,5 @@
 <?php
-include_once \Config::get('view.paths')[0].'/minimarkdown.php';
+use App\Models\Minimarkdown;
 ?>
 
 <x-guest-layout>  
@@ -10,6 +10,17 @@ include_once \Config::get('view.paths')[0].'/minimarkdown.php';
 				<h2 style="text-align:center">{{ __('cart.show') }}</h2>
 			</div>
 		</div>
+		<div class="row">
+			<div class="col-12">
+				<h3 style="text-align:center">{{ $customerName }}</h3>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-12">
+				{{ __('cart.ballance') }}: <strong>{{ $ballance }}</strong> NTC
+			</div>
+		</div>
+		
 		@if (count($items) > 0)
 		<div class="row">
 			<div class="col-12">
@@ -38,7 +49,7 @@ include_once \Config::get('view.paths')[0].'/minimarkdown.php';
 								<div id="desc_{{ $item->id }}"
 									class="product" 
 									style="display:none">
-									{!! minimarkdown($item->description) !!}
+									{!! Minimarkdown::minimarkdown($item->description) !!}
 								</div>							
 							</td>
 							<td style="width:15%; text-align:right">{{ $item->price }}</td>
@@ -68,12 +79,23 @@ include_once \Config::get('view.paths')[0].'/minimarkdown.php';
 					href="{{ \URL::to('/carts/send') }}">
 					<em class="fas fa-paper-plane"></em>{{ __('cart.send') }}
 				</a>
+				&nbsp;
+				<a class="btn btn-secondary" 
+					href="{{ \URL::to('/products/list/0') }}">
+					<em class="fas fa-reply"></em>{{ __('cart.back_products') }}
+				</a>
+				
 			</div>
 		</div>							
 		@else
 		<div class="row">
 			<div class="col-12" style="text-align:center">
-			{{ __('cart.empty') }}
+				{{ __('cart.empty') }}
+				&nbsp;
+				<a class="btn btn-secondary" 
+					href="{{ \URL::to('/products/list/0') }}">
+					<em class="fas fa-reply"></em>{{ __('cart.back_products') }}
+				</a>
 			</div>
 		</div>	
 		@endif

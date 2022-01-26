@@ -125,7 +125,7 @@ nav.flex span > span > span.cursor-default {background-color:#d0d0e0}
 
 /* product */
 #products .productsItem {display:inline-block; 
-   width:31%; height:400px;
+   width:31%; height:410px;
 	border-style:solid; border-width:1px; border-color:silver;
 	padding:10px; margin:2px; text-align:center}
 #products .productsItem .imgContainer {display:inline-block; margin:0px; 

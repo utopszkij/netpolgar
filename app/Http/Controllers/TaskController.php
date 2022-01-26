@@ -14,76 +14,25 @@ class TaskController extends Controller {
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Project $project)
-    {
+    public function create(Project $project) {
     	
     	  $task = Task::emptyRecord();
     	  $task->project_id = $project->id;	
     	  $info = Project::getInfo($project);
     	  $taskInfo = Task::getInfo(false);
-    		// csak project admin vihet fel
-    		if ((!\Auth::user()) | 
-    		    (!$info->userAdmin)) {  
-    		    
+    	  
+    	  if (!$this->accessCheck('add', $info)) {
     		   return redirect()->to('/projects'.$project->id)
     		   						->with('error',__('task.accessDenied')); 	
-    		}
-			$members = \DB::table('members')
-				->select('members.user_id', 'users.name', 'users.profile_photo_path')
-				->leftJoin('users','users.id','members.user_id')
-				->where('members.parent_type','=','projects')
-				->where('members.parent','=',$project->id)
-				->where('members.status','=','active')
-				->distinct()
-				->get();
-
-        return view('task.form',
-        ["project" => $project,
+   		  }
+    	  $members = Task::getMembers($project->id);
+          return view('task.form',
+          ["project" => $project,
           "task" => $task,
           "info" => $info,
           "taskInfo" => $taskInfo,
           "members" => $members]);
     }
-
-	 /**
-	 * project rekord irása az adatbázisba a $request-be lévő információkból
-	 * @param int $id
-	 * @param Request $request
-	 * @return string, $id created new record id
-	 */	 
-	 protected Function saveOrStore(int &$id, Request $request): string {	
-			// rekord array kialakitása
-			$taskArr = [];
-			$taskArr['project_id'] = $request->input('project_id');
-			$taskArr['name'] = strip_tags($request->input('name'));
-			$taskArr['deadline'] = $request->input('deadline');
-			$taskArr['type'] = $request->input('type');
-			$taskArr['status'] = $request->input('status');
-			$taskArr['assign'] = $request->input('assign');
-			if ($id == 0) {
-				if (\Auth::user()) {
-					$taskArr['created_by'] = \Auth::user()->id;
-				} else {
-					$taskArr['created_by'] = 0;
-				}		
-			}
-
-			// task rekord tárolás az adatbázisba
-			try {
-				$model = new Task();
-				if ($id == 0) {
-			 		$taskRec = $model->create($taskArr);
-			 		$id = $taskRec->id;
-			 	} else {
-					$model->where('id','=',$id)->update($taskArr);			 	
-			 	}	
-				$errorInfo = '';
-			} catch (\Illuminate\Database\QueryException $exception) {
-		      $errorInfo = $exception->getMessage();
-			}	
-			return $errorInfo;		
-	 }	
-
 
     /**
      * Store a newly created resource in storage.
@@ -95,31 +44,24 @@ class TaskController extends Controller {
      */
     public function store(Request $request)
     {
-    		// jogosultság ellenörzés
     		$project = \DB::table('projects')
     		->where('id','=',$request->input('project_id','0'))
     		->first();
     		if (!$project) {
 				echo 'Fatal error project not exists'; exit();    		
     		}
+    		
     		$info = Project::getInfo($project);
-    		if ((!\Auth::user()) | 
-    		    (!$info->userAdmin)) { 
+    	    if (!$this->accessCheck('add', $info)) {
     		   return redirect()->to('/projects/'.$project->id)
     		   						->with('error',__('task.accessDenied')); 	
     		}
 
-			// tartalmi ellenörzések 
-			$request->validate([
-				'name' => 'required',
-				'type' => 'required',
-				'status' => 'required',
-				'deadline' => 'required'
-			]);
+			Task::valid($request);
 
 			// task rekord kiirása
 			$id = 0;
-			$errorInfo = $this->saveOrStore($id,$request);
+			$errorInfo = Task::saveOrStore($id,$request);
 			
 		   // result kialakitása			
 			if ($errorInfo == '') { 
@@ -143,17 +85,17 @@ class TaskController extends Controller {
         $project = \DB::table('projects')
         	->where('id','=',$task->project_id)
         	->first();  
-    		if (!$project) {
+    	if (!$project) {
 				echo 'Fatal error project not exists'; exit();    		
-    		}
-    	  $info = Project::getInfo($project);
-    	  $taskInfo = Task::getInfo($task); 
-		  $assignUser = \DB::table('users')
+    	}
+    	$info = Project::getInfo($project);
+    	$taskInfo = Task::getInfo($task); 
+		$assignUser = \DB::table('users')
 				->where('id','=',$task->assign)
 				->first();
-		  if ($assignUser) {
+		if ($assignUser) {
 				$task->assign = $assignUser->name;		  
-		  }		
+		}		
         return view('task.show',
         	["project" => $project,
         	 "task" => $task,
@@ -173,18 +115,16 @@ class TaskController extends Controller {
         $project = \DB::table('projects')
         	->where('id','=',$task->project_id)
         	->first();  
-    		if (!$project) {
+    	if (!$project) {
 				echo 'Fatal error project not exists'; exit();    		
-    		}
-    	  $info = Project::getInfo($project); 
-		  $taskInfo = Task::getInfo($task);	
-		  // Jogosultság ellenörzés
-    	  if ((!\Auth::user()) |
-    	      ((!$info->userAdmin) & (!$info->userMember))) { 
+    	}
+    	$info = Project::getInfo($project); 
+		$taskInfo = Task::getInfo($task);	
+    	if (!$this->accessCheck('edit', $info)) {
     		   return redirect()->to('/projects/'.$project->id)
-    		   						->with('error',__('task.accessDenied')); 	
-    	  } 	
-			$members = \DB::table('members')
+    		   					->with('error',__('task.accessDenied')); 	
+    	} 	
+		$members = \DB::table('members')
 				->select('members.user_id', 'users.name', 'users.profile_photo_path')
 				->leftJoin('users','users.id','members.user_id')
 				->where('members.parent_type','=','projects')
@@ -216,23 +156,17 @@ class TaskController extends Controller {
         	->first();  
     		if (!$project) {
 				echo 'Fatal error project not exists'; exit();    		
-    		}
-    	  $info = Project::getInfo($project); 
+    	}
+    	$info = Project::getInfo($project); 
 
-		  // Jogosultság ellenörzés
-    	  if ((!\Auth::user()) |
-    	      ((!$info->userAdmin) & (!$info->userMember))) { 
+		// Jogosultság ellenörzés
+    	if (!$this->accessCheck('edit', $info)) {
     		   return redirect()->to('/projects/'.$project->id)
     		   						->with('error',__('task.accessDenied')); 	
-    	  } 	
+    	} 	
     	  
 		// tartalmi ellenörzés      
-        $request->validate([
-            'name' => 'required',
-				'status' => 'required',
-            'type' => 'required',
-            'deadline' => 'required'
-      ]);
+		Task::valid($request);
 
 		// admin bármit modosithat, a többi tag csak 
 		// - magához rendelhet eddig szabad taskot
@@ -241,7 +175,7 @@ class TaskController extends Controller {
 		$user = \Auth::user();      
 		$id = $task->id;
 		if ($info->userAdmin) {
-			$errorInfo = $this->saveOrStore($id, $request);
+			$errorInfo = Task::saveOrStore($id, $request);
 		} else {
 			
 			if (($task->assign == 0) & ($request->assign == $user->id)) {
@@ -281,21 +215,19 @@ class TaskController extends Controller {
         	->first();  
     		if (!$project) {
 				echo 'Fatal error project not exists'; exit();    		
-    		}
-    	  $info = Project::getInfo($project); 
+    	}
+    	$info = Project::getInfo($project); 
 
-		  // Jogosultság ellenörzés
-    	  if ((!\Auth::user()) |
-    	      (!$info->userAdmin)) { 
+    	if (!$this->accessCheck('delete', $info)) {
     		   return redirect()->to('/projects/'.$project->id)
     		   						->with('error',__('task.accessDenied')); 	
-    	  } 	
+    	} 	
 			
-		  // törlés
-		  $model = new Task();
-		  $model->where('id','=',$task->id)
+		// törlés
+		$model = new Task();
+		$model->where('id','=',$task->id)
 		  			->delete();
-    	  return redirect()->to('/projects/'.$project->id);
+    	return redirect()->to('/projects/'.$project->id);
     }
     
 	 /**
@@ -317,6 +249,24 @@ class TaskController extends Controller {
     	} 
     	echo "saved";
     }
+    
+    protected function accessCheck(string $action, $info): bool {			  
+		$result = false;
+    	if ($action == 'add') {	
+    		$result = ((\Auth::check()) & 
+					   ($info->userAdmin));   
+		}	
+    	if ($action == 'edit') {	
+    	  $result = ((\Auth::check()) &
+    	             (($info->userAdmin) | (!$info->userMember)));  
+		}		
+    	if ($action == 'delete') {	
+    	  $result = ((\Auth::check()) &
+    	             ($info->userAdmin));  
+		}		
+		return $result;
+    }					
+
 }
 
 

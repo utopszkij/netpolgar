@@ -5,7 +5,7 @@
  */
 
 //+ FT csak egy szintet nyit meg        
-
+//+ FT a clickedId -t is elérhetővé teszi az onChange -ben (ez az amire a user rá klikkelt)
 
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
@@ -344,6 +344,9 @@ Tree.prototype.onItemClick = function (id) {
 
   var node = this.nodesById[id];
   
+ //+FT
+ this.clickedId = id; 
+ //-FT 
   var onChange = this.options.onChange;
 
   if (!node.disabled) {

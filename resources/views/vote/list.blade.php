@@ -39,11 +39,20 @@
 				{{ __('vote.back') }}
 			</a>
 			&nbsp; 		
-			<a class="btn btn-secondary" href="{{ \URL::to('/'.$poll->id.'/votes/csv') }}">
+			<a class="btn btn-secondary" 
+				href="{{ \URL::to('/'.$poll->id.'/votes/csv') }}"
+				onclick="csvClick()">
 				CSV
 			</a> 		
 		</div>    
     </div>
+    
+    <script>
+		function csvClick() {
+			$('#waiting').show();
+			setTimeout('$("#waiting").hide()',5000);
+		}
+    </script>
     
   </div>        
 </x-guest-layout>  

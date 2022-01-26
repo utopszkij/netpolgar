@@ -136,7 +136,7 @@ class Poll extends Model
     }
     
     /**        
-     * like szám lapján szükség szerint status modositás
+     * like szám és dátum lapján szükség szerint status modositás
      * szükség esetén ballot rekordok generálása
      * @param string $pollId
      * @result string new status
@@ -159,7 +159,12 @@ class Poll extends Model
             if ($poll->status == 'debate') {
                 $debateStart = strtotime($poll->debate_start);
                 $debateEnd = strtotime("+".$poll->config->debateDays." day", $debateStart);
-                if (time() > $debateEnd) {
+                // van érvényes opció?
+                $options = \DB::table('options')
+                ->where('poll_id','=',$poll->id)
+                ->where('status','=','activate')
+                ->get();
+                if ((time() > $debateEnd) & (count($options) > 0)) {
                     \DB::table('polls')->where('id','=',$pollId)->update([
                         "status" => "vote"]);
                     // ballotok generálása
@@ -310,6 +315,15 @@ class Poll extends Model
             if ($id == 0) {
                 $pollRec = $model->create($pollArr);
                 $id = $pollRec->id;
+				// like rekord felvitele
+				\DB::table('likes')->insert([
+					"parent_type" => "polls",
+					"parent" => $id,
+					"user_id" => \Auth::user()->id,
+					"like_type" => "like",
+					"updated_at" => date('Y-m-d')
+				]);
+                $this->checkStatus($id);
             } else {
                 $model->where('id','=',$id)->update($pollArr);
             }

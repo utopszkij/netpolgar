@@ -64,6 +64,7 @@
             		@endif
             		<input type="hidden" name="reply_to" value="{{ $treeItem->id }}" />
             		<input type="hidden" name="msg_type" value="" />
+            		<em class="fas fa-reply"></em>
                 	<textarea id="replyText{{ $treeItem->id }}" name="value" cols="60" rows="4" style="width:70%"></textarea>
                 	<button type="submit" class="btn btn-primary">
                 		<em class="fas fa-paper-plane"></em>{{ __('messages.send') }}

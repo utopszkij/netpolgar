@@ -6,7 +6,13 @@
     <div class="row">
         <div class="col-lg-12 margin-tb">
             <div class="pull-left">
-                <h2>{{ __('team.details') }}</h2>
+				<br />
+                <big>{{ __('team.details') }}</big>
+				&nbsp;
+				<a href="{{ \URL::to('/team/tree') }}">
+					<em class="fas fa-sitemap"></em>&nbsp;
+					{{ __('team.tree') }}
+				</a>
             </div>
         </div>
     </div>
@@ -20,44 +26,62 @@
             <em class="fas fa-reply"></em>
             <span>{{ __('team.back') }}</span><br />
          </a>
-			<a href="{{ URL::to('/member/list/teams/'.$team->id) }}" title="Tagok">
+			<a href="{{ URL::to('/member/list/teams/'.$team->id) }}"
+				title="{{ __('team.members') }}">
 				<em class="fas fa-users"></em>
 				<span>{{ __('team.members') }}</span><br />			
 			</a>
-			<a href="{{ route('parents.teams.index', $team->id) }}" title="Tagok">
+			<a href="{{ route('parents.teams.index', $team->id) }}" 
+				title="{{ __('team.subGroups') }}">
 				<em class="fas fa-sitemap"></em>
 				<span>{{ __('team.subGroups') }}</span><br />			
 			</a>
-			<a href="{{ URL::to('/'.$team->id.'/projects') }}" title="Projektek">
+			<a href="{{ URL::to('/'.$team->id.'/projects') }}"
+				title="{{ __('team.projects') }}">
 				<em class="fas fa-cogs"></em>
 				<span>{{ __('team.projects') }}</span><br />			
 			</a>
-			<a href="{{ URL::to('/products/list/'.$team->id) }}" title="Termékek">
+			<a href="{{ URL::to('/products/list/'.$team->id) }}" 
+				title="{{ __('team.products') }}">
 				<em class="fas fa-shopping-basket"></em>
 				<span>{{ __('team.products') }}</span><br />			
 			</a>
-		    <a href="{{ URL::to('/message/tree/teams/'.$team->id) }}" title="Beszégetés">
+	        @if ((in_array('active_admin',$info->userRank)) | 
+	             (in_array('active_member',$info->userRank)))
+			<a href="{{ URL::to('/orders/list/?producer='.$team->id.'&producer_type=teams') }}" 
+				title="{{ __('team.orders') }}">
+				<em class="fas fa-truck"></em>
+				<span>{{ __('team.orders') }}</span><br />			
+			</a>
+			@endif	
+		    <a href="{{ URL::to('/message/tree/teams/'.$team->id) }}"
+				title="{{ __('team.comments') }}">
 				<em class="fas fa-comments"></em>
 				<span>{{ __('team.comments') }}</span><br />			
 			</a>
-			<a href="{{ URL::to('/teams/'.$team->id.'/proposal-debate/polls')  }}" title="Viták">
+			<a href="{{ URL::to('/teams/'.$team->id.'/proposal-debate/polls')  }}"
+				title="{{ __('team.debates') }}">
 				<em class="fas fa-retweet"></em>
 				<span>{{ __('team.debates') }}</span><br />			
 			</a>
-			<a href="{{ URL::to('/teams/'.$team->id.'/vote/polls') }}" title="szavazások">
+			<a href="{{ URL::to('/teams/'.$team->id.'/vote/polls') }}" 
+				title="{{ __('team.polls') }}">
 				<em class="fas fa-balance-scale-left"></em>
 				<span>{{ __('team.polls') }}</span><br />			
 			</a>
-			<a href="{{ URL::to('/teams/'.$team->id.'/closed/polls') }}" title="Döntések">
+			<a href="{{ URL::to('/teams/'.$team->id.'/closed/polls') }}"
+				title="{{ __('team.decisions') }}">
 				<em class="fas fa-check"></em>
 				<span        		    
 				>{{ __('team.decisions') }}</span><br />			
 			</a>
-			<a href="{{ URL::to('/construction') }}" title="Fájlok">
+			<a href="{{ URL::to('/construction') }}"
+				title="{{ __('team.files') }}">
 				<em class="fas fa-folder-open"></em>
 				<span>{{ __('team.files') }}</span><br />			
 			</a>
-			<a href="{{ URL::to('/construction') }}" title="Események">
+			<a href="{{ URL::to('/construction') }}"
+				title="{{ __('team.events') }}">
 				<em class="fas fa-calendar"></em>
 				<span>{{ __('team.events') }}</span><br />			
 			</a>

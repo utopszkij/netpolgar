@@ -109,6 +109,15 @@ class Team extends Model {
 			 		$teamRec = $model->create($teamArr);
 			 		$id = $teamRec->id;
 			 		$errorInfo = $this->addAdmin($id);
+					// like rekord felvitele
+					\DB::table('likes')->insert([
+							"parent_type" => "teams",
+							"parent" => $teamRec->id,
+							"user_id" => \Auth::user()->id,
+							"like_type" => "like",
+							"updated_at" => date('Y-m-d')
+					]);
+					$this->checkStatus($teamRec->id);
 			 	} else {
 					$model->where('id','=',$id)
 					->update($teamArr);			 	
@@ -389,6 +398,62 @@ class Team extends Model {
         where members.id is null
       ');  
    }  
+   
+   /** treeItem json string kialakitása (rekurziv)
+    * @param Tree $tree
+    * @return string;
+    */ 
+   protected function getTreeItem($team): string {
+		$result = '';
+		if ($team) {
+			$result = '{"id":'.$team->id;
+			$url = "'".\URL::to('team/'.$team->id)."'";
+			if ($team->status == 'active') {
+				$result .= ', "text":"'.$team->name.'"';
+			} else {
+				$result .= ', "text":"('.$team->name.')"';
+			}	
+			
+			$childrens = $this->where('parent','=',$team->id)
+				->orderBy('name')
+				->get();
+			 
+			if (count($childrens) > 0) {
+				$i = 0;
+				$result .= ', "children":[';
+				foreach ($childrens as $children) {
+					$result .= $this->getTreeItem($children);
+					$i++;
+					if ($i < count($childrens)) {
+							$result .= ',';
+					}
+				}
+				$result .= ']}';
+			} else {
+				$result .= '}';
+			}	
+		}
+		return $result;
+   }
+   
+   /**
+    * adat lekérés fa strukturában
+    * @return json string
+    */	
+   public function getTree(): string {
+	   $result = '[{"id":0, "text": "root", "children":[';
+	   $roots = $this->where('parent','=',0)->orderBy('name')->get();
+	   $i = 0;
+	   foreach ($roots as $root) {
+		   $result .= $this->getTreeItem($root);
+		   $i++;
+		   if ($i < count($roots)) {
+				$result .= ',';
+		   }
+	   }
+	   $result .= ']}]';
+	   return $result;
+   }
     
 }
 

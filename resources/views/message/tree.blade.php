@@ -173,10 +173,20 @@ use App\Models\Minimarkdown;
 			    return false;
 		});
 
+		var scrollTop = 0;
 		function replyClick(id) {
+			var top  = window.pageYOffset || document.documentElement.scrollTop;
+			scrollTop = top;
 			$('#reply'+id).show();
 			$('#replyText'+id).focus();
+			if (top > 50) {
+				top = top - 50;
+			}
+			setTimeout(myScrollTo,100);
 			return false;
+		}
+		function myScrollTo() {
+			window.scrollTo(0,scrollTop);
 		}
         </script>
 		</div>

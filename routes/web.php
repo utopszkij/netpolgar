@@ -15,6 +15,7 @@ use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\OrderController;
 
 
 /*
@@ -31,6 +32,7 @@ use App\Http\Controllers\CartController;
 Route::get('/construction', function() { return view('construction'); } );
 
 Route::resource('parents.teams', TeamController::class)->shallow();
+Route::get('/team/tree', [TeamController::class, 'tree']);
 
 // members
 Route::get('/member/doexit', [MemberController::class, 'doExit'])
@@ -175,13 +177,11 @@ Route::get('/orders/list',[OrderController::class, 'list'])
 Route::get('/orders/send/{order}',[OrderController::class, 'send'])
 	->middleware('auth');
 // csak a cart tulajdonosának engedélyezett
-Route::get('/orders/confirm/{orderitem}',[OrderController::class, 'confirm'])
+Route::get('/orders/{orderitemId}/confirm',[OrderController::class, 'confirm'])
 	->middleware('auth');
 // ?status, confirmInfo 
 // csak az érintett team adminoknak engedélyezett 
-Route::get('/orders/success/{order}',[OrderController::class, 'success'])
-	->middleware('auth');
-// csak a megrendelőnek engedélyezett
+Route::post('/order/doconfirm',[OrderController::class, 'doConfirm']);
 Route::get('/orders/cancel/{order}',[OrderController::class, 'cancel'])
 	->middleware('auth');
 // csak a megrendelőnek engedélyezett status függően

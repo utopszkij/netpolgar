@@ -1,5 +1,5 @@
 <?php
-include_once \Config::get('view.paths')[0].'/minimarkdown.php';
+use App\Models\Minimarkdown;
 ?>
 <x-guest-layout>  
 
@@ -149,7 +149,7 @@ include_once \Config::get('view.paths')[0].'/minimarkdown.php';
                     <h3>{{ $product->name }}</h3>
                 </div>
                 <div class="form-group">
-                    {!! miniMarkdown($product->description)  !!}
+                    {!! Minimarkdown::miniMarkdown($product->description)  !!}
                 </div>
                 <div class="form-group">
                     <label style="vertical-align: top;">

@@ -27,14 +27,14 @@
 <a name="description1"></a>				
 					<h4>Tartalomjegyzék</h4>
 					<ul>
-						<li><p><a href="#fojellemzok">Fő jellemzők</a></p>
-						<li><p><a href="#csoportok">Csoport szervezés</a> (ß teszt) </p>
-						<li><p><a href="#projektek">Projekt	menedzselés (ß teszt)</a></p>
-						<li><p><a href="#pacter">Virtuális piactér</a> (terv)</p>
-						<li><p><a href="#esemenyek">Esemény	szervezés</a> (terv)</p>
-						<li><p><a href="#vitak">Eszmecserék, viták lebonyolítása</a> (ß teszt)</p>
-						<li><p><a href="#szavazasok">Szavazások lebonyolítása</a> (ß teszt)</p>
-						<li><p><a href="#uzenetek">Kommunikáció</a> (ß teszt)</p>
+						<li><p><a href="#fojellemzok" onclick="true">Fő jellemzők</a></p>
+						<li><p><a href="#csoportok" onclick="true">Csoport szervezés</a> (ß teszt) </p>
+						<li><p><a href="#projektek" onclick="true">Projekt	menedzselés (ß teszt)</a></p>
+						<li><p><a href="#pacter" onclick="true">Virtuális piactér</a> (terv)</p>
+						<li><p><a href="#esemenyek" onclick="true">Esemény	szervezés</a> (terv)</p>
+						<li><p><a href="#vitak" onclick="true">Eszmecserék, viták lebonyolítása</a> (ß teszt)</p>
+						<li><p><a href="#szavazasok" onclick="true">Szavazások lebonyolítása</a> (ß teszt)</p>
+						<li><p><a href="#uzenetek" onclick="true">Kommunikáció</a> (ß teszt)</p>
 					</ul>
 				</div>
 <a name="fojellemzok"></a>

@@ -234,8 +234,28 @@ class Product extends Model
      * @param string $teamId
      * @return void
      */
-    public function checkStatus(string $teamId):void {
+    public static function checkStatus(string $teamId):void {
     }
+    
+    public static function getStock($product) {
+		$result = 0;
+		$recs = \DB::select('select sum(quantity) quantity
+		from productadds
+		where product_id = '.$product->id.'
+		');
+		if (count($recs) > 0) {
+			$result = $result + $recs[0]->quantity;
+		}
+		$recs = \DB::select('select sum(quantity) quantity
+		from orderitems
+		where product_id = '.$product->id.' and
+		status in ("ordering","confirme","closed1","closed2") 
+		');
+		if (count($recs) > 0) {
+			$result = $result - $recs[0]->quantity;
+		}
+		return $result;
+	}
 }
 
 

@@ -32,18 +32,18 @@ class Option extends Model
 			}
 			$t = \DB::table('members');	
 			$memberCount = $t->select('distinct user_id')
-        ->where('parent_type','=',$poll->parent_type)
-        ->where('parent','=',$poll->parent)
-        ->where('status','=','active')
-        ->count();
-			$result->likeReq = round(($memberCount * $poll->config->optionActivate) / 100);	
-			$user = \Auth::user();
-			if ($user) {
-				$result->likeCount = \DB::table('likes')
+			->where('parent_type','=',$poll->parent_type)
+			->where('parent','=',$poll->parent)
+			->where('status','=','active')
+			->count();
+			$result->likeCount = \DB::table('likes')
 				->where('parent_type','=','options')
 				->where('parent','=',$option->id)
 				->where('like_type','=','like')
 				->count();
+			$result->likeReq = round(($memberCount * $poll->config->optionActivate) / 100);	
+			$user = \Auth::user();
+			if ($user) {
 				$result->userLiked = (\Db::table('likes')
 				->where('parent_type','=','options')
 				->where('parent','=',$option->id)
@@ -98,8 +98,8 @@ class Option extends Model
 					$this->where('id','=',$optionId)
 							->update(['status' => $result]);				
 				}    	
-	    	}
-   	}
+			}	
+		}
     	return $result;
     }	
 
@@ -117,15 +117,24 @@ class Option extends Model
 		if (\Auth::check()) {
 			try {
 				if ($request->input('optionId',0) == 0) {
-						$this->create([
+						$newOption = $this->create([
 							'poll_id' => $request->input('pollId'),
 							'name' => strip_tags($request->input('name')),
 							'decription' => '',
 							'status' => 'proposal',
 							'created_by' => \Auth::user()->id				
 						]);
-				
+						// like rekord felvitele
+						\DB::table('likes')->insert([
+							"parent_type" => "options",
+							"parent" => $newOption->id,
+							"user_id" => \Auth::user()->id,
+							"like_type" => "like",
+							"updated_at" => date('Y-m-d')
+						]);
+						$this->checkStatus($newOption->id);
 				} else {
+					$this->checkStatus($request->input('optionId'));
 					$this->where('id','=',$request->input('optionId'))
 					->update([
 						'name' => strip_tags($request->input('name'))

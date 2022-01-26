@@ -42,6 +42,16 @@ class TeamController extends Controller {
         	"info" => $info])
          ->with('i', (request()->input('page', 1) - 1) * 8);
     }
+    
+    /** 
+     * fa struktúra megjelenítő
+     * @return laravel view
+     */ 
+    public function tree() {
+		$data = $this->model->getTree();
+		return view('team.tree',
+        	["data" => $data]);
+	}
 
     /**
      * Új felvitel form megjelenítése

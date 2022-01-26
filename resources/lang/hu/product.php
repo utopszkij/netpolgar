@@ -39,5 +39,7 @@ return [
     'accessDenied' => 'Ez a művelet számodra nem engedélyezett. :(',
     'successSave' => 'Termék adatok sikeresen tárolva.',
     'used' => 'Felhasználók száma',
-    'comments' => 'Hozzászólások' 
+    'comments' => 'Hozzászólások',
+    'orders' => 'rendelések',
+    'stockEvents' => 'Készlet mozgások' 
 ];

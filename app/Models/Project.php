@@ -5,6 +5,13 @@ namespace App\Models;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Validator;
+use App\Rules\RanksRule;
+
+if (!defined('UNITTEST')) {
+	define('UNITTEST',1);
+}
 
 class Project extends Model
 {
@@ -14,6 +21,7 @@ class Project extends Model
         'name', 'created_by', 'description', 'team_id', 
         'avatar', 'deadline', 'config', 'status'
     ];
+    
     
     public static function emptyRecord() {
     	$result = JSON_decode('{
@@ -43,6 +51,37 @@ class Project extends Model
     	}');
     	return $result;
     }
+
+	/**
+	* távoli file infok lekérdezése teljes letöltés nélkül
+	* csak 'http' -vel kezdödő linkeket ellenöriz
+	* @param string $url
+	* @return array ['fileExist', 'fileSize' ]
+	*/
+	public static function getRemoteFileInfo($url) {
+		if (substr($url,0,4) == 'http') {
+		   $ch = curl_init($url);
+		   curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+		   curl_setopt($ch, CURLOPT_HEADER, TRUE);
+		   curl_setopt($ch, CURLOPT_NOBODY, TRUE);
+		   $data = curl_exec($ch);
+		   $fileSize = curl_getinfo($ch, CURLINFO_CONTENT_LENGTH_DOWNLOAD);
+		   $httpResponseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		   curl_close($ch);
+		   $result = [
+	        'fileExists' => (int) $httpResponseCode == 200,
+	        'fileSize' => (int) $fileSize
+		   ];
+		} else {
+		   $result = [
+	        'fileExists' => 1,
+	        'fileSize' => 100
+		   ];
+		}
+		return $result;
+	}
+
+
     
     /**
      * like, dislike infók és memberCount meghatátozása
@@ -227,6 +266,110 @@ class Project extends Model
             }
         }
     }
+    
+    /**
+	 * project rekord irása az adatbázisba a $request-be lévő információkból
+	 * @param int $id
+	 * @param Request $request
+	 * @return string, $id created new record id
+	 */	 
+	 public static function saveOrStore(int &$id, Request $request): string {	
+			// rekord array kialakitása
+			$projectArr = [];
+			$projectArr['team_id'] = $request->input('team_id');
+			$projectArr['name'] = strip_tags($request->input('name'));
+			$projectArr['description'] = strip_tags($request->input('description'));
+			$projectArr['avatar'] = strip_tags($request->input('avatar'));
+			$fileInfo = Project::getRemoteFileInfo($projectArr['avatar']);
+			if (($fileInfo['fileSize'] > 2000000) |
+			    ($fileInfo['fileSize'] < 10)) {
+				$projectArr['avatar'] = '/img/noimage.png';
+			} 
+
+			$projectArr['deadline'] = $request->input('deadline');
+			if ($id == 0) {
+				$projectArr['status'] = 'proposal';
+				if (\Auth::check()) {
+					$projectArr['created_by'] = \Auth::user()->id;
+				} else {
+					$projectArr['created_by'] = 0;
+				}		
+			}
+			   
+			// config kialakitása
+			$config = new \stdClass();
+			$config->ranks = explode(',',$request->input('ranks'));
+			$config->close = $request->input('close');
+			$config->memberActivate = $request->input('memberActivate');
+			$config->memberExclude = $request->input('memberExclude');
+			$config->rankActivate = $request->input('rankActivate');
+			$config->rankClose = $request->input('rankClose');
+			$config->debateActivate = $request->input('debateActivate');
+			$projectArr['config'] = JSON_encode($config);
+
+			// project rekord tárolás az adatbázisba
+			$errorInfo = '';
+			try {
+				$model = new Project();
+				if ($id == 0) {
+			 		$projectRec = $model->create($projectArr);
+			 		$id = $projectRec->id;
+			 	} else {
+					$model->where('id','=',$id)->update($projectArr);			 	
+			 	}	
+			} catch (\Illuminate\Database\QueryException $exception) {
+			    $errorInfo = $exception->errorInfo;
+			}	
+			return $errorInfo;		
+	 }	
+	 
+	 
+	 /**
+	 * bejelentkezett user legyen admin -ja az $id project -nek
+	 * @param int $id
+	 * @return string
+	 */
+     public static function addAdmin(int $id): string {	
+		if (!\Auth::check()) {
+			return '';
+		}	
+		$memberArr = [];
+		$memberArr['parent_type'] = 'projects';
+		$memberArr['parent'] = $id;
+		$memberArr['user_id'] = \Auth::user()->id;
+		$memberArr['rank'] = 'admin';
+		$memberArr['status'] = 'active';
+		$memberArr['created_by'] = \Auth::user()->id;
+		$errorInfo = '';
+		try {
+			Member::create($memberArr);
+		} catch (\Illuminate\Database\QueryException $exception) {
+		    $errorInfo = $exception->errorInfo;
+		}
+		return $errorInfo;			
+	 }		
+
+	 public static function valid(Request $request): bool {
+			// tartalmi ellenörzések 
+			if (!defined('UNITTEST')) {
+			$request->validate([
+					'name' => 'required',
+					'ranks' => ['required', new RanksRule()],
+					'description' => 'required',
+					'deadline' => ['required','date_format:Y-m-d']
+			]);
+			}
+			return true; // ide csak akkor kerül ha minden OK
+	 }
+	 
+	 public static function getData($teamId,$pageSize) {	
+        return \DB::table('projects')
+        			 ->where('team_id','=',$teamId)
+        			 ->orderBy('name')
+        			 ->paginate($pageSize);
+     }    			 
+	 
+
 }
 
 

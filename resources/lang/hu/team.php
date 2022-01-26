@@ -2,6 +2,7 @@
 return [
   	'team' => 'Csoport',
   	'teams' => 'Csoportok',
+  	'tree' => 'Fa struktúra',
   	'id' => 'Azonosító',
   	'name' => 'Megnevezés',
    'status' => 'Státusz',
@@ -40,6 +41,7 @@ return [
    'comments' => 'Beszélgetések',
    'events' => 'Események',
    'files' => 'Fileok',
+   'orders' => 'Megrendelések',
     
    'active' => 'aktív',
    'closed' => 'lezárt',
