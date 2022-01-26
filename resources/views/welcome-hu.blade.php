@@ -30,7 +30,7 @@
 						<li><p><a href="#fojellemzok" onclick="true">Fő jellemzők</a></p>
 						<li><p><a href="#csoportok" onclick="true">Csoport szervezés</a> (ß teszt) </p>
 						<li><p><a href="#projektek" onclick="true">Projekt	menedzselés (ß teszt)</a></p>
-						<li><p><a href="#pacter" onclick="true">Virtuális piactér</a> (terv)</p>
+						<li><p><a href="#pacter" onclick="true">Virtuális piactér</a> (ß teszt)</p>
 						<li><p><a href="#esemenyek" onclick="true">Esemény	szervezés</a> (terv)</p>
 						<li><p><a href="#vitak" onclick="true">Eszmecserék, viták lebonyolítása</a> (ß teszt)</p>
 						<li><p><a href="#szavazasok" onclick="true">Szavazások lebonyolítása</a> (ß teszt)</p>
@@ -167,19 +167,21 @@
 				adminisztrátor törölhet projekteket.</p>
 				</div>
 <a name="piacter">
-				<h5></a>Virtuális piactér (terv)</h5>
+				<h5></a>Virtuális piactér (ß teszt)</h5>
 				<div>
-				<p>A projekt adminisztrátorok, csoport adminisztrátorok,
-				regisztrált felhasználók keresleteket/kínálatokat vihetnek fel.
-				A keresletek/kínálatok témakörökhöz rendelhetőek. A
-				keresletek/kínálatok csoporthoz vagy projekthez kapcsolódhatnak. A
+				<p>A csoport adminisztrátorok, regisztrált felhasználók kínálatokat vihetnek fel.
+				A kínálatok témakörökhöz rendelhetőek. 
+				A kínálatok csoporthoz vagy felhasználohoz kapcsolódhatnak. A
 				felhasználások (tranzakciók) virtuális pénzben történő
-				elszámolással vihetők fel a rendszerbe. Készlet változások
-				kezelése, felhasználói értékelési rendszer, hibajegy rendszert
-				is tartalmaz ez a modul. Mivel a netpolgar rendszer a kölcsönös
-				bizalmon alapul egy a közösség által megállapított keret
-				összegig a felhasználók egyenlege negatív is lehet. A virtuális
-				pénzben vezetett folyószámla egyenlegek nyilvánosak.</p>
+				elszámolással vihetők fel a rendszerbe. A virtuális pénz neve: NTC (NET coint)
+				A "vásárló/felhasználó" lehet egy csoport, vagy egy felhasználó. Csoport nevében a
+				csoport adminisztrátorok vásárolhatnak. Vásárláskor a "vevő" NTC egyenlege csökken,
+				az "eladó" NTC egyenlege növekszik.
+				<br />
+				<strong>JELEN TESZT VÁLTOZATBAN minden felhasználó kap 500 NTC induló keretet, 
+				és a folyószámla tetszőleges mértékben minuszba is mehet.</strong>
+				Késöbb ez változni fog.
+				</p>
 				</div>
 <a name="esemenyek"></a>
 				<h5>Esemény szervezés (terv)</h5>
