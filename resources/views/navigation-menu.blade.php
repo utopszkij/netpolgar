@@ -78,6 +78,10 @@ if (Auth::user()) {
             	{{ __('navigation.orders') }}
            		</a>
            	</li>
+            <li><a class="dropdown-item" href="{{ URL::to('/account/list/users/'.\Auth::user()->id) }}">
+            	{{ __('navigation.account') }}
+           		</a>
+           	</li>
             <li>
             	<form method="post" id="logoutForm" action="{{ URL::to('/logout') }}">
             		@csrf

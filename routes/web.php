@@ -16,6 +16,7 @@ use App\Http\Controllers\TaskController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\AccountController;
 
 
 /*
@@ -184,12 +185,16 @@ Route::get('/orders/{orderitemId}/confirm',[OrderController::class, 'confirm'])
 Route::post('/order/doconfirm',[OrderController::class, 'doConfirm']);
 Route::get('/orders/cancel/{order}',[OrderController::class, 'cancel'])
 	->middleware('auth');
+Route::get('/order/listbyproduct/{productId}',[OrderController::class, 'listByProduct']);	
 // csak a megrendelőnek engedélyezett status függően
 Route::get('/accountInfo',[CurrentaccountController::class, 'info'])
 	->middleware('auth');
 // csak a tulajdonosnak engedélyezett
 Route::get('/evaluation/create/{product}',[EvaluationController::class, 'create'])
 	->middleware('auth');
+Route::get('/account/list/{actorType}/{actor}',[AccountController::class, 'list'])
+	->middleware('auth');
+	
 // csak a vevőknek engedélyezett
 // ---------------------------------------------------------------
 

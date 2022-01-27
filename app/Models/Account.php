@@ -66,6 +66,23 @@ class Account extends Model
 		
 		return $result;
 	}
+	
+	public static function getData($actorType, $actorId, $pageSize) {
+		$table1 = \DB::table('accounts')
+		->where('from_type','=',$actorType)
+		->where('from','=',$actorId)
+		->where('status','=','');
+
+		$table2 = \DB::table('accounts')
+		->where('target_type','=',$actorType)
+		->where('target','=',$actorId)
+		->where('status','=','')
+		->union($table1)
+		->orderBy('created_at');
+		
+		return $table2->paginate($pageSize);
+		 
+	}
 
 
 }

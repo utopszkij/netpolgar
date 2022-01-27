@@ -29,5 +29,6 @@ return [
   	'successConfirm' => 'Sikeres megrendelés kezelés',
   	'save' => 'Tárol',
   	'sended' => 'Elküldött megrendelések',
-  	'received' => 'Kapott megrendelések' 
+  	'received' => 'Kapott megrendelések',
+  	'stockChanges' => 'Készlet változások' 
 ];

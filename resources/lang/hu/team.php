@@ -28,6 +28,7 @@ return [
    'closed_manager' => 'volt menedzser',
 	'closed_president' => 'volt elnök',
    'excluded_member' => 'kizárt tag',
+   'account' => 'NTC folyószámla',
       
    'back' => 'Vissza a listához', 
    'members' => 'Tagok',

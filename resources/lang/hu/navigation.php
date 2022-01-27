@@ -14,5 +14,6 @@ return [
    	'login' => 'Bejelentkezés',
    	'register' => 'Regisztráció',
     'messages' => 'Privát üzenetek',
-    'orders' => 'Rendelések'
+    'orders' => 'Rendelések',
+    'account' => 'NTC folyószámla'
 ];

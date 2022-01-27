@@ -213,6 +213,11 @@ use App\Models\Minimarkdown;
 	        				({{ $info->commentCount }})
 							{{ __('product.comments') }}
 	        			</a>             
+	        			&nbsp;&nbsp;&nbsp;
+						<a href="{{ \URL::to('/order/listbyproduct/'.$product->id) }}">
+							<em class="fas fa-truck"></em>					
+							{{ __('product.stockEvents') }}
+						</a>
 	        			   
 					</div>                
 	            <div>

@@ -53,6 +53,11 @@
 				<em class="fas fa-truck"></em>
 				<span>{{ __('team.orders') }}</span><br />			
 			</a>
+			<a href="{{ URL::to('/account/list/teams/'.$team->id) }}" 
+				title="{{ __('team.orders') }}">
+				<em class="fas fa-money-bill"></em>
+				<span>{{ __('team.account') }}</span><br />			
+			</a>
 			@endif	
 		    <a href="{{ URL::to('/message/tree/teams/'.$team->id) }}"
 				title="{{ __('team.comments') }}">

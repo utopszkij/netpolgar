@@ -30,7 +30,7 @@
 						<li><p><a href="#fojellemzok" onclick="true">Fő jellemzők</a></p>
 						<li><p><a href="#csoportok" onclick="true">Csoport szervezés</a> (ß teszt) </p>
 						<li><p><a href="#projektek" onclick="true">Projekt	menedzselés (ß teszt)</a></p>
-						<li><p><a href="#pacter" onclick="true">Virtuális piactér</a> (ß teszt)</p>
+						<li><p><a href="#piacter" onclick="true">Virtuális piactér</a> (ß teszt)</p>
 						<li><p><a href="#esemenyek" onclick="true">Esemény	szervezés</a> (terv)</p>
 						<li><p><a href="#vitak" onclick="true">Eszmecserék, viták lebonyolítása</a> (ß teszt)</p>
 						<li><p><a href="#szavazasok" onclick="true">Szavazások lebonyolítása</a> (ß teszt)</p>
@@ -38,6 +38,7 @@
 					</ul>
 				</div>
 <a name="fojellemzok"></a>
+				<p>&nbsp;</p>
 				<h5>Fő jellemzők</h5>
 				<div>
 				<p>Minden felhasználónak van egy üzenőfala, fájl, kép és videó
@@ -63,6 +64,7 @@
 				kommentelhetnek, értékelhetnek, szavazhatnak. A rendszerhez bárki
 				önként csatlakozhat, ingyenesen használhatja azt.</p>
 <a name="csoportok"></a>
+				<p>&nbsp;</p>
 				<h5>Csoport szervezés (ß teszt)</h5>
 				<p>A netpolgár
 				programban a hasonló érdeklődésű tagok vagy egy projekten
@@ -147,6 +149,7 @@
 				<p><br/></p>
 				</div>
 <a name="projektek">
+				<p>&nbsp;</p>
 				<h5></a>Projekt menedzselés (ß teszt)</h5>
 				<div>
 				<p>A rendszer adminisztrátorok, csoport adminisztrátorok
@@ -167,23 +170,39 @@
 				adminisztrátor törölhet projekteket.</p>
 				</div>
 <a name="piacter">
+				<p>&nbsp;</p>
 				<h5></a>Virtuális piactér (ß teszt)</h5>
 				<div>
 				<p>A csoport adminisztrátorok, regisztrált felhasználók kínálatokat vihetnek fel.
 				A kínálatok témakörökhöz rendelhetőek. 
 				A kínálatok csoporthoz vagy felhasználohoz kapcsolódhatnak. A
 				felhasználások (tranzakciók) virtuális pénzben történő
-				elszámolással vihetők fel a rendszerbe. A virtuális pénz neve: NTC (NET coint)
-				A "vásárló/felhasználó" lehet egy csoport, vagy egy felhasználó. Csoport nevében a
-				csoport adminisztrátorok vásárolhatnak. Vásárláskor a "vevő" NTC egyenlege csökken,
-				az "eladó" NTC egyenlege növekszik.
-				<br />
-				<strong>JELEN TESZT VÁLTOZATBAN minden felhasználó kap 500 NTC induló keretet, 
+				elszámolással vihetők fel a rendszerbe. A virtuális pénz neve: NTC (NET coint).
+				Kiindulásként, első közelítésként; ajánlott 1NTC -t egy óra munka ellenértékének
+				tekinteni. A "vásárló/felhasználó" lehet egy csoport, vagy egy felhasználó. 
+				Csoport nevében a csoport adminisztrátorok vásárolhatnak. 
+				Vásárláskor a "vevő" NTC egyenlege csökken,	az "eladó" NTC egyenlege növekszik.
+				</p>
+				<p>
+				A főmenü "pactér" menüpontjánam a felhasználók saját nevükben tehetnek fel kinálatokat,
+				 a csoport almenü "Termékek" menüpontjában a csoport adminisztrátorok a csoport nevében
+				 tölthetnek fel kinálatokat.
+				</p>
+				<p>A vásárlás a web áruházakban megszokott módon történik, a vevő a "kosarába" gyüjti
+				a kiválasztott termékekt/szolgáltatásokat majd elküldi a megrendelést. Ha a felhasználó 
+				csoport	adminisztrátor akkor ki kell választania, hogy saját nevében vagy valamelyik 
+				általa menedzselt csoport nevében vásárol.</p>
+				<p>A megrendelés elküldésekor zolásra kerül a "vásárló" folyószámláján a rendelt
+				termékek, szolgáltotások ára. Teljesitéskor kerül át az összeg az "eladó" számlájára.
+				Ha a tranzakció bármilyen okból meghiusul, akkor a zárolt összeg felszabadul a 
+				"vevő" számláján.</p>
+				</div>
+				<p><strong>JELEN TESZT VÁLTOZATBAN minden felhasználó kap 500 NTC induló keretet, 
 				és a folyószámla tetszőleges mértékben minuszba is mehet.</strong>
 				Késöbb ez változni fog.
 				</p>
-				</div>
 <a name="esemenyek"></a>
+				<p>&nbsp;</p>
 				<h5>Esemény szervezés (terv)</h5>
 				<div>
 				<p>A projekt adminisztrátorok, csoport adminisztrátorok,
@@ -198,6 +217,7 @@
 				adminisztrálható.</p>
 				</div>
 <a name="vitak"></a>
+				<p>&nbsp;</p>
 				<h5>Eszmecserék, viták
 				lebonyolítása (ß teszt)</h5>
 				<div>
@@ -243,6 +263,7 @@
 				<p><br/></p>
 				</div>
 <a name="szavazasok"></a>
+				<p>&nbsp;</p>
 				<h5>Szavazások
 				lebonyolítása (ß teszt)</h5>
 				<div>
@@ -281,5 +302,18 @@
 				szavazás kiértékelése Condorcet – Shulze metod szerint
 				történik.</p>
 				</div>
+<a name="uzenetek"></a>				
+				<p>&nbsp;</p>
+				<h5>Üzenetek (ß teszt)</h5>
+				<p>Lehetőség van szöveges üzenetet, megjegyzést irni</p>
+				<ul>
+				<li>Másik felhasználónak</li>
+				<li>Csoportnak</li>
+				<li>Projeknek</li>
+				<li>Projekt feladathoz<li>
+				<li>Termékhez, szolgáltatáshoz</li>
+				</ul>
+				<p>Ha a web böngésző támogatja a mikrofon és kamera 
+				használatát akkor video-chat is lebonyolítható.</p>
 	</div>
 </div>

@@ -126,7 +126,7 @@
                     </label>
                     <input type="number" min="0" class="form-control"  
                     name="price" placeholder="Ár" value="{{ $product->price }}" />
-                    {{ $product->currency }}
+                    NTC
                 </div>
                 <div class="form-group">
                     <label style="vertical-align: top;">

@@ -196,6 +196,27 @@ class OrderController extends Controller {
 	}
 	
 	/**
+	 * lapozható lista lekérés adott termékhez
+	 * @param int $productId
+	 * @return object
+	 */
+	public function listByProduct($productId) {
+		$product = \DB::table('products')->where('id','=',$productId)
+			->first();
+		$data = Order::getDataByProduct($productId,8);
+		// a készlet növeléseknél status == created_at -t ad a model
+		foreach ($data as $item) {
+			if ($item->status != $item->created_at) {
+				$item->quantity = 0 - $item->quantity;
+			}
+		}	
+		return view('order.listbyproduct',[
+		"data" => $data,
+		"product" => $product])
+		->with('i', (request()->input('page', 1) - 1) * 8);
+	}
+	
+	/**
 	 * megrendelés visszaigazolás, megszakitás .... képernyő megjeleítő
 	 * @param int $orderItemId
 	 * @return laravel view | redirect
@@ -322,12 +343,12 @@ class OrderController extends Controller {
 						}
 					}
 					if ($request->input('msg') != '') {
+						$msg = strip_tags($request->input('msg'));
 						if ($this->userStatus == 'customer') {
 							$this->sendMsg($msg,$product->parent_type, 
 								$product->parent);
 						} else if ($this->userStatus == 'producer') {
-							$this->sendMsg($request->input('msg'),
-											$order->customer_type, 
+							$this->sendMsg($msg,$order->customer_type, 
 											$order->customer);
 						}	
 					}

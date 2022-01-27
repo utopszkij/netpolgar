@@ -13,7 +13,7 @@ class Order extends Model {
     ];
     
 	/**
-	 * lapozható adat lekérés
+	 * lapozható adat lekérés producer vagy customer szerint
 	 * @param string $producerType
 	 * @param in $producerId
 	 * @param string $customerType
@@ -45,6 +45,42 @@ class Order extends Model {
 		->orderby('orderitems.created_at')
 		->paginate($pageSize);
 	}	
+    
+	/**
+	 * lapozható adat lekérés készletmozgásokról product szerint
+	 * (beleértve a készlet növeléseket is)
+	 * a productadds rekordból származó készletnöveléseknél a
+	 * "status" oszlopban a created_at adat szerepel
+	 * @param in $productId
+	 * @param int $pageSize
+	 * @return paginator object		
+	 */ 
+	public static function getDataByProduct(int $productId, 
+						int $pageSize) {	
+
+		$table1 = \DB::table('productadds')
+		->select('productadds.id','productadds.quantity', 'productadds.created_at',
+		'productadds.created_at','products.unit','products.name',
+		'productadds.id as orderId','productadds.user_id as customer_type','productadds.user_id as customer'
+		)
+		->leftJoin('products','products.id','productadds.product_id')
+		->where('products.id','=',$productId);
+
+		$table2 = \DB::table('orderitems')
+		->select('orderitems.id','orderitems.quantity', 'orderitems.created_at',
+		'orderitems.status','products.unit','products.name',
+		'orders.id as orderId','orders.customer_type','orders.customer'
+		)
+		->leftJoin('orders','orders.id','orderitems.order_id')
+		->leftJoin('products','products.id','orderitems.product_id')
+		->whereIn('orderitems.status',['closed2','closed1'])
+		->where('products.id','=',$productId)
+		->union($table1);
+
+		return $table2->orderby('created_at')
+		->paginate($pageSize);
+	}	
+    
     
     /**
      * user tagja a csoportnak?
