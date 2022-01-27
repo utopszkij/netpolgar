@@ -89,6 +89,24 @@ class MessageController extends Controller {
              	}
             }
             
+            if ($parentType == 'products') {
+            	 $product = \DB::table('products')
+            	 	->where('id','=',$parentId)->first();
+					 if ($product) {            	
+	                $member = \DB::table('members')
+	                ->where('parent_type','=','teams')
+	                ->where('parent','=',$product->team_id)
+	                ->where('user_id','=', \Auth::user()->id)
+	                ->whereIn('rank',["moderator","admin"])
+	                ->where('status','=','active')
+	                ->orderBy('rank','asc')
+	                ->first();
+	                if ($member) {
+	                    $result = true;
+	                }
+             	}
+            }
+
             // first user a system admin, ő is moderátor
             $firstUser = \DB::table('users')->orderBy('id')->first();
             if ($firstUser) {
@@ -171,6 +189,34 @@ class MessageController extends Controller {
 	                    $result = true;
 	                }
              	}
+            }
+            if ($parentType == 'products') {
+            	 $product = \DB::table('products')
+            	 	->where('id','=',$parentId)->first();
+            	 // team member?	
+					 if ($product) {            	
+	                $member = \DB::table('members')
+	                ->where('parent_type','=','teams')
+	                ->where('parent','=',$product->team_id)
+	                ->where('user_id','=', \Auth::user()->id)
+	                ->whereIn('rank',["moderator","admin","member"])
+	                ->where('status','=','active')
+	                ->orderBy('rank','asc')
+	                ->first();
+	                if ($member) {
+	                    $result = true;
+	                }
+             	 }
+             	 // felhasználó?
+             	 $customer = \DB::table('orderitems')
+             	 	->leftJoin('orders','orders.id','orderitems.order_id')
+             	 	->where('orderitems.product_id','=',$product->id)
+             	 	->where('orderitems.status','=','success')
+             	 	->where('orders.user_id','=',\Auth::user()->id)
+             	 	->first();
+             	 if ($customer) {
+							$result = true;             	 
+             	 }	
             }
         }
         return $result;

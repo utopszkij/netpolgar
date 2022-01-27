@@ -8,11 +8,13 @@ return [
 	'priceASC' => 'Ár szerint növekvő',
 	'priceDESC' => 'Ár szerint csökkenő',
 	'evaluations' => 'Értékelés szerint',  
-	'add' => 'Új termék felvitele',
+	'add' => 'Új termék',
 	'search' => 'Keresés',
 	'price' => 'Ár',
 	'stock' => 'Készlet',
-	'addToBasket' => 'Kosárba',	
+	'unit' => 'Mértékegység',
+	'addToBasket' => 'Kosárba',
+	'addToStock' => 'Készlet növelés',	
   	'id' => 'Azonosító',
   	'name' => 'Megnevezés',
    'status' => 'Státusz',
@@ -32,7 +34,10 @@ return [
     'saved' => 'Adat tárolva',
     'ok' => 'Rendben',
     'like' => 'tetszik',
+    'send' => 'Küld',
     'dislike' => 'nem tetszik',
     'accessDenied' => 'Ez a művelet számodra nem engedélyezett. :(',
-    'successSave' => 'Termék adatok sikeresen tárolva.' 
+    'successSave' => 'Termék adatok sikeresen tárolva.',
+    'used' => 'Felhasználók száma',
+    'comments' => 'Hozzászólások' 
 ];

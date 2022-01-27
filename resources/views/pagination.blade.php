@@ -1,4 +1,5 @@
 @if($paginator->hasPages())
+
     <nav>
         <ul class="pagination pull-right">
         		{{-- first page link --}}
@@ -36,6 +37,7 @@
             @endif
 
             {{-- Pagination Elements --}}
+            @if (isset($elements))
             @foreach ($elements as $element)
                 {{-- "Three Dots" Separator --}}
                 @if (is_string($element))
@@ -53,6 +55,7 @@
                     @endforeach
                 @endif
             @endforeach
+				@endif
 
             {{-- Next Page Linkek --}}
             @if ($paginator->hasMorePages())
@@ -69,6 +72,7 @@
                     <span class="page-link" aria-hidden="true">&rsaquo;</span>
                 </li>
             @endif
+      
             @if($paginator->lastPage() >= $paginator->currentPage()+5)
                 <li class="page-item" title="következő lap">
                     <a class="page-link" 
@@ -78,15 +82,13 @@
                     </a>
                 </li>
             @endif
-            
-        		{{-- last page link --}}
-                <li class="page-item" title="utolsó lap">
+            <li class="page-item" title="utolsó lap">
                     <a class="page-link" 
-                    href="<?php echo $paginator->url( $paginator->lastpage()); ?>"
+                    href="<?php echo $paginator->url( $paginator->lastPage()); ?>"
                     rel="prev" aria-label="last">
                     &rsaquo;&rsaquo; 
                     </a>
-                </li>
+            </li>
             
         </ul>
     </nav>
