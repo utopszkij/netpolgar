@@ -284,6 +284,7 @@ class ProductController extends Controller {
         	 "parentUser" => $parentUser,
         	 "team" => $team,
         	 "categories" => $categories,
+        	 "userUsed" => true,
         	 "info" => $info
         	]);
     }
@@ -389,6 +390,9 @@ class ProductController extends Controller {
      */
     public function destroy(Product $product)
     {
+
+        return redirect()->to('/construction');
+
 		// EZ MÉG NINCS KÉSZ!
 		
     	// jogosultság ellenörzés	
@@ -408,6 +412,71 @@ class ProductController extends Controller {
       return redirect()->to('/products/list/'.$teamId)
                         ->with('success',__('product.deleted'));
     }
+    
+    /**
+     * értékelő form (csak olyannak megengedett aki "vásárolt" az adott termékből)
+     * @param int $productId
+     * @return laravel view|redirect
+     */ 
+    public function evaluation(int $productId) {
+        $product = Product::where('id','=',$productId)->first();
+        $info = Product::getInfo($product);
+        if ($info->userUsed) {
+			$userEvaluated = (\DB::table('evaluations')
+				->where('product_id','=',$productId)
+				->where('user_id','=',\Auth::user()->id)
+				->count() > 0);
+			if (!$userEvaluated) {
+				$result = view('product.evaluation',[
+					"product" => $product,
+					"backUrl" => \URL::previous()
+				]);
+			} else {
+				$result = redirect()->to(\URL::previous())
+				->with('error',__('product.evaluationExists'));
+			}	
+		} else {
+			$result = redirect()->to(\URL::previous())
+				->with('error',__('product.evaluationDisabled'));
+		}
+		return $result;
+	}	
+	
+	/**
+	 * Értékelés tárolása
+	 * @param Request projectId, evaluation, backUrl
+	 * @return larevel redirect
+	 */ 
+	public function saveevaluation(Request $request) {
+		$productId = $request->input('productId',0);
+		$backUrl = $request->input('backUrl','');
+        $product = Product::where('id','=',$productId)->first();
+        $info = Product::getInfo($product);
+        if ($info->userUsed) {
+			$userEvaluated = (\DB::table('evaluations')
+				->where('product_id','=',$productId)
+				->where('user_id','=',\Auth::user()->id)
+				->count() > 0);
+			if (!$userEvaluated) {
+				$t = \DB::table('evaluations');
+				$t->insert([
+				"product_id" => $product->id,
+				"user_id" => \Auth::user()->id,
+				"value" => $request->input('evaluation',1)
+				]);
+				$result = redirect()->to($backUrl)
+				->with('success',__('product.evaluationSaved'));
+			} else {
+				$result = redirect()->to($backUrl)
+				->with('error',__('product.evaluationExists'));
+			}	
+		} else {
+			$result = redirect()->to($backUrl)
+				->with('error',__('product.evaluationDisabled'));
+		}
+		return $result;
+	}
+
 }
 
 

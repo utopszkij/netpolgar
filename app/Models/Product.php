@@ -97,7 +97,8 @@ class Product extends Model
          "commentCount":0,
          "userAdmin":false,
          "usedCount":0,
-         "evaulation":0
+         "evaulation":0,
+         "userUsed":false
 		}');
 		Product::getLikeInfo($result, $product);
 		$recs = \DB::select('select sum(quantity) quantity
@@ -123,6 +124,29 @@ class Product extends Model
 			->where('parent_type','=','products')
 			->where('parent','=',$product->id)
 			->count();
+			
+		$user = \Auth::user();
+		if ($user) {	
+			$result->userUsed = (\DB::table('orderitems')
+				->leftJoin('orders','orders.id','orderitems.order_id')
+				->where('orderitems.product_id','=',$product->id)
+				->where('orderitems.status','=','closed2')
+				->where('orders.customer_type','=','users')
+				->where('orders.customer','=',$user->id)
+				->count() > 0);
+			if (!$result->userUsed) {
+			$result->userUsed = (\DB::table('orderitems')
+				->leftJoin('orders','orders.id','orderitems.order_id')
+				->leftJoin('members','members.parent','orders.customer')
+				->where('members.parent_type','=','orders.customer_type')
+				->where('orderitems.product_id','=',$product->id)
+				->where('orders.customer_type','=','teams')
+				->where('orderitems.status','=','closed2')
+				->where('members.user_id','=',$user->id)
+				->where('members.status','=','admin')
+				->count() > 0);
+			}	
+		}		
 		return $result;
     }
     

@@ -83,6 +83,41 @@ class Account extends Model
 		return $table2->paginate($pageSize);
 		 
 	}
+	
+	/**
+	 * user team tag, vagy actor ?
+	 * @param string $actorType
+	 * @param int $actorId
+	 * @param int $userId 
+	 * @return bool
+	 */ 
+	public static function userMember(string $actorType, int $actorId, 
+		int $userId): bool {
+		return (\DB::table('members')
+					->where('user_id','=',$user->id)
+					->where('parent_type','=','teams')
+					->whereIn('rank',['member','admin'])
+					->where('status','=','active')
+					->count() > 0);
+			
+	} 
+
+	/**
+	 * user team admin, vagy actor ?
+	 * @param string $actorType
+	 * @param int $actorId
+	 * @param int $userId 
+	 * @return bool
+	 */ 
+	public static function userAdmin(string $actorType, int $actorId, 
+		int $userId): bool {
+		return (\DB::table('members')
+					->where('user_id','=',$user->id)
+					->where('parent_type','=','teams')
+					->where('rank','=','admin')
+					->where('status','=','active')
+					->count() > 0);
+	} 
 
 
 }

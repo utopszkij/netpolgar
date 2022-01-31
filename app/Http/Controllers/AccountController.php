@@ -14,12 +14,12 @@ class AccountController extends Controller {
 			if ($actorType == 'teams') {
 				$team = \DB::table('teams')->where('id','=',$actorId)
 					->first();
-				$userMember = (\DB::table('members')
-					->where('user_id','=',$user->id)
-					->where('parent_type','=','teams')
-					->whereIn('rank',['member','admin'])
-					->where('status','=','active')
-					->count() > 0);
+				$userMember = Account::userMember($actorType, $actorId, 
+					$user->id);
+				$userAdmin = Account::userAdmin($actorType, $actorId, 
+					$user->id);
+			} else {
+				$userAdmin = ($user->id == $actorId);
 			}
 			if ((($actorType == 'users') & ($user->id == $actorId)) |
 			    (($actorType == 'teams') & ($userMember))) {
@@ -59,7 +59,9 @@ class AccountController extends Controller {
 				$result = view('account.list',
 				["data" => $data,
 				 "title" => $title,
-				 "ballance" => $ballance
+				 "ballance" => $ballance,
+				 "userAdmin" => $userAdmin,
+				 "accountId" => ucFirst(substr($actorType,0,1)).$actorId
 				])
 				->with('i', (request()->input('page', 1) - 1) * 8);
 	
@@ -73,5 +75,113 @@ class AccountController extends Controller {
 		}
 		return $result;
 	}
-    
+	
+	/**
+	 * Átutalás képernyő
+	 * @param string $accountId 'Uszám|Tszám')
+	 * @return laravel view|redirect
+	 */ 
+	public function send(string $accountId) {
+		if (\Auth::check()) {
+			$user = \Auth::user();
+			$userMember = false;
+			if (substr($accountId,0,1) == 'U') {
+				$actorType = 'users';
+			} else {
+				$actorType = 'teams';
+			}
+			$actorId = substr($accountId,1,100);
+			if ($actorType == 'teams') {
+				$userAdmin = Account::userAdmin($actorType, $actorId, 
+					$user->id);
+			} else {
+				$userAdmin = ($user->id == $actorId);
+			}
+			if ($userAdmin) {
+				$result = view('account.send',[
+				"fromType" => $actorType,
+				"fromId" => $actorId,
+				"fromTitle" => $accountId,
+				"backUrl" => \URL::previous()
+				]);
+			} else {
+				$result = redirect()->to(\URL::to('/'))
+					->with('error',__('account.accessDenied'));
+			}
+		} else {
+			$result = redirect()->to(\URL::to('/'))
+				->with('error',__('account.accessDenied'));
+		}
+		return $result;	
+	}
+	
+	/* Utalás képernyő végrehajtása
+	 * @param Request ($fromType, $fromId, $tagetId, $value, comment) 
+	 * @return laravel redirect
+	 */ 
+	public function dosend(Request $request) {
+		if (\Auth::check()) {
+			$user = \Auth::user();
+			$fromType = $request->input('fromType');
+			$fromId = $request->input('fromId');
+			$targetId = $request->input('targetId');
+			$value = $request->input('value',0);
+			$comment = strip_tags($request->input('comment',''));
+			if (substr($targetId,0,1) == 'U') {
+				$tagetType = 'users';
+			} else {
+				$tagetType = 'teams';
+			}
+			$targetId = substr($tagetId,1,100);
+			$backUrl = $request->input('backUrl','/');
+			if ($fromType == 'teams') {
+				$userAdmin = Account::userAdmin($fromType, $fromId, 
+					$user->id);
+			} else {
+				$userAdmin = ($user->id == $actorId);
+			}
+			if ($userAdmin) {
+				// egyenleg és value ellenörzés
+				$valueOk = ($value > 0);
+				if ($valueOk) {
+					// $valueOk = Account::ballanceCheck($value);
+				}
+				// target létező számla?
+				$t = \DB::table($targetType)
+					->where('id','=',$targetId)
+					->first();
+				if ($t & $valueOk) {
+					// rekord generálás
+					$model = new Account();
+					$model->create([
+					"from_type" => $fromType,
+					"from" => $fromId,
+					"target_type" => $tagetType,
+					"taget" => $targetId,
+					"value" => $request->input('value',0),
+					"comment" => $request->input('comment',''),
+					"info" => 'send'
+					]);
+					$result = redirect()->to($backUrl)
+						->with('success',__('account.successSend'));
+				} else if (!$ŧ) {
+					$result = redirect()->to(\URL::to($backUrl))
+					->with('error',__('account.targetNotFound'));
+				} else if ($value < 0) {
+					$result = redirect()->to(\URL::to($backUrl))
+					->with('error',__('account.valueError'));
+				} else {
+					$result = redirect()->to(\URL::to($backUrl))
+					->with('error',__('account.ballanceError'));
+				}
+			} else {
+				$result = redirect()->to(\URL::to('/'))
+					->with('error',__('account.accessDenied'));
+			}
+		} else {
+			$result = redirect()->to(\URL::to('/'))
+				->with('error',__('account.accessDenied'));
+		}
+		return $result;	
+	}
 }

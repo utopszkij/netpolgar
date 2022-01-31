@@ -149,9 +149,10 @@ Route::get('/products/{product}/edit',[ProductController::class, 'edit'])
 	->middleware('auth');
 Route::get('/products/{product}/delete',[ProductController::class, 'delete'])
 	->middleware('auth');
+Route::get('/products/evaluation/{productId}', [ProductController::class, 'evaluation']);
+Route::post('/products/evaluation', [ProductController::class, 'saveevaluation']);
 Route::post('/products',[ProductController::class, 'store']);
 Route::post('/products/{product}',[ProductController::class, 'update']);
-
 // megjegyzés:product like/dislike csak a teljesitett mgrendelés vevőknek engedélyezett
 // product comment a team tagoknak és a teljesitett megrendelés vevőinek engedyélyezett
 
@@ -194,6 +195,9 @@ Route::get('/evaluation/create/{product}',[EvaluationController::class, 'create'
 	->middleware('auth');
 Route::get('/account/list/{actorType}/{actor}',[AccountController::class, 'list'])
 	->middleware('auth');
+Route::get('/account/send/{accountId}',[AccountController::class, 'send'])
+	->middleware('auth');
+Route::post('/account/send}',[AccountController::class, 'dosend']);
 	
 // csak a vevőknek engedélyezett
 // ---------------------------------------------------------------

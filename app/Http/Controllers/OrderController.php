@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\Orderitem;
-use App\Models\OAccount;
+use App\Models\Account;
 
 class OrderController extends Controller {
 	
@@ -14,7 +14,9 @@ class OrderController extends Controller {
 	/**
 	 * hozzáfési jog ellenörzése 
 	 * (doConfirmnál ezen kivül további ellenörzés is szükséges)
-	 * beállítja a $this->userStatus -t is
+	 * beállítja a $this->userStatus -t is 'producesStatus/customerStatus/'
+	 *   producesStatus = 'produces'|'producerMember'
+	 *   customerStatus = 'customer'|'customerMember'
 	 * @param string $action 'list'|'confirm'|'doconfirm'
 	 * @param string $producerType
 	 * @param int $producerId
@@ -46,26 +48,32 @@ class OrderController extends Controller {
 		if (($action == 'confirm') | ($action == 'doconfirm')) {
 			$this->userStatus = '';
 			if (($producerType == 'users') & ($user->id == $producerId)) {
-				$this->userStatus = 'producer';
+				$this->userStatus = 'producer/';
 			} else if (($producerType == 'teams')) {
 				if ( Order::userAdmin($producerId, $user->id)) {
-					$this->userStatus = 'producer';
+					$this->userStatus = 'producer/';
 				} else if ( Order::userMember($producerId, $user->id)) {
-					$this->userStatus = 'producerMember';
-				} 
-			} else if (($customerType == 'users') & ($user->id == $customerId)) {	
-				$this->userStatus = 'customer';
+					$this->userStatus = 'producerMember/';
+				} else {
+					$this->userStatus = '/';
+				}
+			} else {
+				$this->userStatus = '/';
+			}	
+			if (($customerType == 'users') & ($user->id == $customerId)) {	
+				$this->userStatus .= 'customer/';
 			} else if (($customerType == 'teams')) {
 				if ( Order::userAdmin($customerId, $user->id)) {
-					$this->userStatus = 'customer';
+					$this->userStatus .= 'customer/';
 				} else if ( Order::userMember($customerId, $user->id)) {
-					$this->userStatus = 'customerMember';
+					$this->userStatus .= 'customerMember/';
 				}
 			}	
 			$result = ($this->userStatus != '');
 		}	
 		if ($action == 'doconfirm') {
-			$result = (($this->userStatus == 'customer') | ($this->userStatus == 'producer'));
+			$result = ((strpos($this->userStatus,'customer/') > 0) | 
+					   (substr($this->userStatus,0,9) == 'producer/'));
 		}
 		return $result;
 	}
@@ -80,14 +88,14 @@ class OrderController extends Controller {
 	protected function accessCheck2($orderItem, $newStatus, $userStatus): bool {
 		$result = false;
 		$oldStatus = $orderItem->status;
-		if ($userStatus == 'producer') {
+		if (substr($userStatus,0,9) == 'producer/') {
 			$result = ( (($oldStatus == 'ordering') & ($newStatus == 'confirmed')) |
 						(($oldStatus == 'ordering') & ($newStatus == 'denied')) |
 						(($oldStatus == 'confirmed') & ($newStatus == 'closed1')) |
 						(($oldStatus == 'confirmed') & ($newStatus == 'denied'))
 					  ); 
 		}
-		if ($userStatus == 'customer') {
+		if ((!$result) & (strpos($userStatus,'customer/') > 0)) {
 			$result = ( (($oldStatus == 'ordering') & ($newStatus == 'canceled')) |
 						(($oldStatus == 'confirmed') & ($newStatus == 'closed2')) |
 						(($oldStatus == 'closed1') & ($newStatus == 'closed2'))
@@ -138,14 +146,25 @@ class OrderController extends Controller {
 
 	/**
 	 * megrendelés lista
-	 * URL params: producer_type, producer, customer_type, customer, order
+	 * URL params: producer_type, producer, customer_type, customer, pager
 	 * @return laravel view
 	 */ 
 	public function list() {
-		$producerType = \Request::input('producer_type','');
-		$producerId = \Request::input('producer',0);
-		$customerType = \Request::input('customer_type','');
-		$customerId = \Request::input('customer',0);
+		if (\Request::input('page','') != '') {
+			$producerType = \Request::input('producer_type',\Request::session()->get('producerType',''));
+			$producerId = \Request::input('producer', \Request::session()->get('producerId',0));
+			$customerType = \Request::input('customer_type',\Request::session()->get('customerType',''));
+			$customerId = \Request::input('customer',\Request::session()->get('customerId',0));
+		} else {
+			$producerType = \Request::input('producer_type','');
+			$producerId = \Request::input('producer', 0);
+			$customerType = \Request::input('customer_type','');
+			$customerId = \Request::input('customer', 0);
+		}	
+		\Request::session()->put('producerType',$producerType);
+		\Request::session()->put('producerId',$producerId);
+		\Request::session()->put('customerType',$customerType);
+		\Request::session()->put('customerId',$customerId);
 		$user = \Auth::user();
 		if (!$user) {
 			return redirect()->to(\URL::to('/'))
@@ -352,7 +371,8 @@ class OrderController extends Controller {
 											$order->customer);
 						}	
 					}
-					if ($this->userStatus == 'producer') {
+					if ((substr($this->userStatus,0,9) == 'producer/') |
+					    (strpos($this->userStatus,'/customer/') > 0)) {
 						$result = redirect()->to(\URL::to('/orders/list/?producer_type='.$product->parent_type.'&producer='.$product->parent))
 						->with('success',__('order.successConfirm'));
 					} else {
@@ -360,7 +380,7 @@ class OrderController extends Controller {
 						->with('success',__('order.successConfirm'));
 					}	
 				} else {
-					$result = redirectt()->to(\URL::to('/'))
+					$result = redirect()->to(\URL::to('/'))
 						->with('error',__('order.accessDenied').'(1)');	
 				}
 			} else {
@@ -397,11 +417,11 @@ class OrderController extends Controller {
 			$targets = [$target];
 		}
 		if ($targetType == 'teams') {
-			$targets = \DB::tables('members')
-			->select('users.id, users.email')
-			->leftJoin('users','users.id','=','members.user_id')
+			$targets = \DB::table('members')
+			->select('users.id', 'users.email')
+			->leftJoin('users','users.id','members.user_id')
 			->where('members.parent_type','=','teams')
-			->where('members.parent','=',$tagetI)
+			->where('members.parent','=',$targetId)
 			->where('members.rank','=','admin')
 			->where('members.status','=','active')
 			->get();

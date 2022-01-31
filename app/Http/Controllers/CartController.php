@@ -84,11 +84,11 @@ class CartController extends Controller {
 			$result = redirect()->to('/login')->with('error',__('cart.mustLogin'));		
 			} else if ($request->input('customerType','') != '') {
 				// már kiválasztotta customerType -t
-				$s = $request->input('customerType');
+				$s = $request->input('customerType').'_0';
 				$w = explode('_',$s);	// type_id
 				$customerType = $w[0];
 				$customer = $w[1];
-				$request->session()->put('customerType',$s);
+				$request->session()->put('customerType',$customerType.'_'.$customer);
 			} else {
 				// most kell customerType -t választani
 				$customerTypes = Cart::getCustomerTypes(); // [{ id, type, name },...]
@@ -103,6 +103,7 @@ class CartController extends Controller {
 				} else {
 					$customerType = 'users';
 					$customer = \Auth::user()->id;
+					$request->session()->put('customerType',$customerType.'_'.$customer);
 				}
 			}
 			if ($customerType != '') {

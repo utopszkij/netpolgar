@@ -65,7 +65,9 @@
                 </div>
             </div>
          </div>
-         @if (($userStatus == 'customer') | ($userStatus == 'producer'))
+         
+         <p>Userstatus: {{ $userStatus }}</p>
+         @if ((strpos($userStatus,'customer/') > 0) | (substr($userStatus,0,9) == 'producer/'))
          <div class="row">
             <div class="col-12">
                 <div class="form-group">
@@ -74,7 +76,7 @@
 						<option value="{{ $orderItem->status }}">
 							{{ __('order.'.$orderItem->status) }}
 						</option>
-						@if ($userStatus == 'producer')
+						@if (substr($userStatus,0,9) == 'producer/')
 							@if ($orderItem->status == 'ordering')
 								<option value="confirmed">
 									{{ __('order.confirmed') }}
@@ -92,7 +94,7 @@
 								</option>
 							@endif
 						@endif
-						@if ($userStatus == 'customer')
+						@if (strpos($userStatus,'customer/') > 0) {
 							@if ($orderItem->status == 'ordering')
 								<option value="canceled">
 									{{ __('order.canceled') }}
@@ -133,7 +135,7 @@
 	              <a class="btn btn-secondary" 
 	              		href="{{ \URL::to('/') }}">
 	                  <em class="fas fa-ban"></em>
-	                  {{ __('order.cancel') }}
+	                  Mégsem
 	              </a>
 	            </div>
 	         </div>  

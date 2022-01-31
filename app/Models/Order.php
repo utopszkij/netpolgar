@@ -27,6 +27,7 @@ class Order extends Model {
 		$table = \DB::table('orderitems')
 		->select('orderitems.id','orderitems.quantity', 'orderitems.created_at',
 		'orderitems.status','products.unit','products.name',
+		'products.parent_type','products.parent',
 		'orders.id as orderId','orders.customer_type','orders.customer'
 		)
 		->leftJoin('orders','orders.id','orderitems.order_id')

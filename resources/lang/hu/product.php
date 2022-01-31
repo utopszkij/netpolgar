@@ -41,5 +41,13 @@ return [
     'used' => 'Felhasználók száma',
     'comments' => 'Hozzászólások',
     'orders' => 'rendelések',
-    'stockEvents' => 'Készlet mozgások' 
+    'stockEvents' => 'Készlet mozgások',
+    'evaluationDisabled' => 'Értékelés csak a terméket felhasználók számára megengedett',
+    'evaluationExists' => 'Te már értékelt ezt a terméket.',
+    'evaluation1' => 'rossz', 
+	'evaluation2' => 'elfogadható', 
+	'evaluation3' => 'közepes', 
+	'evaluation4' => 'jó', 
+	'evaluation5' => 'kitünő',
+	'evaluationSaved' => 'Köszönjuük az értékelést.'  
 ];

@@ -4,7 +4,7 @@ use App\Models\Minimarkdown;
 <x-guest-layout>  
 
 	@php
-		function evaluation($value) {
+		function evaluation($value,$userUsed, $product) {
 			$result = '<div class="evaluation">';
 			if ($value > 4.5) {
 				$result .= '<em class="fas fa-star"></em>
@@ -58,7 +58,7 @@ use App\Models\Minimarkdown;
 				$result .= '<em class="fas fa-star"></em>
 				<img src="/img/star.png" />
 				<img src="/img/star.png" />
-				<img src="/img/star.png" />
+				<img src="/img/star.png" />					
 				<img src="/img/star.png" />';
 			} else if ($value > 0.25) {
 				$result .= '<em class="fas fa-star-half-alt"></em>
@@ -73,6 +73,11 @@ use App\Models\Minimarkdown;
 				<img src="/img/star.png" />
 				<img src="/img/star.png" />';
 			}
+			if ($userUsed) {
+				$result .= '<a href="'.\URL::to('/products/evaluation/'.$product->id).'">
+							<em class="fas fa-arrows-alt-v"></em>Értékelem
+						</a>';
+            }
 			$result .= '</div>';
 			return $result;		
 		}
@@ -164,8 +169,7 @@ use App\Models\Minimarkdown;
                     {{ $product->stock }}  {{ $product->unit }}
                 </div>
                 <div class="form-group">
-                	{!! evaluation($info->evaulation) !!}
-                	{{ __('product.used') }}: {{ $info->usedCount }}
+                	{!! evaluation($info->evaulation, $info->userUsed, $product) !!}
 					 </div>   
                 <div class="form-group">
                 	<form action="/carts/add" method="get">
