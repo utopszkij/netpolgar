@@ -79,6 +79,7 @@ class ProductController extends Controller {
 		$request->session()->put('productsSearch',$search); 
 		$request->session()->put('productsCategories',$categories); 
 		$request->session()->put('productsTeamId',$teamId); 
+		$request->session()->put('productsUserId',0); 
 		$page = $request->input('page',1);    	
       if ($teamId == '') {
 			$team = false;
@@ -100,14 +101,55 @@ class ProductController extends Controller {
 			// product készlet meghatározás
 			$product->stock = Product::getStock($product);
 		}	
+	  $request->session()->put('productsListUrl',\URL::current());	
       return view('product.index',
         	["data" => $data,
         	"teamId" => $teamId,
         	"team" => $team,
+        	"user" => false,
         	"order" => $order,
         	"search" => $search,
         	"categories" => $categories]);
     }
+    
+    /**
+     * Display a listing of the resource userId szerint.
+     * @param Request 
+     * @param int $userId
+     * @return \Illuminate\Http\Response
+     */
+    public function listByUser(Request $request, $userId)  {
+	   
+		$order = $request->input('order', $request->session()->get('productsOrder','name,asc'));
+		$orderArr = explode(',',$order);										     	
+		$search = $request->input('search', $request->session()->get('productsSearch',''));    	
+		$categories = $request->input('categories', $request->session()->get('productsCategories',''));
+		$request->session()->put('productsOrder',$order); 
+		$request->session()->put('productsSearch',$search); 
+		$request->session()->put('productsCategories',$categories); 
+		$request->session()->put('productsTeamId',0); 
+		$request->session()->put('productsUserId',$userId); 
+		$page = $request->input('page',1);    	
+		$team = false;
+	    $data = Product::getDataByUser($userId, $orderArr, $search,
+				$categories, false, $page, 8);
+	    foreach ($data->items as $product) {
+			$product->userAdmin = $this->userAdmin($product);
+			// product készlet meghatározás
+			$product->stock = Product::getStock($product);
+	    }	
+	    $request->session()->put('productsListUrl',\URL::current());	
+	    $user = \DB::table('users')->where('id','=',$userId)->first();
+        return view('product.index',
+        	["data" => $data,
+        	"teamId" => 0,
+        	"team" => false,
+        	"user" => $user,
+        	"order" => $order,
+        	"search" => $search,
+        	"categories" => $categories]);
+    }
+    
 
     /**
      * Show the form for creating a new resource.

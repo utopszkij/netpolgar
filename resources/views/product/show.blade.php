@@ -225,7 +225,7 @@ use App\Models\Minimarkdown;
 	        			   
 					</div>                
 	            <div>
-	              <a class="btn btn-secondary" href="{{ \URL::to('/products/list/'.$team->id) }}">
+	              <a class="btn btn-secondary" href="{{ \Request::session()->get('productsListUrl') }}">
 	                  <em class="fas fa-ban"></em>
 	                  {{ __('product.back') }}
 	              </a>

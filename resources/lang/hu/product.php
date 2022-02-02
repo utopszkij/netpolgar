@@ -49,5 +49,6 @@ return [
 	'evaluation3' => 'Közepes', 
 	'evaluation4' => 'Jó', 
 	'evaluation5' => 'Kitünő',
-	'evaluationSaved' => 'Köszönjük az értékelést.'  
+	'evaluationSaved' => 'Köszönjük az értékelést.',
+	'filter' => 'Szűrés'  
 ];

@@ -143,7 +143,7 @@ Route::post('/tasks/{task}',[TaskController::class, 'update']);
 *   3. ha mindegyik tétel success2 akkor az order is "success"  
 */
 Route::get('/products/list/{teamId}',[ProductController::class, 'list']);
-Route::get('/products/listbyuser/{userId}',[ProductController::class, 'listbyuser']);
+Route::get('/products/listbyuser/{userId}',[ProductController::class, 'listByUser']);
 Route::get('/products/create/{team}',[ProductController::class, 'create'])
 	->middleware('auth');
 Route::get('/products/{product}/add/{quantity}',[ProductController::class,'add'])

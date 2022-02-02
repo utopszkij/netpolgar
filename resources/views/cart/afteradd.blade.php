@@ -9,7 +9,7 @@
 		<p>&nbsp;</p>
 		<div class="row">
 			<div class="col-12" style="text-align:center">
-				<a class="btn btn-primary" href="{{ \URL::to('/products/list/'.$teamId) }}">
+				<a class="btn btn-primary" href="{{ \Request::session()->get('productsListUrl') }}">
 					<em class="fas fa-reply"></em>
 					{{ __('cart.back_products') }}
 				</a>

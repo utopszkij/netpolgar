@@ -200,7 +200,7 @@ class Product extends Model
 	 } 
     
     /**
-    * adat lekérés a listához
+    * adat lekérés a listához team szerint
     * @param int $teamId
     * @param array $orderArr [fieldname, 'asc|desc']
     * @param string $search
@@ -217,8 +217,8 @@ class Product extends Model
 		if ($user) {
 			$userId = $user->id;
 		} else {
-			$userId = 0;			
-		}	
+			$userId = 0;
+		}
 		$sql = '
 		select products.id, products.name, products.avatar, products.price,
 			   products.stock, products.unit, products.status,
@@ -237,7 +237,56 @@ class Product extends Model
 			$sql .= ' and productcats.category in ('.$categories.') ';
 		}	  
 		if ($teamId > 0) {
-		 	$sql .= ' and products.parent = '.$teamId.' and products.parent_type = "teams" ';;
+		 	$sql .= ' and products.parent = '.$teamId.' and products.parent_type = "teams" ';
+		}      
+		$sql .= '
+		group by products.id, products.name, products.avatar, products.price,
+			   products.stock, products.unit, products.status 
+		order by '.$orderArr[0].' '.$orderArr[1];
+		
+		$data = new \stdClass();
+		$data->items = \DB::select($sql);
+		$data->currentPage = $page;
+		$data->total = count($data->items);
+		$data->perPage = $perPage;
+		$data->offset = (($data->currentPage - 1) * $data->perPage);
+		return $data;
+   }
+    
+    
+    /**
+    * adat lekérés a listához user szerint
+    * @param int $userI
+    * @param array $orderArr [fieldname, 'asc|desc']
+    * @param string $search
+    * @param string $categories 'catId, catId,...'
+    * @param bool $userAdmin
+    * @param int $page
+    * @param int $perPage   sorok száma egy oldalon
+    * @return {items:[..], currentPage, offset, total, perPage}
+    */
+	 public static function getDataByUser($userId,	$orderArr, 
+			$search,	$categories, $userAdmin, $page, $perPage
+		) {
+		$sql = '
+		select products.id, products.name, products.avatar, products.price,
+			   products.stock, products.unit, products.status,
+		       avg(evaluations.value) value, products.parent_type, products.parent
+		from products       
+		left outer join evaluations on evaluations.product_id = products.id       
+		left outer join productcats on productcats.product_id = products.id
+		where 1 ';
+		if (!$userAdmin) {
+			$sql .= ' and (products.status = "active" or (products.parent_type = "users" and products.parent = '.$userId.'))';		
+		}
+		if ($search != '') {
+			$sql .= ' and products.name like "%'.$search.'%" ';
+		}
+		if ($categories != '') {	
+			$sql .= ' and productcats.category in ('.$categories.') ';
+		}	  
+		if ($userId > 0) {
+		 	$sql .= ' and products.parent = '.$userId.' and products.parent_type = "users" ';
 		}      
 		$sql .= '
 		group by products.id, products.name, products.avatar, products.price,

@@ -110,6 +110,7 @@
 		<div class="row">
 			<div class="col-12 col-md-3">
 				<div id="submenu">
+					<h4>{{ __('product.filter') }}</h4>
 					@if ($team)
 					<div>
 						{{ $team->name }} 
@@ -117,6 +118,14 @@
 							class="btn btn-secondary">X</a>				
 					</div>
 					@endif
+					@if ($user)
+					<div>
+						{{ $user->name }} 
+						<a href="{{ \URL::to('/products/list/0') }}" 
+							class="btn btn-secondary">X</a>				
+					</div>
+					@endif
+					
 					<div id="treeIkon" onclick="treeIkonClick()" style="cursor:pointer">
 						<em class="fas fa-bars"></em>
 					</div>
@@ -135,7 +144,6 @@
 					value="{{ $categories}}" />
 				<div>
 					{{ __('product.sort') }}:
-					{{ $order }}
 					<select name="order" onchange="$('#formRefresh').submit()">
 						<option value="name,asc"{{ selected('name,asc',$order) }}>ABC</option>					
 						<option value="price,asc"{{ selected('price,asc',$order) }}>{{ __('product.priceASC') }}</option>					
