@@ -368,6 +368,19 @@ class Project extends Model
         			 ->orderBy('name')
         			 ->paginate($pageSize);
      }    			 
+
+	 public static function getDataByUser($userId,$pageSize) {	
+        return \DB::table('projects')
+				->select('projects.id','projects.name','projects.avatar',
+				'projects.description','projects.status',
+				'projects.team_id','projects.config','projects.deadline')
+				->leftJoin('members','members.parent','projects.id')
+				->where('members.parent_type','=','projects')
+        		->where('members.user_id','=',$userId)
+        		->where('members.status','=','active')
+        		->orderBy('name')
+        		->paginate($pageSize);
+     }    			 
 	 
 
 }

@@ -124,7 +124,9 @@ use App\Models\Minimarkdown;
 			<div id="onlineList"></div>
 	</div>		
 	<div style="clear:both"></div>
-	@if ($member)
+	@if (($member) | 
+		 (($parentType == 'users') & ($parentId == \Auth::user()->id))
+		)
 		<div id="jitsi">
 		<script type="text/javascript">
    		function jitsiStart() {

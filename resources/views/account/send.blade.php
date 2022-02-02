@@ -37,7 +37,7 @@
             <div class="col-xs-12 col-sm-12 col-md-12">
                 <div class="form-group">
                     <label>{{ __('account.value') }}:</label>
-                    <input type="number" name="value" min="0.1" max="1000000" value="1"
+                    <input type="number" name="value" min="0" max="1000000" value="1"
                     	style="width:200px" class="form-control" />
                 </div>
             </div>
@@ -46,7 +46,7 @@
             <div class="col-xs-12 col-sm-12 col-md-12">
                 <div class="form-group">
                     <label>{{ __('account.comment') }}:</label>
-                    <input type="textr" name="value" 
+                    <input type="textr" name="comment" 
                     	style="width:600px" class="form-control" />
                 </div>
             </div>
@@ -55,7 +55,8 @@
 	     <div class="row">
 	            <div class="col-xs-12 col-sm-12 col-md-12 text-center">
 	              <button type="submit" class="btn btn-primary">
-	              		<em class="fas fa-check"></em>{{ __('account.save') }}
+	              		<em class="fas fa-check"></em>
+	              		{{ __('account.save') }}
 	              </button>
 	              <a class="btn btn-secondary" href="{{ $backUrl }}">
 	                  <em class="fas fa-ban"></em>

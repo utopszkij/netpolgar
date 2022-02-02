@@ -2,6 +2,7 @@
 return [
     'accessDenied' => 'Hozzáférés nem engedélyezett', 
     'details' => 'Folyószámla',
+    'ID' => 'Folyószámla azonosító',
     'ballance' => 'Egyenleg',
      'created_at' => 'Időpont',
      'value' => 'Összeg',
@@ -14,5 +15,6 @@ return [
      'valueError' => 'Hibás összeg',
      'targetId' => 'Cél számla',
      'save' => 'Küld',
-     'cancel' => 'Mégsem'
+     'cancel' => 'Mégsem',
+     'successSend' => 'Sikeres átutalás'
 ];

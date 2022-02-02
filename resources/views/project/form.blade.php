@@ -130,7 +130,7 @@
 	              		<em class="fas fa-check"></em>{{ __('project.save') }}
 	              </button>
 	              <a class="btn btn-secondary" 
-	              		href="{{ \URL::to('/teams/'.$team->id) }}">
+	              		href="{{ \URL::previous() }}">
 	                  <em class="fas fa-ban"></em>
 	                  {{ __('project.cancel') }}
 	              </a>

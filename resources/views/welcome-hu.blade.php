@@ -56,10 +56,10 @@
 				üzenőfalon láthatja a saját postjait, ismerősei postjait, azon
 				csoportok üzenőfalát amelyeknek tagja, és ezen csoportok
 				projektjeinek az üzenőfalát. A felhasználók privát üzeneteket
-				is küldhetnek egymásnak, üzenet küldhet egy csoport összes
+				is küldhetnek egymásnak, üzenetet küldhet egy csoport összes
 				tagjának, összes ismerősnek is, Szellemi és anyagi termékek
 				cseréjét, megosztását virtuális, alternatív fizetőeszközös
-				web-es piactér segít. A felhasználók NET -es szavazásokat
+				web-es piactér segíti. A felhasználók NET -es szavazásokat
 				indíthatnak, ezek rendelhetőek csoporthoz, projekthez,
 				kommentelhetnek, értékelhetnek, szavazhatnak. A rendszerhez bárki
 				önként csatlakozhat, ingyenesen használhatja azt.</p>
@@ -175,7 +175,7 @@
 				<div>
 				<p>A csoport adminisztrátorok, regisztrált felhasználók kínálatokat vihetnek fel.
 				A kínálatok témakörökhöz rendelhetőek. 
-				A kínálatok csoporthoz vagy felhasználohoz kapcsolódhatnak. A
+				A kínálatok csoporthoz vagy felhasználóhoz kapcsolódhatnak. A
 				felhasználások (tranzakciók) virtuális pénzben történő
 				elszámolással vihetők fel a rendszerbe. A virtuális pénz neve: NTC (NET coint).
 				Kiindulásként, első közelítésként; ajánlott 1NTC -t egy óra munka ellenértékének
@@ -184,17 +184,17 @@
 				Vásárláskor a "vevő" NTC egyenlege csökken,	az "eladó" NTC egyenlege növekszik.
 				</p>
 				<p>
-				A főmenü "pactér" menüpontjánam a felhasználók saját nevükben tehetnek fel kinálatokat,
+				A főmenü "piactér" menüpontjábam a felhasználók saját nevükben tehetnek fel kinálatokat,
 				 a csoport almenü "Termékek" menüpontjában a csoport adminisztrátorok a csoport nevében
 				 tölthetnek fel kinálatokat.
 				</p>
-				<p>A vásárlás a web áruházakban megszokott módon történik, a vevő a "kosarába" gyüjti
-				a kiválasztott termékekt/szolgáltatásokat majd elküldi a megrendelést. Ha a felhasználó 
+				<p>A vásárlás a web áruházakban megszokott módon történik, a vevő a "kosarába" gyűjti
+				a kiválasztott termékeket/szolgáltatásokat majd elküldi a megrendelést. Ha a felhasználó 
 				csoport	adminisztrátor akkor ki kell választania, hogy saját nevében vagy valamelyik 
 				általa menedzselt csoport nevében vásárol.</p>
-				<p>A megrendelés elküldésekor zolásra kerül a "vásárló" folyószámláján a rendelt
-				termékek, szolgáltotások ára. Teljesitéskor kerül át az összeg az "eladó" számlájára.
-				Ha a tranzakció bármilyen okból meghiusul, akkor a zárolt összeg felszabadul a 
+				<p>A megrendelés elküldésekor zárolásra kerül a "vásárló" folyószámláján a rendelt
+				termékek, szolgáltotások ára. Teljesítéskor kerül át az összeg az "eladó" számlájára.
+				Ha a tranzakció bármilyen okból meghiúsul, akkor a zárolt összeg felszabadul a 
 				"vevő" számláján.</p>
 				</div>
 				<p><strong>JELEN TESZT VÁLTOZATBAN minden felhasználó kap 500 NTC induló keretet, 
@@ -254,7 +254,7 @@
 				javasolt) A szavazás során és a szavazás lezárulta után
 				módosítás már nekik sem engedélyezett.</p>
 				<p><br/></p>
-				<p><i>(Megjegyzés: értelem szerűen az Igen/nem típusú szavazásnál
+				<p><i>(Megjegyzés: értelemszerűen az Igen/nem típusú szavazásnál
 				megoldási lehetőséget nem lehet javasolni)</i></p>
 				<p><br/></p>
 				<p>
@@ -283,9 +283,9 @@
 				<p><br/></p>
 				<p>A szavazás közben
 				folyamatosan megtekinthetőek a rész eredmények és lekérhető a
-				már megadott szavazatokat tartalmazó CSV fájl (ez nem tartalmaz agmail
+				már megadott szavazatokat tartalmazó CSV fájl (ez nem tartalmaz a
 				szavazatot leadó személy azonosítására alkalmas adatot). Ezen
-				CSV fájl segítségével független ellenőrök ellenőrizhetik az
+				CSV fájl segítségével független ellenőrök ellenőrizhetik a
 				szavazat összesítés helyességét, illetve a szavazás különböző
 				időpontjaiban lekért CSV fájlok összevetésével vizsgálhatják,
 				hogy esetleg történt-e visszamenőleges módosítás az
@@ -299,13 +299,13 @@
 				fájlban), és a helyes tartalommal szerepel-e?</p>
 				<p><br/></p>
 				<p>A sorba rendező
-				szavazás kiértékelése Condorcet – Shulze metod szerint
+				szavazás kiértékelése Condorcet – Schulze metod szerint
 				történik.</p>
 				</div>
 <a name="uzenetek"></a>				
 				<p>&nbsp;</p>
 				<h5>Üzenetek (ß teszt)</h5>
-				<p>Lehetőség van szöveges üzenetet, megjegyzést irni</p>
+				<p>Lehetőség van szöveges üzenetet, megjegyzést írni</p>
 				<ul>
 				<li>Másik felhasználónak</li>
 				<li>Csoportnak</li>

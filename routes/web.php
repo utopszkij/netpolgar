@@ -32,8 +32,10 @@ use App\Http\Controllers\AccountController;
 
 Route::get('/construction', function() { return view('construction'); } );
 
+// team
 Route::resource('parents.teams', TeamController::class)->shallow();
 Route::get('/team/tree', [TeamController::class, 'tree']);
+Route::get('/users/{userId}/teams', [TeamController::class, 'listByUser']);
 
 // members
 Route::get('/member/doexit', [MemberController::class, 'doExit'])
@@ -90,6 +92,7 @@ Route::post('/votes',[VoteController::class, 'store']);
 Route::get('{poll}/votes/csv',[VoteController::class, 'csv']);
 // projects
 Route::get('/{team}/projects',[ProjectController::class, 'index']);
+Route::get('/projectsbyuser/{userId}',[ProjectController::class, 'listByUser']);
 Route::get('/{team}/projects/create',[ProjectController::class, 'create'])
 	->middleware('auth');
 Route::get('/projects/{project}',[ProjectController::class, 'show']);
@@ -140,6 +143,7 @@ Route::post('/tasks/{task}',[TaskController::class, 'update']);
 *   3. ha mindegyik tétel success2 akkor az order is "success"  
 */
 Route::get('/products/list/{teamId}',[ProductController::class, 'list']);
+Route::get('/products/listbyuser/{userId}',[ProductController::class, 'listbyuser']);
 Route::get('/products/create/{team}',[ProductController::class, 'create'])
 	->middleware('auth');
 Route::get('/products/{product}/add/{quantity}',[ProductController::class,'add'])
@@ -197,7 +201,7 @@ Route::get('/account/list/{actorType}/{actor}',[AccountController::class, 'list'
 	->middleware('auth');
 Route::get('/account/send/{accountId}',[AccountController::class, 'send'])
 	->middleware('auth');
-Route::post('/account/send}',[AccountController::class, 'dosend']);
+Route::post('/account/send',[AccountController::class, 'dosend']);
 	
 // csak a vevőknek engedélyezett
 // ---------------------------------------------------------------

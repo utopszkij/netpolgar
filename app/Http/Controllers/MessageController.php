@@ -220,10 +220,19 @@ class MessageController extends Controller {
             $member = Message::isMember($parent_type, $parent);
         }
         $errorInfo = $model->createOrUpdate($request, $member, $moderator);
-        if ($errorInfo == '') {
-            $result = \Redirect::back()->with('success',__('messages.saved'));
+        if ($parent_type == 'users') {
+			if ($errorInfo == '') {
+				$result = redirect(\URL::to('/message/tree/users/'.\Auth::user()->id))
+				->with('success',__('messages.saved'));
+			} else {
+				$result = \Redirect::back()->with('error',$errorInfo);
+			}
 		} else {
-            $result = \Redirect::back()->with('error',$errorInfo);
+			if ($errorInfo == '') {
+				$result = \Redirect::back()->with('success',__('messages.saved'));
+			} else {
+				$result = \Redirect::back()->with('error',$errorInfo);
+			}
 		}
         return $result;
     }

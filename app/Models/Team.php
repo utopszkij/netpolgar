@@ -176,6 +176,36 @@ class Team extends Model {
 		$result->userAdmin = in_array('active_admin',$result->userRank);
 		return $result;
     }
+    
+	 /**
+	 * kiegészítő infók kiolvasása user szerinti lekéréshez
+	 * @param int $userId
+	 * @return object
+	 */
+    public static function getInfoByUser(int $userId) {
+		$result = JSON_decode('{
+			"status":"active",
+			"path":[],
+			"parentClosed":false,       
+			"userRank":[],
+			"userParentRank":[],
+			"userLiked":false,
+			"userDisLiked":false,
+			"likeCount":0,
+			"likeReq":0,
+			"disLikeCount":0,
+			"disLikeReq":0,
+         "memberCount":0,
+         "userMember": false,
+         "userAdmin": false   
+		}');
+		$result->userMember = true; 
+		if (\Auth::check()) {
+			$result->userAdmin = ($userId == \Auth::user()->id);
+		}	
+		return $result;
+    }
+    
 
 	 /**
 	 * lapozható adat objekt kialakítása
@@ -187,7 +217,25 @@ class Team extends Model {
         return \DB::table('teams')
         			 ->where('parent','=',$parent)
         			 ->orderBy('name')
-        			 ->paginate(8);
+        			 ->paginate($pageSize);
+    }  
+
+	 /**
+	 * lapozható adat objekt kialakítása userId szerinti lekéréshez
+	 * @param int $userId
+	 * @param int $pageSize
+	 * @return object
+	 */
+    public static function getDataByUser(int $userId, int $pageSize) {	
+        return \DB::table('teams')
+			->select('teams.id','teams.name','teams.avatar',
+				'teams.description','teams.status')
+			->leftJoin('members','members.parent','teams.id')
+			->where('members.parent_type','=','teams')
+        	->where('members.user_id','=',$userId)
+        	->where('members.status','=','active')
+        	->orderBy('teams.name')
+        	->paginate($pageSize);
     }  
 
     

@@ -41,7 +41,9 @@
 				<a href="{{ \URL::to('/likeinfo/messages/'.$treeItem->id) }}" class="{{ $treeItem->likeStyle }}">
 					{{ $treeItem->disLikeCount }}</em>
 				</a>&nbsp;
-				@if ($member)
+				@if (($member) | 
+					 (($parentType == 'users') & ($parentId == \Auth::user()->id))
+					)
 				<a href="#" onclick="replyClick({{ $treeItem->id }})">
 					<em class="fas fa-reply"></em> Válasz
 				</a>&nbsp;&nbsp;&nbsp;

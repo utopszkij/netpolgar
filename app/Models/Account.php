@@ -67,6 +67,18 @@ class Account extends Model
 		return $result;
 	}
 	
+	/**
+	 * van elég NTC a számlán $value terheléshez?
+	 * @param string $actorType
+	 * @param int $actorId
+	 * @param float $value
+	 * @return bool
+	 */ 
+	public static function checkBallance(string $actorType, 
+		int $actorId, float $value): bool {
+		return true;
+	}
+	
 	public static function getData($actorType, $actorId, $pageSize) {
 		$table1 = \DB::table('accounts')
 		->where('from_type','=',$actorType)
@@ -94,7 +106,7 @@ class Account extends Model
 	public static function userMember(string $actorType, int $actorId, 
 		int $userId): bool {
 		return (\DB::table('members')
-					->where('user_id','=',$user->id)
+					->where('user_id','=',$userId)
 					->where('parent_type','=','teams')
 					->whereIn('rank',['member','admin'])
 					->where('status','=','active')
@@ -112,7 +124,7 @@ class Account extends Model
 	public static function userAdmin(string $actorType, int $actorId, 
 		int $userId): bool {
 		return (\DB::table('members')
-					->where('user_id','=',$user->id)
+					->where('user_id','=',$userId)
 					->where('parent_type','=','teams')
 					->where('rank','=','admin')
 					->where('status','=','active')

@@ -22,7 +22,7 @@ class TaskController extends Controller {
     	  $taskInfo = Task::getInfo(false);
     	  
     	  if (!$this->accessCheck('add', $info)) {
-    		   return redirect()->to('/projects'.$project->id)
+    		   return redirect(\URL::to('/projects/'.$project->id))
     		   						->with('error',__('task.accessDenied')); 	
    		  }
     	  $members = Task::getMembers($project->id);

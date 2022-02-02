@@ -321,7 +321,6 @@ class CartController extends Controller {
 	 * return true ha van elég egyenlege
 	 */ 
 	protected function checkNTCbalance($order, $customerType, $customerId) {
-		/* TEST egyenlőre nincs egyenleg ellenörzés
 		$result = false;
 		$total = 0;
 		$items = \DB::table('orderitems')
@@ -334,11 +333,10 @@ class CartController extends Controller {
 		foreach ($items as $item) {
 			$total = $total + (round($item->quantity * $item->price * 10) / 10);
 		}	
-		if ($total <= Account::getBalalnce($customerType, $customerId) - 1000) {
+
+		if (Account::checkBalalnce($customerType, $customerId), $total) {
 			$result = true;
 		}
-		*/
-		$result = true; 
 		return $result;		
 	}
 

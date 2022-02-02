@@ -15,7 +15,7 @@
 			<var id="subMenuIcon" class="subMenuIcon" onclick="toggleProjectMenu()">
 				<em class="fas fa-caret-right"></em><br />			
 			</var>
-         <a href="{{ \URL::to('/teams/'.$team->id) }}">
+         <a href="{{ \Request::session()->get('projectsListUrl','/') }}">
             <em class="fas fa-reply"></em>
             <span>{{ __('project.back') }}</span><br />
          </a>
@@ -52,11 +52,13 @@
 		
 		<div class="col-11 col-md-10" id="projectBody">
 		    <div class="col-11 col-md-10 path" style="margin-top: 5px;">
+				<h3>
 					<a href="{{ \URL::to('/teams/'.$team->id) }}">
 						<em class="fas fa-hand-point-right"></em>
 						<em class="fas fa-user-friends"></em>
 						&nbsp;{{ $team->name }} 			
 					</a>    	
+				</h3>	
 			 </div>    
 
 

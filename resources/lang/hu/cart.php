@@ -7,7 +7,7 @@ return [
     'price' => 'Ár',
     'details' => 'Részletek',
     'mustLogin' => 'Ehez a funciohoz be kell jelentkezni!',
-    'back_products' => 'Vissza a termékekehez',
+    'back_products' => 'Vissza a termékekhez',
     'order_finish' => 'Rendelés befejezése',
     'order_cancel' => 'Rendelés törlése',
     'success_add' => 'Sikeresen hozzáadva a bevásárló kosárhoz',
@@ -20,7 +20,7 @@ return [
     'deleted' => 'Megrendelés tétel törölve',
     'sureItemDel' => 'Biztos törölni akarod ezt a tételt?',
     'selectCustomerType' => 'Kinek a nevében vásárolsz?',
-    'bySelf' => 'saját nevemben, magánszemélyként',
-    'byTeam' => 'adminsiztrátoraként',
+    'bySelf' => 'Saját nevemben, magánszemélyként',
+    'byTeam' => 'Adminiszitrátoraként',
     'ballance' => 'Folyószámla egyenleg'
 ];

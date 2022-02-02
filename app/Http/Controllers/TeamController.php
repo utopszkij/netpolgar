@@ -36,12 +36,33 @@ class TeamController extends Controller {
 	   	return redirect()->to('/')->with('error','team.accessDenied');	    	  
 		}
 
+	 \Request::session()->put('teamIndexUrl',\URL::current());
       return view('team.index',
         	["data" => $data,
+        	"parentType" => 'teams',
         	"parent" => $parent,
         	"info" => $info])
          ->with('i', (request()->input('page', 1) - 1) * 8);
     }
+    
+    /**
+     * lista azon csoportokról amiknek userId tagja
+     * @param int $userId 
+     * @return laravel view
+     */ 
+    public function listByUser(int $userId) {
+    	$data = $this->model->getDataByUser((int)$userId, 8);
+    	$info = $this->model->getInfoByUser((int)$userId);
+		$user = \DB::table('users')->where('id','=',$userId)->first();
+		\Request::session()->put('teamIndexParentType','users');
+	  \Request::session()->put('teamIndexUrl',\URL::current());
+      return view('team.index',
+        	["data" => $data,
+        	"parentType" => 'users',
+        	"parent" => $user,
+        	"info" => $info])
+         ->with('i', (request()->input('page', 1) - 1) * 8);
+	}
     
     /** 
      * fa struktúra megjelenítő

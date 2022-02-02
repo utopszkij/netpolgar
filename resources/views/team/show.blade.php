@@ -1,6 +1,8 @@
 <x-guest-layout>  
 
-   @php if ($team->avatar == '') $team->avatar = URL::to('/').'/img/team.png'; @endphp
+   @php if ($team->avatar == '') $team->avatar = URL::to('/').'/img/team.png'; 
+		$teamIndexUrl = \Request::session()->get('teamIndexUrl','/teams/'.$team->parent.'/list');
+   @endphp
 
 	<div id="teamContainer">
     <div class="row">
@@ -22,7 +24,7 @@
 			<var id="subMenuIcon" class="subMenuIcon" onclick="toggleTeamMenu()">
 				<em class="fas fa-caret-right"></em><br />			
 			</var>
-         <a href="{{ route('parents.teams.index', $team->parent) }}">
+         <a href="{{ $teamIndexUrl }}">
             <em class="fas fa-reply"></em>
             <span>{{ __('team.back') }}</span><br />
          </a>

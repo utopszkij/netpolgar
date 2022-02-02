@@ -2,9 +2,15 @@
 	<div id="accountContainer">
         <div class="row">
             <div class="col-12">
-				<h2>{{ $title }}</h2>
+				@if ($actorType == 'teams') 
+					<a href="{{ \URL::to('/teams/'.$actorId) }}">
+				@else
+					<a href="{{ \URL::to('/member/user/'.$actorId) }}">
+				@endif
+				<h2><em class="fas fa-hand-point-right"></em>{{ $title }}</h2>
+				</a>
 				<h3>{{ __('account.details') }}</h3>
-				<h4>ID:{{ $accountId }}</h4>
+				<h4>{{ __('account.ID') }}:{{ $accountId }}</h4>
             </div>
         </div>
         <div class="row">
@@ -52,7 +58,8 @@
             <div class="row">
 				<div class="col-12">
 					<a class="btn btn-primary" href="{{ \URL::to('/account/send/'.$accountId) }}">
-						<em class="fas fa-arrow-right"></em>{{ __('account.send') }}
+						<em class="fas fa-money-bill"></em><em class="fas fa-arrow-right"></em>
+						{{ __('account.send') }}
 					</a>
 				</div>
 			</div>		

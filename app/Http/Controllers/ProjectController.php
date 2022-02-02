@@ -21,12 +21,41 @@ class ProjectController extends Controller
     	} else {
 			$info = Project::getInfoFromTeam($team);    	
     	}	
+    	\Request::session()->put('projectsListUrl',\URL::current());
         return view('project.index',
         	["data" => $data,
         	"team" => $team,
-        	"info" => $info])
+        	"info" => $info,
+        	"user" => false
+        	])
         ->with('i', (request()->input('page', 1) - 1) * 8);
     }
+
+    /**
+     * Display a listing of the resource.
+     * projektek amiknek az adott user tagja
+     * @return \Illuminate\Http\Response
+     */
+    public function listByUser(int $userId)   {
+		$data = Project::getDataByUser($userId,8);
+        if (count($data) > 0) {   			 
+    		$info = Project::getInfo($data[0]);
+    	} else {
+			$info = Project::getInfo(Project::emptyRecord());    	
+    	}	
+    	$info->userMember = true;
+    	$info->userAdmin = false;
+    	$user = \DB::table('users')->where('id','=',$userId)->first();
+    	\Request::session()->put('projectsListUrl',\URL::current());
+        return view('project.index',
+        	["data" => $data,
+        	"team" => false,
+        	"user" => $user,
+        	"info" => $info
+        	])
+        ->with('i', (request()->input('page', 1) - 1) * 8);
+    }
+    
 
 	 protected function userMember(array $userRank): bool {
 	 	return (in_array('active_member',$userRank) | 
@@ -49,8 +78,8 @@ class ProjectController extends Controller
     	$project->team_id = $team->id;	
     	$info = Project::getInfoFromTeam($team);
     	if (!$this->accessCheck('add', $info)){
-    		   return redirect()->to('/'.$team->id.'/projects')
-    		   						->with('error',__('project.accessDenied')); 	
+    		   return redirect(\URL::to('/'.$team->id.'/projects'))
+    		   			->with('error',__('project.accessDenied')); 	
    		}
 
         return view('project.form',

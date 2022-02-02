@@ -61,6 +61,8 @@ class AccountController extends Controller {
 				 "title" => $title,
 				 "ballance" => $ballance,
 				 "userAdmin" => $userAdmin,
+				 "actorType" => $actorType,
+				 "actorId" => $actorId,
 				 "accountId" => ucFirst(substr($actorType,0,1)).$actorId
 				])
 				->with('i', (request()->input('page', 1) - 1) * 8);
@@ -128,43 +130,45 @@ class AccountController extends Controller {
 			$value = $request->input('value',0);
 			$comment = strip_tags($request->input('comment',''));
 			if (substr($targetId,0,1) == 'U') {
-				$tagetType = 'users';
+				$targetType = 'users';
 			} else {
-				$tagetType = 'teams';
+				$targetType = 'teams';
 			}
-			$targetId = substr($tagetId,1,100);
+			$targetId = substr($targetId,1,100);
 			$backUrl = $request->input('backUrl','/');
 			if ($fromType == 'teams') {
 				$userAdmin = Account::userAdmin($fromType, $fromId, 
 					$user->id);
 			} else {
-				$userAdmin = ($user->id == $actorId);
+				$userAdmin = ($user->id == $fromId);
 			}
 			if ($userAdmin) {
 				// egyenleg és value ellenörzés
 				$valueOk = ($value > 0);
 				if ($valueOk) {
-					// $valueOk = Account::ballanceCheck($value);
+					$valueOk = Account::checkBallance($fromType, 
+						$fromId, $value);
 				}
 				// target létező számla?
-				$t = \DB::table($targetType)
+				$t = (\DB::table($targetType)
 					->where('id','=',$targetId)
-					->first();
+					->count() > 0);
 				if ($t & $valueOk) {
 					// rekord generálás
 					$model = new Account();
 					$model->create([
 					"from_type" => $fromType,
 					"from" => $fromId,
-					"target_type" => $tagetType,
-					"taget" => $targetId,
-					"value" => $request->input('value',0),
-					"comment" => $request->input('comment',''),
+					"target_type" => $targetType,
+					"target" => $targetId,
+					"value" => $value,
+					"comment" => $comment,
+					"status" => "",
 					"info" => 'send'
 					]);
 					$result = redirect()->to($backUrl)
 						->with('success',__('account.successSend'));
-				} else if (!$ŧ) {
+				} else if (!$t) {
 					$result = redirect()->to(\URL::to($backUrl))
 					->with('error',__('account.targetNotFound'));
 				} else if ($value < 0) {
