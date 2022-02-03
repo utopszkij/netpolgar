@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Validator;
 use App\Rules\RanksRule;
+use App\Models\Minimarkdown;
 
 if (!defined('UNITTEST')) {
 	define('UNITTEST',1);
@@ -51,36 +52,6 @@ class Project extends Model
     	}');
     	return $result;
     }
-
-	/**
-	* távoli file infok lekérdezése teljes letöltés nélkül
-	* csak 'http' -vel kezdödő linkeket ellenöriz
-	* @param string $url
-	* @return array ['fileExist', 'fileSize' ]
-	*/
-	public static function getRemoteFileInfo($url) {
-		if (substr($url,0,4) == 'http') {
-		   $ch = curl_init($url);
-		   curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-		   curl_setopt($ch, CURLOPT_HEADER, TRUE);
-		   curl_setopt($ch, CURLOPT_NOBODY, TRUE);
-		   $data = curl_exec($ch);
-		   $fileSize = curl_getinfo($ch, CURLINFO_CONTENT_LENGTH_DOWNLOAD);
-		   $httpResponseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-		   curl_close($ch);
-		   $result = [
-	        'fileExists' => (int) $httpResponseCode == 200,
-	        'fileSize' => (int) $fileSize
-		   ];
-		} else {
-		   $result = [
-	        'fileExists' => 1,
-	        'fileSize' => 100
-		   ];
-		}
-		return $result;
-	}
-
 
     
     /**
@@ -280,7 +251,7 @@ class Project extends Model
 			$projectArr['name'] = strip_tags($request->input('name'));
 			$projectArr['description'] = strip_tags($request->input('description'));
 			$projectArr['avatar'] = strip_tags($request->input('avatar'));
-			$fileInfo = Project::getRemoteFileInfo($projectArr['avatar']);
+			$fileInfo = Minimarkdown::getRemoteFileInfo($projectArr['avatar']);
 			if (($fileInfo['fileSize'] > 2000000) |
 			    ($fileInfo['fileSize'] < 10)) {
 				$projectArr['avatar'] = '/img/noimage.png';

@@ -3,62 +3,39 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\Team;
 use Illuminate\Http\Request;
 use Illuminate\Pagination;
+use App\Models\Minimarkdown;
 
 class ProductController extends Controller {
 	
-   /**
-	* távoli file infok lekérdezése teljes letöltés nélkül
-	* csak 'http' -vel kezdödő linkeket ellenöriz
-	* @param string $url
-	* @return array ['fileExist', 'fileSize' ]
-	*/
-	protected function getRemoteFileInfo($url) {
-		if (substr($url,0,4) == 'http') {
-		   $ch = curl_init($url);
-		   curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-		   curl_setopt($ch, CURLOPT_HEADER, TRUE);
-		   curl_setopt($ch, CURLOPT_NOBODY, TRUE);
-		   $data = curl_exec($ch);
-		   $fileSize = curl_getinfo($ch, CURLINFO_CONTENT_LENGTH_DOWNLOAD);
-		   $httpResponseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-		   curl_close($ch);
-		   $result = [
-	        'fileExists' => (int) $httpResponseCode == 200,
-	        'fileSize' => (int) $fileSize
-		   ];
-		} else {
-		   $result = [
-	        'fileExists' => 1,
-	        'fileSize' => 100
-		   ];
+	/**
+	 * bejelentkezett user jogosult erre?
+	 * @param string $action 'cretae'|'edit'|'delete'
+	 * @param $team
+	 * @param $product
+	 * @return $bool
+	 */ 
+	protected function accessCheck(string $action, $team, $product): bool {
+		$result = false;
+		if ($action == 'create') {
+			if (\Auth::check()) {
+				if ($team) {
+					$result = Team::userAdmin($team->id, \Auth::user()->id);
+				} else {
+					$result = true;
+				}
+			}
+		}
+		if ($action == 'edit') {
+			if (\Auth::check()) {
+				$result = Product::userAdmin($product, \Auth::user()->id);
+			}	
+		}
+		if ($action == 'delete') {
 		}
 		return $result;
-	}
-		
-	/**
-	* bejelentkezett user admin a team -ben?
-	* @param Project $product
-	* @return bool
-	*/
-	protected function userAdmin($product): bool {
-		$result = false;
-      $user = \Auth::user();
-      if ($user) {
-      	if ($product->parent_type == 'teams') {	
-				$result = (\DB::table('members')
-									->where('parent_type','=','teams')
-									->where('parent','=',$product->parent)
-									->where('user_id','=',$user->id)
-									->where('rank','=','admin')
-									->where('status','=','active')
-									->count() > 0);		
-			} else {
-				$result = ($user->id == $product->parent);			
-			}							
-      } 
-      return $result;
 	}
 	
     /**
@@ -81,23 +58,23 @@ class ProductController extends Controller {
 		$request->session()->put('productsTeamId',$teamId); 
 		$request->session()->put('productsUserId',0); 
 		$page = $request->input('page',1);    	
-      if ($teamId == '') {
+        if ($teamId == '') {
 			$team = false;
-      } else {
-      	$team = \DB::table('teams')->where('id','=',$teamId)->first();
-      }
-      if ($teamId > 0) {  		
-         $product = JSON_decode('{ "parent_type": "teams",
+        } else {
+      	   $team = \DB::table('teams')->where('id','=',$teamId)->first();
+        }
+        if ($teamId > 0) {  		
+           $product = JSON_decode('{ "parent_type": "teams",
          							     "parent": '.$teamId.' }');
-         $userAdmin = $this->userAdmin($product);							     		
-			$data = Product::getData($teamId, $orderArr, $search,
-				$categories, $userAdmin, $page, 8);
+           $userAdmin = Product::userAdmin($product);							     		
+		   $data = Product::getData($teamId, $orderArr, $search,
+		   $categories, $userAdmin, $page, 8);
 		} else {
 			$data = Product::getData($teamId, $orderArr, $search,
-				$categories, false, $page, 8);
+			$categories, false, $page, 8);
 		}	
 		foreach ($data->items as $product) {
-			$product->userAdmin = $this->userAdmin($product);
+			$product->userAdmin = Product::userAdmin($product);
 			// product készlet meghatározás
 			$product->stock = Product::getStock($product);
 		}	
@@ -134,7 +111,7 @@ class ProductController extends Controller {
 	    $data = Product::getDataByUser($userId, $orderArr, $search,
 				$categories, false, $page, 8);
 	    foreach ($data->items as $product) {
-			$product->userAdmin = $this->userAdmin($product);
+			$product->userAdmin = Product::userAdmin($product);
 			// product készlet meghatározás
 			$product->stock = Product::getStock($product);
 	    }	
@@ -158,29 +135,30 @@ class ProductController extends Controller {
      */
     public function create($team) {
 
-    		// csak bejelentkezett user vihet fel
-    		if (!\Auth::user()) {
-				return redirect()->to('/teams/'.$team->id)
-			                 ->with('error',__('product.accessDenied'));
-    		}
-
-    	  $product = Product::emptyRecord();
-    	  if (is_string($team)) {
+		 if (is_string($team)) {
+			$team = Product::where('id','=',$team)->first();
+		 }
+		 if (!$this->accessCheck('create', $team, false)) {
+				return redirect()->to('/teams/'.$team->id);
+		 }
+    	  
+    	 $product = Product::emptyRecord();
+    	 if (is_string($team)) {
 				$team = \DB::table('teams')->where('id','=',$team)->first();    	  
-    	  } else {
+    	 } else {
 				$team = false;    	  
-    	  } 
-    	  if ($team) {
+    	 } 
+    	 if ($team) {
     	  		$product->parent_type = 'teams';
     	  		$product->parent = $team->id;
     	  		$parentUser = false;
-    	  } else {
+    	 } else {
     	  		$product->parent_type = 'users';
 				$product->parent = \Auth::user()->id;
 				$parentUser = \Auth::user();    	  
-    	  }			
-    	  $info = Product::getInfo($product);
-    	  $categories = Product::getCategories($product->id);
+    	 }			
+    	 $info = Product::getInfo($product);
+    	 $categories = Product::getCategories($product->id);
 
         return view('product.form',
         ["product" => $product,
@@ -190,68 +168,6 @@ class ProductController extends Controller {
          "info" => $info]);
     }
 
-	 /**
-	 * product rekord irása az adatbázisba a $request-be lévő információkból
-	 * @param int $id
-	 * @param Request $request
-	 * @return string, $id created new record id
-	 */	 
-	 protected Function saveOrStore(int &$id, Request $request): string {	
-			// rekord array kialakitása
-			$parent = $request->input('parent');
-			$parent_type = $request->input('parent_type');
-			$user = \Auth::user();
-			$productArr = [];
-			$productArr['parent_type'] = $parent_type;
-			$productArr['parent'] = $parent;
-			$productArr['name'] = strip_tags($request->input('name'));
-			$productArr['description'] = strip_tags($request->input('description',['br']));
-			$productArr['avatar'] = strip_tags($request->input('avatar'));
-			$fileInfo = $this->getRemoteFileInfo($productArr['avatar']);
-			if ($fileInfo['fileSize'] > 1000000) {
-				$productArr['avatar'] = '/img/noimage.png';			
-			}			
-			
-			$productArr['unit'] = strip_tags($request->input('unit'));
-			$productArr['price'] = $request->input('price');
-			$productArr['currency'] = strip_tags($request->input('currency'));
-			$productArr['status'] = strip_tags($request->input('status'));
-
-			// product rekord tárolás az adatbázisba
-			$errorInfo = '';
-			try {
-				$model = new Product();
-				if ($id == 0) {
-					$productArr['stock'] = 0;
-			 		$productRec = $model->create($productArr);
-			 		$id = $productRec->id;
-			 	} else {
-					$model->where('id','=',$id)->update($productArr);			 	
-			 	}	
-			} catch (\Illuminate\Database\QueryException $exception) {
-			    $errorInfo = $exception->errorInfo;
-			}
-			if ($user) {	
-				if ($errorInfo == '') {
-					$addToStock = $request->input('quantity','');
-					if ($addToStock != 0) {
-						\DB::table('productadds')
-						->insert(['product_id' => $id,
-						'quantity' => $addToStock,
-						'user_id' => $user->id 
-						]);
-						$product = $model->where('id','=',$id)->first();
-						$product->stock = $product->stock + $addToStock;
-						$model->where('id','=',$id)
-						->update([
-							'stock' => $product->stock						
-						]);
-					}			
-				}
-			}
-			return $errorInfo;		
-	 }	
-
     /**
      * Store a newly created resource in storage.
      *
@@ -260,28 +176,29 @@ class ProductController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request) {
-    		if (!\Auth::user()) { 
+		
+		 if ($request->input('parent_type') == 'teams') {
+			$teamId = $request->input('parent');
+			$team = \DB::table('teams')->where('id','=',$teamId)->first();
+			if (!$this->accessCheck('create', $team, false)) {
 				return redirect()->to('/products/creaate/'.$request->input('team_id'))
 			    ->with('error',__('product.accessDenied'));
-    		}
-
-			// tartalmi ellenörzések 
-			$request->validate([
-				'name' => 'required',
-				'parent' => 'required',
-				'description' => 'required',
-				'unit' => 'required',
-				'price' => ['required','numeric','min:0'],
-				'currency' => 'required'
-			]);
-			if ($request->input('parent_type') == 'teams') {
-				$teamId = $request->input('parent');
-			} else {
-				$teamId = 0;			
-			}	 
+			}
+    	 } else {
+			$teamId = 0;			
+			$user = \Auth::user();
+			if (!$this->accessCheck('create', false, $user)) {
+				return redirect()->to('/products/creaate/'.$request->input('team_id'))
+			    ->with('error',__('product.accessDenied'));
+			}
+		 }	
+			$model = new Product();
+			$model->valid($request);
+			
+				 
 			// Product rekord kiirása
 			$id = 0;
-			$errorInfo = $this->saveOrStore($id,$request);
+			$errorInfo = Product::saveOrStore($id,$request);
 			
 			 // categories tárolása
 			 $oldCategories = Product::getCategories($id);
@@ -290,15 +207,25 @@ class ProductController extends Controller {
 				$errorIndo = Product::saveCategories($id, $categories);			 
 			 }
 
-		   // result kialakitása			
-			if ($errorInfo == '') { 
-				$result = redirect()->to('/products/list/'.$teamId)
-			                 ->with('success',__('product.successSave') );
-			} else {
-				$result = redirect()->to('/products/list/'.$teamId)
-			                 ->with('error',$errorInfo);
-			}
-			return $result;                 
+		     // result kialakitása			
+			 if ($request->input('parent_type') == 'teams') {
+				 if ($errorInfo == '') { 
+					$result = redirect()->to('/products/list/'.$teamId)
+								 ->with('success',__('product.successSave') );
+				 } else {
+					$result = redirect()->to('/products/list/'.$teamId)
+								 ->with('error',$errorInfo);
+				 }
+			 } else {
+				 if ($errorInfo == '') { 
+					$result = redirect()->to('/products/listbyuser/'.$user->id)
+								 ->with('success',__('product.successSave') );
+				 } else {
+					$result = redirect()->to('/products/listbyuser/'.$user->id)
+								 ->with('error',$errorInfo);
+				 }
+			 }	 
+			 return $result;                 
     }
     
     /**
@@ -339,34 +266,31 @@ class ProductController extends Controller {
      */
     public function edit(Product $product)
     {
-		  // Jogosultság ellenörzés
-    	  if ((!\Auth::user()) |
-    	      (!$this->userAdmin($product)) |
-    	      ($product->status == 'closed')) {
+		 if (!$this->accessCheck('edit', false, $product)) {
 	        return redirect()->to('/products/'.$product->id)
                         ->with('error',__('product.accessDenied'));
-    	  } 
+    	 }
     	  	
-    	  $info = Product::getInfo($product);
-    	  if ($product->parent_type == 'teams') {	
+    	 $info = Product::getInfo($product);
+    	 if ($product->parent_type == 'teams') {	
         		$team = \DB::table('teams')->where('id','=',$product->parent)
 		        ->first();
 		      $parentUser = false;  
-        } else {
+         } else {
 				$team = false;
 				$parentUser = \DB::table('users')
 					->where('id','=',$product->parent)
 					->first();        
-        }		
-    	  $categories = Product::getCategories($product->id);
-		$product->stock = Product::getStock($product);
-        return view('product.form',
+         }		
+    	 $categories = Product::getCategories($product->id);
+		 $product->stock = Product::getStock($product);
+         return view('product.form',
         	["product" => $product,
         	 "parentUser" => $parentUser,
         	 "team" => $team,
-          "info" => $info,
-          "categories" => $categories,
-          "userAdmin" => $this->userAdmin($product),
+			 "info" => $info,
+			 "categories" => $categories,
+			 "userAdmin" => Product::userAdmin($product),
         	]);
     }
 
@@ -379,49 +303,51 @@ class ProductController extends Controller {
      */
     public function update(Request $request, Product $product)
     {
-		  // Jogosultság ellenörzés
-    	  if ((!\Auth::user()) |
-    	      (!$this->userAdmin($product)) |
-    	      ($product->status == 'closed')) {
+		if (!$this->accessCheck('edit', false, $product)) {
 	        return redirect()->to('/products/'.$product->id)
                         ->with('error',__('product.accessDenied'));
-    	  } 	
+    	}
     	  
-			// tartalmi ellenörzések 
-			$request->validate([
-				'name' => 'required',
-				'parent' => 'required',
-				'description' => 'required',
-				'unit' => 'required',
-				'price' => ['required','numeric','min:0'],
-				'currency' => 'required'
-			]);
-			if ($request->input('parent_type') == 'teams') {
+		$model = new Product();
+		$model->valid($request);
+
+		if ($request->input('parent_type') == 'teams') {
 				$teamId = $request->input('parent');
-			} else {
+		} else {
 				$teamId = 0;			
-			}	 
+		}	 
 
-			// Product rekord kiirása
-			$id = $product->id;
-			$errorInfo = $this->saveOrStore($id,$request);
+		// Product rekord kiirása
+		$id = $product->id;
+		$errorInfo = Product::saveOrStore($id,$request);
 			
-			 // categories tárolása
-			 $oldCategories = Product::getCategories($id);
-			 $categories = $request->input('categories');
-			 if ($categories != $oldCategories) {
+		// categories tárolása
+		$oldCategories = Product::getCategories($id);
+		$categories = $request->input('categories');
+		if ($categories != $oldCategories) {
 				$errorIndo = Product::saveCategories($id, $categories);			 
-			 }
+		}
 
-		   // result kialakitása			
+		// result kialakitása		
+		if ($product->parent_type == 'teams') {	
 			if ($errorInfo == '') { 
-				$result = redirect()->to('/products/list/'.$teamId)
-			                 ->with('success',__('product.successSave') );
+					$result = redirect()->to('/products/list/'.$teamId)
+								 ->with('success',__('product.successSave') );
 			} else {
-				$result = redirect()->to('/products/list/'.$teamId)
-			                 ->with('error',$errorInfo);
+					$result = redirect()->to('/products/list/'.$teamId)
+								 ->with('error',$errorInfo);
 			}
-			return $result;                 
+		} else {
+			$user = \Auth::user();
+			if ($errorInfo == '') { 
+					$result = redirect()->to('/products/listbyuser/'.$user->id)
+								 ->with('success',__('product.successSave') );
+			} else {
+					$result = redirect()->to('/products/listbyuser/'.$user->id)
+								 ->with('error',$errorInfo);
+			}
+		}
+		return $result;                 
     }
 
     /**
@@ -444,7 +370,7 @@ class ProductController extends Controller {
     	}
     	$info = Product::getInfo($product);
     	if ((!\Auth::user()) | 
-    	    (!$this->userAdmin($product)) |
+    	    (!Product::userAdmin($product)) |
     	    ($team->status == 'closed')) {
 	        return redirect()->to('/products/list/'.$teamId)
                         ->with('error',__('product.accessDenied'));

@@ -50,5 +50,6 @@ return [
 	'evaluation4' => 'Jó', 
 	'evaluation5' => 'Kitünő',
 	'evaluationSaved' => 'Köszönjük az értékelést.',
-	'filter' => 'Szűrés'  
+	'filter' => 'Szűrés',
+	'orUpload' => ' Vagy file feltöltése:'  
 ];

@@ -5,6 +5,9 @@ namespace App\Models;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
+use App\Models\Upload;
+
 
 class Product extends Model
 {
@@ -329,6 +332,124 @@ class Product extends Model
 		}
 		return $result;
 	}
+	
+	/**
+	* bejelentkezett user admin a product.parent team -ben vagy ő a product.parent?
+	* @param Product $product
+	* @return bool
+	*/
+	public static function userAdmin($product): bool {
+	  $result = false;
+      $user = \Auth::user();
+      if ($user) {
+      	if ($product->parent_type == 'teams') {	
+				$result = (\DB::table('members')
+									->where('parent_type','=','teams')
+									->where('parent','=',$product->parent)
+									->where('user_id','=',$user->id)
+									->where('rank','=','admin')
+									->where('status','=','active')
+									->count() > 0);		
+		} else {
+			$result = ($user->id == $product->parent);			
+		}							
+      } 
+      return $result;
+	}
+	
+	public function valid(Request $request):bool {		
+		// tartalmi ellenörzések 
+		$request->validate([
+				'name' => 'required',
+				'parent' => 'required',
+				'description' => 'required',
+				'unit' => 'required',
+				'price' => ['required','numeric','min:0'],
+				'currency' => 'required'
+		]);
+		return true;
+	}		
+
+
+	 /**
+	 * product rekord irása az adatbázisba a $request-be lévő információkból
+	 * @param int $id
+	 * @param Request $request
+	 * @return string, $id created new record id
+	 */	 
+	 public static function saveOrStore(int &$id, Request $request): string {	
+			
+			// rekord array kialakitása
+			$parent = $request->input('parent');
+			$parent_type = $request->input('parent_type');
+			$user = \Auth::user();
+			$productArr = [];
+			$productArr['parent_type'] = $parent_type;
+			$productArr['parent'] = $parent;
+			$productArr['name'] = strip_tags($request->input('name'));
+			$productArr['description'] = strip_tags($request->input('description',['br']));
+			$productArr['avatar'] = strip_tags($request->input('avatar'));
+			$fileInfo = Minimarkdown::getRemoteFileInfo($productArr['avatar']);
+			if ($fileInfo['fileSize'] > 1000000) {
+				$productArr['avatar'] = '/img/noimage.png';			
+			}			
+			
+			$productArr['unit'] = strip_tags($request->input('unit'));
+			$productArr['price'] = $request->input('price');
+			$productArr['currency'] = strip_tags($request->input('currency'));
+			$productArr['status'] = strip_tags($request->input('status'));
+			
+			// product rekord tárolás az adatbázisba
+			$errorInfo = '';
+			try {
+				$model = new Product();
+				if ($id == 0) {
+					$productArr['stock'] = 0;
+					$productRec = $model->create($productArr);
+					$id = $productRec->id;
+				} else {
+					$model->where('id','=',$id)->update($productArr);			 	
+				}	
+			} catch (\Illuminate\Database\QueryException $exception) {
+				$errorInfo = $exception->errorInfo;
+			}
+			if ($user) {	
+				if ($errorInfo == '') {
+					$addToStock = $request->input('quantity','');
+					if ($addToStock != 0) {
+						\DB::table('productadds')
+						->insert(['product_id' => $id,
+						'quantity' => $addToStock,
+						'user_id' => $user->id 
+						]);
+						$product = $model->where('id','=',$id)->first();
+						$product->stock = $product->stock + $addToStock;
+						$model->where('id','=',$id)
+						->update([
+							'stock' => $product->stock						
+						]);
+					}			
+				}
+			}
+
+		    // file upload kezelése
+		    $uploadMsg = Upload::processUpload('img',
+											   storage_path().'/products/'.$id.'/',
+											   'avatar',
+											   ['jpg','png','gif']);
+		    if ($uploadMsg != 'no upload') {
+				if (substr($uploadMsg,0,5) != 'ERROR') {
+					$avatarUrl = str_replace(storage_path(),\URL::to('/storage'),$uploadMsg);
+					\DB::table('products')
+						->where('id','=',$id)
+						->update(["avatar" => $avatarUrl]);
+				} else {
+					$errorInfo = $uploadMsg;
+				}
+			}
+		    return $errorInfo;
+	 }	
+
 }
 
 

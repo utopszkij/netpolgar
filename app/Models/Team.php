@@ -18,8 +18,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request; 
 use App\Rules\RanksRule;
-
-// include_once \Config::get('view.paths')[0].'/minimarkdown.php';
 use App\Models\Minimarkdown;
 
 class Team extends Model {
@@ -502,6 +500,40 @@ class Team extends Model {
 	   $result .= ']}]';
 	   return $result;
    }
+   
+   /**
+    * user adminja a team -nek?
+    * @param int $teamId
+    * @para, int $userId
+    * @return bool
+    */ 
+   public static function userAdmin(int $teamId, int $userId): bool {
+	   return (\DB::table('members')
+				->where('parent_type','=','teams')
+				->where('parent','=',$teamId)
+				->where('user_id','=',$userId)
+				->where('rank','=','admin')
+				->where('status','=','active')
+				->count() > 0);
+   }
+
+   /**
+    * user tagja a team -nek?
+    * @param int $teamId
+    * @para, int $userId
+    * @return bool
+    */ 
+   public static function userMember(int $teamId, int $userId): bool {
+	   return (\DB::table('members')
+				->where('parent_type','=','teams')
+				->where('parent','=',$teamId)
+				->where('user_id','=',$userId)
+				->where('status','=','active')
+				->count() > 0);
+   }
+
+
+
     
 }
 

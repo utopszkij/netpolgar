@@ -55,14 +55,14 @@
 				</div>						
 			</div> 
 			<div class="col-12 col-md-9">
-			 	@if ($product->avatar != "") 
+			   @if ($product->avatar != "") 
 					 <img src="{{ $product->avatar}}"
 					 style="width:15%; margin:10px; float:right" />
-			 	@endif
-			 	@if ($product->id > 0)
-			    <form action="{{ \URL::to('/products/'.$product->id) }}" method="POST">
+			   @endif
+			   @if ($product->id > 0)
+			    <form action="{{ \URL::to('/products/'.$product->id) }}" method="POST" enctype="multipart/form-data">
 			   @else
-			    <form action="{{ \URL::to('/products') }}" method="POST">
+			    <form action="{{ \URL::to('/products') }}" method="POST" enctype="multipart/form-data">
 			   @endif 
 			   @csrf
 			        <input type="hidden" name="id" value="{{ $product->id }}" class="form-control" placeholder="">
@@ -99,10 +99,14 @@
                     class="form-control" placeholder="Név" style="width:600px">
                 </div>
                 <div class="form-group">
-                    <label>{{ __('product.avatar') }}:</label>
+                    <label>{{ __('product.avatar') }} (max 2M):</label>
                     <input type="text" name="avatar" value="{{ $product->avatar }}" 
                     class="form-control" placeholder="url" style="width:600px">
-                    max 1M
+				</div>
+                <div class="form-group">
+                    <label></label>{{ __('product.orUpload') }}<br />
+                    <label></label>
+                    <input type="file" name="img" value="" class="form-control" />
                 </div>
                 <div class="form-group">
                     <label style="vertical-align: top;">

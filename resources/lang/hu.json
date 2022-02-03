@@ -62,5 +62,9 @@
 "results": "Sor összesen",
 "csrf_token_error":"munkamenet nem érvényes vagy lejárt.",
 "Check the following errors :(": "Hibás adatok",
-"submenu": "Almenü"
+"submenu": "Almenü",
+"FileNotImage":"Nem kép file",
+"FileToLarge":"Túl nagy méretű file",
+"FileExtensionDisabled":"Nem megfelelő file kiterjesztés",
+"FileUploadError":"Hiba file feltöltés közben"
 }
