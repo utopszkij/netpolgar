@@ -1,0 +1,78 @@
+Likvid szavazás kiértékelés
+
+1. ballotok amik az adott szavazáshoz tartoznak és nem szavaztak
+
+
+   w1 =
+
+   select ballots.* from ballots
+   left outer join votes on votes.ballot_id = ballots.id
+   where poll_id = $poll->id
+   where ballots.id is null
+
+2. ezekkehez az adott szavazás parenthez tartozó szavazás meghatalmazottak
+
+   w2 =
+   select members.user_id as accredited, w1.user_id as userId
+   from w1
+   left outer join likes on likes.user_id = w1.user_id
+   left outer join members on members.id = likes.parent
+   where likes.parent_type = 'members' and
+         likes.rank = 'accredited' and
+         members.parent_type = $poll->parent_type and
+         members.parent = $poll->parent;
+
+3. szavazatok többszörözése
+
+   w3 =
+   select
+   from votes
+   left outer join ballots on ballots.id = votes.id
+   left outer join w2 on ballots.user_id = w2.accredited
+
+4. többszörözött szavazatok tárolása
+
+   insert into votes
+   select w3
+
+5. Ha $poll->parentType == 'teams' akkor
+   team parent meghatározása --> $parent
+
+   1. lépés --> w1
+
+6. ezekkehez a szavazás meghatalmazottak
+
+   w4 =
+   select members.user_id as accredited, w1.user_id as userId
+   from w1
+   left outer join likes on likes.user_id = w1.user_id
+   left outer join members on members.id = likes.parent
+   where likes.parent_type = 'members' and
+         likes.rank = 'accredited' and
+         members.parent_type = 'teams'
+         members.parent = $parent->id;
+
+7. szavazatok többszörözése
+
+   w5 =
+   select
+   from votes
+   left outer join ballots on ballots.id = votes.id
+   left outer join w4 on ballots.user_id = w4.accredited
+
+8. többszörözött szavazatok tárolása
+
+   insert into votes
+   select w5
+
+9. ha $poll->parent_type == 'teams' akkor
+   Amig $parent->parent != 0
+     felsőő tulajdonos --> $parent
+
+     6. lépés
+
+     7. lépés
+
+     8. lépés
+
+

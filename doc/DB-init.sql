@@ -1,0 +1,24 @@
+-- Azután kell futtatni, hogy már regisztrált a system admin, és egyszer
+-- belépett a csoportok menüpontba (ekkor generálodik két fő csoport)
+INSERT INTO `teams` VALUES
+(6,0,'- Homokozó','Ez a csoport kisérletezésre, tanulásra, a rendszerrel történő ismerkedésre való.','/img/homokozo.png','active','{\"ranks\":[\"admin\",\"accredited\",\"manager\",\"moderator\"],\"close\":\"100\",\"memberActivate\":\"0\",\"memberExclude\":\"100\",\"rankActivate\":\"40\",\"rankClose\":\"95\",\"projectActivate\":\"1\",\"productActivate\":\"1\",\"subTeamActivate\":\"2\",\"debateActivate\":\"2\"}',NULL,NULL,'2021-12-04 11:58:34','2021-12-21 14:35:24',1),
+(16,0,'Társadalom tdományok, ideológia, politika','Társadalom tudományok, társadalmi szervezetek, politikai szervezetek, társadalmi kérdésekkel foglalkozó civil szervezetek','/img/tarsadalom.jpg','active','{\"ranks\":[\"admin\",\"accredited\",\"manager\",\"moderator\"],\"close\":\"98\",\"memberActivate\":\"2\",\"memberExclude\":\"95\",\"rankActivate\":\"40\",\"rankClose\":\"95\",\"projectActivate\":\"2\",\"productActivate\":\"50\",\"subTeamActivate\":\"2\",\"debateActivate\":\"2\"}',NULL,NULL,'2021-12-06 10:58:54','2021-12-18 12:39:34',1),
+(106,0,'Természet tudományok, technika','természettudományok, technika vita csoportok, teamek','/img/fold.png','active','{\"ranks\":[\"admin\",\"accredited\",\"manager\",\"moderator\"],\"close\":\"98\",\"memberActivate\":\"2\",\"memberExclude\":\"95\",\"rankActivate\":\"40\",\"rankClose\":\"95\",\"projectActivate\":\"2\",\"productActivate\":\"50\",\"subTeamActivate\":\"2\",\"debateActivate\":\"2\"}',NULL,NULL,'2021-12-18 05:31:03','2021-12-18 12:51:32',1),
+(107,0,'Termelők','Anyagi és szellemi termék előállító csoportok','/img/termelo.png','active','{\"ranks\":[\"admin\",\"accredited\",\"manager\",\"moderator\"],\"close\":\"98\",\"memberActivate\":\"2\",\"memberExclude\":\"95\",\"rankActivate\":\"40\",\"rankClose\":\"95\",\"projectActivate\":\"2\",\"productActivate\":\"50\",\"subTeamActivate\":\"2\",\"debateActivate\":\"2\"}',NULL,NULL,'2021-12-18 05:31:44','2021-12-18 12:43:00',1),
+(108,0,'Kultúra, oktatás','Kultúrális kérdésekkel, oktatással foglalkozó csoportok','/img/kultura.jpg','active','{\"ranks\":[\"admin\",\"accredited\",\"manager\",\"moderator\"],\"close\":\"98\",\"memberActivate\":\"2\",\"memberExclude\":\"95\",\"rankActivate\":\"40\",\"rankClose\":\"95\",\"projectActivate\":\"2\",\"productActivate\":\"50\",\"subTeamActivate\":\"2\",\"debateActivate\":\"2\"}',NULL,NULL,'2021-12-18 05:32:40','2021-12-18 12:38:30',1),
+(109,0,'Egészségügy','Testi és szellemi egészséggel, gyógyítással, megelőzéssel, egészséges táplálkozással foglalkozó csoportok','/img/egeszsegugy.jpg','active','{\"ranks\":[\"admin\",\"accredited\",\"manager\",\"moderator\"],\"close\":\"98\",\"memberActivate\":\"2\",\"memberExclude\":\"95\",\"rankActivate\":\"40\",\"rankClose\":\"95\",\"projectActivate\":\"2\",\"productActivate\":\"50\",\"subTeamActivate\":\"2\",\"debateActivate\":\"2\"}',NULL,NULL,'2021-12-18 05:33:46','2021-12-18 12:37:56',1),
+(110,0,'Sport','verseny és tömegsporttal foglalkozó csoportok, sport klubbok','/img/sport.png','active','{\"ranks\":[\"admin\",\"accredited\",\"manager\",\"moderator\"],\"close\":\"98\",\"memberActivate\":\"2\",\"memberExclude\":\"95\",\"rankActivate\":\"40\",\"rankClose\":\"95\",\"projectActivate\":\"2\",\"productActivate\":\"50\",\"subTeamActivate\":\"2\",\"debateActivate\":\"2\"}',NULL,NULL,'2021-12-18 05:34:26','2021-12-18 12:44:41',1),
+(111,0,'Szórakozás','szabadidő, pop kultúra, TV, film stb','/img/hobby.png','active','{\"ranks\":[\"admin\",\"accredited\",\"manager\",\"moderator\"],\"close\":\"98\",\"memberActivate\":\"2\",\"memberExclude\":\"95\",\"rankActivate\":\"40\",\"rankClose\":\"95\",\"projectActivate\":\"2\",\"productActivate\":\"50\",\"subTeamActivate\":\"2\",\"debateActivate\":\"2\"}',NULL,NULL,'2021-12-18 05:36:27','2021-12-18 12:49:51',1),
+(112,0,'Család','Családi élet, gyermek nevelés, emberi kapcsolatok','/img/csalad.png','active','{\"ranks\":[\"admin\",\"accredited\",\"manager\",\"moderator\"],\"close\":\"98\",\"memberActivate\":\"2\",\"memberExclude\":\"95\",\"rankActivate\":\"40\",\"rankClose\":\"95\",\"projectActivate\":\"2\",\"productActivate\":\"50\",\"subTeamActivate\":\"2\",\"debateActivate\":\"2\"}',NULL,NULL,'2021-12-18 12:53:09','2021-12-18 12:53:09',1);
+
+INSERT INTO `members`
+(`parent_type`, `parent`, `user_id`, `rank`, `status`, `activated_at`, `created_at`, `updated_at`, `created_by`)
+SELECT "teams",id, 1, "member","active","2020-02-02","2022-02-01","2022-02-01", 1
+FROM teams
+WHERE id > 2;
+
+INSERT INTO `members`
+(`parent_type`, `parent`, `user_id`, `rank`, `status`, `activated_at`, `created_at`, `updated_at`, `created_by`)
+SELECT "teams",id, 1, "admin","active","2020-02-02","2022-02-01","2022-02-01", 1
+FROM teams
+WHERE id > 2;
