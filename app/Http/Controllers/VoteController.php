@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use \App\Models\Poll;
+use \App\Models\Vote;
 
 class VoteController extends Controller {
 
@@ -29,13 +30,8 @@ class VoteController extends Controller {
 	*/
 	public function create(Poll $poll) {
 		$model = new \App\Models\Poll();
-		$parent = \DB::table($poll->parent_type)
-			->where('id','=',$poll->parent)->first();
-		$options = \DB::table('options')
-						->where('poll_id','=',$poll->id)
-						->where('status','=','active')
-						->orderBy('name')
-						->get();	
+		$parent = Vote::getParent($poll);
+		$options = Vote::getOptions($poll);
 		if ($parent) {	
 			$poll->config = JSON_decode($poll->config);		
 			$info = $model->getInfo($poll, $parent);
@@ -66,60 +62,13 @@ class VoteController extends Controller {
 	*/
 	protected function storeVote(Request $request, $poll):string {
 		$result = '';
-		$user = \Auth::user();
-		$ballot = \DB::table('ballots')
-			->where('poll_id','=',$poll->id)
-			->where('user_id','=',$user->id)
-			->first();	
-		if ($ballot) {		
-			$voteArr = ['poll_id' => $poll->id,
-				'ballot_id' => $ballot->id,
-				'accredited_id' => 0,
-				'user_id' => 0
-			];
-			if (!$poll->config->secret) {
-				$voteArr['user_id'] = $user->id;		
+		if (\Auth::check()) {
+			$ballot = Vote::getBallot($poll, \Auth::user());
+			if ($ballot) {	
+				$result = Vote::store($request, $poll, $ballot);
+			} else {
+				$result = 'ballot not found';		
 			}
-			try {
-				if (($poll->config->pollType == 'yesno') |
-				    ($poll->config->pollType == 'onex')) {
-					$voteArr['option_id'] = $request->input('vote');
-					$voteArr['position'] =  1;
-					\DB::table('votes')->insert($voteArr);
-				}
-				if ($poll->config->pollType == 'morex') {
-					for ($p=0; $p<20; $p++) {
-						if ($request->input('vote'.$p,'') != '') {
-							$voteArr['option_id'] = $request->input('vote'.$p);
-							$voteArr['position'] =  1;
-							\DB::table('votes')->insert($voteArr);
-						}			
-					}
-				}
-				if ($poll->config->pollType == 'pref') {
-					for ($p=0; $p<20; $p++) {
-						if ($request->input('opt_'.$p,'') != '') {
-							$voteArr['option_id'] = $request->input('opt_'.$p);
-							$voteArr['position'] =  $request->input('pos_'.$p);
-							\DB::table('votes')->insert($voteArr);
-						}			
-					}
-				}
-				
-				if (($poll->config->secret) & ($result == '')) {
-					\DB::table('ballots')
-					->where('poll_id','=',$poll->id)
-					->where('user_id','=',$user->id)
-					->update(['user_id' => 0]);
-				}
-			} catch (\Illuminate\Database\QueryException $exception) {
-			    $result = JSON_encode($exception->errorInfo);
-				 \DB::table('votes')
-				 	->where('ballot_id','=',$ballot->id)
-				 	->delete();		    
-			}	
-		} else {
-			$result = 'ballot not found';		
 		}
 		return $result;
 	}
@@ -133,14 +82,10 @@ class VoteController extends Controller {
 		$user = \Auth::user();
 		$model = new \App\Models\Poll();
 		$poll = $model->where('id','=', $request->input('pollId'))->first();
-		$ballot = \DB::table('ballots')
-			->where('poll_id','=',$poll->id)
-			->where('user_id','=',$user->id)
-			->first();	
+		$ballot = Vote::getBallot($poll, $user);
 		if ($poll) {
 			$poll->config = JSON_decode($poll->config);
-			$parent = \DB::table($poll->parent_type)
-				->where('id','=',$poll->parent)->first();
+			$parent = Vote::getParent($poll);
 			if ($parent) {			
 				$info = $model->getInfo($poll, $parent);
 				$errorInfo = $this->accessRight('create',$poll, $info);
@@ -160,7 +105,9 @@ class VoteController extends Controller {
 			       ' Ennek a számnak a segitségével bármikor ellenörizheti,
 			         hogy szavazata helyesen szerepel az adatbázisban.
 			         Ezt a számot csak Ön ismeri, tehát a szavazat titkossága
-			         ezzel nem sérül.');		
+			         ezzel nem sérül. FIGYELEM ha ezt a számot elfelejti, 
+			         elveszti;soha többet nem kérdezhető le a programból,
+			         hogy mi az ön szavazat azonsító száma!');		
 		} else {
 			$result = redirect()->to('/')->with('error',$errorInfo);		
 		}
@@ -185,15 +132,10 @@ class VoteController extends Controller {
 		->where('id','=',$request->input('poll_id','0'))
 		->first();
 		$ballotId = $request->input('ballot_id',0);
-		$ballotId = round(($ballotId - 1435 / 24));
+		$ballotId = round(($ballotId - 1435) / 24);
 		if  ($poll) {
 			$poll->config = JSON_decode($poll->config);
-			$votes = \DB::table('votes')
-			->leftJoin('options','options.id','votes.option_id')
-			->where('votes.poll_id','=',$poll->id)
-			->where('votes.ballot_id','=',$ballotId)
-			->orderBy('votes.position')
-			->get();
+			$votes = Vote::getVotes($poll, $ballotId);
 			$result = view('vote.show',[
 				'poll' => $poll,
 				'votes' => $votes,
@@ -211,11 +153,7 @@ class VoteController extends Controller {
 	*/
 	public function list(Poll $poll) {
 			$poll->config = JSON_decode($poll->config);
-			$data = \DB::table('votes')
-			->leftJoin('options','options.id','votes.option_id')
-			->where('votes.poll_id','=',$poll->id)
-			->orderBy('votes.ballot_id','asc','votes.position','asc')
-			->paginate(5);
+			$data = Vote::getVotes($poll, 0, 5);
 			foreach ($data as $d1) {
 				$d1->ballot_id = ($d1->ballot_id * 24) + 1435;			
 			}
@@ -256,11 +194,7 @@ class VoteController extends Controller {
 	*/
 	public function csv(Poll $poll) {
 			$poll->config = JSON_decode($poll->config);
-			$data = \DB::table('votes')
-			->leftJoin('options','options.id','votes.option_id')
-			->where('votes.poll_id','=',$poll->id)
-			->orderBy('votes.ballot_id','asc','votes.position','asc')
-			->get();
+			$data = Vote::getVotes($poll,0,0);
 			foreach ($data as $d1) {
 				$d1->ballot_id = ($d1->ballot_id * 24) + 1435;			
 			}
@@ -290,6 +224,7 @@ class VoteController extends Controller {
 			}
 			header('Content-type: text/csv');
 			header('Content-Disposition: attachment; filename="votes.csv"');
+			echo '"ballot_id";"position";""option_id";"option_name"'."\n";
 			foreach($data as $d1) {
 				echo $d1->ballot_id.';'.$d1->position.';'.$d1->option_id.';"'.$d1->name.'"'."\n";			
 			}

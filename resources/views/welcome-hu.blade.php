@@ -27,17 +27,18 @@
 <a name="description1"></a>				
 					<h4>Tartalomjegyzék</h4>
 					<ul>
-						<li><p><a href="#fojellemzok">Fő jellemzők</a></p>
-						<li><p><a href="#csoportok">Csoport szervezés</a> (ß teszt) </p>
-						<li><p><a href="#projektek">Projekt	menedzselés (terv)</a></p>
-						<li><p><a href="#pacter">Virtuális piactér</a> (terv)</p>
-						<li><p><a href="#esemenyek">Esemény	szervezés</a> (terv)</p>
-						<li><p><a href="#vitak">Eszmecserék, viták lebonyolítása</a> (ß teszt)</p>
-						<li><p><a href="#szavazasok">Szavazások lebonyolítása</a> (ß teszt)</p>
-						<li><p><a href="#uzenetek">Kommunikáció</a> (ß teszt)</p>
+						<li><p><a href="#fojellemzok" onclick="true">Fő jellemzők</a></p>
+						<li><p><a href="#csoportok" onclick="true">Csoport szervezés</a> (ß teszt) </p>
+						<li><p><a href="#projektek" onclick="true">Projekt	menedzselés (ß teszt)</a></p>
+						<li><p><a href="#piacter" onclick="true">Virtuális piactér</a> (ß teszt)</p>
+						<li><p><a href="#esemenyek" onclick="true">Esemény	szervezés</a> (terv)</p>
+						<li><p><a href="#vitak" onclick="true">Eszmecserék, viták lebonyolítása</a> (ß teszt)</p>
+						<li><p><a href="#szavazasok" onclick="true">Szavazások lebonyolítása</a> (ß teszt)</p>
+						<li><p><a href="#uzenetek" onclick="true">Kommunikáció</a> (ß teszt)</p>
 					</ul>
 				</div>
 <a name="fojellemzok"></a>
+				<p>&nbsp;</p>
 				<h5>Fő jellemzők</h5>
 				<div>
 				<p>Minden felhasználónak van egy üzenőfala, fájl, kép és videó
@@ -55,14 +56,15 @@
 				üzenőfalon láthatja a saját postjait, ismerősei postjait, azon
 				csoportok üzenőfalát amelyeknek tagja, és ezen csoportok
 				projektjeinek az üzenőfalát. A felhasználók privát üzeneteket
-				is küldhetnek egymásnak, üzenet küldhet egy csoport összes
+				is küldhetnek egymásnak, üzenetet küldhet egy csoport összes
 				tagjának, összes ismerősnek is, Szellemi és anyagi termékek
 				cseréjét, megosztását virtuális, alternatív fizetőeszközös
-				web-es piactér segít. A felhasználók NET -es szavazásokat
+				web-es piactér segíti. A felhasználók NET -es szavazásokat
 				indíthatnak, ezek rendelhetőek csoporthoz, projekthez,
 				kommentelhetnek, értékelhetnek, szavazhatnak. A rendszerhez bárki
 				önként csatlakozhat, ingyenesen használhatja azt.</p>
 <a name="csoportok"></a>
+				<p>&nbsp;</p>
 				<h5>Csoport szervezés (ß teszt)</h5>
 				<p>A netpolgár
 				programban a hasonló érdeklődésű tagok vagy egy projekten
@@ -147,7 +149,8 @@
 				<p><br/></p>
 				</div>
 <a name="projektek">
-				<h5></a>Projekt menedzselés (terv)</h5>
+				<p>&nbsp;</p>
+				<h5></a>Projekt menedzselés (ß teszt)</h5>
 				<div>
 				<p>A rendszer adminisztrátorok, csoport adminisztrátorok
 				projekteket indíthatnak. A projektek egy csoporthoz is
@@ -167,21 +170,39 @@
 				adminisztrátor törölhet projekteket.</p>
 				</div>
 <a name="piacter">
-				<h5></a>Virtuális piactér (terv)</h5>
+				<p>&nbsp;</p>
+				<h5></a>Virtuális piactér (ß teszt)</h5>
 				<div>
-				<p>A projekt adminisztrátorok, csoport adminisztrátorok,
-				regisztrált felhasználók keresleteket/kínálatokat vihetnek fel.
-				A keresletek/kínálatok témakörökhöz rendelhetőek. A
-				keresletek/kínálatok csoporthoz vagy projekthez kapcsolódhatnak. A
+				<p>A csoport adminisztrátorok, regisztrált felhasználók kínálatokat vihetnek fel.
+				A kínálatok témakörökhöz rendelhetőek. 
+				A kínálatok csoporthoz vagy felhasználóhoz kapcsolódhatnak. A
 				felhasználások (tranzakciók) virtuális pénzben történő
-				elszámolással vihetők fel a rendszerbe. Készlet változások
-				kezelése, felhasználói értékelési rendszer, hibajegy rendszert
-				is tartalmaz ez a modul. Mivel a netpolgar rendszer a kölcsönös
-				bizalmon alapul egy a közösség által megállapított keret
-				összegig a felhasználók egyenlege negatív is lehet. A virtuális
-				pénzben vezetett folyószámla egyenlegek nyilvánosak.</p>
+				elszámolással vihetők fel a rendszerbe. A virtuális pénz neve: NTC (NET coint).
+				Kiindulásként, első közelítésként; ajánlott 1NTC -t egy óra munka ellenértékének
+				tekinteni. A "vásárló/felhasználó" lehet egy csoport, vagy egy felhasználó. 
+				Csoport nevében a csoport adminisztrátorok vásárolhatnak. 
+				Vásárláskor a "vevő" NTC egyenlege csökken,	az "eladó" NTC egyenlege növekszik.
+				</p>
+				<p>
+				A főmenü "piactér" menüpontjábam a felhasználók saját nevükben tehetnek fel kinálatokat,
+				 a csoport almenü "Termékek" menüpontjában a csoport adminisztrátorok a csoport nevében
+				 tölthetnek fel kinálatokat.
+				</p>
+				<p>A vásárlás a web áruházakban megszokott módon történik, a vevő a "kosarába" gyűjti
+				a kiválasztott termékeket/szolgáltatásokat majd elküldi a megrendelést. Ha a felhasználó 
+				csoport	adminisztrátor akkor ki kell választania, hogy saját nevében vagy valamelyik 
+				általa menedzselt csoport nevében vásárol.</p>
+				<p>A megrendelés elküldésekor zárolásra kerül a "vásárló" folyószámláján a rendelt
+				termékek, szolgáltotások ára. Teljesítéskor kerül át az összeg az "eladó" számlájára.
+				Ha a tranzakció bármilyen okból meghiúsul, akkor a zárolt összeg felszabadul a 
+				"vevő" számláján.</p>
 				</div>
+				<p><strong>JELEN TESZT VÁLTOZATBAN minden felhasználó kap 500 NTC induló keretet, 
+				és a folyószámla tetszőleges mértékben minuszba is mehet.</strong>
+				Késöbb ez változni fog.
+				</p>
 <a name="esemenyek"></a>
+				<p>&nbsp;</p>
 				<h5>Esemény szervezés (terv)</h5>
 				<div>
 				<p>A projekt adminisztrátorok, csoport adminisztrátorok,
@@ -196,6 +217,7 @@
 				adminisztrálható.</p>
 				</div>
 <a name="vitak"></a>
+				<p>&nbsp;</p>
 				<h5>Eszmecserék, viták
 				lebonyolítása (ß teszt)</h5>
 				<div>
@@ -232,7 +254,7 @@
 				javasolt) A szavazás során és a szavazás lezárulta után
 				módosítás már nekik sem engedélyezett.</p>
 				<p><br/></p>
-				<p><i>(Megjegyzés: értelem szerűen az Igen/nem típusú szavazásnál
+				<p><i>(Megjegyzés: értelemszerűen az Igen/nem típusú szavazásnál
 				megoldási lehetőséget nem lehet javasolni)</i></p>
 				<p><br/></p>
 				<p>
@@ -241,6 +263,7 @@
 				<p><br/></p>
 				</div>
 <a name="szavazasok"></a>
+				<p>&nbsp;</p>
 				<h5>Szavazások
 				lebonyolítása (ß teszt)</h5>
 				<div>
@@ -262,7 +285,7 @@
 				folyamatosan megtekinthetőek a rész eredmények és lekérhető a
 				már megadott szavazatokat tartalmazó CSV fájl (ez nem tartalmaz a
 				szavazatot leadó személy azonosítására alkalmas adatot). Ezen
-				CSV fájl segítségével független ellenőrök ellenőrizhetik az
+				CSV fájl segítségével független ellenőrök ellenőrizhetik a
 				szavazat összesítés helyességét, illetve a szavazás különböző
 				időpontjaiban lekért CSV fájlok összevetésével vizsgálhatják,
 				hogy esetleg történt-e visszamenőleges módosítás az
@@ -276,8 +299,21 @@
 				fájlban), és a helyes tartalommal szerepel-e?</p>
 				<p><br/></p>
 				<p>A sorba rendező
-				szavazás kiértékelése Condorcet – Shulze metod szerint
+				szavazás kiértékelése Condorcet – Schulze metod szerint
 				történik.</p>
 				</div>
+<a name="uzenetek"></a>				
+				<p>&nbsp;</p>
+				<h5>Üzenetek (ß teszt)</h5>
+				<p>Lehetőség van szöveges üzenetet, megjegyzést írni</p>
+				<ul>
+				<li>Másik felhasználónak</li>
+				<li>Csoportnak</li>
+				<li>Projeknek</li>
+				<li>Projekt feladathoz<li>
+				<li>Termékhez, szolgáltatáshoz</li>
+				</ul>
+				<p>Ha a web böngésző támogatja a mikrofon és kamera 
+				használatát akkor video-chat is lebonyolítható.</p>
 	</div>
 </div>

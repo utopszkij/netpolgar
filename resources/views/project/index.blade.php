@@ -9,24 +9,36 @@
     </div>
     <div class="row">
     	<h3>
+			@if ($team)
 			<a href="{{ \URL::to('/teams/'.$team->id) }}">
 				<em class="fas fa-hand-point-right"></em>
 				<em class="fas fa-user-friends"></em>
 				&nbsp;{{ $team->name }} 			
 			</a>
+			@endif
+			@if ($user)
+			<a href="{{ \URL::to('/member/user/'.$user->id) }}">
+				<em class="fas fa-hand-point-right"></em>
+				<em class="fas fa-user"></em>
+				&nbsp;{{ $user->name }} 			
+			</a>
+			@endif
+			
 		</h3>	    	
 	 </div>    
 
-    @if (($team->status == 'active') &
-         (count($info->userParentRank) > 0) &
-         (!$info->parentClosed))
-    <div class="row buttons">
-       <a class="btn btn-primary" 
-         href="{{ \URL::to('/'.$team->id.'/projects/create') }}">
-        	<em class="fas fa-plus"></em>
-        	{{ __('project.add') }}
-       </a>
-    </div>
+	@if ($team)
+		@if (($team->status == 'active') &
+			 (count($info->userParentRank) > 0) &
+			 (!$info->parentClosed))
+		<div class="row buttons">
+		   <a class="btn btn-primary" 
+			 href="{{ \URL::to('/'.$team->id.'/projects/create') }}">
+				<em class="fas fa-plus"></em>
+				{{ __('project.add') }}
+		   </a>
+		</div>
+		@endif
     @endif
      
     <table class="table table-bordered indexTable">
@@ -55,15 +67,14 @@
         @endforeach
       </tbody>  
     </table>
-    @if ($data->total > 0)
+    @if (count($data) > 0)
     <div class="row help">
     	<div class="col-12">
 			Részletekért és további lehetőségért kattints a project nevére!
 		</div>				
     </div>
     
-    {--  paginator --}
-    {{ paginator $data->currentPage.' '.$data->perPage.' '.$data->total }}
+    {!! $data->links('pagination') !!}
     @else
     <div>{{ __('project.notrecord') }}</div>
     @endif  

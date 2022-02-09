@@ -17,7 +17,8 @@ class CreateProductsTable extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->biginteger('team_id')->unsigned()->nullable();
+            $table->string('parent_type');
+            $table->biginteger('parent')->unsigned()->nullable();
             $table->string('name')->nullable();  // megnevezés
             $table->string('unit')->nullable(); // mértékegység
             $table->double('price')->nullable(); // egységár
@@ -30,7 +31,7 @@ class CreateProductsTable extends Migration
             $table->double('stock')->nullable(); // készlet
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->nullable();
-            $table->index(['team_id']);
+            $table->index(['parent_type','parent']);
             $table->index(['name']);
         });
     }

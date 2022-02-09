@@ -13,11 +13,10 @@
 			$team->config->memberExclude = \Request::old('memberExclude');
 			$team->config->rankActivate = \Request::old('rankActivate');
 			$team->config->rankClose = \Request::old('rankClose');
-			$team->config->projectActivate = \Request::old('projectActivete');
+			$team->config->projectActivate = \Request::old('projectActivate');
 			$team->config->productActivate = \Request::old('productActivate');
 			$team->config->subTeamActivate = \Request::old('subTeamActivate');
 			$team->config->debateActivate = \Request::old('debateActivate');
-
 		@endphp
 	@endif
 

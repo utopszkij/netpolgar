@@ -1,0 +1,47 @@
+controllerben a store:
+
+$entity = ($this->service->factory())::findById($request->post('id'));
+// Ahol service a singleton amit emlitettem visszadja a model class-t ahol id alapjan megkeresed az entitast.
+if (!$entity) {
+	$entity = $this->service->factory($request->post());
+	// Mivel id alapjan nem talatuk, ezert ez uj entity lesz,
+	// letrehozzuk a service osztaly segitsegevel egy uj model instance-ot, 
+	// de meg nem mentettuk el!
+}
+$validator = $entity->getValidator(); // Ahol validator egy Validator osztaly lesz, tanulmanyozd ezt, es a hozza nelkulozhetetlen validacios rule-ok a modellen vannak implementalva.
+if ($validator->passes()) {
+	try {
+		if ($request->post('id')) {
+			// Update a modellen
+			$entity->update($request->post());
+		} else {
+			// Elmentjuk az uj entitast
+			$entity->save();
+		}
+		....
+	} 		
+}
+Ha jól értem
+
+van egy "service", egy "model" és egy "validator" minden rekord tipushoz
+
+Ha jól értem a fenti példában $entity a Model
+ebben van:
+	->update(array)
+	->save()
+	->getValidator() 
+	
+A service -ben (amit a constructorban kap meg a controller)
+	->factory(array): Model	
+		- ennek müködése:
+		  1. megprobálja a post -ban lévő id alapján beolvasni db -ből
+		     ha nem találja ujat inicializál
+		  2. $model->$fieldname = post->$fieldname
+		 
+a validator-ban
+	->passes() végzi el az ellenözést 
+		gondolom amikor a model->getValidator()
+			létrehozza, akkor átadja neki a saját tartalmár, és a 
+			passess() ezt ellenörzi.
+					  
+		     

@@ -3,10 +3,10 @@
 return [
 	'getMyVote' => 'Leadott szavazatom lekérdezése',
 	'ballotId' => 'Szavazat azonosító kód',
-	'send' => 'küld',
-	'cancel' => 'mégsem',
-	'back' => 'vissza',
+	'send' => 'Küld',
+	'cancel' => 'Mégsem',
+	'back' => 'Vissza',
 	'list' => 'Leadott szavazatok',
-	'voteNotFound' => 'nincs ilyen szavazat',
-	'pollNotFound' => 'nincs ilyen szavazás'
+	'voteNotFound' => 'Nincs ilyen szavazat',
+	'pollNotFound' => 'Nincs ilyen szavazás'
 ];

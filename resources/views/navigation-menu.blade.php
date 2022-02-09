@@ -35,7 +35,9 @@ if (Auth::user()) {
 		<img src="{{ URL::to('/') }}/img/logo.png" class="logo" />    
     	Netpolgár
     </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+      data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" 
+      aria-expanded="false" aria-label="Toggle navigation" onclick="false">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -70,6 +72,18 @@ if (Auth::user()) {
            	</li>
             <li><a class="dropdown-item" href="{{ URL::to('/message/tree/users/'.\Auth::user()->id) }}">
             	{{ __('navigation.messages') }}
+           		</a>
+           	</li>
+            <li><a class="dropdown-item" href="{{ URL::to('/products/listbyuser/'.\Auth::user()->id) }}">
+            	{{ __('navigation.products') }}
+           		</a>
+           	</li>
+            <li><a class="dropdown-item" href="{{ URL::to('/orders/list/?producer_type=users&producer='.\Auth::user()->id) }}">
+            	{{ __('navigation.orders') }}
+           		</a>
+           	</li>
+            <li><a class="dropdown-item" href="{{ URL::to('/account/list/users/'.\Auth::user()->id) }}">
+            	{{ __('navigation.account') }}
            		</a>
            	</li>
             <li>

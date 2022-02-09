@@ -206,7 +206,7 @@
 	              <button type="submit" class="btn btn-primary">
 	              		<em class="fas fa-check"></em>{{ __('task.save') }}
 	              </button>
-	              @if ($info->userAdmin)
+	              @if (($info->userAdmin) & ($task->id > 0))
 	              <button class="btn btn-danger"
 	              		type="button" onclick="delClick({{ $task->id}})">
 	                  <em class="fas fa-eraser"></em>

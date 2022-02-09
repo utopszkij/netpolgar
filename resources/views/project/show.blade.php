@@ -15,7 +15,7 @@
 			<var id="subMenuIcon" class="subMenuIcon" onclick="toggleProjectMenu()">
 				<em class="fas fa-caret-right"></em><br />			
 			</var>
-         <a href="{{ \URL::to('/teams/'.$team->id) }}">
+         <a href="{{ \Request::session()->get('projectsListUrl','/') }}">
             <em class="fas fa-reply"></em>
             <span>{{ __('project.back') }}</span><br />
          </a>
@@ -52,11 +52,13 @@
 		
 		<div class="col-11 col-md-10" id="projectBody">
 		    <div class="col-11 col-md-10 path" style="margin-top: 5px;">
+				<h3>
 					<a href="{{ \URL::to('/teams/'.$team->id) }}">
 						<em class="fas fa-hand-point-right"></em>
 						<em class="fas fa-user-friends"></em>
 						&nbsp;{{ $team->name }} 			
 					</a>    	
+				</h3>	
 			 </div>    
 
 
@@ -128,7 +130,7 @@
         				<em class="fas fa-thumbs-down"></em>
         				<a href="{{ \URL::to('/likeinfo/projects/'.$project->id) }}">
 	        				({{ $info->disLikeCount }}/{{ $info->disLikeReq}})
-        				</ä>a>
+        				</a>
 						{{ __('project.dislike') }}
         			</a>
         		@endif
@@ -214,11 +216,10 @@
    <div class="row">
    	<h2>{{ __('task.tasks') }}</h2>
    </div>
-   @if ($info->userAdmin)
-   	<a href="{{ \URL::to('/'.$project->id.'/tasks/create') }}" class="btn btn-primary">
+   <a href="{{ \URL::to('/'.$project->id.'/tasks/create') }}" class="btn btn-primary">
    		<em class="fas fa-plus"></em>&nbsp;{{ __('task.add') }}
-   	</a>
-   @endif
+   </a>
+   
    <div class="row states" id="states">
    	@foreach ($statuses as $status)
    	<div class="state {{ $status }}" id="{{ $status }}">

@@ -1,3 +1,6 @@
+<?php		
+		use App\Models\Minimarkdown;
+?>
 		<div class="msg level{{ $treeItem->level }}">
 			@php 
 			// params: $treeItem, $parentType, $parent, $parentId 
@@ -20,7 +23,7 @@
 					</a>
 				</div>
 				@endif	
-			  	{!! miniMarkdown($treeItem->text) !!} 
+			  	{!! Minimarkdown::miniMarkdown($treeItem->text) !!} 
 				@if ($treeItem->moderatorInfo != '')
 				<div class="moderatorInfo">{{ $treeItem->moderatorInfo }}</div>
 				@endif			  	
@@ -38,7 +41,9 @@
 				<a href="{{ \URL::to('/likeinfo/messages/'.$treeItem->id) }}" class="{{ $treeItem->likeStyle }}">
 					{{ $treeItem->disLikeCount }}</em>
 				</a>&nbsp;
-				@if ($member)
+				@if (($member) | 
+					 (($parentType == 'users') & ($parentId == \Auth::user()->id))
+					)
 				<a href="#" onclick="replyClick({{ $treeItem->id }})">
 					<em class="fas fa-reply"></em> Válasz
 				</a>&nbsp;&nbsp;&nbsp;
@@ -61,6 +66,7 @@
             		@endif
             		<input type="hidden" name="reply_to" value="{{ $treeItem->id }}" />
             		<input type="hidden" name="msg_type" value="" />
+            		<em class="fas fa-reply"></em>
                 	<textarea id="replyText{{ $treeItem->id }}" name="value" cols="60" rows="4" style="width:70%"></textarea>
                 	<button type="submit" class="btn btn-primary">
                 		<em class="fas fa-paper-plane"></em>{{ __('messages.send') }}

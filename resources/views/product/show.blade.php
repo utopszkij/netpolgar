@@ -1,10 +1,10 @@
 <?php
-include_once \Config::get('view.paths')[0].'/minimarkdown.php';
+use App\Models\Minimarkdown;
 ?>
 <x-guest-layout>  
 
 	@php
-		function evaluation($value) {
+		function evaluation($value,$userUsed, $product) {
 			$result = '<div class="evaluation">';
 			if ($value > 4.5) {
 				$result .= '<em class="fas fa-star"></em>
@@ -58,7 +58,7 @@ include_once \Config::get('view.paths')[0].'/minimarkdown.php';
 				$result .= '<em class="fas fa-star"></em>
 				<img src="/img/star.png" />
 				<img src="/img/star.png" />
-				<img src="/img/star.png" />
+				<img src="/img/star.png" />					
 				<img src="/img/star.png" />';
 			} else if ($value > 0.25) {
 				$result .= '<em class="fas fa-star-half-alt"></em>
@@ -73,6 +73,11 @@ include_once \Config::get('view.paths')[0].'/minimarkdown.php';
 				<img src="/img/star.png" />
 				<img src="/img/star.png" />';
 			}
+			if ($userUsed) {
+				$result .= '<a href="'.\URL::to('/products/evaluation/'.$product->id).'">
+							<em class="fas fa-arrows-alt-v"></em>Értékelem
+						</a>';
+            }
 			$result .= '</div>';
 			return $result;		
 		}
@@ -105,11 +110,15 @@ include_once \Config::get('view.paths')[0].'/minimarkdown.php';
     <div class="row path" style="margin-top: 5px;">
     	<div class="col-12">
     	<h3>
+    		@if ($team)
 			<a href="{{ \URL::to('/teams/'.$team->id) }}">
 				<em class="fas fa-hand-point-right"></em>
 				<em class="fas fa-users"></em>
 				{{ $team->name }}
 			</a>
+			@else
+				{{ $parentUser->name }}
+			@endif
 		</h3>	
 		</div>
 	 </div>    
@@ -145,7 +154,7 @@ include_once \Config::get('view.paths')[0].'/minimarkdown.php';
                     <h3>{{ $product->name }}</h3>
                 </div>
                 <div class="form-group">
-                    {!! miniMarkdown($product->description)  !!}
+                    {!! Minimarkdown::miniMarkdown($product->description)  !!}
                 </div>
                 <div class="form-group">
                     <label style="vertical-align: top;">
@@ -160,8 +169,7 @@ include_once \Config::get('view.paths')[0].'/minimarkdown.php';
                     {{ $product->stock }}  {{ $product->unit }}
                 </div>
                 <div class="form-group">
-                	{!! evaluation($info->evaulation) !!}
-                	{{ __('product.used') }}: {{ $info->usedCount }}
+                	{!! evaluation($info->evaulation, $info->userUsed, $product) !!}
 					 </div>   
                 <div class="form-group">
                 	<form action="/carts/add" method="get">
@@ -209,10 +217,15 @@ include_once \Config::get('view.paths')[0].'/minimarkdown.php';
 	        				({{ $info->commentCount }})
 							{{ __('product.comments') }}
 	        			</a>             
+	        			&nbsp;&nbsp;&nbsp;
+						<a href="{{ \URL::to('/order/listbyproduct/'.$product->id) }}">
+							<em class="fas fa-truck"></em>					
+							{{ __('product.stockEvents') }}
+						</a>
 	        			   
 					</div>                
 	            <div>
-	              <a class="btn btn-secondary" href="{{ \URL::to('/products/list/'.$team->id) }}">
+	              <a class="btn btn-secondary" href="{{ \Request::session()->get('productsListUrl') }}">
 	                  <em class="fas fa-ban"></em>
 	                  {{ __('product.back') }}
 	              </a>

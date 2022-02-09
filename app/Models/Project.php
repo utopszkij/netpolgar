@@ -5,6 +5,14 @@ namespace App\Models;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Validator;
+use App\Rules\RanksRule;
+use App\Models\Minimarkdown;
+
+if (!defined('UNITTEST')) {
+	define('UNITTEST',1);
+}
 
 class Project extends Model
 {
@@ -14,6 +22,7 @@ class Project extends Model
         'name', 'created_by', 'description', 'team_id', 
         'avatar', 'deadline', 'config', 'status'
     ];
+    
     
     public static function emptyRecord() {
     	$result = JSON_decode('{
@@ -43,6 +52,7 @@ class Project extends Model
     	}');
     	return $result;
     }
+
     
     /**
      * like, dislike infók és memberCount meghatátozása
@@ -227,6 +237,123 @@ class Project extends Model
             }
         }
     }
+    
+    /**
+	 * project rekord irása az adatbázisba a $request-be lévő információkból
+	 * @param int $id
+	 * @param Request $request
+	 * @return string, $id created new record id
+	 */	 
+	 public static function saveOrStore(int &$id, Request $request): string {	
+			// rekord array kialakitása
+			$projectArr = [];
+			$projectArr['team_id'] = $request->input('team_id');
+			$projectArr['name'] = strip_tags($request->input('name'));
+			$projectArr['description'] = strip_tags($request->input('description'));
+			$projectArr['avatar'] = strip_tags($request->input('avatar'));
+			$fileInfo = Minimarkdown::getRemoteFileInfo($projectArr['avatar']);
+			if (($fileInfo['fileSize'] > 2000000) |
+			    ($fileInfo['fileSize'] < 10)) {
+				$projectArr['avatar'] = '/img/noimage.png';
+			} 
+
+			$projectArr['deadline'] = $request->input('deadline');
+			if ($id == 0) {
+				$projectArr['status'] = 'proposal';
+				if (\Auth::check()) {
+					$projectArr['created_by'] = \Auth::user()->id;
+				} else {
+					$projectArr['created_by'] = 0;
+				}		
+			}
+			   
+			// config kialakitása
+			$config = new \stdClass();
+			$config->ranks = explode(',',$request->input('ranks'));
+			$config->close = $request->input('close');
+			$config->memberActivate = $request->input('memberActivate');
+			$config->memberExclude = $request->input('memberExclude');
+			$config->rankActivate = $request->input('rankActivate');
+			$config->rankClose = $request->input('rankClose');
+			$config->debateActivate = $request->input('debateActivate');
+			$projectArr['config'] = JSON_encode($config);
+
+			// project rekord tárolás az adatbázisba
+			$errorInfo = '';
+			try {
+				$model = new Project();
+				if ($id == 0) {
+			 		$projectRec = $model->create($projectArr);
+			 		$id = $projectRec->id;
+			 	} else {
+					$model->where('id','=',$id)->update($projectArr);			 	
+			 	}	
+			} catch (\Illuminate\Database\QueryException $exception) {
+			    $errorInfo = $exception->errorInfo;
+			}	
+			return $errorInfo;		
+	 }	
+	 
+	 
+	 /**
+	 * bejelentkezett user legyen admin -ja az $id project -nek
+	 * @param int $id
+	 * @return string
+	 */
+     public static function addAdmin(int $id): string {	
+		if (!\Auth::check()) {
+			return '';
+		}	
+		$memberArr = [];
+		$memberArr['parent_type'] = 'projects';
+		$memberArr['parent'] = $id;
+		$memberArr['user_id'] = \Auth::user()->id;
+		$memberArr['rank'] = 'admin';
+		$memberArr['status'] = 'active';
+		$memberArr['created_by'] = \Auth::user()->id;
+		$errorInfo = '';
+		try {
+			Member::create($memberArr);
+		} catch (\Illuminate\Database\QueryException $exception) {
+		    $errorInfo = $exception->errorInfo;
+		}
+		return $errorInfo;			
+	 }		
+
+	 public static function valid(Request $request): bool {
+			// tartalmi ellenörzések 
+			if (!defined('UNITTEST')) {
+			$request->validate([
+					'name' => 'required',
+					'ranks' => ['required', new RanksRule()],
+					'description' => 'required',
+					'deadline' => ['required','date_format:Y-m-d']
+			]);
+			}
+			return true; // ide csak akkor kerül ha minden OK
+	 }
+	 
+	 public static function getData($teamId,$pageSize) {	
+        return \DB::table('projects')
+        			 ->where('team_id','=',$teamId)
+        			 ->orderBy('name')
+        			 ->paginate($pageSize);
+     }    			 
+
+	 public static function getDataByUser($userId,$pageSize) {	
+        return \DB::table('projects')
+				->select('projects.id','projects.name','projects.avatar',
+				'projects.description','projects.status',
+				'projects.team_id','projects.config','projects.deadline')
+				->leftJoin('members','members.parent','projects.id')
+				->where('members.parent_type','=','projects')
+        		->where('members.user_id','=',$userId)
+        		->where('members.status','=','active')
+        		->orderBy('name')
+        		->paginate($pageSize);
+     }    			 
+	 
+
 }
 
 

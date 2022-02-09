@@ -86,6 +86,12 @@
 	}
 	
 	$(function() {
+		// türelem kérő animáció az a és button elemekre
+		// a profil képernyőn és login képernyőn ez nem kell
+		if ((window.location.href.search('user/profile') >= 0) |
+		    (window.location.href.search('/login') >= 0)) {
+			return;
+		}
 		var w = $('a');
 		for (var i=0; i<w.length; i++) {
 			if (w[i].onclick == undefined) {

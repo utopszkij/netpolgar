@@ -88,6 +88,7 @@
 		@if (\Auth::user())
 		<div class="row">
 			<div class="col-12">
+				<br />
 				<var><big><strong>{{ __('product.title') }}</strong></big></var>
 				<var style="float:right">
 					<a class="btn btn-success" href="{{ \URL::to('/carts/list') }}">
@@ -98,10 +99,18 @@
 				</var>			
 			</div>		
 		</div>
+		@else
+		<div class="row">
+			<div class="col-12">
+				&nbsp;
+			</div>
+		</div>			
 		@endif
+		
 		<div class="row">
 			<div class="col-12 col-md-3">
 				<div id="submenu">
+					<h4>{{ __('product.filter') }}</h4>
 					@if ($team)
 					<div>
 						{{ $team->name }} 
@@ -109,6 +118,14 @@
 							class="btn btn-secondary">X</a>				
 					</div>
 					@endif
+					@if ($user)
+					<div>
+						{{ $user->name }} 
+						<a href="{{ \URL::to('/products/list/0') }}" 
+							class="btn btn-secondary">X</a>				
+					</div>
+					@endif
+					
 					<div id="treeIkon" onclick="treeIkonClick()" style="cursor:pointer">
 						<em class="fas fa-bars"></em>
 					</div>
@@ -127,18 +144,24 @@
 					value="{{ $categories}}" />
 				<div>
 					{{ __('product.sort') }}:
-					{{ $order }}
 					<select name="order" onchange="$('#formRefresh').submit()">
 						<option value="name,asc"{{ selected('name,asc',$order) }}>ABC</option>					
 						<option value="price,asc"{{ selected('price,asc',$order) }}>{{ __('product.priceASC') }}</option>					
 						<option value="price,desc"{{ selected('price,desc',$order) }}>{{ __('product.priceDESC') }}</option>					
 						<option value="value,desc"{{ selected('value,desc',$order) }}>{{ __('product.evaluations') }}</option>					
 					</select>
-					@if ($userAdmin)
-					<a href="{{ \URL::to('/products/create/'.$team->id) }}" class="btn btn-primary">
-						<em class="fas fa-plus"></em>
-						&nbsp;{{ __('product.add') }}					
-					</a>
+					@if (\Auth::user())					
+						@if ($team)
+						<a href="{{ \URL::to('/products/create/'.$team->id) }}" class="btn btn-primary">
+							<em class="fas fa-plus"></em>
+							&nbsp;{{ __('product.add') }}					
+						</a>
+						@else
+						<a href="{{ \URL::to('/products/create/0') }}" class="btn btn-primary">
+							<em class="fas fa-plus"></em>
+							&nbsp;{{ __('product.add') }}					
+						</a>
+						@endif
 					@endif
 					<div style="display:inline-block; width:auto">					
 						{{ __('product.search') }}: <input type="text" id="search" name="search"
@@ -161,7 +184,7 @@
 							<h3><a href="{{ \URL::to('/products/'.$product->id) }}">
 									{{ $product->name }}
 								 </a>
-								@if ($userAdmin)
+								@if ($product->userAdmin)
 								<a href="{{ \URL::to('/products/'.$product->id.'/edit') }}">
 									<em class="fas fa-edit"></em>					
 								</a>
@@ -191,7 +214,7 @@
 										{{ __('product.addToBasket') }}
 									</button>
 								</form>	
-							</p>										
+							</p>
 						</div>
 					@endif	
 				@endforeach

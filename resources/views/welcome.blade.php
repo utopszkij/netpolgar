@@ -7,16 +7,7 @@ if ($darab == 1) {
     $table->where('id','=',$user->id);
     $table->update(["current_team_id" => 0]);
 }
-
-// ha a sessionban van urlAfterLogin akkor menjen oda
-$urlAfterLogin = \Request::session()->get('urlAfterLogin','');
-	\Request::session()->put('urlAfterLogin','');
-
-if ($urlAfterLogin != '') {
-	echo '<script>window.location="'.$urlAfterLogin.'";</script>';
-}
 ?>
-@if ($urlAfterLogin == '')
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
@@ -49,11 +40,13 @@ if ($urlAfterLogin != '') {
 					  <img src="{{ URL::to('/') }}/img/slide-4.jpg" class="d-block w-100" alt="...">
 					</div>
 				</div>
-				<button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+				<button class="carousel-control-prev" type="button" onclick="true"
+					data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
 					<span class="carousel-control-prev-icon" aria-hidden="true"></span>
 					<span class="visually-hidden">Previous</span>
 				</button>
-				<button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+				<button class="carousel-control-next" type="button" onclick="true"
+					data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
 					<span class="carousel-control-next-icon" aria-hidden="true"></span>
 					<span class="visually-hidden">Next</span>
 				</button>
@@ -61,7 +54,7 @@ if ($urlAfterLogin != '') {
 			
 			
 			<div style="z-index:10; position:absolute; top:300px; width:100%; text-align:center">
-				<a href="#description" class="btn btn-primary descriptionBtn" 
+				<a href="#description" class="btn btn-primary descriptionBtn" onclick="true"
 				    style="opacity:0.6; padding:10px 30px 10px 30px; border-radius:15px">
 			 		{{ __('Description') }}
 				</a>
@@ -74,4 +67,3 @@ if ($urlAfterLogin != '') {
 	    </div>    
     </body>
 </html>
-@endif

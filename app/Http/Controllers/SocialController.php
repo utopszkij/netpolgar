@@ -190,9 +190,11 @@ class SocialController extends Controller {
 						    $isUser = User::where('google_id', $guser->id)->first();
 						    if (!$isUser) {
 				            	 $isUser = User::where('email', $guser->email)->first();
-				            	 Auth::login($isUser);
-						    }else{
-							    $isUser = User::where('email', $guser->email)->first();
+				            }	
+				             
+				            // Auth::login($isUser);
+						    // }else {
+							// $isUser = User::where('email', $guser->email)->first();
 							    if ($isUser) {
 							        Auth::login($isUser);
 							    }else{
@@ -205,7 +207,7 @@ class SocialController extends Controller {
 					                ]);
 					                Auth::login($createUser);
 							    }
-				           } 	 	
+				           // } 	 	
 				        } catch (Exception $exception) {
 				            dd($exception->getMessage());
 				        }			    		

@@ -21,15 +21,15 @@
             <em class="fas fa-reply"></em>
             <span>{{ __('member.back') }}</span><br />
          </a>
-		 <a href="{{ \URL::to('/construction') }}" title="csoportok">
+		 <a href="{{ \URL::to('/users/'.$member->user_id.'/teams') }}" title="{{ __('member.groups') }}">
 				<em class="fas fa-sitemap"></em>
 				<span>{{ __('member.groups') }}</span><br />			
 		 </a>
-		 <a href="{{ URL::to('/construction') }}" title="Projektek">
+		 <a href="{{ URL::to('/projectsbyuser/'.$member->user_id) }}" title="{{ __('member.projects') }}">
 				<em class="fas fa-cogs"></em>
 				<span>{{ __('member.projects') }}</span><br />			
 		 </a>
-		 <a href="{{ URL::to('/construction') }}" title="Termékek">
+		 <a href="{{ URL::to('/products/listbyuser/'.$member->user_id) }}" title="{{ __('member.products') }}">
 				<em class="fas fa-shopping-basket"></em>
 				<span>{{ __('member.products') }}</span><br />			
 		 </a>

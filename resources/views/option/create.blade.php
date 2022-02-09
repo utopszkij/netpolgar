@@ -30,6 +30,7 @@
  
    <form action="{{ \URL::to('/options') }}" method="POST">
    @csrf
+         <input type="hidden" name="optionId" value="0" class="form-control" placeholder="">
          <input type="hidden" name="pollId" value="{{ $poll->id }}" class="form-control" placeholder="">
          <input type="hidden" name="backUrl" value="{{ $backUrl }}" class="form-control" placeholder="">
          <div class="row">

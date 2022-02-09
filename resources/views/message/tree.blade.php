@@ -6,7 +6,8 @@ if ($parent) {
     $parent_id = 0;
 }
 
-include_once \Config::get('view.paths')[0].'/minimarkdown.php';
+// include_once \Config::get('view.paths')[0].'/minimarkdown.php';
+use App\Models\Minimarkdown;
 
 ?>
 <script src="https://meet.jit.si/external_api.js"></script>
@@ -102,10 +103,13 @@ include_once \Config::get('view.paths')[0].'/minimarkdown.php';
     	</p>
 	</form>
 	</div>
-	<div class="row" class="chatBtn">
+	<div class="row" class="chatBtn" style="border-style:solid; margin:5px; padding:10px;">
+		<h4>Video chat</h4>
 		<button type="button" class="btn  btn-secondary" onclick="jitsiStart()">
 			<em class="fas fa-video"></em>&nbsp;<em class="fas fa-microphone"></em>&nbsp;Chat
 		</button>
+		A web böngésző biztonsági beállításai, egyes esetekben megadályozhatják ennek a funciónak a müködését.
+		Arra van szükség, hogy a web böngésző használhassa a mikrofont és a kamerát.
 	</div>
 	@endif
 	
@@ -120,7 +124,9 @@ include_once \Config::get('view.paths')[0].'/minimarkdown.php';
 			<div id="onlineList"></div>
 	</div>		
 	<div style="clear:both"></div>
-	@if ($member)
+	@if (($member) | 
+		 (($parentType == 'users') & ($parentId == \Auth::user()->id))
+		)
 		<div id="jitsi">
 		<script type="text/javascript">
    		function jitsiStart() {
@@ -169,10 +175,20 @@ include_once \Config::get('view.paths')[0].'/minimarkdown.php';
 			    return false;
 		});
 
+		var scrollTop = 0;
 		function replyClick(id) {
+			var top  = window.pageYOffset || document.documentElement.scrollTop;
+			scrollTop = top;
 			$('#reply'+id).show();
 			$('#replyText'+id).focus();
+			if (top > 50) {
+				top = top - 50;
+			}
+			setTimeout(myScrollTo,100);
 			return false;
+		}
+		function myScrollTo() {
+			window.scrollTo(0,scrollTop);
 		}
         </script>
 		</div>

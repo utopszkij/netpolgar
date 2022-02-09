@@ -3,11 +3,21 @@
     <div class="row" style="margin-top: 5rem;">
         <div class="col-lg-12 margin-tb">
             <div class="pull-left">
-                <h2>{{ __('team.teams') }}</h2>
+				@if ($parentType == 'users')
+					<big>Csoportok amiknek {{ $parent->name }} tagja</big>
+				@else
+					<big>{{ __('team.teams') }}</big>	
+					&nbsp;
+					<a href="{{ \URL::to('/team/tree') }}">
+						<em class="fas fa-sitemap"></em>&nbsp;
+						{{ __('team.tree') }}
+					</a>
+				@endif	
             </div>
         </div>
     </div>
     <div class="row path" style="margin-top: 5px; margin-left:10px">
+    
     @php $pathSeparator = ''; @endphp
     @foreach ($info->path as $item)
     	<var class="pathItem">
@@ -18,6 +28,7 @@
     	</var>
 	    @php $pathSeparator = '<em class="fas fa-caret-right"></em>'; @endphp
 	 @endforeach	    
+	
 	 </div>    
 
     @if (($info->status == 'active') & 
