@@ -1,12 +1,20 @@
 <x-guest-layout>  
 
-   @php if ($team->avatar == '') $team->avatar = URL::to('/').'/img/team.png'; @endphp
+   @php if ($team->avatar == '') $team->avatar = URL::to('/').'/img/team.png'; 
+		$teamIndexUrl = \Request::session()->get('teamIndexUrl','/teams/'.$team->parent.'/list');
+   @endphp
 
 	<div id="teamContainer">
     <div class="row">
         <div class="col-lg-12 margin-tb">
             <div class="pull-left">
-                <h2>{{ __('team.details') }}</h2>
+				<br />
+                <big>{{ __('team.details') }}</big>
+				&nbsp;
+				<a href="{{ \URL::to('/team/tree') }}">
+					<em class="fas fa-sitemap"></em>&nbsp;
+					{{ __('team.tree') }}
+				</a>
             </div>
         </div>
     </div>
@@ -16,48 +24,71 @@
 			<var id="subMenuIcon" class="subMenuIcon" onclick="toggleTeamMenu()">
 				<em class="fas fa-caret-right"></em><br />			
 			</var>
-         <a href="{{ route('parents.teams.index', $team->parent) }}">
+         <a href="{{ $teamIndexUrl }}">
             <em class="fas fa-reply"></em>
             <span>{{ __('team.back') }}</span><br />
          </a>
-			<a href="{{ URL::to('/member/list/teams/'.$team->id) }}" title="Tagok">
+			<a href="{{ URL::to('/member/list/teams/'.$team->id) }}"
+				title="{{ __('team.members') }}">
 				<em class="fas fa-users"></em>
 				<span>{{ __('team.members') }}</span><br />			
 			</a>
-			<a href="{{ route('parents.teams.index', $team->id) }}" title="Tagok">
+			<a href="{{ route('parents.teams.index', $team->id) }}" 
+				title="{{ __('team.subGroups') }}">
 				<em class="fas fa-sitemap"></em>
 				<span>{{ __('team.subGroups') }}</span><br />			
 			</a>
-			<a href="{{ URL::to('/construction') }}" title="Projektek">
+			<a href="{{ URL::to('/'.$team->id.'/projects') }}"
+				title="{{ __('team.projects') }}">
 				<em class="fas fa-cogs"></em>
 				<span>{{ __('team.projects') }}</span><br />			
 			</a>
-			<a href="{{ URL::to('/construction') }}" title="Termékek">
+			<a href="{{ URL::to('/products/list/'.$team->id) }}" 
+				title="{{ __('team.products') }}">
 				<em class="fas fa-shopping-basket"></em>
 				<span>{{ __('team.products') }}</span><br />			
 			</a>
-			<a href="{{ URL::to('/construction') }}" title="Beszégetés">
+	        @if ((in_array('active_admin',$info->userRank)) | 
+	             (in_array('active_member',$info->userRank)))
+			<a href="{{ URL::to('/orders/list/?producer='.$team->id.'&producer_type=teams') }}" 
+				title="{{ __('team.orders') }}">
+				<em class="fas fa-truck"></em>
+				<span>{{ __('team.orders') }}</span><br />			
+			</a>
+			<a href="{{ URL::to('/account/list/teams/'.$team->id) }}" 
+				title="{{ __('team.orders') }}">
+				<em class="fas fa-money-bill"></em>
+				<span>{{ __('team.account') }}</span><br />			
+			</a>
+			@endif	
+		    <a href="{{ URL::to('/message/tree/teams/'.$team->id) }}"
+				title="{{ __('team.comments') }}">
 				<em class="fas fa-comments"></em>
 				<span>{{ __('team.comments') }}</span><br />			
 			</a>
-			<a href="{{ URL::to('/construction') }}" title="Viták, szavazások">
+			<a href="{{ URL::to('/teams/'.$team->id.'/proposal-debate/polls')  }}"
+				title="{{ __('team.debates') }}">
 				<em class="fas fa-retweet"></em>
 				<span>{{ __('team.debates') }}</span><br />			
 			</a>
-			<a href="{{ URL::to('/construction') }}" title="Viták, szavazások">
+			<a href="{{ URL::to('/teams/'.$team->id.'/vote/polls') }}" 
+				title="{{ __('team.polls') }}">
 				<em class="fas fa-balance-scale-left"></em>
 				<span>{{ __('team.polls') }}</span><br />			
 			</a>
-			<a href="{{ URL::to('/construction') }}" title="Döntések">
+			<a href="{{ URL::to('/teams/'.$team->id.'/closed/polls') }}"
+				title="{{ __('team.decisions') }}">
 				<em class="fas fa-check"></em>
 				<span        		    
 				>{{ __('team.decisions') }}</span><br />			
 			</a>
-			<a href="{{ URL::to('/construction') }}" title="Fájlok">
+			<a href="{{ URL::to('/construction') }}"
+				title="{{ __('team.files') }}">
 				<em class="fas fa-folder-open"></em>
 				<span>{{ __('team.files') }}</span><br />			
 			</a>
-			<a href="{{ URL::to('/construction') }}" title="Események">
+			<a href="{{ URL::to('/construction') }}"
+				title="{{ __('team.events') }}">
 				<em class="fas fa-calendar"></em>
 				<span>{{ __('team.events') }}</span><br />			
 			</a>
@@ -70,6 +101,7 @@
 		    	@if ($item->id != $team->id)
 		    	<var class="pathItem">
 					<a href="{{ route('teams.show',["team" => $item->id]) }}">
+						<em class="fas fa-hand-point-right"></em>
 						&nbsp;{!! $pathSeparator !!}&nbsp;{{ $item->name }} 			
 					</a>    	
 		    	</var>
@@ -111,7 +143,9 @@
         		@endphp 
         		{{ implode(',',$info->transUserRank) }} vagy&nbsp;
         		@endif
-        		@if ((count($info->userRank) == 0) & ($team->status == 'active'))
+        		@if (\Auth::user())
+        		@if ((count($info->userRank) == 0) & 
+        		     ($team->status == 'active')) 
         			<form action="{{ URL::to('/member/store') }}"
         				style="display:inline-block; width:auto">
         			<input type="hidden" name="parent_type" value="teams" />
@@ -122,6 +156,7 @@
 						{{ __('team.signin') }}        				
         			</button>
         			</form>
+        		@endif
         		@endif
         		@if ((count($info->userRank) > 0) & 
         		     ($team->status == 'active') & ($team->id != 1))
@@ -145,7 +180,9 @@
         				<em class="fas fa-check"></em>
         				@endif
         				<em class="fas fa-thumbs-down"></em>
-        				({{ $info->disLikeCount }}/{{ $info->disLikeReq}})
+        				<a href="{{ \URL::to('/likeinfo/teams/'.$team->id) }}">
+	        				({{ $info->disLikeCount }}/{{ $info->disLikeReq}})
+        				</a>
 						{{ __('team.dislike') }}
         			</a>
         		@endif
@@ -157,7 +194,9 @@
         				<em class="fas fa-check"></em>
         				@endif
         				<em class="fas fa-thumbs-up"></em>
-        				({{ $info->likeCount }}/{{ $info->likeReq}})
+        				<a href="{{ \URL::to('/likeinfo/teams/'.$team->id) }}">
+	        				({{ $info->likeCount }}/{{ $info->likeReq}})
+	        			</a>	
 						{{ __('team.like') }}
         			</a>
         		@endif
@@ -167,7 +206,7 @@
 				<img src="{{ $team->avatar }}" alt="logo" title="logo"
 					style="float:right; width:25%" />        		
             <div style="width:70%">
-            	<pre>{!! $team->description !!}</pre>
+            	{!! str_replace("\n",'<br />',$team->description) !!}
             	<h4>Beállítások</h4>
 					<div class="config" style="display:inline-block; width:500px">
 						  tisztségek:  {{ implode(',',$team->config->ranks) }}<br />	

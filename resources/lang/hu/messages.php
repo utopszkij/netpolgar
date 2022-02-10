@@ -1,9 +1,12 @@
-<?php
+﻿<?php
 return [
   	'list' => 'Üzenetek',
-  	'group' => 'Csoport',
-  	'project' => 'Projekt',
-    'product' => 'Termék',
+  	'teams' => 'Csoport',
+  	'projects' => 'Projekt',
+  	'polls' => 'Vita',
+  	'tasks' => 'Feladat',
+    'products' => 'Termék',
+    'users' => 'Privát',
     'event' => 'Esemény',
     'user' => 'Személyes',
     'search' => 'Keresés',
@@ -12,14 +15,29 @@ return [
     'notrecords' => 'Nincs listázandó adat',
     'online' => 'Jelenleg on-line',
     'enableBtn' => 'Engedélyezem',
-    'help' => 'Üzenet íráshoz kattints a "Join meeting" gombra majd a <em class="far fa-comment-alt"></em> ikonra!',
-    'target' => 'Üzenet címzetje',
-    'sender' => 'Üzenet feladója',
+    'help' => 'Engedélyezd a kamera és mikrofon használatát. 
+        Kattints a "Join meeting" gombra és videó chat -elhetsz. 
+        Üzenet íráshoz kattints a  <em class="far fa-comment-alt"></em> ikonra!',
+    'target' => 'Üzenet címzettje',
+    'sender' => 'Üzenet feladója',                
     'value' => 'Üzenet szövege',
     'created_at' => 'Időpont',
-    'moderatorinfo' => 'moderátor megjegyzése',
+    'moderatorinfo' => 'Moderátor megjegyzése',
     'moderatorForm' => 'Üzenet moderálás',
     'moderationSaved' => 'Moderálás tárolva',
     'save' => 'Tárolás',
-    'cancel' => 'Mégsem'
+    'cancel' => 'Mégsem',
+    'replyCount' => 'db válasz',
+    'newReply' => 'Válasz írása',
+    'protest' => 'Vifogásolom',
+    'send' => 'Küldés',
+    'saved' => 'Üzenet tárolva',
+    'accessDenied' => 'Nem vagy jogosult erre',
+    'notModerator' => 'Nincs moderátor',
+    'protestSended' => 'Kifogás elküldve a moderátor(ok)nak.',
+    'protestForm' => 'Kifogás bejelentése',
+    'first'=> '&lsaquo;&lsaquo;',
+    'previous' => '&lsaquo;',
+    'next' => '&rsaquo;',
+    'last' => '&rsaquo;&rsaquo;'
 ];

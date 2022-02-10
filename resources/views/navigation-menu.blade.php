@@ -35,7 +35,9 @@ if (Auth::user()) {
 		<img src="{{ URL::to('/') }}/img/logo.png" class="logo" />    
     	Netpolgár
     </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+      data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" 
+      aria-expanded="false" aria-label="Toggle navigation" onclick="false">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -47,27 +49,10 @@ if (Auth::user()) {
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">
-          	{{ __('navigation.Projects') }}
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">
+          <a class="nav-link" aria-current="page" 
+          	href="{{ URL::to('/products/list/0') }}">
           	{{ __('navigation.market') }}
           </a>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" 
-            _data-bs-toggle="dropdown" _aria-expanded="false"
-            onclick="$('#msgDropdown').toggle(); false">
-            {{ __('navigation.kommunikation') }}
-          </a>
-          <ul class="dropdown-menu" aria-labelledby="navbarDropdown" id="msgDropdown">
-            <li><a class="dropdown-item" href="#">{{ __('navigation.privatmsg') }}</a></li>
-            <li><a class="dropdown-item" href="#">{{ __('navigation.forum') }}</a></li>
-            <li><a class="dropdown-item" href="#">{{ __('navigation.voks') }}</a></li>
-            <li><a class="dropdown-item" href="#">{{ __('navigation.rules') }}</a></li>
-          </ul>
         </li>
       </ul>
       <ul class="navbar-nav mb-2 mb-lg-0">
@@ -83,7 +68,24 @@ if (Auth::user()) {
             style="right:20px">
             <li><a class="dropdown-item" href="{{ URL::to('/user/profile') }}">
             	{{ __('navigation.profile') }}
-            </a></li>
+           		</a>
+           	</li>
+            <li><a class="dropdown-item" href="{{ URL::to('/message/tree/users/'.\Auth::user()->id) }}">
+            	{{ __('navigation.messages') }}
+           		</a>
+           	</li>
+            <li><a class="dropdown-item" href="{{ URL::to('/products/listbyuser/'.\Auth::user()->id) }}">
+            	{{ __('navigation.products') }}
+           		</a>
+           	</li>
+            <li><a class="dropdown-item" href="{{ URL::to('/orders/list/?producer_type=users&producer='.\Auth::user()->id) }}">
+            	{{ __('navigation.orders') }}
+           		</a>
+           	</li>
+            <li><a class="dropdown-item" href="{{ URL::to('/account/list/users/'.\Auth::user()->id) }}">
+            	{{ __('navigation.account') }}
+           		</a>
+           	</li>
             <li>
             	<form method="post" id="logoutForm" action="{{ URL::to('/logout') }}">
             		@csrf

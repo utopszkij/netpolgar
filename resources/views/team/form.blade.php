@@ -13,11 +13,10 @@
 			$team->config->memberExclude = \Request::old('memberExclude');
 			$team->config->rankActivate = \Request::old('rankActivate');
 			$team->config->rankClose = \Request::old('rankClose');
-			$team->config->projectActivate = \Request::old('projectActivete');
+			$team->config->projectActivate = \Request::old('projectActivate');
 			$team->config->productActivate = \Request::old('productActivate');
 			$team->config->subTeamActivate = \Request::old('subTeamActivate');
 			$team->config->debateActivate = \Request::old('debateActivate');
-
 		@endphp
 	@endif
 
@@ -48,9 +47,9 @@
 	 </div>    
  
  	@if ($team->id > 0)
-    <form action="{{ route('teams.update',$team->id) }}" method="POST">
+    <form action="{{ route('teams.update',$team->id) }}" method="POST" enctype="multipart/form-data">
    @else
-    <form action="{{ route('parents.teams.store', $team->parent) }}" method="POST">
+    <form action="{{ route('parents.teams.store', $team->parent) }}" method="POST" enctype="multipart/form-data">
    @endif 
    @csrf
  	@if ($team->id > 0)
@@ -79,9 +78,19 @@
                 <div class="form-group">
                     <label>{{ __('team.avatar') }}:</label>
                     <input type="text" name="avatar" value="{{ $team->avatar }}" class="form-control" placeholder="URL">
+                    max 2M
                 </div>
             </div>
          </div>
+         <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12">
+                <div class="form-group">
+                    <label></label>{{ __('team.orUpload') }}<br />
+                    <label></label>
+                    <input type="file" name="img" value="" class="form-control" />
+                </div>    
+			</div>
+		</div>	
          <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-12">
                 <div class="form-group">
@@ -105,7 +114,7 @@
 						  <input type="number" min="1" max="100" 
 						  name="close" value="{{ $team->config->close }}" />
 						  % támogatottság kell a csoport lezárásához,<br />
-						  <input type="number" min="1" max="100" 
+						  <input type="number" min="0" max="100" 
 						  name="memberActivate" value="{{ $team->config->memberActivate }}" />
 						  fő támogató kell tag felvételéhez,<br />
 						  <input type="number" min="1" max="100" 
@@ -123,10 +132,10 @@
 						  <input type="number" min="1" max="100" 
 						  name="productActivate" value="{{ $team->config->productActivate }}" />
 						  % támogatottság kell termék közzé tételéhez,<br />
-						  <input type="number" min="1" max="100" 
+						  <input type="number" min="0" max="100" 
 						  name="subTeamActivate" value="{{ $team->config->subTeamActivate }}" />
 						  fő támogató kell alcsoport aktiválásához,<br />
-						  <input type="number" min="1" max="100" 
+						  <input type="number" min="0" max="100" 
 						  name="debateActivate" value="{{ $team->config->debateActivate }}" />
 						  fő támogató kell eldöntendő vita inditásához
 						</div>

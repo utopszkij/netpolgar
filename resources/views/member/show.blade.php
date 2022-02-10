@@ -21,21 +21,17 @@
             <em class="fas fa-reply"></em>
             <span>{{ __('member.back') }}</span><br />
          </a>
-		 <a href="{{ \URL::to('/construction') }}" title="Tagok">
+		 <a href="{{ \URL::to('/users/'.$member->user_id.'/teams') }}" title="{{ __('member.groups') }}">
 				<em class="fas fa-sitemap"></em>
 				<span>{{ __('member.groups') }}</span><br />			
 		 </a>
-		 <a href="{{ URL::to('/construction') }}" title="Projektek">
+		 <a href="{{ URL::to('/projectsbyuser/'.$member->user_id) }}" title="{{ __('member.projects') }}">
 				<em class="fas fa-cogs"></em>
 				<span>{{ __('member.projects') }}</span><br />			
 		 </a>
-		 <a href="{{ URL::to('/construction') }}" title="Termékek">
+		 <a href="{{ URL::to('/products/listbyuser/'.$member->user_id) }}" title="{{ __('member.products') }}">
 				<em class="fas fa-shopping-basket"></em>
 				<span>{{ __('member.products') }}</span><br />			
-		 </a>
-		 <a href="{{ URL::to('/construction') }}" title="Beszégetés">
-				<em class="fas fa-comments"></em>
-				<span>{{ __('member.comments') }}</span><br />			
 		 </a>
 		 <a href="{{ URL::to('/construction') }}" title="Fájlok">
 				<em class="fas fa-folder-open"></em>
@@ -60,6 +56,27 @@
 	    </div>
 	    
 	  </div> <!-- .row -->
+	  <div xlass="row">
+	  <h4>{{ __('member.msg') }}</h4>
+        	<form method="post" action="{{ \URL::to('/message/store') }}">
+			 	@csrf
+        		<input type="hidden" name="parent_type" value="users" />
+       			<input type="hidden" name="parent" value="{{ $user->id }}" />
+        		<input type="hidden" name="reply_to" value="0" />
+        		<input type="hidden" name="msg_type" value="" />
+            	<textarea id="value" name="value" cols="60" rows="4" style="width:70%"></textarea>
+            	<button type="submit" class="btn btn-primary">
+            		<em class="fas fa-paper-plane"></em>{{ __('member.send') }}
+            	</button>
+        	</form>
+        	<p>használható korlátozott "markdown" szintaxis.
+    			kiemelt: <strong>**...**</strong>,
+    			dölt betüs: <strong>*...*</strong> ,
+    			kép: <strong>![](http...)</strong>, 
+    			link: <strong>http....</strong>
+    		</p>
+        	
+	  </div>
     
    <script>
 		function toggleTeamMenu() {

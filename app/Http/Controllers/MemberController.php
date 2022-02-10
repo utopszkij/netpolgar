@@ -1,52 +1,54 @@
 <?php
+/**
+* tagok kontroller
+* publikus funkciók:
+*   index($parent_type, $parent)
+*   show($memberId)
+*   user($userId)
+*   store($request)
+*   doExit($request)
+*/ 
 
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Member;
 
-class MemberController extends Controller
-{
+class MemberController extends Controller {
+	
+	 protected $model = false;
+	 
+	 function __construct() {
+		$this->model = new Member();	 
+	 }	
+
 	 /**
     * Display a listing of the resource.
-    *
+    * @param string $parent_type
+    * @param string $parent
+    * Request rank is érkezhet
     * @return \Illuminate\Http\Response
     */
     public function index(string $parent_type, string $parent = '0')
     {
 		 // get $parent record (input param  $parent az ID)
        $parentId = $parent;
-       $t = \DB::table($parent_type);
-       $parent = $t->where('id','=',$parentId)->first();
-		 if (!$parent) {
-				echo 'Fatal error parent not fouund '.$parent_type.'/',$parentId; exit();		 
-		 }
-
-
-   	  $model = new Member();	
-        $data = $model->select(['members.id',
-        								  'members.user_id',
-										  'members.rank',
-										  'members.status',
-										  'users.name',
-										  'users.email',
-										  'users.profile_photo_path'])
-        ->leftJoin('users','users.id','=','members.user_id')
-        ->where('members.parent_type','=',$parent_type)
-        ->where('members.parent','=',$parent->id)
-        ->orderBy('rank', 'asc')
-        ->orderBy('name', 'asc')
-        ->paginate(5);
-
-        $info = $model->getInfo($parent_type, $parent, $data);
+       $parent = Member::getParent($parent_type, $parent);
+       $rank = \Request::input('rank','member');
+	   $data = $this->model->getData($parent_type, $parentId, $rank, 8);
+       $info = $this->model->getInfo($parent_type, $parent, $data);
+		 foreach ($data as $d1) {
+			$this->model->checkStatus($d1->id);		 
+		 }	        		
         		 
         return view('member.index',
             ["data" => $data,
                 "parent_type" => $parent_type,
                 "parent" => $parent,
+                "rank" => $rank,
                 "info" => $info
             ])
-            ->with('i', (request()->input('page', 1) - 1) * 5);
+            ->with('i', (request()->input('page', 1) - 1) * 8);
     }
     
 	/**
@@ -55,36 +57,36 @@ class MemberController extends Controller
     * @return \Illuminate\Http\Response
     */
     public function show(string $memberId) {
-        $t = \DB::table('members');
-        $member = $t->where('id','=',$memberId)->first();
+        $member = $this->model->where('id','=',$memberId)->first();
         if (!$member) {
-            echo 'Fatal error member not found'; exit();
+            echo 'Fatal error member not found (show)'; exit();
         }
-        
-        $t = \DB::table($member->parent_type);
-        $parent = $t->where('id','=',$member->parent)->first();
-        if ($parent) {
-            $t = \DB::table('users');
-            $user = $t->where('id','=',$member->user_id)->first();
-            
-            $ranks = [];
-            $t = \DB::table('members');
-            $members = $t->where('parent_type','=',$member->parent_type)
-                        ->where('parent','=',$member->parent)
-                        ->where('user_id','=',$member->user_id)
-                        ->get();
-            foreach ($members as $m) {
-                $ranks[] = __('member.'.$m->status.'_'.$m->rank);                
-            }
-            return view('member.show',
+        $parent = Member::getParent($member->parent_type, $member->parent);
+        $t = \DB::table('users');
+        $user = $t->where('id','=',$member->user_id)->first();
+		  $ranks = $this->model->getRanks($member);
+        return view('member.show',
                 ["member" => $member,
                  "parent" => $parent,
                  "ranks" => $ranks,   
                  "user" => $user
                 ]);
-        } else {
-            echo 'Fatal error parent not found'; exit();
+    }
+    
+    /** user adatlap megjelenítése
+     * 
+     * @param string $userId
+     * @return laravel view
+     */
+    public function user(string $userId) {
+        $member = $this->model->where('user_id','=',$userId)
+                    ->where('parent_type', '=', 'teams')
+                    ->where('parent','=','1')
+                    ->first();
+        if (!$member) {
+            echo 'Fatal error member not found(1)'; exit();
         }
+        return $this->show($member->id);
     }
    
 	 /**
@@ -93,44 +95,36 @@ class MemberController extends Controller
 	 * @param Request $request (parent_type, parent, rank)
 	 * @return  \Illuminate\Http\Response
 	 */
+   
     public function store(Request $request) {
     	$user = \Auth::user();
     	$parent_type = $request->input('parent_type');
     	$parentId = $request->input('parent');
     	$rank = $request->input('rank');
+        $parent = Member::getParent($parent_type, $parentId);
+
     	if (($parent_type == '') | 
     	    ($parentId < 1) |
     	    ($rank == '')) {
 			echo 'Fatal error'; exit();    	
     	}
+    	
     	// csak bejelentkezett usernél megengedett
     	if (\Auth::user()) {
-    		$m = \DB::table('members');
     		// csak active parent -be megengedett
-			$t = \DB::table($parent_type);
-			$parent = $t->where('id','=',$parentId)->first();  		
-			if (!$parent) {
-					echo 'Fatal error parent not fouund '.$parent_type.'/',$parentId; exit();		 
-			}
 			if ($parent->status == 'active') {
-	    		// csak ha még nincs ilyen "rank" -al rekord
-			    $w = $m->where('parent_type','=',$parent_type)
-	    				->where('parent','=',$parent->id)
-	    				->where('rank','=',$rank)
-	    				->where('user_id','=',$user->id)
-	    				->first();
-				if (!$w) {	    				
-		    		$modelArr = [];
-		    		$modelArr['parent_type'] = $parent_type;
-		    		$modelArr['parent'] = $parent->id;
-		    		$modelArr['rank'] = $rank;
-		    		$modelArr['user_id'] = $user->id;
-		    		$modelArr['created_by'] = $user->id;
-		    		$modelArr['status'] = 'proposal';
-		    		$model = new Member();
-		    		$model->create($modelArr);
-		    		$result = redirect(\URL::to('/'.$parent_type.
-		    		'/'.$parent->id));
+	    		// csak ha még nincs ilyen  rekord
+				if (!Member::getRecord($parent_type, $parent->id, $rank, $user->id)) {	    				
+					$errorInfo = $this->model->createRecord($parent_type, 
+						$parent->id, $rank, $user					
+					);
+		 			if ($errorInfo != '') {
+			    		$result = redirect(\URL::to('/'.$parent_type.
+			    		'/'.$parent->id))->with('error',$errorInfo);
+		 			} else {   		
+			    		$result = redirect(\URL::to('/'.$parent_type.
+			    		'/'.$parent->id))->with('success',__('Saved'));
+		    	   }
 	    		} else {
 		    		$result = redirect(\URL::to('/'.$parent_type.
 		    		'/'.$parent->id))->with('error',__('member.exists'));
@@ -140,8 +134,7 @@ class MemberController extends Controller
 	    		'/'.$parent->id))->with('error',__('member.notActive'));
     		}
     	} else {
-	    	$result =redirect(\URL::to('/'.$parent_type.
-	    		'/'.$parent->id))->with('error',__('member.notLogged'));
+	    	$result = redirect(\URL::to('/'))->with('error',__('member.notLogged'));
     	}	
     	return $result;
     }
@@ -163,26 +156,15 @@ class MemberController extends Controller
     	    ($user == false)) {
 			echo 'Fatal error'; exit();    	
     	}
-		$t = \DB::table($parent_type);
-		$parent = $t->where('id','=',$parentId)->first();
-		
-	   if (!$parent) {
-				echo 'Fatal error parent not fouund '.$parent_type.'/',$parentId; exit();		 
-		}
+      $parent = Member::getParent($parent_type, $parentId);
 		if ($parent->status == 'active') {
 			// van másik admin? 
-		    $m = \DB::table('members');
-		    $otherAdmin = $m->where('parent_type','=',$parent_type)
-		    ->where('parent','=',$parent->id)
-		    ->where('rank','=','admin')
-		    ->where('status','=','active')
-		    ->where('user_id','<>',$user->id)->first();
+		    $otherAdmin = Member::getOtherAdmin($parent_type, $parent->id,
+				$user->id);
 			if ($rank == 'member') {
 				if ($otherAdmin) {
-				    $m = \DB::table('members');
-				    $m->where('parent_type','=',$parent_type)
-	    			->where('parent','=',$parent->id)
-	    			->where('user_id','=',$user->id)->delete();
+					Member::deleteRecords($parent_type, $parentId,
+						$user->id, 'all');
 					$result = redirect(\URL::to('/'.$parent_type.
 		    		'/'.$parent->id));
 				} else {
@@ -191,11 +173,8 @@ class MemberController extends Controller
 				}
 			} else if ($rank == 'admin') {
 				if ($otherAdmin) {
-				    $m = \DB::table('members');
-    				$m->where('parent_type','=',$parent_type)
-	    			->where('parent','=',$parent->id)
-	    			->where('rank','=',$rank)
-	    			->where('user_id','=',$user->id)->delete();
+					Member::deleteRecords($parent_type, $parentId,
+						$userId, 'admin');
 					$result = redirect(\URL::to('/'.$parent_type.
 		    		'/'.$parent->id));
 				} else {
@@ -203,11 +182,8 @@ class MemberController extends Controller
 		    		'/'.$parent->id))->with('error',__('member.youAreAdmin'));
 				}
 			} else {
-			    $m = \DB::table('members');
-  				$m->where('parent_type','=',$parent_type)
-    			->where('parent','=',$parent->id)
-    			->where('rank','=',$rank)
-    			->where('user_id','=',$user->id)->delete();
+				Member::deleteRecords($parent_type, $parentId,
+						$userId, $rank);
 				$result = redirect(\URL::to('/'.$parent_type.
 		    		'/'.$parent->id));
 			}

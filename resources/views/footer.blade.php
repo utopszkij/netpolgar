@@ -20,7 +20,7 @@
 				<div class="col-sm-6  footer-links">
 					<ul>
 					<li><i class="bx bx-chevron-right"></i>
-						<a href="{{ \URL::to('/textpage/impressum') }}">
+						<a href="{{ \URL::to('/impressum') }}">
 						<em class="fa fa-info-circle"></em> {{ __('footer.impressum') }}
 						</a></li>
 					<li><i class="bx bx-chevron-right"></i>
@@ -32,7 +32,8 @@
 						<em class="fa fa-code"></em> {{ __('footer.source') }}
 						</a></li>
 					<li><i class="bx bx-chevron-right"></i>
-						<a href="{{ \URL::to('/bugreportform') }}">
+						<a href="mailto::tibor.fogler@gmail.com?subject=netpolgar hiabjelzés"
+						   onclick="$('#waiting').hide()">
 						<em class="fa fa-bug"></em> {{ __('footer.bugreport') }}
 						</a></li>
 					</ul>

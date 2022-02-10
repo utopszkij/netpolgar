@@ -13,4 +13,8 @@ return [
     'enter' => 'Belépés',
    	'login' => 'Bejelentkezés',
    	'register' => 'Regisztráció',
+    'messages' => 'Privát üzenetek',
+    'orders' => 'Rendelések',
+    'account' => 'NTC folyószámla',
+    'products' => 'Termékek'
 ];
