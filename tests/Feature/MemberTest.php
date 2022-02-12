@@ -53,7 +53,12 @@ class MemberTest extends TestCase
             "status" => "active",
             "description" => "testTeam1 description",
             "avatar" => "test1_avatar",
-            "config" => "{\"ranks\":[\"admin\",\"manager\"]}",
+            "config" => "{\"ranks\":[\"admin\",	\"manager\"],
+            	\"memberActivate\":10,
+            	\"memberExclude\":10,
+            	\"rankActivate\":10,
+            	\"rankClose\":10
+            }",
             "created_by" => $testUser1->id
         ]);
         // testUser1 adminja a testTeam1 -nek
@@ -62,6 +67,14 @@ class MemberTest extends TestCase
             'parent' => $testTeam1->id,
             'user_id'=> $testUser1->id,
             'rank' => 'admin',
+            'status' => 'active',
+            'created_by' => $testUser1->id
+        ]);
+        \App\Models\Member::create([
+            'parent_type' => 'teams',
+            'parent' => $testTeam1->id,
+            'user_id'=> $testUser1->id,
+            'rank' => 'member',
             'status' => 'active',
             'created_by' => $testUser1->id
         ]);

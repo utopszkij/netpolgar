@@ -32,18 +32,7 @@ class OptionTest extends TestCase
         $option = new \App\Models\Option();
         
         // esetleg meglévő korábbi test adatok törlése
-        $testUser1 = $user->where('name','=','testUser1')->first();
-        if ($testUser1) {
-            $member->where('user_id','=',$testUser1->id)->delete();
-        }
-        $testUser2 = $user->where('name','=','testUser2')->first();
-        if ($testUser2) {
-            $member->where('user_id','=',$testUser2->id)->delete();
-        }
-        $team->where('name','like','test%')->delete();
-        $user->where('name','like','test%')->delete();
-        $poll->where('name','=','testPoll')->delete();
-        $option->where('name','=','testOption')->delete();
+        $this->test_end();
         
         // test userek létrehozása
         $testUser1 = $user->create(['name' => 'testUser1',
@@ -74,10 +63,13 @@ class OptionTest extends TestCase
         ]);
         
         // test Poll létrehozása
+        $poll0 = $poll->emptyRecord();
         $this->testPoll = $poll->create([
 			"id" => 0, "parent_type" => "teams","parent" => $testTeam1->id,
             "name" => 'testPoll', "status" => "debate",
-            "description" => "testPoll description"
+            "description" => "testPoll description",
+            "config" => JSON_encode($poll0->config),
+            "created_by" => $testUser1->id
         ]);
         
         $this->assertEquals(1,1);
@@ -241,16 +233,44 @@ class OptionTest extends TestCase
         $user = new \App\Models\User();
         $team = new \App\Models\Team();
         $member = new \App\Models\Member();
+        $like = new \App\Models\Like();
         $poll = new \App\Models\Poll();
         $option = new \App\Models\Option();
-        $team->where('name','like','test%')->delete();
-        $testUser1 = $user->where('name','=','testUser1')->first();
-        $member->where('user_id','=',$testUser1->id)->delete();
-        $testUser2 = $user->where('name','=','testUser2')->first();
-        $member->where('user_id','=',$testUser2->id)->delete();
-        $user->where('name','like','test%')->delete();
-        $poll->where('name','=','testPoll')->delete();
-        $option->where('name','=','testOption')->delete();
+        $vote = new \App\Models\Vote();
+        $message = new \App\Models\Message();
+        
+        $testPolls = $poll->where('name','like','test%')->get();
+        foreach ($testPolls as $testPoll) {
+            $vote->where('poll_id','=',$testPoll->id)->delete();
+            $option->where('poll_id','=',$testPoll->id)->delete();
+            $poll->where('id','=',$testPoll->id)->delete();
+        }
+        
+        $testTeams = $team->where('name','like','test%')->get();
+        foreach ($testTeams as $testTeam) {
+            $testMembers = $member->where('parent_type','=','teams')
+            ->where('parent','=',$testTeam->id)->get();
+            foreach ($testMembers as $testMember) {
+                $like->where('parent_type','=','members')
+                ->where('parent','=',$testMember->id)
+                ->delete();
+                $member->where('id','=',$testMember->id)->delete();
+            }
+            $like->where('parent_type','=','teams')
+            ->where('parent','=',$testTeam->id)
+            ->delete();
+            $team->where('id','=',$testTeam->id)->delete();
+        }
+        
+        $testUsers = $user->where('name','like','test%')->get();
+        foreach ($testUsers as $testUser) {
+            \DB::table('msgreads')->where('user_id','=',$testUser->id)->delete();
+            $message->where('user_id','=',$testUser->id)->delete();
+            $message->where('parent','=',$testUser->id)
+            ->where('parent_type','=','users')->delete();
+            $like->where('user_id','=',$testUser->id)->delete();
+            $user->where('id','=',$testUser->id)->delete();
+        }
         $this->assertEquals(1,1);
     }
 }

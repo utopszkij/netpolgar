@@ -176,13 +176,9 @@ class ProjectController extends Controller
 						->where('id','=',$task->assign)
 						->first();
 					if ($u) {
-						if ($u->profile_photo_path != '') {
-							$task->assign=[$u->name,
-							\URL::to('/').'/storage/app/public/'.$u->profile_photo_path];
-						} else {
-							$task->assign=[$u->name,
-							'https://gravatar.com/avatar/'.md5($u->email)];
-						}	 					
+					    $task->assign = [$u->name, 
+					        \App\Models\User::userAvatar($u->profile_photo_path, $u->email)
+					    ];
 					} else {
 						$task->assign=['','']; 					
 					}					

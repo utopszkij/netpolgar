@@ -463,15 +463,15 @@ class Team extends Model {
     
     
 	/**
-	* minden regisztrált user legyen tagja az "2"-es teamnek
+	* minden regisztrált user legyen tagja az "1"-es teamnek
 	*/	
    public function adjustRegisteredTeamMembers() {
        try {
           \DB::statement('insert into members (parent_type, parent, user_id, `status`, `rank`, created_by) 
-            select "teams", 2, users.id, "active", "member", users.id
+            select "teams", 1, users.id, "active", "member", users.id
             from users
             left outer join members on members.parent_type = "teams" and
-                                      members.parent = 2 and members.user_id = users.id
+                                      members.parent = 1 and members.user_id = users.id
             where members.id is null
           ');  
        } catch (\Illuminate\Database\QueryException $exception) {

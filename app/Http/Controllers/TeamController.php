@@ -22,14 +22,8 @@ class TeamController extends Controller {
 	protected $model = false;
 
 	function __construct() {
+	    // parent::__construct();
 		$this->model = new Team();	
-		// ha még nincs egyetlen csoport sem akkor létrehozza őket
-		// creator user és admin az ID szerint első user
-		if ((Team::count() < 1) & (User::count() > 0)) {
-		    $sysAdmin = User::orderBy('id')->first();
-		    $this->initDb($sysAdmin);
-		}
-		
 	}	
 	
 	/**
@@ -78,7 +72,7 @@ class TeamController extends Controller {
 	        "status" => "active",
 	        "config" => JSON_encode($teamRec->config),
 	        "activated_at" => date('Y-m-d'),
-	        "created_by" =>  $sysAdmin->id
+	        "created_by" =>  $sysAdmin->id0
 	    ]);
 	    $memberModel->create([
 	        "parent_type" => "teams",
@@ -110,7 +104,13 @@ class TeamController extends Controller {
     public function index(string $parent = '0') {
     	$data = $this->model->getData((int)$parent, 8);
     	$info = $this->model->getInfo((int)$parent);
-
+    	// ha még nincs egyetlen csoport sem akkor létrehozza őket
+    	// creator user és admin az ID szerint első user
+    	if ((Team::count() < 1) & (User::count() > 0)) {
+    	    $sysAdmin = User::orderBy('id')->first();
+    	    $this->initDb($sysAdmin);
+    	}
+    	
 		// jogosultság ellenörzés
 	   if (!$this->checkAccess('list', $this->model, $info)) {
 	   	return redirect()->to('/')->with('error','team.accessDenied');	    	  
@@ -230,7 +230,7 @@ class TeamController extends Controller {
     public function show(Team $team) {
 		// id=1 "regisztráltak" csoport speciális kezelése:
      	// minden regisztrált user automatikusan tag
-     	if ($team->id <= 2) {
+     	if ($team->id == 1) {
        	    $this->model->adjustRegisteredTeamMembers();
         }
         

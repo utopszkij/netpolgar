@@ -40,13 +40,7 @@
       <tbody>  
         @foreach ($data as $key => $value)
         @php 
-			 if ($value->profile_photo_path == '') {
-				$value->profile_photo_path = 'https://gravatar.com/avatar/'.
-				   md5($value->email).
-				   '?d='.urlencode('https://www.pinpng.com/pngs/m/341-3415688_no-avatar-png-transparent-png.png');
-			 } else {
-			 	$value->profile_photo_path = \URL::to('/storage/app/public').'/'.$value->profile_photo_path;
-			 }        
+        	$value->profile_photo_path = \App\Models\Avatar::userAvatar($value->profile_photo_path, $value->email);
         @endphp
         <tr>
             <td>@if ($value->status != 'active')

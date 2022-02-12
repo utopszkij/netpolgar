@@ -17,13 +17,7 @@ class MessageController extends Controller {
 
     
     protected function avatar($profile_photo_path, $email) {
-        if ($profile_photo_path != '') {
-            $result = \URL::to('/').$profile_photo_path;
-        } else {
-            $result = 'https://gravatar.com/avatar/'.md5($email).
-            '?d='.\URL::to('/img/noavatar.png');
-        }
-        return $result;
+        return \App\Models\Avatar::userAvatar($profile_photo_path, $email);
     }
     
     /**
