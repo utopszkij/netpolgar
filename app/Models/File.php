@@ -53,10 +53,14 @@ class File extends Model {
         $filePath = 'storage/'.$file->parent_type.'/'.
             substr((1000+$file->id),0,3).'/'.
             substr((1000+$file->id),3,100).'.'.$file->type;
-        if (defined('UNITTEST')) {
-                $fileSize = 0;
+        if (file_exists($filePath)) {
+            if (defined('UNITTEST')) {
+                    $fileSize = 0;
+            } else {
+                    $fileSize = filesize($filePath);
+            }
         } else {
-                $fileSize = filesize($filePath);
+            $fileSize = 0;
         }
         $result->filePath = $filePath;
         $result->fileSize = $fileSize;

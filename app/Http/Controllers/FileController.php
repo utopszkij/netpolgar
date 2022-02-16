@@ -72,11 +72,29 @@ class FileController extends Controller {
         int $parentId, int $userId): bool {
        $result = false;
        if (\Auth::check()) {
-           $user = \Auth::user();
-           if ($userId > 0) {
-               $result = ($user->id == $userId);
-           } else {
-               $result = $this->model->userMember($parentType, $parentId, $userId);
+           if ($action == 'add') {
+               $user = \Auth::user();
+               if ($userId > 0) {
+                   $result = ($user->id == $userId);
+               } else {
+                   $result = $this->model->userMember($parentType, $parentId, $userId);
+               }
+           }
+           if ($action == 'edit') {
+               $user = \Auth::user();
+               if ($userId > 0) {
+                   $result = ($user->id == $userId);
+               } else {
+                   $result = $this->model->userAdmin($parentType, $parentId, $userId);
+               }
+           }
+           if ($action == 'delete') {
+               $user = \Auth::user();
+               if ($userId > 0) {
+                   $result = ($user->id == $userId);
+               } else {
+                   $result = $this->model->userAdmin($parentType, $parentId, $userId);
+               }
            }
        }
        return $result;
@@ -155,6 +173,7 @@ class FileController extends Controller {
                         } else if ($errorInfo == 'no upload') {
                             $this->model->where('id','=',$id)
                             ->delete();
+                            $errorInfo = __('file.notUploadFile');
                         } else {
                             // type modositása a rekordban
                             $i = strpos($errorInfo,'.');
@@ -189,6 +208,115 @@ class FileController extends Controller {
         }
         return $result;
     }
+
+    /**
+     * Edit képernyő
+     * @param int $fileId
+     */
+    public function edit(int $fileId) {
+        $fileRec = $this->model->where('id','=',$fileId)->first();
+        if ($fileRec) {
+            $parentType = $fileRec->parent_type;
+            $parentId = $fileRec->parent;
+            if ($parentType == 'users') {
+                $userId = $parentInd;
+            } else {
+                $userId = 0;
+            }
+            if ($this->accessCheck('edit',$parentType, $parentId, $userId)) {
+                if ($userId > 0) {
+                    $parent = \DB::table('users')->where('id','=',$userId)->first();
+                } else {
+                    $parent = \DB::table($parentType)->where('id','=',$parentId)->first();
+                }
+                if ($parent) {
+                    $result = view('file.form',[
+                        "fileRec" => $fileRec,
+                        "parentType" => $parentType,
+                        "parentId" => $parentId,
+                        "userId" => $userId,
+                        "parent" => $parent
+                    ]);
+                } else {
+                    $result = redirect()->to(\URL::previous())->with('error','fatal error parent not found');
+                }
+            } else {
+                $result = redirect()->to(\URL::previous())->with('error',__('file.accessDenied'));
+            }
+        } else {
+            $result = redirect()->to(\URL::previous())->with('error','fatal error file record not found');
+        }
+        return $result;
+    }
+    
+
+    /** módosítás tárolása
+     *
+     * @param Request $request
+     */
+    public function update(Request $request) {
+        $errorInfo = '';
+        $parentType = $request->input('parent_type');
+        $parentId = $request->input('parent');
+        if ($parentType == 'users') {
+            $userId = $parentId;
+        } else {
+            $userId = 0;
+        }
+        $id = $request->input('id');
+        if ($this->accessCheck('edit',$parentType, $parentId, $userId)) {
+            if ($this->model->valid($request)) {
+                // rekord tárolása
+                $errorInfo = $this->model->storeOrUpdate($id, $request);
+                
+                // uploaded file tárolása, rekord irása a files táblába
+                if ((!defined('UNITTEST')) & ($_FILES['upload']['name'] != '')) {
+                    $targetDir = 'storage/'.$parentType.'/'.substr((1000+$id),0,3).'/';
+                    $targetName = substr((1000+$id),3,100);
+                    if ($errorInfo == '') {
+                        $errorInfo = Upload::processUpload('upload',
+                            $targetDir,
+                            $targetName,
+                            []);
+                        if (substr($errorInfo,0,5) == 'ERROR') {
+                            $errorInfo = __($errorInfo);
+                        } else if ($errorInfo == 'no upload') {
+                            $errorInfo = __('file.notUploadFile');
+                        } else {
+                            // type modositása a rekordban
+                            $i = strpos($errorInfo,'.');
+                            if ($i > 0) {
+                                $type = substr($errorInfo,($i+1),100);
+                            } else {
+                                $type = 'file';
+                            }
+                            $errorInfo = '';
+                            $this->model->where('id','=',$id)
+                            ->update(["type" => $type]);
+                        }
+                    }
+                }
+                
+                if ($errorInfo == '') {
+                    $parentType = $request->input('parent_type');
+                    $parentId = $request->input('parent');
+                    if ($parentType == 'users') {
+                        $url = '/file/list/users/0/'.$parentId;
+                    } else {
+                        $url = '/file/list/'.$parentType.'/'.$parentId.'/0';
+                    }
+                    $result = redirect()->to(\URL::to($url))
+                    ->with('success',__('file.saved'));
+                } else {
+                    $result = redirect()->to(\URL::previous())->with('error',$errorInfo);
+                }
+            }
+        } else {
+            $result = redirect()->to(\URL::previous())->with('error',__('file.accessDenied'));
+        }
+        return $result;
+    }
+    
     
     /**
      * file adatlap képernyő
@@ -205,13 +333,68 @@ class FileController extends Controller {
                 $result = view('file.show',[
                     "file" => $file, 
                     "parent" => $parent,
-                    "info" => $info, 
+                    "info" => $info
                 ]);
             } else {
                 $result = redirect()->to(\URL::previous())->with('error','fatal error parent not found');
             }
         } else {
             $result = redirect()->to(\URL::previous())->with('error','fatal error file record not found');
+        }
+        return $result;
+    }
+    
+    public function download(int $id) {
+        $fileRec = $this->model->where('id','=',$id)->first();
+        if (!$fileRec) {
+            $result = redirect()->to(\URL::previous())->with('error','fatal error file record not found');
+        }
+        if ($fileRec->parent_type == 'users') {
+            $userId = $fileRec->parnt;
+        } else {
+            $userId = 0;
+        }
+        if (\Auth::check()) {
+            if (($this->model->userMember($fileRec->parent_type, $fileRec->parent, $userId)) |
+                ($fileRec->created_by == \Auth::user()->id)) {
+                    $memberModel = new \App\Models\Member();
+                    if ($memberModel->where('parent_type','=','files')
+                        ->where('parent','=',$id)
+                        ->where('user_id','=',\Auth::user()->id)
+                        ->count() <= 0) {
+                        $memberModel->create([
+                            "parent_type" => "files",
+                            "parent" => $id, 
+                            "user_id" => \Auth::user()->id, 
+                            "rank" => "downloader",
+                            "status" => "active",
+                            "created_by" => \Auth::user()->id
+                        ]);
+                    }
+                    $filePath = 'storage/'.
+                        $fileRec->parent_type.'/'.
+                        substr(1000+$id,0,3).'/'.
+                        substr(1000+$id,3,100).'.'.$fileRec->type;
+                    if(file_exists($filePath)) {
+                        header('Content-Description: File Transfer');
+                        header('Content-Type: application/octet-stream');
+                        header('Content-Disposition: attachment; filename="'.basename($filePath).'"');
+                        header('Expires: 0');
+                        header('Cache-Control: must-revalidate');
+                        header('Pragma: public');
+                        header('Content-Length: ' . filesize($filePath));
+                        flush(); // Flush system output buffer
+                        readfile($filePath);
+                        die();
+                    } else {
+                        http_response_code(404);
+                        die();
+                    }
+            } else {
+                echo __('file.accessDenied'); exit();
+            }
+        } else {
+            echo __('file.accessDenied'); exit();
         }
         return $result;
     }

@@ -3,8 +3,8 @@ return [
     'list' => 'Fájlok',
     'like' => 'Tetszik',
     'dislike' => 'Nem testzik',
-    'edit' => 'Módosítás',
-    'add' => 'Feltöltés',
+    'edit' => 'File módosítás',
+    'add' => 'Új file feltöltés',
     'delete' => 'Törlés',
     'disabled' => 'Nem megengedett',
     'notData' => 'Nincs listázandó adat',
@@ -23,6 +23,7 @@ return [
     'download' => 'Letöltés',
     'details' => 'File adatlap',
     'back' => 'Vissza a listához',
-    'sureDelete' => 'Biztos, hogy törölni akarod ezt a file-t?'
+    'sureDelete' => 'Biztos, hogy törölni akarod ezt a file-t?',
+    'notUploadFile' => 'Nincs feltöltött file'
     
 ];

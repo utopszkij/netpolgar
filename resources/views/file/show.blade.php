@@ -87,7 +87,8 @@
     </div>   
 	<div class="row">
        <div class="col-12">
-       		<a href="{{ \URL::to('file/download/'.$file->id) }}" class="btn btn-primary">
+       		<a href="{{ \URL::to('file/download/'.$file->id) }}" class="btn btn-primary"
+       			onclick="false;" target="_dowload">
 	       		<em class="fas fa-cloud-download-alt"></em>
        			{{ __('file.download') }}
        		</a>
@@ -97,7 +98,6 @@
        		</a>
        </div>
     </div>   
-   
    </div>
    
    <script type="text/javascript">

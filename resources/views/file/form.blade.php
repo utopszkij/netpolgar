@@ -75,6 +75,9 @@
                     <label>{{ __('file.upload') }}</label>
                     <input type="file" name="upload" value="" class="form-control" />
                     Max 2Mbyte, php, html, htm, js {{ __('file.disabled') }}.
+                    @if ($fileRec->id > 0)
+                    <br />Csak akkor válassz it file-t ha cserélni akarod a meglévőt!
+                    @endif
                 </div>    
 			</div>
 		</div>	
