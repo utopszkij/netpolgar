@@ -13,7 +13,7 @@ class Vote extends Model {
     use HasFactory;
     
 	 /**
-	 * információk kiolvasása, (rész)eredmény számytás
+	 * információk kiolvasása, (rész)eredmény számítás
 	 * @param Poll $poll
 	 * @return { data:[], labels:[], unit:'' }
 	 */
@@ -194,20 +194,32 @@ class Vote extends Model {
 	public static function getVotes($poll, $ballotId, $pageSize = 5) {		
 		if ($ballotId > 0) {	
 			$result = \DB::table('votes')
-			->leftJoin('options','options.id','votes.option_id')
+			->select('votes.ballot_id','votes.position','options.name',
+			    'u1.name as userName','u2.name as accreditedName')
+			    ->leftJoin('options','options.id','votes.option_id')
+			->leftJoin('users as u1','u1.id','votes.user_id')
+			->leftJoin('users as u2','u2.id','votes.accredited_id')
 			->where('votes.poll_id','=',$poll->id)
 			->where('votes.ballot_id','=',$ballotId)
 			->orderBy('votes.position')
 			->get();
 		} else if ($pageSize > 0) {
 			$result = \DB::table('votes')
+			->select('votes.ballot_id','votes.position','options.name',
+			     'u1.name as userName','u2.name as accreditedName')
 			->leftJoin('options','options.id','votes.option_id')
+			->leftJoin('users as u1','u1.id','votes.user_id')
+			->leftJoin('users as u2','u2.id','votes.accredited_id')
 			->where('votes.poll_id','=',$poll->id)
 			->orderBy('votes.ballot_id','asc','votes.position','asc')
 			->paginate($pageSize);
 		} else {
 			$result = \DB::table('votes')
+			->select('votes.ballot_id','votes.position','options.name',
+			     'u1.name as userName','u2.name as accreditedName')
 			->leftJoin('options','options.id','votes.option_id')
+			->leftJoin('users as u1','u1.id','votes.user_id')
+			->leftJoin('users as u2','u2.id','votes.accredited_id')
 			->where('votes.poll_id','=',$poll->id)
 			->orderBy('votes.ballot_id','asc','votes.position','asc')
 			->get();

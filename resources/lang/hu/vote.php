@@ -8,5 +8,6 @@ return [
 	'back' => 'Vissza',
 	'list' => 'Leadott szavazatok',
 	'voteNotFound' => 'Nincs ilyen szavazat',
-	'pollNotFound' => 'Nincs ilyen szavazás'
+	'pollNotFound' => 'Nincs ilyen szavazás',
+    'name' => 'Név'
 ];

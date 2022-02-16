@@ -27,16 +27,7 @@ class MemberTest extends TestCase
         $member = new \App\Models\Member();
         
         // esetleg meglévő korábbi test adatok törlése
-        $testUser1 = $user->where('name','=','testUser1')->first();
-        if ($testUser1) {
-            $member->where('user_id','=',$testUser1->id)->delete();
-        }
-        $testUser2 = $user->where('name','=','testUser2')->first();
-        if ($testUser2) {
-            $member->where('user_id','=',$testUser2->id)->delete();
-        }
-        $team->where('name','like','test%')->delete();
-        $user->where('name','like','test%')->delete();
+        $this->test_end();
         
         // test userek létrehozása
         $testUser1 = $user->create(['name' => 'testUser1',
@@ -67,6 +58,14 @@ class MemberTest extends TestCase
             'parent' => $testTeam1->id,
             'user_id'=> $testUser1->id,
             'rank' => 'admin',
+            'status' => 'active',
+            'created_by' => $testUser1->id
+        ]);
+        \App\Models\Member::create([
+            'parent_type' => 'teams',
+            'parent' => $testTeam1->id,
+            'user_id'=> $testUser1->id,
+            'rank' => 'member',
             'status' => 'active',
             'created_by' => $testUser1->id
         ]);
@@ -104,10 +103,17 @@ class MemberTest extends TestCase
         $team = new \App\Models\Team();
         $member = new \App\Models\Member();
         $team->where('name','like','test%')->delete();
+
         $testUser1 = $user->where('name','=','testUser1')->first();
-        $member->where('user_id','=',$testUser1->id)->delete();
+        if ($testUser1) {
+            $member->where('user_id','=',$testUser1->id)->delete();
+            $member->where('created_by','=',$testUser1->id)->delete();
+        }
         $testUser2 = $user->where('name','=','testUser2')->first();
-        $member->where('user_id','=',$testUser2->id)->delete();
+        if ($testUser2) {
+            $member->where('user_id','=',$testUser2->id)->delete();
+            $member->where('created_by','=',$testUser2->id)->delete();
+        }
         $user->where('name','like','test%')->delete();
         $this->assertEquals(1,1);
     }

@@ -238,10 +238,10 @@
 				<p>Az aktív
 				vitákhoz a tagok hozzászólhatnak, és megoldási alternatívákat
 				javasolhatnak. A csoport tagok támogathatják az egyes megoldási
-				javaslatok „virtuális szavazó lapra kerülését”. <b>Tehát
+				javaslatok „virtuális szavazó lapra kerülését”. <b><strong>Tehát
 				itt még nem arról van szó, hogy ezt a megoldást támogatod, hanem
 				csak arról, hogy a későbbi szavazásnál ez szerepeljen-e a
-				virtuális szavazó lapon. </b>Egy
+				virtuális szavazó lapon.</strong>(kb. a jelenlegi "ajánlás" megfelelője) </b>Egy
 				megoldási lehetőség akkor kerül fel a „virtuális szavazó
 				lapra” ha megkapta a vita beállításinál megadott számú
 				támogatást.</p>
@@ -274,13 +274,10 @@
 					<li><p>Több választható</p>
 					<li><p>Sorba rendező</p>
 				</ul>
-				<p>
-				A szavazás lehet titkos vagy nyílt.</p>
-				<p><br/></p>
-				<p><i>(Megjegyzés: Későbbi
-				fejlesztésként lehet majd likvid demokrácia szerinti vagy csak
-				közvetlen szavazatot kezelő, jelenleg ez még nem működik).</i></p>
-				<p><br/></p>
+				<p>A szavazás lehet titkos vagy nyílt.</p>
+				<p>A szavazás lehet "likvid" müködésű is.<br />
+				<a href="https://alternativgazdasag.fandom.com/wiki/Likvid_demokr%C3%A1cia" target="_new">lásd itt</a></p>
+
 				<p>A szavazás közben
 				folyamatosan megtekinthetőek a rész eredmények és lekérhető a
 				már megadott szavazatokat tartalmazó CSV fájl (ez nem tartalmaz a
@@ -301,6 +298,24 @@
 				<p>A sorba rendező
 				szavazás kiértékelése Condorcet – Schulze metod szerint
 				történik.</p>
+				<p>Ha a szavazás "likvid" tipusú, akkor; - ha egy felhasználó nem szavaz, 
+				akkor helyette az adott csoportban vagy projektben általa kijelőlt 
+				"képviselője" szavazatát vesszük figyelembe. Tehát a 
+				"képviselők" szavazata akkor sullyal esik számtásba ahány
+				őket meghatalmazó felhasználó nem szavaztott.</p>
+				<p>
+				<p>A szavazati jogot olyan tagra lehet átruházni aki erre 
+				vállakozott. Ez a "Tagok" képernyőn a "Képviselő tisztségre vállalkozok"
+				gomb megnyomásával történik.</p>
+				<p>Ha csopotban inditott szavazásról van szó, és a nem szavazó 
+				felhasználónak az adott csoportban nincs képviselője, vagy 
+				az sem szavazott; - akkor a felsőbb szintű csoportban lévő képviselője
+				szavazatát használjuk. Ha ott sincs képviselő vagy az sem
+				szavazott; - akkor még feljebb lévő csoportban lévőt és így tovább.</p>
+				<p>A képviseleti megbízáss (meghatalmazás) a csoport vagy projekt "Tagok"
+				menüpontjában lévő "Tisztségviselők" linkre kattintással elérhető 
+				képernyőn a képviseletre válalkozó nevére vonatkozó "like" -al
+				történik. A "pipa" ikon jelzi jelenleg ki a képviselőd.</p> 
 				</div>
 <a name="uzenetek"></a>				
 				<p>&nbsp;</p>

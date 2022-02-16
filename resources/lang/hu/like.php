@@ -10,5 +10,7 @@ return [
     'products' => 'Termék',
     'polls' => 'Vita',
     'options' => 'Opció',
-    'tasks' => 'Feladat'
+    'tasks' => 'Feladat',
+    'members' => 'Felhasználók',
+    'accreditedSelf' => 'Önmagára mutató szavazat átruházás'
 ];

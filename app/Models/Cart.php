@@ -39,7 +39,7 @@ class Cart extends Model {
 					"confirminfo" => ""
 				]);
 			} catch (\Illuminate\Database\QueryException $exception) {
-				$errorInfo = $exception->errorInfo;
+			    $errorInfo = JSON_encode($exception->errorInfo);
 			}	
 		}
 		if ($errorInfo == '') {
@@ -53,7 +53,7 @@ class Cart extends Model {
 					"confirminfo" => "" 		
 				]);	
 			} catch (\Illuminate\Database\QueryException $exception) {
-	            $errorInfo = $exception->errorInfo;
+			    $errorInfo = JSON_encode($exception->errorInfo);
 	      }
       }
 		return $errorInfo;

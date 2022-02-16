@@ -17,7 +17,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\AccountController;
-
+use App\Http\Controllers\FileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -108,9 +108,23 @@ Route::get('/tasks/{task}',[TaskController::class, 'show']);
 Route::get('/tasks/{task}/edit',[TaskController::class, 'edit'])
 	->middleware('auth');
 Route::get('/tasks/{task}/delete',[TaskController::class, 'destroy'])
-	->middleware('auth');
+    ->middleware('auth');
 Route::post('/tasks',[TaskController::class, 'store']);
 Route::post('/tasks/{task}',[TaskController::class, 'update']);
+// file
+Route::get('/file/list/{parentType}/{parentId}/{userId}',[FileController::class, 'index']);
+Route::get('/file/add/{parentType}/{parentId}/{userId}',[FileController::class, 'create'])
+    ->middleware('auth');
+Route::get('/file/show/{id}',[FileController::class, 'show']);
+Route::get('/file/edit/{id}',[FileController::class, 'edit'])
+    ->middleware('auth');
+Route::get('/file/delete/{id}',[FileController::class, 'delete'])
+    ->middleware('auth');
+Route::get('/file/download/{id}',[FileController::class, 'download'])
+    ->middleware('auth');
+Route::post('/file/store',[FileController::class, 'store']);
+Route::post('/file/update',[FileController::class, 'update']);
+
 
 /*----------------------------------
 *          WEB áruház

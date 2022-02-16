@@ -35,14 +35,8 @@ class Message extends Model
      * @param string $email
      * @return string
      */
-    protected function avatar($profile_photo_path, $email): string {
-        if ($profile_photo_path != '') {
-            $result = \URL::to('/storage/app/public/').'/'.$profile_photo_path;
-        } else {
-            $result = 'https://gravatar.com/avatar/'.md5($email).
-            '?d='.\URL::to('/img/noavatar.png');
-        }
-        return $result;
+	protected function avatar($profile_photo_path, $email): string {
+	    return \App\Models\Avatar::userAvatar($profile_photo_path, $email);
     }
    
     public function init() {

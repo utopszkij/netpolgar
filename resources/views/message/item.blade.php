@@ -41,15 +41,21 @@
 				<a href="{{ \URL::to('/likeinfo/messages/'.$treeItem->id) }}" class="{{ $treeItem->likeStyle }}">
 					{{ $treeItem->disLikeCount }}</em>
 				</a>&nbsp;
-				@if (($member) | 
-					 (($parentType == 'users') & ($parentId == \Auth::user()->id))
-					)
-				<a href="#" onclick="replyClick({{ $treeItem->id }})">
-					<em class="fas fa-reply"></em> Válasz
-				</a>&nbsp;&nbsp;&nbsp;
-				<a href="{{ \URL::to('/message/list/'. $parentType.'/'.$parent->id.'/'.$treeItem->id) }}">
-					{{ $treeItem->replyCount }} db válasz
-				</a>&nbsp;&nbsp;&nbsp;
+				@if (\Auth::check())
+    				@if (($member) | 
+    					 (($parentType == 'users') & ($parentId == \Auth::user()->id))
+    					)
+        				<a href="#" onclick="replyClick({{ $treeItem->id }})">
+        					<em class="fas fa-reply"></em> Válasz
+        				</a>&nbsp;&nbsp;&nbsp;
+        				<a href="{{ \URL::to('/message/list/'. $parentType.'/'.$parent->id.'/'.$treeItem->id) }}">
+        					{{ $treeItem->replyCount }} db válasz
+        				</a>&nbsp;&nbsp;&nbsp;
+        			@else
+       					{{ $treeItem->replyCount }} db válasz
+    				@endif
+				@else
+   					{{ $treeItem->replyCount }} db válasz
 				@endif
 				<a href="{{ \URL::to('/message/protest/'.$treeItem->id) }}">
 					<var class="protest"><em class="fas fa-ban"></em>Jelentem</var>

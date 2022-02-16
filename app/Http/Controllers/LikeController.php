@@ -42,6 +42,7 @@ class LikeController extends Controller {
      * a bejelentkezett felhasználó a like ikonra kattintott
      * - ha korábban már lájkolta akkor törli azt a likes táblából
      * - ha korábban még nem lájkolta a akkor létrehozza a likes táblában
+     * - ha accredited like akkor azt külön ellenörzi
      * @param string $parent_type
      * @param string $parent
      * @return laravel redirect back
@@ -53,11 +54,53 @@ class LikeController extends Controller {
             if ($exists) {
 				 Like::delRecord($parent_type, $parent, $user->id, 'like');
             } else {
-				 Like::createRecord($parent_type, $parent, $user->id, 'like');
+                $errorInfo = $this->checkAccredited($parent_type, $parent);
+                if ($errorInfo == '') {
+                    Like::createRecord($parent_type, $parent, $user->id, 'like');
+                } else {
+                    return \Redirect::back()->with('error',$errorInfo);
+                }
             }
             $this->checkStatus($parent_type, $parent);
         }
         return \Redirect::back();
+    }
+    
+    /**
+     * accredited tipusú memberre hivatkozó like ellenörzése
+     * 1. Önmagára nem mutathat
+     * 2. Ha már van másik acrreditedje a usernek azt törli.
+     * @param string $parentType
+     * @param int $parentId
+     * @return string üres vagy hibaüzenet
+     */
+    protected function checkAccredited(string $parentType, int $parentId): string {
+        $result = '';
+        if (($parentType == 'members') & (\Auth::check())){
+            $member = \DB::table('members')->where('id','=',$parentId)->first();
+            if ($member) {
+                if ($member->rank == 'accredited') {
+                    if ($member->user_id == \Auth::user()->id) {
+                        $result = __('like.accreditedSelf');
+                    } else {
+                        $oldAccrediteds = \DB::table('members')
+                            ->select('likes.id')
+                            ->leftJoin('likes','likes.parent','members.id')
+                            ->where('likes.parent_type','=','members')
+                            ->where('likes.user_id','=',\Auth::user()->id)
+                            ->where('members.parent_type','=',$member->parent_type)
+                            ->where('members.parent','=',$member->parent)
+                            ->where('members.rank','=','accredited')
+                            ->distinct()
+                            ->get();
+                            foreach ($oldAccrediteds as $oldAccredited) {
+                                \DB::table('likes','=',$oldAccredited->id)->delete();
+                            }
+                    }
+                }
+            }
+        }
+        return $result;
     }
         
     /**

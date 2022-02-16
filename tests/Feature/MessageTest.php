@@ -25,20 +25,12 @@ class MessageTest extends TestCase
     
     public function test_start()  {
         // esetleg meglévő korábbi test adatok törlése
-        $user = new \App\Models\User();
-        $team = new \App\Models\Team();
-        $testUser1 = $user->where('name','=','testUser1')->first();
-        if ($testUser1) {
-            $member->where('user_id','=',$testUser1->id)->delete();
-        }
-        $testUser2 = $user->where('name','=','testUser2')->first();
-        if ($testUser2) {
-            $member->where('user_id','=',$testUser2->id)->delete();
-        }
-        $team->where('name','like','test%')->delete();
-        $user->where('name','like','test%')->delete();
+        $this->test_end();
         
         // test userek létrehozása
+        $user = new \App\Models\User();
+        $team = new \App\Models\Team();
+        
         $testUser1 = $user->create(['name' => 'testUser1',
             'password' => \Hash::make('testPassword'),
             'email' => 'testUser1email@something.com']);
@@ -217,19 +209,24 @@ class MessageTest extends TestCase
 	 }	    
 	   
 	 public function test_end() {
-      // test adatok törlése
-      $user = new \App\Models\User();
-      $team = new \App\Models\Team();
-      $message = new \App\Models\Message();
-      $member = new \App\Models\Member();
-      $team->where('name','like','test%')->delete();
-      $testUser1 = $user->where('name','=','testUser1')->first();
-      $member->where('user_id','=',$testUser1->id)->delete();
-      $testUser2 = $user->where('name','=','testUser2')->first();
-      $member->where('user_id','=',$testUser2->id)->delete();
-      $user->where('name','like','test%')->delete();
-      $message->where('value','like','test_message')->delete();
-     	$this->assertEquals(1,1);
-	 }  
-    
+         // test adatok törlése
+         $user = new \App\Models\User();
+         $team = new \App\Models\Team();
+         $message = new \App\Models\Message();
+         $member = new \App\Models\Member();
+         $like = new \App\Models\Like();
+         $team->where('name','like','test%')->delete();
+    	 $testUsers = $user->where('name','like','test%')->get();
+    	 foreach ($testUsers as $testUser) {
+    	     $member->where('user_id','=',$testUser->id)->delete();
+    	     $member->where('created_by','=',$testUser->id)->delete();
+    	     \DB::table('msgreads')->where('user_id','=',$testUser->id)->delete();
+    	     $message->where('user_id','=',$testUser->id)->delete();
+    	     $message->where('parent','=',$testUser->id)
+    	     ->where('parent_type','=','users')->delete();
+    	     $like->where('user_id','=',$testUser->id)->delete();
+    	     $user->where('id','=',$testUser->id)->delete();
+    	 }
+    	 $this->assertEquals(1,1);
+    }
 }

@@ -289,7 +289,7 @@ class Project extends Model
 					$model->where('id','=',$id)->update($projectArr);			 	
 			 	}	
 			} catch (\Illuminate\Database\QueryException $exception) {
-			    $errorInfo = $exception->errorInfo;
+			    $errorInfo = JSON_encode($exception->errorInfo);
 			}	
 			return $errorInfo;		
 	 }	
@@ -315,7 +315,7 @@ class Project extends Model
 		try {
 			Member::create($memberArr);
 		} catch (\Illuminate\Database\QueryException $exception) {
-		    $errorInfo = $exception->errorInfo;
+		    $errorInfo = JSON_encode($exception->errorInfo);
 		}
 		return $errorInfo;			
 	 }		

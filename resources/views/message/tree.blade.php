@@ -124,6 +124,7 @@ use App\Models\Minimarkdown;
 			<div id="onlineList"></div>
 	</div>		
 	<div style="clear:both"></div>
+	@if (\Auth::check())
 	@if (($member) | 
 		 (($parentType == 'users') & ($parentId == \Auth::user()->id))
 		)
@@ -192,6 +193,7 @@ use App\Models\Minimarkdown;
 		}
         </script>
 		</div>
-		@endif
+	@endif
+	@endif
 </div>
 </x-guest-layout>

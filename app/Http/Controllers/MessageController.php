@@ -17,13 +17,7 @@ class MessageController extends Controller {
 
     
     protected function avatar($profile_photo_path, $email) {
-        if ($profile_photo_path != '') {
-            $result = \URL::to('/').$profile_photo_path;
-        } else {
-            $result = 'https://gravatar.com/avatar/'.md5($email).
-            '?d='.\URL::to('/img/noavatar.png');
-        }
-        return $result;
+        return \App\Models\Avatar::userAvatar($profile_photo_path, $email);
     }
     
     /**
@@ -100,7 +94,9 @@ class MessageController extends Controller {
         $model->tree = array_splice($model->tree, $offset, 10);
         foreach ($model->tree as $treeItem) {
             $model->getInfo($treeItem);
-            Message::setReaded($treeItem->id, $userId);
+            if ($userId > 0) {
+                Message::setReaded($treeItem->id, $userId);
+            }
         }
         
         $path = [];
@@ -182,7 +178,9 @@ class MessageController extends Controller {
         $model->tree = array_splice($model->tree, $offset, 10);
         foreach ($model->tree as $treeItem) {
             $model->getInfo($treeItem);
-            Message::setReaded($treeItem->id, $userId);
+            if ($userId > 0) {
+                Message::setReaded($treeItem->id, $userId);
+            }
         }
                 
         $links = $this->buildLinks($offset, $total, $parentType, $parent);

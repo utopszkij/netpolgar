@@ -56,6 +56,7 @@ class Like extends Model {
      */ 
 	public static function createRecord(string $parent_type, int $parentId,
 		int $userId, string $likeType) {
+	    
 		return Like::create([
 			"parent_type" => $parent_type,
 			"parent" => $parentId,
@@ -78,7 +79,7 @@ class Like extends Model {
         ->leftJoin('users','users.id','=','likes.user_id')
         ->where('parent_type', '=', $parentType)
         ->where('parent', '=',$parentId)
-        ->where('like_type','=','like')
+        ->where('like_type','=',$likeType)
         ->orderBy('name')
         ->get();
     }    

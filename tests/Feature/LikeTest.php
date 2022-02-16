@@ -25,20 +25,12 @@ class LikeTest extends TestCase
     
     public function test_start()  {
         // esetleg meglévő korábbi test adatok törlése
-        $user = new \App\Models\User();
-        $team = new \App\Models\Team();
-        $testUser1 = $user->where('name','=','testUser1')->first();
-        if ($testUser1) {
-            $member->where('user_id','=',$testUser1->id)->delete();
-        }
-        $testUser2 = $user->where('name','=','testUser2')->first();
-        if ($testUser2) {
-            $member->where('user_id','=',$testUser2->id)->delete();
-        }
-        $team->where('name','like','test%')->delete();
-        $user->where('name','like','test%')->delete();
+        $this->test_end();
         
         // test userek létrehozása
+        $user = new \App\Models\User();
+        $team = new \App\Models\Team();
+        
         $testUser1 = $user->create(['name' => 'testUser1',
             'password' => \Hash::make('testPassword'),
             'email' => 'testUser1email@something.com']);
@@ -119,27 +111,55 @@ class LikeTest extends TestCase
 			$this->controller->dislike('teams',$testTeam1->id);
          $model = new \App\Models\Like();
 			$likeCount = $model->where('parent_type','=','teams')
-									->where('parent','=',$testTeam1->id)
-									->count();
+			->where('parent','=',$testTeam1->id)->count();
         	$this->assertEquals($likeCount, 2);
 	 }	    
 	   
 	 public function test_end() {
-      // test adatok törlése
-      $user = new \App\Models\User();
-      $team = new \App\Models\Team();
-      $like = new \App\Models\Like();
- 		$testTeam1 = $team->where('name','=','testTeam1')->first();
-      $member = new \App\Models\Member();
-      $team->where('name','like','test%')->delete();
-      $testUser1 = $user->where('name','=','testUser1')->first();
-      $member->where('user_id','=',$testUser1->id)->delete();
-      $testUser2 = $user->where('name','=','testUser2')->first();
-      $member->where('user_id','=',$testUser2->id)->delete();
-      $user->where('name','like','test%')->delete();
-      $like->where('parent_type','=','teams')
-      		->where('parent','=',$testTeam1->id)->delete();
-     	$this->assertEquals(1,1);
-	 }  
-    
+	     // test adatok törlése
+	     $user = new \App\Models\User();
+	     $team = new \App\Models\Team();
+	     $member = new \App\Models\Member();
+	     $like = new \App\Models\Like();
+	     $project = new \App\Models\Project();
+	     $task = new \App\Models\Task();
+	     
+	     $testProjects = $project->where('name','like','test%')->get();
+	     foreach ($testProjects as $testProject) {
+	         $testMembers = $member->where('parent_type','=','projects')
+	         ->where('parent','=',$testProject->id)->get();
+	         foreach ($testMembers as $testMember) {
+	             $like->where('parent_type','=','members')
+	             ->where('parent','=',$testMember->id)
+	             ->delete();
+	             $member->where('id','=',$testMember->id)->delete();
+	         }
+	         $task->where('project_id','=',$testProject->id)->delete();
+	         $project->where('id','=',$testProject->id)->delete();
+	     }
+	     
+	     $testTeams = $team->where('name','like','test%')->get();
+	     foreach ($testTeams as $testTeam) {
+	         $testMembers = $member->where('parent_type','=','teams')
+	         ->where('parent','=',$testTeam->id)->get();
+	         foreach ($testMembers as $testMember) {
+	             $like->where('parent_type','=','members')
+	             ->where('parent','=',$testMember->id)
+	             ->delete();
+	             $member->where('id','=',$testMember->id)->delete();
+	         }
+	         $like->where('parent_type','=','teams')
+	         ->where('parent','=',$testTeam->id)
+	         ->delete();
+	         $team->where('id','=',$testTeam->id)->delete();
+	     }
+	     
+	     $testUsers = $user->where('name','like','test%')->get();
+	     foreach ($testUsers as $testUser) {
+	         $member->where('user_id','=',$testUser->id)->delete();
+	         $like->where('user_id','=',$testUser->id)->delete();
+	         $user->where('id','=',$testUser->id)->delete();
+	     }
+	     $this->assertEquals(1,1);
+	 }
 }
