@@ -120,7 +120,7 @@ class Option extends Model
 						$newOption = $this->create([
 							'poll_id' => $request->input('pollId'),
 							'name' => strip_tags($request->input('name')),
-							'decription' => '',
+							'description' => '',
 							'status' => 'proposal',
 							'created_by' => \Auth::user()->id				
 						]);

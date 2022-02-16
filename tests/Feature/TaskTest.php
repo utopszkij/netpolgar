@@ -35,16 +35,7 @@ class TaskTest extends TestCase {
         $task = new \App\Models\Task();
         
         // esetleg meglévő korábbi test adatok törlése
-        
-        $testUser1 = $user->where('name','=','testUser1')->first();
-        if ($testUser1) {
-			$member->where('user_id','=',$testUser1->id)->delete();
-		}	
-        $task->where('name','=','testTask')->delete();
-        $task->where('name','=','testTask javitva')->delete();
-        $project->where('name','=','testProject')->delete();
-        $team->where('name','like','test%')->delete();
-        $user->where('name','like','test%')->delete();
+        $this->test_end();
         
         // test userek létrehozása
         $testUser1 = $user->create(['name' => 'testUser1',
@@ -155,7 +146,7 @@ class TaskTest extends TestCase {
         $user = \App\Models\User::where('name','=','testUser1')->first();
         \Auth::loginUsingId($user->id, TRUE);
         $projectModel = new \App\Models\Project();
-		$project = $projectModel->where('name','=','testProject')->first(); 
+        $project = $projectModel->where('name','=','testProject')->first();
         $request = new Request(["id" => 0, "project_id" => $project->id,
             "name" => 'testTask',
             "deadline" => "2022-12-31",
@@ -214,9 +205,15 @@ class TaskTest extends TestCase {
         $user = \App\Models\User::where('name','=','testUser1')->first();
         \Auth::loginUsingId($user->id, TRUE);
         $taskModel = new \App\Models\Task();
-		$task = $taskModel->where('name','=','testTask')->first(); 
-        $request = new Request([
-            "name" => 'testTask javitva'
+        $projectModel = new \App\Models\Project();
+        $task = $taskModel->where('name','=','testTask')->first(); 
+		$testProject = $projectModel->where('name','=','testProject')->first();
+		$request = new Request([
+            "project_id" => $testProject->id,
+            "name" => 'testTask javitva',
+            "type" => '',
+            "status" => 'active',
+            "deadline" => '2022-12-31'
         ]);
         $redirect = $this->controller->update($request, $task);
         $this->assertGreaterThan( 0, strpos($redirect->content(),'/') );
@@ -233,13 +230,19 @@ class TaskTest extends TestCase {
         $task = new \App\Models\Task();
         $testUser1 = $user->where('name','=','testUser1')->first();
         if ($testUser1) {
-			$member->where('user_id','=',$testUser1->id)->delete();
-		}	
-        $team->where('name','like','test%')->delete();
+            $member->where('user_id','=',$testUser1->id)->delete();
+            $member->where('created_by','=',$testUser1->id)->delete();
+            $task->where('assign','=',$testUser1->id)->delete();
+        }	
+        
         $task->where('name','=','testTask')->delete();
         $task->where('name','=','testTask javitva')->delete();
+        
         $project->where('name','=','testProject')->delete();
         $project->where('name','=','testProject javitva')->delete();
+        
+        $team->where('name','like','test%')->delete();
+        
         $user->where('name','=','testUser1')->delete();
         $user->where('name','=','testUser2')->delete();
         $this->assertEquals(1,1);

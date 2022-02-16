@@ -11,7 +11,9 @@ use App\Http\Models\Project;
 use App\Http\Controllers\ProjectController;
 use GrahamCampbell\ResultType\Result;
 
-define('UNITTEST','1');
+if (!defined('UNITTEST')) {
+    define('UNITTEST','1');
+}
 
 class ProjectTest extends TestCase
 {
@@ -32,17 +34,7 @@ class ProjectTest extends TestCase
         $project = new \App\Models\Project();
         
         // esetleg meglévő korábbi test adatok törlése
-        $testUser1 = $user->where('name','=','testUser1')->first();
-        if ($testUser1) {
-            $member->where('user_id','=',$testUser1->id)->delete();
-        }
-        $testUser2 = $user->where('name','=','testUser2')->first();
-        if ($testUser2) {
-            $member->where('user_id','=',$testUser2->id)->delete();
-        }
-        $team->where('name','like','test%')->delete();
-        $user->where('name','like','test%')->delete();
-        $project->where('name','=','testProject')->delete();
+        $this->test_end();
         
         // test userek létrehozása
         $testUser1 = $user->create(['name' => 'testUser1',
@@ -208,6 +200,7 @@ class ProjectTest extends TestCase
         $projectModel = new \App\Models\Project();
 		$project = $projectModel->where('name','=','testProject')->first(); 
         $request = new Request([
+            "team_id" => $team->id,
             "name" => 'testProject javitva'
         ]);
         $redirect = $this->controller->update($request, $project);
@@ -222,16 +215,49 @@ class ProjectTest extends TestCase
         $user = new \App\Models\User();
         $team = new \App\Models\Team();
         $member = new \App\Models\Member();
+        $like = new \App\Models\Like();
+        $poll = new \App\Models\Poll();
         $project = new \App\Models\Project();
         $option = new \App\Models\Option();
-        $team->where('name','like','test%')->delete();
-        $project->where('name','=','testProject')->delete();
-        $project->where('name','=','testProject javitva')->delete();
-        $testUser1 = $user->where('name','=','testUser1')->first();
-        $member->where('user_id','=',$testUser1->id)->delete();
-        $testUser2 = $user->where('name','=','testUser2')->first();
-        $member->where('user_id','=',$testUser2->id)->delete();
-        $user->where('name','like','test%')->delete();
+        $vote = new \App\Models\Vote();
+        $message = new \App\Models\Message();
+        
+        $project->where('name','like','test%')->delete();
+        
+        $testPolls = $poll->where('name','like','test%')->get();
+        foreach ($testPolls as $testPoll) {
+            $vote->where('poll_id','=',$testPoll->id)->delete();
+            $option->where('poll_id','=',$testPoll->id)->delete();
+            $poll->where('id','=',$testPoll->id)->delete();
+        }
+        
+        $testTeams = $team->where('name','like','test%')->get();
+        foreach ($testTeams as $testTeam) {
+            $testMembers = $member->where('parent_type','=','teams')
+            ->where('parent','=',$testTeam->id)->get();
+            foreach ($testMembers as $testMember) {
+                $like->where('parent_type','=','members')
+                ->where('parent','=',$testMember->id)
+                ->delete();
+                $member->where('id','=',$testMember->id)->delete();
+            }
+            $like->where('parent_type','=','teams')
+            ->where('parent','=',$testTeam->id)
+            ->delete();
+            $team->where('id','=',$testTeam->id)->delete();
+        }
+        
+        $testUsers = $user->where('name','like','test%')->get();
+        foreach ($testUsers as $testUser) {
+            \DB::table('msgreads')->where('user_id','=',$testUser->id)->delete();
+            $message->where('user_id','=',$testUser->id)->delete();
+            $message->where('parent','=',$testUser->id)
+            ->where('parent_type','=','users')->delete();
+            $like->where('user_id','=',$testUser->id)->delete();
+            $member->where('user_id','=',$testUser->id)->delete();
+            $member->where('created_by','=',$testUser->id)->delete();
+            $user->where('id','=',$testUser->id)->delete();
+        }
         $this->assertEquals(1,1);
     }
 }

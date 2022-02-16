@@ -40,13 +40,7 @@
 		</div>
         
         @php 
-			 if ($user->profile_photo_path == '') {
-				$user->profile_photo_path = 'https://gravatar.com/avatar/'.
-				   md5($user->email).
-				   '?d='.urlencode('https://www.pinpng.com/pngs/m/341-3415688_no-avatar-png-transparent-png.png');
-			 } else {
-			 	$user->profile_photo_path = '/'.$user->profile_photo_path;
-			 }        
+        	$user->profile_photo_path = \App\Models\Avatar::userAvatar($user->profile_photo_path, $user->email);
         @endphp
         
 	    <div class="col-11 col-md-10">

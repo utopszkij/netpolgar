@@ -47,9 +47,9 @@
 	 </div>    
  
  	@if ($team->id > 0)
-    <form action="{{ route('teams.update',$team->id) }}" method="POST">
+    <form action="{{ route('teams.update',$team->id) }}" method="POST" enctype="multipart/form-data">
    @else
-    <form action="{{ route('parents.teams.store', $team->parent) }}" method="POST">
+    <form action="{{ route('parents.teams.store', $team->parent) }}" method="POST" enctype="multipart/form-data">
    @endif 
    @csrf
  	@if ($team->id > 0)
@@ -78,10 +78,19 @@
                 <div class="form-group">
                     <label>{{ __('team.avatar') }}:</label>
                     <input type="text" name="avatar" value="{{ $team->avatar }}" class="form-control" placeholder="URL">
-                    max 1M
+                    max 2M
                 </div>
             </div>
          </div>
+         <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12">
+                <div class="form-group">
+                    <label></label>{{ __('team.orUpload') }}<br />
+                    <label></label>
+                    <input type="file" name="img" value="" class="form-control" />
+                </div>    
+			</div>
+		</div>	
          <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-12">
                 <div class="form-group">

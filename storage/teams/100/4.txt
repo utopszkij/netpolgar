@@ -1,0 +1,5 @@
+App ID: 111971
+
+Client ID: Iv1.6a95730427c6bcd2
+Client secret:
+ af5de2f61d5cb0f2370926c1b6693b3414758d60 

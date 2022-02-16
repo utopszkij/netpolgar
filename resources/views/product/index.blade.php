@@ -181,26 +181,29 @@
 					@if (($key >= $data->offset) &
 					     ($key < ($data->offset + $data->perPage)))				
 						<div class="productsItem {{ $product->status }}">
-							<h3><a href="{{ \URL::to('/products/'.$product->id) }}">
-									{{ $product->name }}
-								 </a>
-								@if ($product->userAdmin)
-								<a href="{{ \URL::to('/products/'.$product->id.'/edit') }}">
-									<em class="fas fa-edit"></em>					
-								</a>
-								@endif
-							</h3>
-							<a href="{{ \URL::to('/products/'.$product->id) }}">
-								<p class="imgContainer"> 
-									<img src="{{ $product->avatar }}" />
-								</p>	
-								<p>{{ __('product.price') }}:
-								<strong>{{ $product->price }}</strong>
-								&nbsp;&nbsp;&nbsp;
-								{{ __('product.stock') }}:
-								{{ $product->stock }}
-								&nbsp;{{ $product->unit}}</p>
-							</a>
+							<div class="productItemBody">
+    							<h3><a href="{{ \URL::to('/products/'.$product->id) }}">
+    									{{ $product->name }}
+    								 </a>
+    								@if ($product->userAdmin)
+    								<a href="{{ \URL::to('/products/'.$product->id.'/edit') }}">
+    									<em class="fas fa-edit"></em>					
+    								</a>
+    								@endif
+    							</h3>
+    							<a href="{{ \URL::to('/products/'.$product->id) }}">
+    								<p class="imgContainer"> 
+    									<img src="{{ $product->avatar }}" />
+    								</p>	
+    							</a>
+							</div>
+							<p>{{ __('product.price') }}:
+    								<strong>{{ $product->price }}</strong>
+    								&nbsp;&nbsp;&nbsp;
+    								{{ __('product.stock') }}:
+    								{{ $product->stock }}
+    								&nbsp;{{ $product->unit}}
+    						</p>
 							<div>{!!  evaluation($product->value) !!}					
 							</div>
 							<p>

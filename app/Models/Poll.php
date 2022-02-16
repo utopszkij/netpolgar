@@ -138,16 +138,17 @@ class Poll extends Model
     /**        
      * like szám és dátum lapján szükség szerint status modositás
      * szükség esetén ballot rekordok generálása
+     * szükség esetén likvid feldolgozás
      * @param string $pollId
      * @result string new status
      */
-    public function checkStatus(string $pollId):string {
+    public static function checkStatus(string $pollId):string {
         $poll = \DB::table('polls')->where('id','=',$pollId)->first();
         $result = $poll->status;
         if ($poll) {
             $poll->config = JSON_decode($poll->config);
             if ($poll->status == 'proposal') {
-                $info = $this->getInfo($poll);
+                $info =Poll::getInfo($poll);
                 if ($info->likeCount >= $info->likeReq) {
                     \DB::table('polls')->where('id','=',$pollId)->update([
                         "status" => "debate",
@@ -162,7 +163,7 @@ class Poll extends Model
                 // van érvényes opció?
                 $options = \DB::table('options')
                 ->where('poll_id','=',$poll->id)
-                ->where('status','=','activate')
+                ->where('status','=','active')
                 ->get();
                 if ((time() > $debateEnd) & (count($options) > 0)) {
                     \DB::table('polls')->where('id','=',$pollId)->update([
@@ -189,6 +190,13 @@ class Poll extends Model
                     \DB::table('polls')->where('id','=',$pollId)->update([
                         "status" => "closed"]);
                     $result = 'closed';
+                    $poll->status = 'closed';
+                    // likvid feldolgozás
+                    $l_parentType = \Request::input('l_parenttype',$poll->parent_type);
+                    $l_parentId = \Request::input('l_parentid',$poll->parent);
+                    if (($poll->config->liquied) & ($poll->status == 'closed')) {
+                        Poll::processLiquied($poll, $l_parentType, $l_parentId);
+                    }
                 }
             }
         }
@@ -323,12 +331,12 @@ class Poll extends Model
 					"like_type" => "like",
 					"updated_at" => date('Y-m-d')
 				]);
-                $this->checkStatus($id);
+                Poll::checkStatus($id);
             } else {
                 $model->where('id','=',$id)->update($pollArr);
             }
         } catch (\Illuminate\Database\QueryException $exception) {
-            $errorInfo = $exception->errorInfo;
+            $errorInfo = JSON_encode($exception->errorInfo);
         }
         return $errorInfo;
     }
@@ -388,7 +396,66 @@ class Poll extends Model
 			"status" => "active",
 			"created_by" => \Auth::user()->id			
 		]);        
-	}			
-
+	}	
+	
+	/**
+	 * likvid szavazás feldolgozó
+	 * @param PollRecord $poll
+	 * @param string $parentType
+	 * @param int $parent
+	 * @return void
+	 */
+	public static function processLiquied($poll, string $parentType, int $parent) {
+	    $oldCount = \DB::table('votes')->where('poll_id','=',$poll->id)->count();
+	    // megbizottak szavazataink sokszorozása (a megbizók nevében is ők szavaztak)
+	    $now = date('Y-m-d H:i:s');
+	    try {
+	    $w = \DB::statement('
+        INSERT INTO `votes`
+        SELECT W1.poll_id, W1.id, v.option_id, v.position, W1.accredited, W1.user_id,
+               "'.$now.'", "'.$now.'"
+        FROM (
+            SELECT b.poll_id, b.id, b.user_id, MAX(m.user_id) AS accredited
+            FROM `ballots` AS b
+            LEFT OUTER JOIN `votes` AS v ON v.ballot_id = b.id
+            LEFT OUTER JOIN `members` AS m ON m.parent = '.$parent.'
+            LEFT OUTER JOIN `likes` AS l ON l.user_id = b.user_id
+            WHERE b.poll_id = '.$poll->id.' AND
+            v.user_id IS NULL AND
+            m.parent_type = "'.$parentType.'" AND
+            m.rank = "accredited" AND
+            l.parent_type = "members" AND
+            l.parent = m.id
+            GROUP BY b.poll_id, b.id, b.user_id
+            ) W1
+          LEFT OUTER JOIN `votes` AS v ON v.user_id = W1.accredited
+          WHERE v.poll_id = '.$poll->id.'
+        ');
+	    } catch (\Illuminate\Database\QueryException $exception) {
+	        $errorInfo = JSON_encode($exception->errorInfo); exit();
+	    }
+	    
+	    $newCount = \DB::table('votes')->where('poll_id','=',(int)$poll->id)->count();
+	    if ($newCount != $oldCount) {
+	        // történt rekord generálás, önmagát kell újrahivnia,
+	        // ugyanezekkel a bemenő adatokkal mert lehet, hogy
+	        // a most generált szavazatokal új lehetőségek nyiltak
+	        return redirect()->to(\URL::current().
+	            '?l_parenttype='.$parentType.
+	            '&l_parentId='.$parent);
+	    } else {
+	        if ($parentType == 'teams') {
+	            $parentTeam = \DB::table('teams')->where('id','=',$parent)->first();
+	            if ($parentTeam->parent != 0) {
+	                // van felsőbb szintű team, az abban lévő megbizottakat is
+	                // fel kell dolgozni
+	                // önmagát visszahívja a prentben lévő megbizottak feldolhozásához
+	                return redirect()->to(\URL::current().
+	                    '?l_parenttype='.$parentType.
+	                    '&l_parentId='.$parentTeam->parent);
+	            }
+	        }
+	    }
+	}
 
 }

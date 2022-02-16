@@ -74,7 +74,7 @@ class Account extends Model
 	 * @param float $value
 	 * @return bool
 	 */ 
-	public static function checkBallance(string $actorType, 
+	public static function checkBalance(string $actorType, 
 		int $actorId, float $value): bool {
 		return true;
 	}

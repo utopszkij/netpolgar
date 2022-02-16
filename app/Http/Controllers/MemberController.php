@@ -24,7 +24,9 @@ class MemberController extends Controller {
 
 	 /**
     * Display a listing of the resource.
-    *
+    * @param string $parent_type
+    * @param string $parent
+    * Request rank is érkezhet
     * @return \Illuminate\Http\Response
     */
     public function index(string $parent_type, string $parent = '0')
@@ -32,7 +34,8 @@ class MemberController extends Controller {
 		 // get $parent record (input param  $parent az ID)
        $parentId = $parent;
        $parent = Member::getParent($parent_type, $parent);
-		 $data = $this->model->getData($parent_type, $parentId, 8);
+       $rank = \Request::input('rank','member');
+	   $data = $this->model->getData($parent_type, $parentId, $rank, 8);
        $info = $this->model->getInfo($parent_type, $parent, $data);
 		 foreach ($data as $d1) {
 			$this->model->checkStatus($d1->id);		 
@@ -42,6 +45,7 @@ class MemberController extends Controller {
             ["data" => $data,
                 "parent_type" => $parent_type,
                 "parent" => $parent,
+                "rank" => $rank,
                 "info" => $info
             ])
             ->with('i', (request()->input('page', 1) - 1) * 8);
@@ -119,7 +123,7 @@ class MemberController extends Controller {
 			    		'/'.$parent->id))->with('error',$errorInfo);
 		 			} else {   		
 			    		$result = redirect(\URL::to('/'.$parent_type.
-			    		'/'.$parent->id));
+			    		'/'.$parent->id))->with('success',__('Saved'));
 		    	   }
 	    		} else {
 		    		$result = redirect(\URL::to('/'.$parent_type.

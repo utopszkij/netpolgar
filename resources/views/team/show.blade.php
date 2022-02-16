@@ -82,7 +82,7 @@
 				<span        		    
 				>{{ __('team.decisions') }}</span><br />			
 			</a>
-			<a href="{{ URL::to('/construction') }}"
+			<a href="{{ URL::to('/file/list/teams/'.$team->id.'/0') }}"
 				title="{{ __('team.files') }}">
 				<em class="fas fa-folder-open"></em>
 				<span>{{ __('team.files') }}</span><br />			

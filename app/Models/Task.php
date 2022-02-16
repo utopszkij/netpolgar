@@ -122,7 +122,6 @@ class Task extends Model {
 			} catch (\Illuminate\Database\QueryException $exception) {
 		      $errorInfo = JSON_encode($exception->getMessage());
 			}	
-			
 			return $errorInfo;		
 	 }	
 

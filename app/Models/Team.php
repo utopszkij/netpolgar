@@ -1,7 +1,7 @@
 <?php
 /**
 * Team Adat model public functions:
-*   $teamRecord = emptyRecord() 								static
+*   $teamRecord = emptyRecord() 	
 *   $errorInfo = updateOrCreate($request)
 *   $infoObject = getInfo($id)
 *   $paginatorObject = getData($parent, $pageSize) 	static
@@ -37,7 +37,7 @@ class Team extends Model {
 			"avatar":"/img/team.png",
 			"status":"proposal",
 			"config":{
-				"ranks":["admin","president","manager","moderator"],
+				"ranks":["admin","president","manager","moderator","accredited"],
 				"close":98,
 				"memberActivate":2,
 				"memberExclude":95,
@@ -120,6 +120,21 @@ class Team extends Model {
 					$model->where('id','=',$id)
 					->update($teamArr);			 	
 			 	}	
+			 	// file upload kezelése
+ 			    $uploadMsg = Upload::processUpload('img',
+								storage_path().'/teams/'.$id.'/',
+								'avatar',
+								['jpg','png','gif']);
+				if ($uploadMsg != 'no upload') {
+					if (substr($uploadMsg,0,5) != 'ERROR') {
+						$avatarUrl = str_replace(storage_path(),\URL::to('/storage'),$uploadMsg);
+						\DB::table('teams')
+							->where('id','=',$id)
+							->update(["avatar" => $avatarUrl]);
+					} else {
+						$errorInfo = $uploadMsg;
+					}
+				}
 			} catch (\Illuminate\Database\QueryException $exception) {
 			    $errorInfo = JSON_encode($exception->errorInfo);
 			}	
@@ -308,19 +323,34 @@ class Team extends Model {
 	 * @return string
 	 */
     protected function addAdmin(int $id): string {		
-		$memberArr = [];
-		$memberArr['parent_type'] = 'teams';
-		$memberArr['parent'] = $id;
-		$memberArr['user_id'] = \Auth::user()->id;
-		$memberArr['rank'] = 'admin';
-		$memberArr['status'] = 'active';
-		$memberArr['created_by'] = \Auth::user()->id;
-		$errorInfo = '';
-		try {
-			Member::create($memberArr);
-		} catch (\Illuminate\Database\QueryException $exception) {
-	     $errorInfo = $exception->errorInfo;
-		}
+        $memberArr = [];
+        $memberArr['parent_type'] = 'teams';
+        $memberArr['parent'] = $id;
+        $memberArr['user_id'] = \Auth::user()->id;
+        $memberArr['rank'] = 'member';
+        $memberArr['status'] = 'active';
+        $memberArr['created_by'] = \Auth::user()->id;
+        $errorInfo = '';
+        try {
+            Member::create($memberArr);
+        } catch (\Illuminate\Database\QueryException $exception) {
+            $errorInfo = $exception->errorInfo;
+        }
+        if ($errorInfo == '') {
+            $memberArr = [];
+            $memberArr['parent_type'] = 'teams';
+            $memberArr['parent'] = $id;
+            $memberArr['user_id'] = \Auth::user()->id;
+            $memberArr['rank'] = 'admin';
+            $memberArr['status'] = 'active';
+            $memberArr['created_by'] = \Auth::user()->id;
+            $errorInfo = '';
+            try {
+                Member::create($memberArr);
+            } catch (\Illuminate\Database\QueryException $exception) {
+                $errorInfo = $exception->errorInfo;
+            }
+        }
 		return $errorInfo;			
 	 }		
     
@@ -435,14 +465,18 @@ class Team extends Model {
 	/**
 	* minden regisztrált user legyen tagja az "1"-es teamnek
 	*/	
-   public function adjustRegisteredTeamMembers() { 	
-      \DB::statement('insert into members (parent_type, parent, user_id, `status`, `rank`, created_by) 
-        select "teams", 1, users.id, "active", "member", users.id
-        from users
-        left outer join members on members.parent_type = "teams" and
-                                  members.parent = 1 and members.user_id = users.id
-        where members.id is null
-      ');  
+   public function adjustRegisteredTeamMembers() {
+       try {
+          \DB::statement('insert into members (parent_type, parent, user_id, `status`, `rank`, created_by) 
+            select "teams", 1, users.id, "active", "member", users.id
+            from users
+            left outer join members on members.parent_type = "teams" and
+                                      members.parent = 1 and members.user_id = users.id
+            where members.id is null
+          ');  
+       } catch (\Illuminate\Database\QueryException $exception) {
+           echo JSON_encode($exception->errorInfo); exit();
+       }
    }  
    
    /** treeItem json string kialakitása (rekurziv)

@@ -128,10 +128,14 @@ class Member extends Model
         $result->userRank = [];
         if (\Auth::user()) {
 		  		$user = \Auth::user();
-		  		foreach ($data as $m) {
-					if (($m->user_id == $user->id) & ($m->status == 'active')) {
-						$result->userRank[] = $m->rank; 					
-					}		  		
+		  		$w = \DB::table('members')
+		  		->where('parent_type','=',$parent_type)
+		  		->where('parent','=',$parent->id)
+		  		->where('status','=','active')
+		  		->where('user_id','=',$user->id)
+		  		->get();
+		  		foreach ($w as $w1) {
+					$result->userRank[] = $w1->rank; 					
 		  		}
 		}	        			 
       $result->ranks = [];	
@@ -158,8 +162,6 @@ class Member extends Model
         $model = new \App\Models\Member();
         $member = $model->where('id','=',$memberId)->first();
         if ($member) {
-            
-            
             $m = \DB::table('likes');
             $likeCount = $m->where('parent_type','=','members')
             ->where('parent','=',$member->id)
@@ -223,27 +225,45 @@ class Member extends Model
     }
     
 	 /**
-	 * lapozható adat objekt lekérése
+	 * tagok lapozható adat objekt lekérése
 	 * @param string $parent_type
 	 * @param int $parent
+	 * @param string $rank  lehet 'notmember' is
 	 * @param int $pageSize
 	 * @return object
 	 */
   	 public function getData(string $parent_type, 
-  	 	int $parentId, int $pageSize) {	         
-        return  $this->select(['members.id',
-        								  'members.user_id',
-										  'members.rank',
-										  'members.status',
-										  'users.name',
-										  'users.email',
-										  'users.profile_photo_path'])
+  	 	int $parentId, string $rank, int $pageSize) {	         
+        $result = $this->select(['members.id',
+              'members.parent_type',
+              'members.parent',
+			  'members.user_id',
+			  'members.rank',
+			  'members.status',
+			  'users.name',
+			  'users.email',
+			  'users.profile_photo_path'])
 	        ->leftJoin('users','users.id','=','members.user_id')
 	        ->where('members.parent_type','=',$parent_type)
-	        ->where('members.parent','=',$parentId)
-	        ->orderBy('rank', 'asc')
-	        ->orderBy('name', 'asc')
-	        ->paginate($pageSize);
+	        ->where('members.parent','=',$parentId);
+	        if ($rank == 'notmember') {
+	            $result = $result->where('members.rank','<>','member');
+	        } else {
+	            $result = $result->where('members.rank','=',$rank);
+	        }
+	     $result = $result->orderBy('rank', 'asc')
+	                       ->orderBy('name', 'asc')
+	                       ->paginate($pageSize);
+	     if ($rank == 'member') {
+	         foreach ($result as $item) {
+	             $item->rank = implode(',',$this->getRanks($item));
+	         }
+	     } else {
+	         foreach ($result as $item) {
+	             $item->rank = __('member.'.$item->rank);
+	         }
+	     }
+         return $result;
 	 }	        
     
 	 /**
@@ -259,7 +279,7 @@ class Member extends Model
                         ->where('user_id','=',$member->user_id)
                         ->get();
             foreach ($members as $m) {
-                $ranks[] = __('member.'.$m->status.'_'.$m->rank);                
+                $ranks[] = __('member.'.$m->status.'_'.$m->rank);
             }
             return $ranks;
     } 

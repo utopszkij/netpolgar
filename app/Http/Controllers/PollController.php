@@ -117,7 +117,8 @@ class PollController extends Controller {
     
     /**
      * Display the specified resource.
-     *
+     * Request -ben érkezhet l_ParentType, l_ParentId is
+     * likvid feldolgozáshoz esetenként többször visszahivja sajátmagát
      * @param  \App\Models\Poll  $poll
      * @return \Illuminate\Http\Response
      */
@@ -240,6 +241,5 @@ class PollController extends Controller {
 		}
         return $result;
     }        
-
     
 }

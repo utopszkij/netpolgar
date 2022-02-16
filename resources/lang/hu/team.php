@@ -15,19 +15,23 @@ return [
    'member' => 'Tag',
    'manager' => 'Menedzser',
 	'president' => 'Elnök',
-   'active_admin' => 'Adminisztrátor',
+    'accredited' => 'szavazás meghatalmazott',
+    'active_admin' => 'Adminisztrátor',
    'active_member' => 'Tag',
    'active_manager' => 'Menedzser',
 	'active_president' => 'Elnök',
-   'proposal_admin' => 'Javasolt adminisztrátor',
+    'active_accredited' => 'szavazás meghatalmazott',
+    'proposal_admin' => 'Javasolt adminisztrátor',
    'proposal_member' => 'Javasolt tag',
    'proposal_manager' => 'Javasolt menedzser',
 	'proposal_president' => 'Javasolt elnök',
-   'closed_admin' => 'Volt adminisztrátor',
+    'proposal_accredited' => 'javasolt szavazás meghatalmazott',
+    'closed_admin' => 'Volt adminisztrátor',
    'closed_member' => 'Kilépett tag',
    'closed_manager' => 'Volt menedzser',
 	'closed_president' => 'Volt elnök',
-   'excluded_member' => 'Kizárt tag',
+    'closed_accredited' => 'Volt szavazás meghatalmazott',
+    'excluded_member' => 'Kizárt tag',
    'account' => 'NTC folyószámla',
       
    'back' => 'Vissza a listához', 
@@ -72,6 +76,7 @@ return [
     'like' => 'A csoport aktiválását javaslom',
     'dislike' => 'A csoport lezárását javaslom',
     'accessDenied' => 'Ez a művelet számodra nem engedélyezett. :(',
-    'successSave' => 'Csoport adatok sikeresen tárolva.' 
+    'successSave' => 'Csoport adatok sikeresen tárolva.',
+    'orUpload' => 'Vagy file fltöltése' 
     
 ];

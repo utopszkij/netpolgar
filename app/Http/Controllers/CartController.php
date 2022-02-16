@@ -334,7 +334,7 @@ class CartController extends Controller {
 			$total = $total + (round($item->quantity * $item->price * 10) / 10);
 		}	
 
-		if (Account::checkBalalnce($customerType, $customerId, $total)) {
+		if (Account::checkBalance($customerType, $customerId, $total)) {
 			$result = true;
 		}
 		return $result;		

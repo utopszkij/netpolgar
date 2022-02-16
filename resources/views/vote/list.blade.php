@@ -19,12 +19,22 @@
             <th>{{ __('vote.ballotId') }}</th>
             <th></th>
             <th>{{ __('vote.name') }}</th>
+            <th></th>
         </tr>
         @foreach ($data as $key => $value)
         <tr>
             <td>{{ $value->ballot_id }}</td>
             <td>{{ $value->position }}</td>
             <td>{{ \Str::limit($value->name, 50) }}</td>
+            <td>
+            	@if ($poll->config->secret == 0)
+            		@if ($value->accreditedName != '')
+	            		{{ $value->userName }} --> {{ $value->accreditedName}}
+            		@else
+            			{{ $value->userName }}
+            		@endif
+            	@endif
+            </td>
         </tr>
         @endforeach
     </table>

@@ -13,6 +13,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Team;
+use App\Models\User;
+use App\Models\Member;
 use Illuminate\Http\Request;
 
 class TeamController extends Controller {
@@ -20,8 +22,80 @@ class TeamController extends Controller {
 	protected $model = false;
 
 	function __construct() {
+	    // parent::__construct();
 		$this->model = new Team();	
 	}	
+	
+	/**
+	 * adatbázis init
+	 * @param User record $sysAdmin
+	 */
+	protected function initDb($sysAdmin) {
+	    $teamModel = new Team();
+	    $memberModel = new Member();
+	    $teamRec = Team::emptyRecord();
+	    
+	    $team = $teamModel->create([
+	        "name" => "Regisztrált felhasználók",
+	        "parent" => 0,
+	        "description" => "minden regisztrált felhasználó tagja ennek a csoportnak",
+	        "avatar" => "/img/team.png",
+	        "status" => "active",
+	        "config" => JSON_encode($teamRec->config),
+	        "activated_at" => date('Y-m-d'),
+	        "created_by" => $sysAdmin->id
+	    ]);
+	    $memberModel->create([
+	        "parent_type" => "teams",
+	        "parent" => $team->id,
+	        "user_id" => $sysAdmin->id,
+	        "rank" => "member",
+	        "status" => "active",
+	        "activated_at" => date('y-m-d'),
+	        "created_by" => $sysAdmin->id
+	    ]);
+	    $memberModel->create([
+	        "parent_type" => "teams",
+	        "parent" => $team->id,
+	        "user_id" => $sysAdmin->id,
+	        "rank" => "admin",
+	        "status" => "active",
+	        "activated_at" => date('y-m-d'),
+	        "created_by" => $sysAdmin->id
+	    ]);
+	    
+	    $team = $teamModel->create([
+	        "name" => "System admins",
+	        "parent" => 0,
+	        "description" => "rendszer adminisztrátorok",
+	        "avatar" => "/img/team.png",
+	        "status" => "active",
+	        "config" => JSON_encode($teamRec->config),
+	        "activated_at" => date('Y-m-d'),
+	        "created_by" =>  $sysAdmin->id0
+	    ]);
+	    $memberModel->create([
+	        "parent_type" => "teams",
+	        "parent" => $team->id,
+	        "user_id" => $sysAdmin->id,
+	        "rank" => "member",
+	        "status" => "active",
+	        "activated_ar" => date('y-m-d'),
+	        "created_by" => $sysAdmin->id
+	    ]);
+	    $memberModel->create([
+	        "parent_type" => "teams",
+	        "parent" => $team->id,
+	        "user_id" => $sysAdmin->id,
+	        "rank" => "admin",
+	        "status" => "active",
+	        "activated_ar" => date('y-m-d'),
+	        "created_by" => $sysAdmin->id
+	    ]);
+	    
+	    
+	    
+	}
 	
     /**
      * lista form megjelenítése
@@ -30,13 +104,20 @@ class TeamController extends Controller {
     public function index(string $parent = '0') {
     	$data = $this->model->getData((int)$parent, 8);
     	$info = $this->model->getInfo((int)$parent);
-
+    	// ha még nincs egyetlen csoport sem akkor létrehozza őket
+    	// creator user és admin az ID szerint első user
+    	if ((Team::count() < 1) & (User::count() > 0)) {
+    	    $sysAdmin = User::orderBy('id')->first();
+    	    $this->initDb($sysAdmin);
+    	}
+    	
 		// jogosultság ellenörzés
 	   if (!$this->checkAccess('list', $this->model, $info)) {
 	   	return redirect()->to('/')->with('error','team.accessDenied');	    	  
-		}
-
-	 \Request::session()->put('teamIndexUrl',\URL::current());
+	   }
+	   if (!defined('UNITTEST')) {
+	       \Request::session()->put('teamIndexUrl',\URL::current());
+	   }
       return view('team.index',
         	["data" => $data,
         	"parentType" => 'teams',
@@ -54,8 +135,10 @@ class TeamController extends Controller {
     	$data = $this->model->getDataByUser((int)$userId, 8);
     	$info = $this->model->getInfoByUser((int)$userId);
 		$user = \DB::table('users')->where('id','=',$userId)->first();
-		\Request::session()->put('teamIndexParentType','users');
-	  \Request::session()->put('teamIndexUrl',\URL::current());
+		if (!defined('UNITTEST')) {
+		    \Request::session()->put('teamIndexParentType','users');
+	        \Request::session()->put('teamIndexUrl',\URL::current());
+		}
       return view('team.index',
         	["data" => $data,
         	"parentType" => 'users',
@@ -81,9 +164,13 @@ class TeamController extends Controller {
     public function create(string $parent = '0') {
     	  $team = $this->model->emptyRecord();
     	  $team->parent = $parent;	
-    	  $info = $this->model->getInfo((int)$parent);
-
-		  // jogosultság ellenörzés	
+    	  // ha parent = 0 akkor a sysadmin csoport beli jogokat kell használni
+    	  if ($parent > 0) {
+    	      $info = $this->model->getInfo((int)$parent);
+    	  } else {
+    	      $info = $this->model->getInfo(2);
+    	  }
+    	  // jogosultság ellenörzés	
 		  if (!$this->checkAccess('add', $this->model, $info)) {	 
 				return redirect()->route('parents.teams.index', 
 					['parent' => $parent])
@@ -104,7 +191,14 @@ class TeamController extends Controller {
     public function store(Request $request)  {
     		
     		// jogosultság ellenörzés
-    		$info = $this->model->getInfo($request->input('parent'));
+            $parent = $request->input('parent');
+            // ha parent = 0 akkor a sysadmin csoport beli jogokat kell használni
+            if ($parent > 0) {
+                $info = $this->model->getInfo((int)$parent);
+            } else {
+                $info = $this->model->getInfo(2);
+            }
+
 		   if (!$this->checkAccess('add', $this->model, $info)) {	    	  
 				return redirect()->route('parents.teams.index', 
 				  ['parent' => $request->input('parent')])
@@ -137,8 +231,8 @@ class TeamController extends Controller {
 		// id=1 "regisztráltak" csoport speciális kezelése:
      	// minden regisztrált user automatikusan tag
      	if ($team->id == 1) {
-       	$this->model->adjustRegisteredTeamMembers();
-      }
+       	    $this->model->adjustRegisteredTeamMembers();
+        }
         
       // jogosultság ellenörzés    
     	$info = $this->model->getInfo($team->id); 
