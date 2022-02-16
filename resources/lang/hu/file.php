@@ -24,6 +24,7 @@ return [
     'details' => 'File adatlap',
     'back' => 'Vissza a listához',
     'sureDelete' => 'Biztos, hogy törölni akarod ezt a file-t?',
-    'notUploadFile' => 'Nincs feltöltött file'
+    'notUploadFile' => 'Nincs feltöltött file',
+    'successDelete' => 'File törölve'
     
 ];

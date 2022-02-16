@@ -398,4 +398,53 @@ class FileController extends Controller {
         }
         return $result;
     }
+    
+    /**
+     * file record, file és kapcsolodó like, member rekordok törlése
+     * @param int $id
+     */
+    public function delete(int $id) {
+        $fileRec = $this->model->where('id','=',$id)->first();
+        if ($fileRec) {
+            $parentType = $fileRec->parent_type;
+            $parentId = $fileRec->parent;
+            if ($parentType == 'users') {
+                $userId = $parentId;
+            } else {
+                $userId = 0;
+            }
+            if ($this->accessCheck('delete',$parentType, $parentId, $userId)) {
+                $filePath = 'storage/'.
+                    $fileRec->parent_type.'/'.
+                    substr(1000+$id,0,3).'/'.
+                    substr(1000+$id,3,100).'.'.$fileRec->type;
+                
+                    // file törlése
+                    if (file_exists($filePath)) {
+                        unlink($filePath);
+                    }
+                    
+                    // kapcsolodó rekordok törlése
+                    \App\Models\Like::where('parent_type','=','files')
+                    ->where('parent','=',$id)
+                    ->delete();
+                    \App\Models\Member::where('parent_type','=','files')
+                    ->where('parent','=',$id)
+                    ->delete();
+                    
+                    // file rekord törlése
+                    $this->model->where('id','=',$id)->delete();
+                    $result = redirect()->to(\URL::to('/file/list/'.$parentType.'/'.$parentId.'/'.$userId))
+                    ->with('success',__('file.successDelete'));
+            } else {
+                $result = redirect()->to(\URL::to('/file/list/'.$parentType.'/'.$parentId.'/'.$userId))
+                ->with('error',__('file.accessDenied'));
+            }
+        } else {
+            $result = redirect()->to(\URL::to('/file/list/'.$parentType.'/'.$parentId.'/'.$userId))
+            ->with('error','fatal error file record not found');
+        }
+        return $result;
+    }
+    
 }
