@@ -40,7 +40,7 @@
 				<span        		    
 				>{{ __('project.decisions') }}</span><br />			
 			</a>
-			<a href="{{ URL::to('/construction') }}" title="Fájlok">
+			<a href="{{ URL::to('/projects/'.$project->id.'/files') }}" title="Fájlok">
 				<em class="fas fa-folder-open"></em>
 				<span>{{ __('project.files') }}</span><br />			
 			</a>

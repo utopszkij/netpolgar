@@ -386,7 +386,56 @@ class Member extends Model
 		}	
     	return $result;
     }
-			
 	
-
+    /**
+     * Bejelentkezett user tagja parent -nek?
+     * @param string $parentType
+     * @param int $parentId
+     * @return bool
+     */
+    public static function userMember(string $parentType, int $parentId, int $userId = 0): bool {
+        $result = false;
+        if (\Auth::check()) {
+            if ($userId == 0) {
+                $userId = \Auth::user()->id;
+            }
+            if ($parentType == 'users') {
+                $result = ($parentId == $user->id);
+            } else {
+                $result = (\DB::table('members')
+                    ->where('user_id','=',$userId)
+                    ->where('parent_type','=',$parentType)
+                    ->where('status','=','active')
+                    ->count() > 0);
+            }
+        }
+        return $result;
+    }
+	
+    /**
+     * Bejelentkezett user adminja tagja parent -nek?
+     * @param string $parentType
+     * @param int $parentId
+     * @return bool
+     */
+    public static function userAdmin(string $parentType, int $parentId, int $userId = 0): bool {
+        $result = false;
+        if (\Auth::check()) {
+            if ($userId == 0) {
+                $userId = \Auth::user()->id;
+            }
+            if ($parentType == 'users') {
+                $result = ($parentId == $userId);
+            } else {
+                $result = (\DB::table('members')
+                ->where('user_id','=',$userId)
+                ->where('parent_type','=',$parentType)
+                ->where('rank','=','admin')
+                ->where('status','=','active')
+                ->count() > 0);
+            }
+        }
+        return $result;
+    }
+    
 }

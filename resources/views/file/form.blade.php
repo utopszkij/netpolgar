@@ -25,16 +25,16 @@
  
     <div class="row">
     	<div class="col-12">
-    		<a href="">
+    		<a href="{{ \URL::to('/'.$fileRec->parent_type.'/'.$fileRec->parent) }}">
     			<em class="fas fa-hand-point-right"></em>{{ $parent->name}}
     		</a>
     	</div>
     </div>    
  
    @if ($fileRec->id > 0)
-    <form action="{{ \URL::to('/file/update') }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ \URL::to('/files/'.$fileRec->id) }}" method="POST" enctype="multipart/form-data">
    @else
-    <form action="{{ \URL::to('/file/store') }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ \URL::to('/files') }}" method="POST" enctype="multipart/form-data">
    @endif 
    @csrf
          <input type="hidden" name="id" value="{{ $fileRec->id }}" class="form-control" placeholder="">
@@ -74,7 +74,11 @@
                 <div class="form-group">
                     <label>{{ __('file.upload') }}</label>
                     <input type="file" name="upload" value="" class="form-control" />
-                    Max 2Mbyte, php, html, htm, js {{ __('file.disabled') }}.
+                    Max {{ $maxSize }}, php, html, htm, js {{ __('file.disabled') }}.
+                    @if ($fileRec->id > 0)
+                    <br />{{ __('file.editInfo') }}
+                    @endif
+                    <br />{{ __('file.uploadInfo') }}
                 </div>    
 			</div>
 		</div>	

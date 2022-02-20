@@ -2,10 +2,16 @@
 
 státusz: fejlesztés alatt
 
-Készültség: 35%  v0.05-alpha
+Készültség: 
+
+- programozás: 70%  v0.06-beta teszt
+- dizájn: 1%
+- tesztelés: 10%
 
 Verzió történet:
-   v0.04 2021.05.   Laravel változat
+- v0.06.  2022.03.16 File könyvtár
+- v0.05.  2022.02.10 Likvid demokrácia modul	
+- v0.04.  2021.05.05 Laravel változat
 
 [Élő demo](https://netpolgar.hu)
 

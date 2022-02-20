@@ -20,19 +20,27 @@ class Minimarkdown {
 	* @return array ['fileExist', 'fileSize' ]
 	*/
 	public static function getRemoteFileInfo($url) {
-			if (substr($url,0,4) == 'http') {
+			if ((substr($url,0,4) == 'http') & (strpos($url,':') == 0)) {
 			   $ch = curl_init($url);
 			   curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
 			   curl_setopt($ch, CURLOPT_HEADER, TRUE);
 			   curl_setopt($ch, CURLOPT_NOBODY, TRUE);
 			   $data = curl_exec($ch);
-			   $fileSize = curl_getinfo($ch, CURLINFO_CONTENT_LENGTH_DOWNLOAD);
 			   $httpResponseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-			   curl_close($ch);
-			   $result = [
-		        'fileExists' => (int) $httpResponseCode == 200,
-		        'fileSize' => (int) $fileSize
-			   ];
+			   if ($httpResponseCode == 200) {
+			       $fileSize = curl_getinfo($ch, CURLINFO_CONTENT_LENGTH_DOWNLOAD);
+			       $result = [
+			           'fileExists' => (int) $httpResponseCode == 200,
+			           'fileSize' => (int) $fileSize
+			       ];
+			       curl_close($ch);
+			   } else {
+			       $result = [
+			           'fileExists' =>  0,
+			           'fileSize' => (int) $fileSize
+			       ];
+			       curl_close($ch);
+			   }
 			} else {
 			   $result = [
 		        'fileExists' => 1,

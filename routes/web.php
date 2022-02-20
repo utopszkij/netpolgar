@@ -44,12 +44,14 @@ Route::get('/member/list/{parent_type}/{parent}', [MemberController::class, 'ind
 Route::get('/member/store', [MemberController::class, 'store']);
 Route::get('/member/{member}', [MemberController::class, 'show']);
 Route::get('/member/user/{userId}', [MemberController::class, 'user']);
+
 // like
 Route::get('/like/{parentType}/{parent}', [LikeController::class, 'like'])
 	->middleware('auth');
 Route::get('/dislike/{parentType}/{parent}', [LikeController::class, 'disLike'])
 	->middleware('auth');
 Route::get('/likeinfo/{parentType}/{parent}', [LikeController::class, 'likeInfo']);
+
 // policy, impressum
 Route::get('/', function () { return view('welcome'); });
 Route::get('/policy', function () { return view('policy'); });
@@ -57,6 +59,7 @@ Route::get('/policy2', function () { return view('policy2'); });
 Route::get('/policy3', function () { return view('policy3'); });
 Route::get('/terms', function () { return view('terms'); });
 Route::get('/impressum', function () { return view('impressum'); });
+
 // message            
 Route::get('/message/tree/{parentType}/{parentId}/{offset?}',[MessageController::class, 'tree']);
 Route::get('/message/moderal/{messageId}',[MessageController::class, 'moderal'])
@@ -65,6 +68,7 @@ Route::post('/message/store',[MessageController::class, 'store']);
 Route::get('/message/protest/{messageId}',[MessageController::class, 'protest']);
 Route::post('/message/saveprotest',[MessageController::class, 'saveprotest']);
 Route::get('/message/list/{parentType}/{parentId}/{replyTo}/{offset?}',[MessageController::class, 'list']);
+
 // poll
 Route::get('/{parentType}/{parent}/{statuses}/polls',[PollController::class, 'index']);
 Route::get('/{parentType}/{parent}/{statuses}/polls/create',[PollController::class, 'create'])
@@ -74,6 +78,7 @@ Route::get('/polls/{poll}/edit',[PollController::class, 'edit'])
 	->middleware('auth');
 Route::post('/polls',[PollController::class, 'store']);
 Route::post('/polls/{poll}',[PollController::class, 'update']);
+
 // option
 Route::get('/{poll}/options/create',[OptionController::class, 'create'])
 	->middleware('auth');
@@ -81,6 +86,7 @@ Route::get('/options/{option}/edit',[OptionController::class, 'edit'])
 	->middleware('auth');
 Route::post('/options',[OptionController::class, 'store']);
 Route::post('/options/{option}',[OptionController::class, 'update']);
+
 // vote
 Route::get('/{poll}/votes/create',[VoteController::class, 'create'])
 	->middleware('auth');
@@ -90,6 +96,7 @@ Route::post('/votes/show',[VoteController::class, 'show']);
 Route::get('{poll}/votes',[VoteController::class, 'list']);
 Route::post('/votes',[VoteController::class, 'store']);
 Route::get('{poll}/votes/csv',[VoteController::class, 'csv']);
+
 // projects
 Route::get('/{team}/projects',[ProjectController::class, 'index']);
 Route::get('/projectsbyuser/{userId}',[ProjectController::class, 'listByUser']);
@@ -100,6 +107,7 @@ Route::get('/projects/{project}/edit',[ProjectController::class, 'edit'])
 	->middleware('auth');
 Route::post('/projects',[ProjectController::class, 'store']);
 Route::post('/projects/{project}',[ProjectController::class, 'update']);
+
 // tasks
 Route::get('/tasks/dragsave',[TaskController::class, 'dragsave']);
 Route::get('/{project}/tasks/create',[TaskController::class, 'create'])
@@ -111,19 +119,22 @@ Route::get('/tasks/{task}/delete',[TaskController::class, 'destroy'])
     ->middleware('auth');
 Route::post('/tasks',[TaskController::class, 'store']);
 Route::post('/tasks/{task}',[TaskController::class, 'update']);
+
 // file
-Route::get('/file/list/{parentType}/{parentId}/{userId}',[FileController::class, 'index']);
-Route::get('/file/add/{parentType}/{parentId}/{userId}',[FileController::class, 'create'])
-    ->middleware('auth');
-Route::get('/file/show/{id}',[FileController::class, 'show']);
-Route::get('/file/edit/{id}',[FileController::class, 'edit'])
-    ->middleware('auth');
-Route::get('/file/delete/{id}',[FileController::class, 'delete'])
-    ->middleware('auth');
-Route::get('/file/download/{id}',[FileController::class, 'download'])
-    ->middleware('auth');
-Route::post('/file/store',[FileController::class, 'store']);
-Route::post('/file/update',[FileController::class, 'update']);
+Route::get('/{parentType}/{parent}/files',[FileController::class, 'index']);
+Route::get('/{parentType}/{parent}/files/create',[FileController::class, 'create'])
+->middleware('auth');
+Route::get('/files/{fileId}',[FileController::class, 'show']);
+Route::get('/files/{fileId}/edit',[FileController::class, 'edit'])
+->middleware('auth');
+Route::get('/files/{fileId}/delete',[FileController::class, 'delete'])
+->middleware('auth');
+Route::get('/files/{fileId}/download',[FileController::class, 'download'])
+->middleware('auth');
+Route::get('/files/evaluation/{fileId}',[FileController::class, 'evaluation']);
+Route::post('/files',[FileController::class, 'store']);
+Route::post('/files/evaluation',[FileController::class, 'saveevaluation']);
+Route::post('/files/{fileId}',[FileController::class, 'update']);
 
 
 /*----------------------------------

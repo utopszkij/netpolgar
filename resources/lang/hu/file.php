@@ -3,9 +3,10 @@ return [
     'list' => 'Fájlok',
     'like' => 'Tetszik',
     'dislike' => 'Nem testzik',
-    'edit' => 'Módosítás',
-    'add' => 'Feltöltés',
+    'edit' => 'File módosítás',
+    'add' => 'Új file feltöltés',
     'delete' => 'Törlés',
+    'ok' => 'Tárolás',
     'disabled' => 'Nem megengedett',
     'notData' => 'Nincs listázandó adat',
     'id' => 'Azonosító kód',
@@ -23,6 +24,18 @@ return [
     'download' => 'Letöltés',
     'details' => 'File adatlap',
     'back' => 'Vissza a listához',
-    'sureDelete' => 'Biztos, hogy törölni akarod ezt a file-t?'
-    
+    'sureDelete' => 'Biztos, hogy törölni akarod ezt a file-t?',
+    'notUploadFile' => 'Nincs feltöltött file',
+    'successDelete' => 'File törölve',
+    'editInfo' => 'Csak akkor válassz it file-t ha cserélni akarod a meglévőt!',
+    'uploadInfo' => 'A file lista minden látogató számára látható, letölteni a webhely regisztrált felhasználói tudnak.',
+    'evaluationExists' => 'Te már értékelted ezt a file-t',
+    'evaluationDisabled' => 'A file-t csak azok értékelhetik, akik letöltötték azt.',
+    'evaluation' => 'Értékelés',
+    'evaluation1' => 'rossz',
+    'evaluation2' => 'elfogadható',
+    'evaluation3' => 'közepes',
+    'evaluation4' => 'jó',
+    'evaluation5' => 'kitünő',
+    'evaluationSaved' => 'Értékelés tárolva'
 ];

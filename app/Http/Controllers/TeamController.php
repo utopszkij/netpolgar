@@ -281,18 +281,16 @@ class TeamController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Team $team) {
-
     	// jogosultság ellenörzés	
     	$info = $this->model->getInfo($team->id);
 	   if (!$this->checkAccess('edit', $team, $info)) {	    	  
 	        return redirect()->route('parents.teams.index', ['parent' => $team->parent])
                         ->with('error',__('team.accessDenied'));
     	} 	
-    	  
 		if ($this->model->valid($request)) {
-			// team rekord kiirása
+		    // team rekord kiirása
 			$errorInfo = $this->model->updateOrCreate($request);
-			
+
 			// result kialakítása
 			$parent = $request->input('parent',0);
 			if ($errorInfo == '') {

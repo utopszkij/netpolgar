@@ -12,7 +12,7 @@ class Avatar extends Model {
                 md5($email).
                 '?d='.urlencode('https://www.pinpng.com/pngs/m/341-3415688_no-avatar-png-transparent-png.png');
         } else {
-            $result = \URL::to('/storage/app/public').'/'.$value->profile_photo_path;
+            $result = \URL::to('/storage/app/public').'/'.$profile_photo_path;
         }
         return $result;
     }

@@ -48,15 +48,22 @@ class File extends Model {
             "disLikeCount": 0, 
             "userDisLiked": false,
             "msgCount": 0,
-            "downloadCount": 0 
+            "downloadCount": 0,
+            "evaulation":0,
+            "userUsed":false
+ 
         }');
         $filePath = 'storage/'.$file->parent_type.'/'.
             substr((1000+$file->id),0,3).'/'.
             substr((1000+$file->id),3,100).'.'.$file->type;
-        if (defined('UNITTEST')) {
-                $fileSize = 0;
+        if (file_exists($filePath)) {
+            if (defined('UNITTEST')) {
+                    $fileSize = 0;
+            } else {
+                    $fileSize = filesize($filePath);
+            }
         } else {
-                $fileSize = filesize($filePath);
+            $fileSize = 0;
         }
         $result->filePath = $filePath;
         $result->fileSize = $fileSize;
@@ -92,10 +99,23 @@ class File extends Model {
         $result->downloadCount = \DB::table('members')->where('parent_type','=','files')
         ->where('parent','=',$file->id)
         ->count();
+        
+        $recs = \DB::select('select avg(value) value
+		from evaluations
+		where parent = '.$file->id.' and parent_type = "files"');
+        if (count($recs) > 0) {
+            $result->evaulation = $recs[0]->value;
+        }
+        
         if (\Auth::check()) {
             if ($file->created_by == \Auth::user()->id) {
                 $result->userAdmin = true;
             }
+            $result->userUsed = (\DB::table('members')
+                ->where('parent','=',$file->id)
+                ->where('parent_type','=','files')
+                ->where('user_id','=',\Auth::user()->id)
+                ->count() > 0);
         }
         return $result;
     }
@@ -107,16 +127,7 @@ class File extends Model {
      * @return bool
      */
     public static function userMember(string $parentType, int $parentId): bool {
-        if (\Auth::check()) {
-            return (\DB::table('members')
-            ->where('parent_type','=',$parentType)
-            ->where('parent','=',$parentId)
-            ->where('user_id','=',\Auth::user()->id)
-            ->where('status','=','active')
-            ->count() > 0);
-        } else {
-            return false;
-        }
+        return \App\Models\Member::userMember($parentType, $parentId);
     }
     
     /**
@@ -126,17 +137,7 @@ class File extends Model {
      * @return bool
      */
     public static function userAdmin(string $parentType, int $parentId): bool {
-        if (\Auth::check()) {
-            return (\DB::table('members')
-            ->where('parent_type','=',$parentType)
-            ->where('parent','=',$parentId)
-            ->where('user_id','=',\Auth::user()->id)
-            ->where('rank','=','admin')
-            ->where('status','=','active')
-            ->count() > 0);
-        } else {
-            return false;
-        }
+        return \App\Models\Member::userAdmin($parentType, $parentId);
     }
     
     /**
@@ -207,16 +208,17 @@ class File extends Model {
     public function getData(string $parentType, int $parentId,
         int $userId, int $pageSize) {
         if ($userId != 0) {
-                $data = $this->latest()
-                ->where('created_by', $userId)
-                ->orderBy('name')
-                ->paginate($pageSize);
+            $data = $this->latest()
+            ->where('parent_type','=','users')
+            ->where('parent','=',$userId)
+            ->orderBy('name')
+            ->paginate($pageSize);
         } else if ($parentId != 0) {
-                $data = $this->latest()
-                ->where('parent_type','=',$parentType)
-                ->where('parent','=',$parentId)
-                ->orderBy('name')
-                ->paginate($pageSize);
+            $data = $this->latest()
+            ->where('parent_type','=',$parentType)
+            ->where('parent','=',$parentId)
+            ->orderBy('name')
+            ->paginate($pageSize);
         }
         return $data;
     }

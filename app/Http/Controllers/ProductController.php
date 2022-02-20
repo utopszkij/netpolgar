@@ -391,7 +391,8 @@ class ProductController extends Controller {
         $info = Product::getInfo($product);
         if ($info->userUsed) {
 			$userEvaluated = (\DB::table('evaluations')
-				->where('product_id','=',$productId)
+				->where('parent','=',$productId)
+			    ->where('parent_type','=','products')
 				->where('user_id','=',\Auth::user()->id)
 				->count() > 0);
 			if (!$userEvaluated) {
@@ -422,13 +423,15 @@ class ProductController extends Controller {
         $info = Product::getInfo($product);
         if ($info->userUsed) {
 			$userEvaluated = (\DB::table('evaluations')
-				->where('product_id','=',$productId)
+				->where('parent','=',$productId)
+			    ->where('parent_type','=','products')
 				->where('user_id','=',\Auth::user()->id)
 				->count() > 0);
 			if (!$userEvaluated) {
 				$t = \DB::table('evaluations');
 				$t->insert([
-				"product_id" => $product->id,
+				"parent" => $product->id,
+				"parent_type" => "products",    
 				"user_id" => \Auth::user()->id,
 				"value" => $request->input('evaluation',1)
 				]);

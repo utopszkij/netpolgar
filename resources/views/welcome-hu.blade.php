@@ -35,6 +35,7 @@
 						<li><p><a href="#vitak" onclick="true">Eszmecserék, viták lebonyolítása</a> (ß teszt)</p>
 						<li><p><a href="#szavazasok" onclick="true">Szavazások lebonyolítása</a> (ß teszt)</p>
 						<li><p><a href="#uzenetek" onclick="true">Kommunikáció</a> (ß teszt)</p>
+						<li><p><a href="#fileok" onclick="true">File könyvtár</a> (ß teszt)</p>
 					</ul>
 				</div>
 <a name="fojellemzok"></a>
@@ -330,5 +331,19 @@
 				</ul>
 				<p>Ha a web böngésző támogatja a mikrofon és kamera 
 				használatát akkor video-chat is lebonyolítható.</p>
+<a name="fileok"></a>
+				<p>&nbsp;</p>
+				<h5>File könyvtár (ß teszt)</h5>
+				<p>A csoportokhoz és minden regisztrált felhasználóhoz tartozik egy-egy file könyvtár.</p>
+				<p>A csoport file könyvtárába a csoport tagok tölthetnek fel fájlokat, 
+				modosítani, törölni a feltöltő és a csoport adminisztrátorok tudnak.</p>
+				<p>A felhasználó könyvtárába csak a felhasználó tölthet fel, ő módosíthat, törölhet.</p>
+				<p>A feltöltött fájlok listája minden látogató számára látható, letölteni a 
+				regisztrált felhasználók tudnak.</p>
+				<p>A feltölthető fájlok méretét a szerver beállításai határozzák meg (uload limit és
+				post data méret). Az összes feltöltendő fájl méretét a fizikailag rendelkezésre 
+				álló tároló kapacitás korlátozza</p>
+				<p>Bizronsági okokból php, html, html, js fájlok feltöltése nem engedélyezett.</p>
+								
 	</div>
 </div>

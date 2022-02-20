@@ -1,5 +1,88 @@
 <x-guest-layout>  
 
+@php
+		function evaluation($value,$userUsed, $fileRec) {
+			$result = '<div class="evaluation">';
+			if ($value > 4.5) {
+				$result .= '<em class="fas fa-star"></em>
+				<em class="fas fa-star"></em>
+				<em class="fas fa-star"></em>
+				<em class="fas fa-star"></em>
+				<em class="fas fa-star"></em>';
+			} else if ($value > 4.25) {
+				$result .= '<em class="fas fa-star"></em>
+				<em class="fas fa-star"></em>
+				<em class="fas fa-star"></em>
+				<em class="fas fa-star"></em>
+				<em class="fas fa-star-half-alt"></em>';
+			} else if ($value > 3.75) {
+				$result .= '<em class="fas fa-star"></em>
+				<em class="fas fa-star"></em>
+				<em class="fas fa-star"></em>
+				<em class="fas fa-star"></em>
+				<img src="/img/star.png" />';
+			} else if ($value > 3.25) {
+				$result .= '<em class="fas fa-star"></em>
+				<em class="fas fa-star"></em>
+				<em class="fas fa-star"></em>
+				<em class="fas fa-star-half-alt"></em>
+				<img src="/img/star.png" />';
+			} else if ($value > 2.75) {
+				$result .= '<em class="fas fa-star"></em>
+				<em class="fas fa-star"></em>
+				<em class="fas fa-star"></em>
+				<img src="/img/star.png" />
+				<img src="/img/star.png" />';
+			} else if ($value > 2.25) {
+				$result .= '<em class="fas fa-star"></em>
+				<em class="fas fa-star"></em>
+				<em class="fas fa-star-half-alt"></em>
+				<img src="/img/star.png" />
+				<img src="/img/star.png" />';
+			} else if ($value > 1.75) {
+				$result .= '<em class="fas fa-star"></em>
+				<em class="fas fa-star"></em>
+				<img src="/img/star.png" />
+				<img src="/img/star.png" />
+				<img src="/img/star.png" />';
+			} else if ($value > 1.25) {
+				$result .= '<em class="fas fa-star"></em>
+				<em class="fas fa-star-half-alt"></em>
+				<img src="/img/star.png" />
+				<img src="/img/star.png" />
+				<img src="/img/star.png" />';
+			} else if ($value > 0.75) {
+				$result .= '<em class="fas fa-star"></em>
+				<img src="/img/star.png" />
+				<img src="/img/star.png" />
+				<img src="/img/star.png" />					
+				<img src="/img/star.png" />';
+			} else if ($value > 0.25) {
+				$result .= '<em class="fas fa-star-half-alt"></em>
+				<img src="/img/star.png" />
+				<img src="/img/star.png" />
+				<img src="/img/star.png" />
+				<img src="/img/star.png" />';
+			} else {
+				$result .= '<img src="/img/star.png" />
+				<img src="/img/star.png" />
+				<img src="/img/star.png" />
+				<img src="/img/star.png" />
+				<img src="/img/star.png" />';
+			}
+			if ($userUsed) {
+				$result .= '<a href="'.\URL::to('/files/evaluation/'.$fileRec->id).'">
+							<em class="fas fa-arrows-alt-v"></em>Értékelem
+						</a>';
+            }
+			$result .= '</div>';
+			return $result;		
+		}
+
+		$file->description = str_replace("\n",'<br />',$file->description);
+		$file->description = strip_tags($file->description,['br']);
+	@endphp
+
 	<div id="fileContainer">
     <div class="row">
         <div class="col-lg-12 margin-tb">
@@ -22,7 +105,7 @@
              <h3>
              	{{ $file->name }}
 		        @if ($info->userAdmin) 
-	            &nbsp;<a href="{{ \URL::to('/file/edit/'.$file->id) }} ">
+	            &nbsp;<a href="{{ \URL::to('/files/'.$file->id.'/edit') }} ">
 						<em class="fas fa-edit" title="{{ __('file.edit') }}"></em></a>
 	            &nbsp;<a href="#" onclick="delClick()">
 						<em class="fas fa-eraser" title="{{ __('file.delete') }}"></em></a>
@@ -58,8 +141,8 @@
        </div>
     </div>   
 	<div class="row">
-       <div class="col-12">
-			<a 
+       <div class="col-12">                    <br />
+       	<a 
 			   href="{{ \URL::to('/like/files/'.$file->id) }}" 
 			   title="Tetszik">
 				@if ($info->userLiked)
@@ -84,10 +167,18 @@
 				{{ __('file.dislike') }}
 			</a>
 	   </div>
+	   <div class="row">
+	   		<div class="col-12">
+	   		<br />
+	        	{!! evaluation($info->evaulation, $info->userUsed, $file) !!}
+	        <br />	
+	        </div>	
+	   </div>
     </div>   
 	<div class="row">
        <div class="col-12">
-       		<a href="{{ \URL::to('file/download/'.$file->id) }}" class="btn btn-primary">
+       		<a href="{{ \URL::to('files/'.$file->id.'/download') }}" class="btn btn-primary"
+       			onclick="false;" target="_dowload">
 	       		<em class="fas fa-cloud-download-alt"></em>
        			{{ __('file.download') }}
        		</a>
@@ -97,7 +188,6 @@
        		</a>
        </div>
     </div>   
-   
    </div>
    
    <script type="text/javascript">
@@ -105,7 +195,7 @@
 		   popupConfirm("{{ __('file.sureDelete') }}", 
 		   	function() {
 		   		$('#waiting').show();
-		   		location="{{ \URL::to('/file/delete/'.$file->id) }}";
+		   		location="{{ \URL::to('/files/'.$file->id.'/delete') }}";
 		   	}, true);
    		  return false;	
    		}
