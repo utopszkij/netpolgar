@@ -105,13 +105,7 @@ class Account extends Model
 	 */ 
 	public static function userMember(string $actorType, int $actorId, 
 		int $userId): bool {
-		return (\DB::table('members')
-					->where('user_id','=',$userId)
-					->where('parent_type','=','teams')
-					->whereIn('rank',['member','admin'])
-					->where('status','=','active')
-					->count() > 0);
-			
+		    return \App\Models\Member::userMember($actorType, $actorrId, $userId);
 	} 
 
 	/**
@@ -123,12 +117,7 @@ class Account extends Model
 	 */ 
 	public static function userAdmin(string $actorType, int $actorId, 
 		int $userId): bool {
-		return (\DB::table('members')
-					->where('user_id','=',$userId)
-					->where('parent_type','=','teams')
-					->where('rank','=','admin')
-					->where('status','=','active')
-					->count() > 0);
+		return \App\Models\Member::userAdmin($actorType, $actorrId, $userId);
 	} 
 
 

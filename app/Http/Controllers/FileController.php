@@ -21,19 +21,19 @@ class FileController extends Controller {
      * @param int $userId
      * @return \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory
      */
-    public function index(string $parentType, int $parentId, int $userId) {
-        if ($userId != 0) {
-            $parentType = 'users';
-            $parentId = $userId;
-            $parent = \DB::table('users')->where('id','='.$userId)->first();
+    public function index(string $parentType, int $parentId) {
+        if ($parentType == 'users') {
+            $userId = $parentId;
+            $parent = \DB::table('users')->where('id','=',$userId)->first();
             if (\Auth::check()) {
                 $userMember = (\Auth::user()->id == $userId);
-                $userAdminr = (\Auth::user()->id == $userId);
+                $userAdmin = (\Auth::user()->id == $userId);
             } else {
                 $userMember = false;
                 $userAdmin = false;
             }
         } else {
+            $userId = 0;
             $parent = \DB::table($parentType)->where('id','=',$parentId)->first();
             if (\Auth::check()) {
                 $userMember = $this->model->userMember($parentType, $parentId);
@@ -96,6 +96,10 @@ class FileController extends Controller {
                    $result = $this->model->userAdmin($parentType, $parentId, $userId);
                }
            }
+           if ($action == 'download') {
+               $result =  \Auth::chevk();
+           }
+           
        }
        return $result;
     }
@@ -106,16 +110,22 @@ class FileController extends Controller {
      * @param int $parentId
      * @param int $userId
      */
-    public function create(string $parentType, int $parentId, int $userId) {
+    public function create(string $parentType, int $parentId) {
+        if ($parentType == 'users') {
+            $userId = $parentId;
+        } else {
+            $userId = 0;
+        }
         if ($this->accessCheck('add',$parentType, $parentId, $userId)) {
             $fileRec = $this->model->emptyRecord();
-            if ($userId > 0) {
+            if ($parentType == 'users') {
                 $fileRec->parent_type = "users";
                 $fileRec->parent = $userId;
                 $parentType = 'users';
-                $parentId = $userId;
+                $userId = $parentId;
                 $parent = \DB::table('users')->where('id','=',$userId)->first();
             } else {
+                $userId = 0;
                 $fileRec->parent_type = $parentType;
                 $fileRec->parent = $parentId;
                 $parent = \DB::table($parentType)->where('id','=',$parentId)->first();
@@ -127,7 +137,8 @@ class FileController extends Controller {
                     "parentType" => $parentType,
                     "parentId" => $parentId,
                     "userId" => $userId,
-                    "parent" => $parent
+                    "parent" => $parent,
+                    "maxSize" => ini_get('post_max_size')
                 ]);
             } else {
                 $result = redirect()->to(\URL::previous())->with('error','fatal error parent not found');
@@ -163,7 +174,9 @@ class FileController extends Controller {
                     $targetDir = 'storage/'.$parentType.'/'.substr((1000+$id),0,3).'/';
                     $targetName = substr((1000+$id),3,100);
                     if ($errorInfo == '') {
-                        $errorInfo = Upload::processUpload('upload',
+                        $w = (int)(str_replace('M', '', ini_get('post_max_size')) * 1024 * 1024);                        $uploadModel = new Upload();
+                        $errorInfo = $uploadModel->setMaxSize($w)
+                            ->process('upload',
                         $targetDir,
                         $targetName,
                         []);
@@ -192,11 +205,7 @@ class FileController extends Controller {
                 if ($errorInfo == '') {
                         $parentType = $request->input('parent_type');
                         $parentId = $request->input('parent');
-                        if ($parentType == 'users') {
-                            $url = '/file/list/users/0/'.$parentId;
-                        } else {
-                            $url = '/file/list/'.$parentType.'/'.$parentId.'/0';
-                        }
+                        $url = '/'.$parentType.'/'.$parentId.'/files';
                         $result = redirect()->to(\URL::to($url))
                             ->with('success',__('file.saved'));
                     } else {
@@ -235,7 +244,8 @@ class FileController extends Controller {
                         "parentType" => $parentType,
                         "parentId" => $parentId,
                         "userId" => $userId,
-                        "parent" => $parent
+                        "parent" => $parent,
+                        "maxSize" => ini_get('post_max_size')
                     ]);
                 } else {
                     $result = redirect()->to(\URL::previous())->with('error','fatal error parent not found');
@@ -254,7 +264,7 @@ class FileController extends Controller {
      *
      * @param Request $request
      */
-    public function update(Request $request) {
+    public function update(int $fileId, Request $request) {
         $errorInfo = '';
         $parentType = $request->input('parent_type');
         $parentId = $request->input('parent');
@@ -274,7 +284,9 @@ class FileController extends Controller {
                     $targetDir = 'storage/'.$parentType.'/'.substr((1000+$id),0,3).'/';
                     $targetName = substr((1000+$id),3,100);
                     if ($errorInfo == '') {
-                        $errorInfo = Upload::processUpload('upload',
+                        $w = (int)(str_replace('M', '', ini_get('post_max_size')) * 1024 * 1024);                        $uploadModel = new Upload();
+                        $uploadModel = new Upload();
+                        $errorInfo = $uploadModel->setMaxSize($w)->process('upload',
                             $targetDir,
                             $targetName,
                             []);
@@ -300,11 +312,7 @@ class FileController extends Controller {
                 if ($errorInfo == '') {
                     $parentType = $request->input('parent_type');
                     $parentId = $request->input('parent');
-                    if ($parentType == 'users') {
-                        $url = '/file/list/users/0/'.$parentId;
-                    } else {
-                        $url = '/file/list/'.$parentType.'/'.$parentId.'/0';
-                    }
+                    $url = '/'.$parentType.'/'.$parentId.'/files';
                     $result = redirect()->to(\URL::to($url))
                     ->with('success',__('file.saved'));
                 } else {
@@ -355,8 +363,6 @@ class FileController extends Controller {
             $userId = 0;
         }
         if (\Auth::check()) {
-            if (($this->model->userMember($fileRec->parent_type, $fileRec->parent, $userId)) |
-                ($fileRec->created_by == \Auth::user()->id)) {
                     $memberModel = new \App\Models\Member();
                     if ($memberModel->where('parent_type','=','files')
                         ->where('parent','=',$id)
@@ -390,9 +396,6 @@ class FileController extends Controller {
                         http_response_code(404);
                         die();
                     }
-            } else {
-                echo __('file.accessDenied'); exit();
-            }
         } else {
             echo __('file.accessDenied'); exit();
         }
@@ -431,20 +434,90 @@ class FileController extends Controller {
                     \App\Models\Member::where('parent_type','=','files')
                     ->where('parent','=',$id)
                     ->delete();
+                    \DB::table('evaluations')->where('parent_type','=','files')
+                    ->where('parent','=',$id)
+                    ->delete();
                     
                     // file rekord törlése
                     $this->model->where('id','=',$id)->delete();
-                    $result = redirect()->to(\URL::to('/file/list/'.$parentType.'/'.$parentId.'/'.$userId))
+                    $result = redirect()->to(\URL::to('/'.$parentType.'/'.$parentId.'/files'))
                     ->with('success',__('file.successDelete'));
             } else {
-                $result = redirect()->to(\URL::to('/file/list/'.$parentType.'/'.$parentId.'/'.$userId))
+                $result = redirect()->to(\URL::to('/'.$parentType.'/'.$parentId.'/files'))
                 ->with('error',__('file.accessDenied'));
             }
         } else {
-            $result = redirect()->to(\URL::to('/file/list/'.$parentType.'/'.$parentId.'/'.$userId))
+            $result = redirect()->to(\URL::to('/'.$parentType.'/'.$parentId.'/files'))
             ->with('error','fatal error file record not found');
         }
         return $result;
     }
+    
+    /**
+     * értékelő képernyő
+     * @param int $fileId
+     */
+    public function evaluation(int $fileId) {
+        $file = $this->model->where('id','=',$fileId)->first();
+        $info = $this->model->getInfo($file);
+        if ($info->userUsed) {
+            $userEvaluated = (\DB::table('evaluations')
+                ->where('parent','=',$fileId)
+                ->where('parent_type','=','files')
+                ->where('user_id','=',\Auth::user()->id)
+                ->count() > 0);
+            if (!$userEvaluated) {
+                $result = view('file.evaluation',[
+                    "file" => $file,
+                    "backUrl" => \URL::previous()
+                ]);
+            } else {
+                $result = redirect()->to(\URL::previous())
+                ->with('error',__('file.evaluationExists'));
+            }
+        } else {
+            $result = redirect()->to(\URL::previous())
+            ->with('error',__('file.evaluationDisabled'));
+        }
+        return $result;
+    }
+    
+    /**
+     * Értékelés tárolása
+     * @param Request fileId, evaluation, backUrl
+     * @return larevel redirect
+     */
+    public function saveevaluation(Request $request) {
+        $fileId = $request->input('fileId',0);
+        $backUrl = $request->input('backUrl','');
+        $file = $this->model->where('id','=',$fileId)->first();
+        $info = $this->model->getInfo($file);
+        if ($info->userUsed) {
+            $userEvaluated = (\DB::table('evaluations')
+                ->where('parent','=',$fileId)
+                ->where('parent_type','=','files')
+                ->where('user_id','=',\Auth::user()->id)
+                ->count() > 0);
+            if (!$userEvaluated) {
+                $t = \DB::table('evaluations');
+                $t->insert([
+                    "parent" => $fileId,
+                    "parent_type" => "files",
+                    "user_id" => \Auth::user()->id,
+                    "value" => $request->input('evaluation',1)
+                ]);
+                $result = redirect()->to($backUrl)
+                ->with('success',__('file.evaluationSaved'));
+            } else {
+                $result = redirect()->to($backUrl)
+                ->with('error',__('file.evaluationExists'));
+            }
+        } else {
+            $result = redirect()->to($backUrl)
+            ->with('error',__('file.evaluationDisabled'));
+        }
+        return $result;
+    }
+    
     
 }

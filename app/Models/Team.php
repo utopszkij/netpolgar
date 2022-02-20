@@ -84,7 +84,6 @@ class Team extends Model {
 					$teamArr['created_by'] = 0;
 				}		
 			}
-			   
 			// config kialakitása
 			$config = new \stdClass();
 			$config->ranks = explode(',',$request->input('ranks'));
@@ -98,7 +97,6 @@ class Team extends Model {
 			$config->subTeamActivate = $request->input('subTeamActivate');
 			$config->debateActivate = $request->input('debateActivate');
 			$teamArr['config'] = JSON_encode($config);
-
 			// teams rekord tárolás az adatbázisba
 			$errorInfo = '';
 			try {
@@ -542,13 +540,7 @@ class Team extends Model {
     * @return bool
     */ 
    public static function userAdmin(int $teamId, int $userId): bool {
-	   return (\DB::table('members')
-				->where('parent_type','=','teams')
-				->where('parent','=',$teamId)
-				->where('user_id','=',$userId)
-				->where('rank','=','admin')
-				->where('status','=','active')
-				->count() > 0);
+       return \App\Models\Member::userAdmin('teams', $teamId, $userId);
    }
 
    /**
@@ -558,16 +550,8 @@ class Team extends Model {
     * @return bool
     */ 
    public static function userMember(int $teamId, int $userId): bool {
-	   return (\DB::table('members')
-				->where('parent_type','=','teams')
-				->where('parent','=',$teamId)
-				->where('user_id','=',$userId)
-				->where('status','=','active')
-				->count() > 0);
+       return \App\Models\Member::userMember('teams', $teamId, $userId);
    }
-
-
-
     
 }
 

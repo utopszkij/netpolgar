@@ -16,5 +16,6 @@ return [
     'messages' => 'Privát üzenetek',
     'orders' => 'Rendelések',
     'account' => 'NTC folyószámla',
-    'products' => 'Termékek'
+    'products' => 'Termékek',
+    'files' => 'Fileok'
 ];

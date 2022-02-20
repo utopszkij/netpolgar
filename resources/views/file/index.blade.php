@@ -20,7 +20,7 @@
     <div class="row">
         <div class="col-lg-12 margin-tb">
         	<a class="btn btn-primary" 
-        		href="{{ \URL::to('/file/add/'.$parentType.'/'.$parentId.'/'.$userId) }}">
+        		href="{{ \URL::to('/'.$parentType.'/'.$parentId.'/files/create') }}">
         		<em class="fas fa-plus-circle"></em>{{ __('file.add') }}
         	</a>
 		</div>
@@ -43,7 +43,7 @@
         <tr>
             <td>{{ $value->id }}</td>
             <td>
-            	<a href="{{ \URL::to('/file/show/'.$value->id) }}">
+            	<a href="{{ \URL::to('/files/'.$value->id) }}">
             		{{ $value->name }}
             	</a>
             </td>

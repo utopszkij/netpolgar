@@ -213,7 +213,8 @@ class CartController extends Controller {
 				'parent' => $user->id,					
 				'reply_to' => 0,					
 				'user_id' => $user->id,					
-				'value' => $txt					
+				'value' => $txt,
+		        'moderator_info' => ''  
 		]);
 		\Mail::to($user->email)
 		 		->send(new $mailName ($data));						
@@ -264,7 +265,7 @@ class CartController extends Controller {
 					'status' => 'ordering'   			
    			]);
 		   	// privát üzenet és email az érintett producereknek
-		   	// producer: team
+		   	// 1. producer: team
    			$admins =  \DB::table('orderitems')
    				->select('members.user_id','orderitems.id')
    				->leftJoin('products','products.id','orderitems.product_id')
@@ -277,7 +278,7 @@ class CartController extends Controller {
    				->where('orderitems.order_id','=',$order->id)
    				->distinct()
    				->get();
-   			// producer: user
+   			// 2. producer: user
    			$admin =   \DB::table('orderitems')
    				->select('users.id as user_id','orderitems.id')
    				->leftJoin('products','products.id','orderitems.product_id')
@@ -286,7 +287,7 @@ class CartController extends Controller {
    				->where('orderitems.order_id','=',$order->id)
    				->distinct()
    				->first();		
-   			$admin[] = $admin;
+   			$admins[] = $admin;
    				
 			foreach ($admins as $admin) {
 					$this->adminUser = \DB::table('users')

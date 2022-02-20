@@ -210,17 +210,7 @@ class Poll extends Model
      * @return bool
      */
     public static function userMember(string $parentType, int $parentId):bool {
-        if (\Auth::user()) {
-            $result = (\DB::table('members')
-                ->where('parent_type','=',$parentType)
-                ->where('parent','=',$parentId)
-                ->where('user_id','=',\Auth::user()->id)
-                ->where('status','=','active')
-                ->count() > 0);
-        } else {
-            $result = false;
-        }
-        return $result;
+        return \App\Models\Member::userMember($parentType, $parentId);
     }
 
     /**
@@ -229,21 +219,7 @@ class Poll extends Model
      * @return bool
      */
     public static function userAdmin($poll):bool {
-        if (\Auth::user()) {
-            $result = (\DB::table('members')
-                ->where('parent_type','=',$poll->parent_type)
-                ->where('parent','=',$poll->parent)
-                ->where('user_id','=',\Auth::user()->id)
-                ->where('rank','=','admin')
-                ->where('status','=','active')
-                ->count() > 0);
-            if (\Auth::user()->id == $poll->created_by) {
-            	$result = true;
-            }    
-        } else {
-            $result = false;
-        }
-        return $result;
+        return \App\Models\Member::userAdmin($poll->parent_type, $poll->parent);
     }
 
 	/**

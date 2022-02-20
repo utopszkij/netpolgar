@@ -89,15 +89,9 @@ class Order extends Model {
      * @param int $userId
      * @return bool
      */ 
-   	public static function userMember(int $teamId, int $userId):bool {			
-		return (\DB::table('members')
-				->where('parent_type','=','teams')
-				->where('parent','=',$teamId)
-				->whereIn('rank',['admin','member'])
-				->where('status','=','active')
-				->where('user_id','=',$userId)
-				->count() > 0);
-	}				
+   	public static function userMember(int $teamId, int $userId):bool {	
+   	    return \App\Models\Member::userAdmin('teams', $teamId, $userId);
+   	}				
 
     /**
      * user adminja a csoportnak?
@@ -106,13 +100,7 @@ class Order extends Model {
      * @return bool
      */ 
    	public static function userAdmin(int $teamId, int $userId):bool {			
-		return (\DB::table('members')
-				->where('parent_type','=','teams')
-				->where('parent','=',$teamId)
-				->where('rank','=','admin')
-				->where('status','=','active')
-				->where('user_id','=',$userId)
-				->count() > 0);
+   	    return \App\Models\Member::userAdmin('teams', $teamId, $userId);
 	}				
 
     

@@ -536,7 +536,7 @@ class Message extends Model
              	}
             }
             if ($parentType == 'products') {
-            	 $product = \DB::table('products')
+                $product = \DB::table('products')
             	 	->where('id','=',$parentId)->first();
             	 // team member?	
 					 if ($product) {            	
@@ -562,6 +562,9 @@ class Message extends Model
              	 if ($customer) {
 							$result = true;             	 
              	 }	
+            }
+            if ($parentType == 'files') {
+                $result =  \App\Models\Member::userAdmin($parentType, $parentId);
             }
         }
         return $result;

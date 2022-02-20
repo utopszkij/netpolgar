@@ -82,7 +82,7 @@ class Product extends Model
         $result->memberCount = $t->select('distinct user_id')
         ->where('parent_type','=','teams')
         ->where('parent','=',$product->parent)
-        ->where('status','=','active')
+        ->where('status','=','actevaluations.parentive')
         ->count();
     }
     
@@ -113,7 +113,7 @@ class Product extends Model
 		}		
 		$recs = \DB::select('select avg(value) value
 		from evaluations
-		where product_id = '.$product->id);
+		where parent = '.$product->id.' and parent_type = "products"');
 		if (count($recs) > 0) {
 			$result->evaulation = $recs[0]->value;		
 		}		
@@ -147,7 +147,7 @@ class Product extends Model
 				->where('orderitems.status','=','closed2')
 				->where('members.user_id','=',$user->id)
 				->where('members.status','=','admin')
-				->count() > 0);
+			    ->count() > 0);
 			}	
 		}		
 		return $result;
@@ -205,7 +205,7 @@ class Product extends Model
     /**
     * adat lekérés a listához team szerint
     * @param int $teamId
-    * @param array $orderArr [fieldname, 'asc|desc']
+    * @param array $orderArr [fevaluations.parentieldname, 'asc|desc']
     * @param string $search
     * @param string $categories 'catId, catId,...'
     * @param bool $userAdmin
@@ -227,9 +227,9 @@ class Product extends Model
 			   products.stock, products.unit, products.status,
 		       avg(evaluations.value) value, products.parent_type, products.parent
 		from products       
-		left outer join evaluations on evaluations.product_id = products.id       
+		left outer join evaluations on evaluations.parent = products.id       
 		left outer join productcats on productcats.product_id = products.id
-		where 1 ';
+		where evaluations.parent_type = "products" ';
 		if (!$userAdmin) {
 			$sql .= ' and (products.status = "active" or (products.parent_type = "users" and products.parent = '.$userId.'))';		
 		}
@@ -258,7 +258,7 @@ class Product extends Model
     
     
     /**
-    * adat lekérés a listához user szerint
+    * adat lekérés a listáhozevaluations.parent user szerint
     * @param int $userI
     * @param array $orderArr [fieldname, 'asc|desc']
     * @param string $search
@@ -276,9 +276,9 @@ class Product extends Model
 			   products.stock, products.unit, products.status,
 		       avg(evaluations.value) value, products.parent_type, products.parent
 		from products       
-		left outer join evaluations on evaluations.product_id = products.id       
+		left outer join evaluations on evaluations.parent = products.id       
 		left outer join productcats on productcats.product_id = products.id
-		where 1 ';
+		where evaluations.parent_type = "products" ';
 		if (!$userAdmin) {
 			$sql .= ' and (products.status = "active" or (products.parent_type = "users" and products.parent = '.$userId.'))';		
 		}
@@ -339,22 +339,7 @@ class Product extends Model
 	* @return bool
 	*/
 	public static function userAdmin($product): bool {
-	  $result = false;
-      $user = \Auth::user();
-      if ($user) {
-      	if ($product->parent_type == 'teams') {	
-				$result = (\DB::table('members')
-									->where('parent_type','=','teams')
-									->where('parent','=',$product->parent)
-									->where('user_id','=',$user->id)
-									->where('rank','=','admin')
-									->where('status','=','active')
-									->count() > 0);		
-		} else {
-			$result = ($user->id == $product->parent);			
-		}							
-      } 
-      return $result;
+	    return \App\Models\Member::userAdmin('teams', $product->parent);
 	}
 	
 	public function valid(Request $request):bool {		
