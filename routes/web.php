@@ -18,6 +18,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\FileController;
+use App\Http\Controllers\EventController;
 
 /*
 |--------------------------------------------------------------------------
@@ -135,6 +136,19 @@ Route::get('/files/evaluation/{fileId}',[FileController::class, 'evaluation']);
 Route::post('/files',[FileController::class, 'store']);
 Route::post('/files/evaluation',[FileController::class, 'saveevaluation']);
 Route::post('/files/{fileId}',[FileController::class, 'update']);
+
+// events
+Route::get('/{parentType}/{parent}/events',[EventController::class, 'index']);
+Route::get('/{parentType}/{parent}/events/create',[EventController::class, 'create']);
+Route::get('/events/{eventId}',[EventController::class, 'show']);
+Route::get('/events/{eventId}/edit',[EventController::class, 'edit'])
+->middleware('auth');
+Route::get('/events/{eventId}/delete',[EventController::class, 'delete'])
+->middleware('auth');
+Route::get('/events/{eventId}/subscription',[EventController::class, 'subscription'])
+->middleware('auth');
+Route::post('/events',[EventController::class, 'store']);
+Route::post('/events/{eventId}',[EventController::class, 'update']);
 
 
 /*----------------------------------

@@ -44,7 +44,7 @@
 				<em class="fas fa-folder-open"></em>
 				<span>{{ __('project.files') }}</span><br />			
 			</a>
-			<a href="{{ URL::to('/construction') }}" title="Események">
+			<a href="{{  URL::to('/projects/'.$project->id.'/events')  }}" title="Események">
 				<em class="fas fa-calendar"></em>
 				<span>{{ __('project.events') }}</span><br />			
 			</a>
