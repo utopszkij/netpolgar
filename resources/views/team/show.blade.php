@@ -87,7 +87,7 @@
 				<em class="fas fa-folder-open"></em>
 				<span>{{ __('team.files') }}</span><br />			
 			</a>
-			<a href="{{ URL::to('/construction') }}"
+			<a href="{{ URL::to('/teams/'.$team->id.'/events') }}"
 				title="{{ __('team.events') }}">
 				<em class="fas fa-calendar"></em>
 				<span>{{ __('team.events') }}</span><br />			
