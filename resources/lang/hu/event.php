@@ -27,4 +27,6 @@ return [
     'back' => 'Vissza a listához',
     'sureDelete' => 'Biztos, hogy törölni akarod ezt az eseményt?',
     'successDelete' => 'Esemény törölve',
+    'comments' => 'Hozzászólások',
+    'liked' => 'Nem törölhető! Már van rá jelentkező. Értesitds a jelentkezőket, és módosítással jelezd, hogy az esemény elmarad!'
 ];

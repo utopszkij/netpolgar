@@ -452,6 +452,23 @@ class Message extends Model
              	}
             }
 
+            if ($parentType == 'events') {
+                $event = \DB::table('products')
+                ->where('id','=',$parentId)->first();
+                if ($event) {
+                    $member = \DB::table('members')
+                    ->where('parent_type','=',$event->parent_type)
+                    ->where('parent','=',$event->parent)
+                    ->where('user_id','=', \Auth::user()->id)
+                    ->whereIn('rank',["moderator","admin"])
+                    ->where('status','=','active')
+                    ->orderBy('rank','asc')
+                    ->first();
+                    if ($member) {
+                        $result = true;
+                    }
+                }
+            }
             // first user a system admin, ő is moderátor
             $firstUser = \DB::table('users')->orderBy('id')->first();
             if ($firstUser) {
@@ -565,6 +582,9 @@ class Message extends Model
             }
             if ($parentType == 'files') {
                 $result =  \App\Models\Member::userAdmin($parentType, $parentId);
+            }
+            if ($parentType == 'events') {
+                $result =  true; // eseményhez mindenki hozzá szólhat
             }
         }
         return $result;
