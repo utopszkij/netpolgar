@@ -15,6 +15,14 @@
 				egyedekből álló együttműködési rendszer kimunkálása,
 				gyakorlati kipróbálása. 
 				</p>
+				<p>
+					Készültség: <strong>V0.0.7 ß teszt</strong>
+    				<ul>
+        				<li>programozás: 90%</li>
+        				<li>dizájn: 1%</li>
+        				<li>tesztelés: 10%</li>
+    				</ul>
+				</p>
 				<div style="float:right; width:auto">
 					<h4>Teszt bejelentkezések:</h4>
 					<ul>
@@ -31,7 +39,7 @@
 						<li><p><a href="#csoportok" onclick="true">Csoport szervezés</a> (ß teszt) </p>
 						<li><p><a href="#projektek" onclick="true">Projekt	menedzselés (ß teszt)</a></p>
 						<li><p><a href="#piacter" onclick="true">Virtuális piactér</a> (ß teszt)</p>
-						<li><p><a href="#esemenyek" onclick="true">Esemény	szervezés</a> (terv)</p>
+						<li><p><a href="#esemenyek" onclick="true">Esemény	szervezés</a> (ß teszt)</p>
 						<li><p><a href="#vitak" onclick="true">Eszmecserék, viták lebonyolítása</a> (ß teszt)</p>
 						<li><p><a href="#szavazasok" onclick="true">Szavazások lebonyolítása</a> (ß teszt)</p>
 						<li><p><a href="#uzenetek" onclick="true">Kommunikáció</a> (ß teszt)</p>
@@ -204,7 +212,7 @@
 				</p>
 <a name="esemenyek"></a>
 				<p>&nbsp;</p>
-				<h5>Esemény szervezés (terv)</h5>
+				<h5>Esemény szervezés (ß teszt)</h5>
 				<div>
 				<p>A projekt adminisztrátorok, csoport adminisztrátorok,
 				regisztrált felhasználók eseményeket vihetnek fel. Az események
