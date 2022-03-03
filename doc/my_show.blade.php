@@ -23,7 +23,7 @@
     
     @if (count($accrediteds) > 0)
     <div>
-    	<h3>Szavazásra meghatalmazott képviselők</h3>
+    	<h3>Szavazásra meghatalmazott képviselőid</h3>
     	<ul>
     	@foreach ($accrediteds as $key => $item)
     	<li>{{ $item->teamName}}

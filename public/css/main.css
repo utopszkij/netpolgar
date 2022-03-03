@@ -5,7 +5,10 @@ nav .logo {display:inline-block; height:30px; width:auto; border-radius:15px}
 nav .dropdown-menu[data-bs-popper] {left:-60px}
 nav .dropdown-menu form {margin-left:15px}
 .header {margin:1px;}
-main {padding-top:50px; padding-left:10px; min-height:500px}
+div.antialiased {min-height:500px;}
+main {padding-top:50px; padding-left:10px;}
+.min-h-screen {min-height:10px; height:auto;}
+
 .pageContainer {padding:0px 10px 10px 10px; min-height:500px}
 p {display:block; width:100%; margin:5px;}
 h1 {font-size:22pt; font-weight:bold; margin:20px 0px 20px 0px}

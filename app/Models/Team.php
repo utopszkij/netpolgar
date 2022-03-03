@@ -161,6 +161,7 @@ class Team extends Model {
 			"disLikeCount":0,
 			"disLikeReq":0,
          "memberCount":0,
+         "accredited":false,
          "userMember": false,
          "userAdmin": false   
 		}');
@@ -181,10 +182,25 @@ class Team extends Model {
 		Team::getLikeInfo($result, $team);
 		$result->status = $team->status;
 		Team::getPath($result, $team);
-      Team::getRanks($result, $team);
-      $result->userMember = (in_array('active_member',$result->userRank) | 
+        Team::getRanks($result, $team);
+        $result->userMember = (in_array('active_member',$result->userRank) | 
 	 	        in_array('active_admin',$result->userRank));
 		$result->userAdmin = in_array('active_admin',$result->userRank);
+		if (\Auth::check()) {
+    		$accredited = \DB::table('likes')
+    		->select('users.name','users.profile_photo_path','users.email')
+    		->join('members','members.id','likes.parent')
+    		->join('users','users.id','members.user_id')
+    		->where('likes.parent_type','=','members')
+    		->where('likes.user_id','=',\Auth::user()->id)
+    		->where('members.parent_type','=','teams')
+    		->where('members.parent','=',$id)
+    		->where('members.rank','=','accredited')
+    		->first();
+    		if ($accredited) {
+    		    $result->accredited = $accredited;
+    		}
+		}
 		return $result;
     }
     
