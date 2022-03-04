@@ -52,7 +52,7 @@
                 </a>
 			</div>
             <div class="flex items-center justify-end mt-4">
-                <button type="submit" class="btn btn-primary">
+                <button type="submit" onclick="true" class="btn btn-primary">
                     <em class="fa fa-check"></em>&nbsp;{{ __('Register') }}
                 </button>&nbsp;
                 <a class="btn btn-secondary" href="{{ url('/') }}">

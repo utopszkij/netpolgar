@@ -19,7 +19,7 @@
             </div>
 
             <div class="flex justify-end mt-4">
-                <button class="btn btn-primary">
+                <button class="btn btn-primary"  onclick="true">
                     <em class="fa fa-check"></em>&nbsp;{{ __('Confirm') }}
                 </button>&nbsp;
                 <a class="btn btn-secondary" href="{{ url('/') }}">

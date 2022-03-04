@@ -25,7 +25,7 @@
             </div>
 
             <div class="flex items-center justify-end mt-4">
-                <button type="submit" class="btn btn-primary">
+                <button type="submit" class="btn btn-primary"  onclick="true">
                     <em class="fa fa-check"></em>&nbsp;{{ __('Email Password Reset Link') }}
                 </button>&nbsp;
                 <a class="btn btn-secondary" href="{{ url('/') }}">

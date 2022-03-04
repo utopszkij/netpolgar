@@ -30,7 +30,6 @@ return [
         'array' => 'The :attribute must have between :min and :max items.',
     ],
     'boolean' => 'The :attribute field must be true or false.',
-    'confirmed' => 'The :attribute confirmation does not match.',
     'date' => 'The :attribute is not a valid date.',
     'date_equals' => 'The :attribute must be a date equal to :date.',
     'date_format' => 'The :attribute does not match the format :format.',
@@ -39,7 +38,7 @@ return [
     'digits_between' => 'The :attribute must be between :min and :max digits.',
     'dimensions' => 'The :attribute has invalid image dimensions.',
     'distinct' => 'The :attribute field has a duplicate value.',
-    'email' => 'The :attribute must be a valid email address.',
+    'email' => 'Az :attribute nem egy valós email cím.',
     'ends_with' => 'The :attribute must end with one of the following: :values.',
     'exists' => 'A választott :attribute nem megfelelő.',
     'file' => 'The :attribute must be a file.',
@@ -94,7 +93,7 @@ return [
     'not_in' => 'The selected :attribute is invalid.',
     'not_regex' => 'The :attribute format is invalid.',
     'numeric' => 'The :attribute must be a number.',
-    'password' => 'The password is incorrect.',
+    'password' => 'A jelszó nem jó.',
     'present' => 'The :attribute field must be present.',
     'regex' => 'The :attribute format is invalid.',
     'required' => 'A :attribute -t meg kell adni.',
@@ -137,6 +136,17 @@ return [
     'custom' => [
         'name' => [
             'required' => 'A nevet meg kell adni',
+            'unique' => 'Ez a név már regisztrálva van',
+        ],
+        'email' => [
+            'required' => 'Az email címet meg kell adni',
+            'unique' => 'Ez az email cím már regisztrálva van',
+        ],
+        'terms' => [
+            'required' => 'A felhasználási feltételeket el kell fogadni',
+        ],
+        'password' => [
+            'confirmed' => 'A két megadott jelszó nem egyezik.',
         ],
         'status' => [
             'required' => 'A státuszt meg kell adni',
