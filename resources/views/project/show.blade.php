@@ -72,6 +72,18 @@
    	          </a>
              </h3>
          </div>
+         @php
+				if ($info->accredited)      		
+					$info->accredited->avatar = \App\Models\Avatar::userAvatar($info->accredited->profile_photo_path,
+																		   $info->accredited->email);
+         @endphp
+		   @if ($info->accredited)
+			   <div>
+				{{ __('project.accredited') }}:&nbsp; 
+				<img src="{{ $info->accredited->avatar }}" class="avatar" />&nbsp;
+				{{ $info->accredited->name }}
+			   </div> 
+		   @endif        		
 
         	<div class="col-11 col-md-10">
              	@if ($project->status == 'active')
@@ -106,6 +118,7 @@
         			</button>
         			</form>
         		@endif
+                																						   
         		@if ((count($info->userRank) > 0) & 
         		     ($project->status == 'active') & ($project->id != 1))
         			<form action="{{ URL::to('/member/doexit') }}"

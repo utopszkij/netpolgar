@@ -160,6 +160,9 @@ nav.flex span > span > span.cursor-default {background-color:#d0d0e0}
 .evaluation img {display:inline-block; width:17px; height:17px;
   margin:0px; padding:0px; line-height:18px; vertical-align:top}
 
+/* profile */
+.accrediteds h3 {padding-left:20px;}
+.accrediteds td {line-height: 40px;padding-left:20px;}
 
 footer {background:silver; padding:10px; margin-top:20px}
 #cookieEnable {position:fixed; z-index:999; bottom:0px; left:0px; width:100%;
