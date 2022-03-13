@@ -45,6 +45,16 @@ use App\Models\Minimarkdown;
 	@endforeach
 	</div>
 	
+	@if (\Auth::check())
+	<div class="row">
+		<div class="col-12">
+			<a href="{{ \URL::to('/message/notreaded') }}">
+				<em class="fas fa-hand-point-right"></em>{{ __('messages.notreaded') }}
+			</a>
+		</div>
+	</div>
+	@endif
+	
 	<div>
 	@foreach ($tree as $treeItem) 
 		@php if ($treeItem->level > 4) $treeItem->level = 4; @endphp

@@ -26,6 +26,9 @@ if (Auth::user()) {
 			$user->profile_photo_url);
 	}	
 	Auth::user()->avatar = $avatar;
+	$notReadedCount = \App\Models\Message::getNotreadedCount();
+} else {
+	$notReadedCount = 0;
 }
 @endphp
   
@@ -54,6 +57,14 @@ if (Auth::user()) {
           	{{ __('navigation.market') }}
           </a>
         </li>
+        @if ($notReadedCount > 0)
+        <li class="nav-item  notreaded">
+          <a class="nav-link" aria-current="page" 
+          	href="{{ URL::to('/message/notreaded') }}">
+          	{{ $notReadedCount }} db {{ __('navigation.notreaded') }}
+          </a>
+        </li>
+        @endif
       </ul>
       <ul class="navbar-nav mb-2 mb-lg-0">
       	@auth

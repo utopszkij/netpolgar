@@ -317,5 +317,15 @@ class MessageController extends Controller {
         return \Redirect::to(\URL::to('/'))->with('success',__('messages.protestSended'));
     }
     
+    public function notreaded() {
+        if (\Auth::check()) {
+            $data = Message::getNotreaded(8);
+            return view('message.notreaded',['data' => $data])
+            ->with('i', (request()->input('page', 1) - 1) * 8);
+        } else {
+            echo 'fatal error not logged'; exit();
+        }
+    }
+    
 }
 

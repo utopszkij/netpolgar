@@ -4,6 +4,7 @@ nav.navbar {position:fixed; width:100%; top:0px; z-index:20}
 nav .logo {display:inline-block; height:30px; width:auto; border-radius:15px}
 nav .dropdown-menu[data-bs-popper] {left:-60px}
 nav .dropdown-menu form {margin-left:15px}
+nav.navbar .navbar-nav .notreaded a {background-color:red; color:white;}
 .header {margin:1px;}
 div.antialiased {min-height:500px;}
 main {padding-top:50px; padding-left:10px;}
@@ -99,6 +100,7 @@ nav.flex span > span > span.cursor-default {background-color:#d0d0e0}
 #messages .protest {color:red}
 #messages .replyTo {font-weight:bolder}
 #messages img {max-width: 40%}
+#messages .messages {border-radius:10px; width:80%; background-color:#bfd8f2; margin:10px; padding:5px}
 
 /* poll */
 #pollContainer .logo {display:inline-block; height:32px; width:auto}
