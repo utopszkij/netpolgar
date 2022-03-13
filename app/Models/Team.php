@@ -374,7 +374,7 @@ class Team extends Model {
      * @param Team $team
      * @return void  $result -ot modosítja
      */
-    protected function getLikeInfo(&$result, Team $team): void {
+    public static function getLikeInfo(&$result, Team $team): void {
         // like, disLike, memberCount infok
         $user = \Auth::user();
         $t = \DB::table('likes');
@@ -428,7 +428,7 @@ class Team extends Model {
      * @param Team $team
      * @return void
      */
-    protected function getPath(&$result, Team $team): void {
+    public static function getPath(&$result, Team $team): void {
         $result->path = [];
         while (is_object($team))  {
             if ($team->status == 'closed') {
@@ -449,7 +449,7 @@ class Team extends Model {
      * @param Team $team
      * @return void   $result modosítása
      */
-    protected function getRanks(&$result, Team $team) {
+    public static function getRanks(&$result, Team $team) {
         if (\Auth::user()) {
             $t = \DB::Table('members');
             $items = $t->where('parent','=',$team->id)

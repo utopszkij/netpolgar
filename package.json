@@ -14,10 +14,15 @@
         "@tailwindcss/typography": "^0.3.0",
         "alpinejs": "^2.7.3",
         "axios": "^0.21",
-        "laravel-mix": "^6.0.6",
+        "laravel-mix": "^6.0.43",
         "lodash": "^4.17.19",
         "postcss": "^8.2.13",
         "postcss-import": "^12.0.1",
         "tailwindcss": "^2.0.1"
+    },
+    "dependencies": {
+        "vue": "^3.2.31",
+        "vue-axios": "^3.4.1",
+        "vue-router": "^4.0.14"
     }
 }

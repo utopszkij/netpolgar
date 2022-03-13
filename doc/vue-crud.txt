@@ -1,0 +1,362 @@
+https://www.tutsmake.com/laravel-9-vue-js-crud-example-tutorial/
+
+Laravel 9 !
+
+composer create-project --prefer-dist laravel/laravel blog
+
+npm install vue-router vue-axios --save
+npm run watch
+
+adatbázis konnekt az .env -be
+
+php artisan make:model {Táblanév} -m
+
+php artisan make:controller API\{Táblanév}Controller
+    --> app>Http>Controllers>API folders
+
+
+<?php
+namespace App\Http\Controllers\API;
+use App\Http\Controllers\Controller;
+use App\Models\Post;
+use Illuminate\Http\Request;
+use Validator;
+
+class {TáblanévController extends Controller
+{
+    // all posts
+    public function index()
+    {
+        $posts = Post::all()->toArray();
+        return array_reverse($posts);
+    }
+
+    // add post
+    public function add(Request $request)
+    {
+        $post = new Post([
+            'title' => $request->input('title'),
+            'description' => $request->input('description')
+        ]);
+        $post->save();
+
+        return response()->json('The post successfully added');
+    }
+
+    // edit post
+    public function edit($id)
+    {
+        $post = Post::find($id);
+        return response()->json($post);
+    }
+
+    // update post
+    public function update($id, Request $request)
+    {
+        $post = Post::find($id);
+        $post->update($request->all());
+
+        return response()->json('The post successfully updated');
+    }
+
+    // delete post
+    public function delete($id)
+    {
+        $post = Post::find($id);
+        $post->delete();
+
+        return response()->json('The post successfully deleted');
+    }
+}
+
+
+routes/api.php
+==============
+
+Route::get('posts', 'PostController@index');
+Route::group(['prefix' => 'post'], function () {
+    Route::post('add', 'PostController@add');
+    Route::get('edit/{id}', 'PostController@edit');
+    Route::post('update/{id}', 'PostController@update');
+    Route::delete('delete/{id}', 'PostController@delete');
+});
+
+
+Müködés
+=======
+
+A ...blade.php behuzza a resources/app.js -t
+   az app.js   importálja az axios-t, vue komponenseket és a routes.js-t
+       a routes.js gondoskodik a az url alapú vue componens betöltésről és
+       aktiválásról
+
+...blade.php
+============
+
+<!doctype html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" value="{{ csrf_token() }}"/>
+    <title>Laravel 9 Vue JS CRUD Example  - Tutsmake</title>
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet" type="text/css">
+    <link href="{{ mix('css/app.css') }}" type="text/css" rel="stylesheet"/>
+    <style>
+        .bg-light {
+            background-color: #eae9e9 !important;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+</div>
+<script src="{{ mix('js/app.js') }}" type="text/javascript"></script>
+</body>
+</html>
+
+resources/js folder
+===================
+
+App.vue
+AllPosts.vue
+AddPost.vue
+EditPost.vue
+routes.js
+app.js
+
+
+App.vue
+=======
+<template>
+    <div class="container">
+        <div class="text-center" style="margin: 20px 0px 20px 0px;">
+            <span class="text-secondary">Laravel Vue CRUD Example</span>
+        </div>
+
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="collapse navbar-collapse">
+                <div class="navbar-nav">
+                    <router-link to="/" class="nav-item nav-link">Home</router-link>
+                    <router-link to="/add" class="nav-item nav-link">Add Post</router-link>
+                </div>
+            </div>
+        </nav>
+        <br/>
+        <router-view></router-view>
+    </div>
+</template>
+
+<script>
+    export default {}
+</script>
+
+AllPost.vue
+===========
+<template>
+    <div>
+        <h3 class="text-center">All Posts</h3><br/>
+
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Created At</th>
+                <th>Updated At</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="post in posts" :key="post.id">
+                <td>{{ post.id }}</td>
+                <td>{{ post.title }}</td>
+                <td>{{ post.description }}</td>
+                <td>{{ post.created_at }}</td>
+                <td>{{ post.updated_at }}</td>
+                <td>
+                    <div class="btn-group" role="group">
+                        <router-link :to="{name: 'edit', params: { id: post.id }}" class="btn btn-primary">Edit
+                        </router-link>
+                        <button class="btn btn-danger" @click="deletePost(post.id)">Delete</button>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</template>
+
+<script>
+    export default {
+        data() {
+            return {
+                posts: []
+            }
+        },
+        created() {
+            this.axios
+                .get('http://localhost:8000/api/posts')
+                .then(response => {
+                    this.posts = response.data;
+                });
+        },
+        methods: {
+            deletePost(id) {
+                this.axios
+                    .delete(`http://localhost:8000/api/post/delete/${id}`)
+                    .then(response => {
+                        let i = this.posts.map(item => item.id).indexOf(id); // find index of object
+                        this.posts.splice(i, 1)
+                    });
+            }
+        }
+    }
+</script>
+
+AddPost.vue
+===========
+<template>
+    <div>
+        <h3 class="text-center">Add Post</h3>
+        <div class="row">
+            <div class="col-md-6">
+                <form @submit.prevent="addPost">
+                    <div class="form-group">
+                        <label>Title</label>
+                        <input type="text" class="form-control" v-model="post.title">
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <input type="text" class="form-control" v-model="post.description">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Post</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+    export default {
+        data() {
+            return {
+                post: {}
+            }
+        },
+        methods: {
+            addPost() {
+
+                this.axios
+                    .post('http://localhost:8000/api/post/add', this.post)
+                    .then(response => (
+                        this.$router.push({name: 'home'})
+                        // console.log(response.data)
+                    ))
+                    .catch(error => console.log(error))
+                    .finally(() => this.loading = false)
+            }
+        }
+    }
+</script>
+
+EditPost.vue
+============
+<template>
+    <div>
+        <h3 class="text-center">Edit Post</h3>
+        <div class="row">
+            <div class="col-md-6">
+                <form @submit.prevent="updatePost">
+                    <div class="form-group">
+                        <label>Title</label>
+                        <input type="text" class="form-control" v-model="post.title">
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <input type="text" class="form-control" v-model="post.description">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update Post</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+    export default {
+        data() {
+            return {
+                post: {}
+            }
+        },
+        created() {
+            this.axios
+                .get(`http://localhost:8000/api/post/edit/${this.$route.params.id}`)
+                .then((response) => {
+                    this.post = response.data;
+                    // console.log(response.data);
+                });
+        },
+        methods: {
+            updatePost() {
+                this.axios
+                    .post(`http://localhost:8000/api/post/update/${this.$route.params.id}`, this.post)
+                    .then((response) => {
+                        this.$router.push({name: 'home'});
+                    });
+            }
+        }
+    }
+</script>
+
+routes.js
+=========
+import AllPosts from './components/AllPosts.vue';
+import AddPost from './components/AddPost.vue';
+import EditPost from './components/EditPost.vue';
+
+export const routes = [
+    {
+        name: 'home',
+        path: '/',
+        component: AllPosts
+    },
+    {
+        name: 'add',
+        path: '/add',
+        component: AddPost
+    },
+    {
+        name: 'edit',
+        path: '/edit/:id',
+        component: EditPost
+    }
+];
+
+app.js
+======
+require('./bootstrap');
+import Vue from ‘vue/dist/vue’;
+window.Vue = require('vue');
+
+import App from './App.vue';
+import VueRouter from 'vue-router';
+import VueAxios from 'vue-axios';
+import axios from 'axios';
+import {routes} from './routes';
+
+Vue.use(VueRouter);
+Vue.use(VueAxios, axios);
+
+const router = new VueRouter({
+    mode: 'history',
+    routes: routes
+});
+
+const app = new Vue({
+    el: '#app',
+    router: router,
+    render: h => h(App),
+});
