@@ -188,6 +188,7 @@ class Project extends Model
 		    echo 'Fatal error team not found'; exit();
 		}
 		$result = Project::getInfoFromTeam($team);
+		$result->accredited = false;
 		Project::getLikeInfo($result, $project);
 		$result->status = $project->status;
       Project::getRanks($result, $project);
@@ -215,7 +216,22 @@ class Project extends Model
 				$result->userMember = true;			
 			}																		      
       }
-		return $result;
+      if (\Auth::check()) {
+          $accredited = \DB::table('likes')
+          ->select('users.name','users.profile_photo_path','users.email')
+          ->join('members','members.id','likes.parent')
+          ->join('users','users.id','members.user_id')
+          ->where('likes.parent_type','=','members')
+          ->where('likes.user_id','=',\Auth::user()->id)
+          ->where('members.parent_type','=','projects')
+          ->where('members.parent','=',$project->id)
+          ->where('members.rank','=','accredited')
+          ->first();
+          if ($accredited) {
+              $result->accredited = $accredited;
+          }
+      }
+      return $result;
     }
     
     /**

@@ -11,6 +11,7 @@ return [
     'polls' => 'Vita',
     'options' => 'Opció',
     'tasks' => 'Feladat',
-    'members' => 'Felhasználók',
+    'members' => 'Felhasználó',
+    'events' => 'Esemény',
     'accreditedSelf' => 'Önmagára mutató szavazat átruházás'
 ];

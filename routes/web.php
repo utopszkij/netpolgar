@@ -69,6 +69,7 @@ Route::post('/message/store',[MessageController::class, 'store']);
 Route::get('/message/protest/{messageId}',[MessageController::class, 'protest']);
 Route::post('/message/saveprotest',[MessageController::class, 'saveprotest']);
 Route::get('/message/list/{parentType}/{parentId}/{replyTo}/{offset?}',[MessageController::class, 'list']);
+Route::get('/message/notreaded', [MessageController::class, 'notreaded']);
 
 // poll
 Route::get('/{parentType}/{parent}/{statuses}/polls',[PollController::class, 'index']);

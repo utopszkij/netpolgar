@@ -4,7 +4,7 @@ státusz: fejlesztés alatt
 
 Készültség: 
 
-- programozás: 70%  v0.06-beta teszt
+- programozás: 90%  v0.07-beta teszt
 - dizájn: 1%
 - tesztelés: 10%
 

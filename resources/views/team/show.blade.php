@@ -139,24 +139,35 @@
         		$info->transUserRank = [];
 				for ($i=0; $i<count($info->userRank); $i++) {
 					$info->transUserRank[$i] = __('team.'.$info->userRank[$i]);				
-				}        		
+				}   
+				if ($info->accredited) {     		
+					$info->accredited->avatar = \App\Models\Avatar::userAvatar($info->accredited->profile_photo_path,
+																		   $info->accredited->email);
+				}																		   
         		@endphp 
         		{{ implode(',',$info->transUserRank) }} vagy&nbsp;
         		@endif
         		@if (\Auth::user())
-        		@if ((count($info->userRank) == 0) & 
-        		     ($team->status == 'active')) 
-        			<form action="{{ URL::to('/member/store') }}"
-        				style="display:inline-block; width:auto">
-        			<input type="hidden" name="parent_type" value="teams" />
-        			<input type="hidden" name="parent" value="{{ $team->id }}" />
-        			<input type="hidden" name="rank" value="member" />
-        			<button type="submit" class="btn btn-primary" title="Csatlakozok a csoporthoz">
-        				<em class="fas fa-sign-in-alt"></em>
-						{{ __('team.signin') }}        				
-        			</button>
-        			</form>
-        		@endif
+					@if ($info->accredited)
+					    <div>
+						{{ __('team.accredited') }}:&nbsp; 
+						<img src="{{ $info->accredited->avatar }}" class="avatar" />&nbsp;
+						{{ $info->accredited->name }}
+						</div> 
+					@endif        		
+            		@if ((count($info->userRank) == 0) & 
+            		     ($team->status == 'active')) 
+            			<form action="{{ URL::to('/member/store') }}"
+            				style="display:inline-block; width:auto">
+            			<input type="hidden" name="parent_type" value="teams" />
+            			<input type="hidden" name="parent" value="{{ $team->id }}" />
+            			<input type="hidden" name="rank" value="member" />
+            			<button type="submit" class="btn btn-primary" title="Csatlakozok a csoporthoz">
+            				<em class="fas fa-sign-in-alt"></em>
+    						{{ __('team.signin') }}        				
+            			</button>
+            			</form>
+            		@endif
         		@endif
         		@if ((count($info->userRank) > 0) & 
         		     ($team->status == 'active') & ($team->id != 1))

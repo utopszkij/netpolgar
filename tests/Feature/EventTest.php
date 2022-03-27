@@ -168,21 +168,18 @@ class EventTest extends TestCase {
         $user = \App\Models\User::where('name','=','testUser1')->first();
         $testEvent = \DB::table('events')->where('name','=','testEvent')->first();
         \Auth::logout();
-        $view = $this->controller->edit($testEvent->id);
-        $this->assertEquals('Illuminate\View\View', get_class($view));
-        $viewName = $view->getName();
-        $this->assertEquals( 'event.show', $viewName);
-        
+        $redirect = $this->controller->edit($testEvent->id);
+        $this->assertEquals('Illuminate\Http\RedirectResponse', get_class($redirect));
     }
     
     public function test_edit_found() {
         $user = \App\Models\User::where('name','=','testUser1')->first();
         $testEvent = \DB::table('events')->where('name','=','testEvent')->first();
-        \Auth::logout();
+        \Auth::loginUsingId($user->id, TRUE);
         $view = $this->controller->edit($testEvent->id);
         $this->assertEquals('Illuminate\View\View', get_class($view));
         $viewName = $view->getName();
-        $this->assertEquals( 'event.show', $viewName);
+        $this->assertEquals( 'event.form', $viewName);
         
     }
 
@@ -191,9 +188,15 @@ class EventTest extends TestCase {
         \Auth::logout();
         $testEvent = \DB::table('events')->where('name','=','testEvent')->first();
         $request = new Request([
-            "description" => "123456",
+            'name' => $testEvent->name,
+            'location' => $testEvent->location,
+            'date' => $testEvent->date,
+            'hours' => 1,
+            'minutes' => 1,
+            'length' => 1,
+            'description' => "123456",
         ]);
-        $redirect = $this->controller->update($testEvent->id,$request);
+        $redirect = $this->controller->update($request,$testEvent->id);
         $this->assertEquals('Illuminate\Http\RedirectResponse', get_class($redirect));
     }
     
@@ -202,37 +205,22 @@ class EventTest extends TestCase {
         \Auth::loginUsingId($testUser1->id, TRUE);
         $testEvent = \DB::table('events')->where('name','=','testEvent')->first();
         $request = new Request([
-            "description" => "123456",
+            'name' => 'testEvent',
+            'location' => $testEvent->location,
+            'date' => $testEvent->date,
+            'hours' => 1,
+            'minutes' => 1,
+            'length' => 1,
+            'description' => "123456",
         ]);
-        $redirect = $this->controller->update($testEvent->id,$request);
-        $this->assertEquals('Illuminate\Http\RedirectResponse', get_class($redirect));
-    }
-    
-    public function test_subscription_logged() {
-        $testUser1 = \App\Models\User::where('name','=','testUser1')->first();
-        \Auth::loginUsingId($testUser1->id, TRUE);
-        $testEvent = \DB::table('events')->where('name','=','testEvent')->first();
-        $request = new Request([
-            "description" => "123456",
-        ]);
-        $redirect = $this->controller->subscription($testEvent->id,$request);
-        $this->assertEquals('Illuminate\Http\RedirectResponse', get_class($redirect));
-    }
-    
-    public function test_subscription_notlogged() {
-        $testUser1 = \App\Models\User::where('name','=','testUser1')->first();
-        \Auth::logout();
-        $testEvent = \DB::table('events')->where('name','=','testEvent')->first();
-        $request = new Request([
-            "description" => "123456",
-        ]);
-        $redirect = $this->controller->subscription($testEvent->id,$request);
+        $redirect = $this->controller->update($request,$testEvent->id);
         $this->assertEquals('Illuminate\Http\RedirectResponse', get_class($redirect));
     }
     
     public function test_delete_notlogged() {
         $testUser1 = \App\Models\User::where('name','=','testUser1')->first();
-        \Auth::loginUsingId($testUser1->id, TRUE);
+        \Auth::logout();
+        
         $testEvent = \DB::table('events')->where('name','=','testEvent')->first();
         $request = new Request([
             "description" => "123456",
@@ -254,7 +242,7 @@ class EventTest extends TestCase {
     
     public function test_end() {
         // test adatok törlése
-        $this->model->where('name','=','testFile')->delete();
+        $this->model->where('name','=','testEvent')->delete();
         $user = new \App\Models\User();
         $team = new \App\Models\Team();
         $member = new \App\Models\Member();

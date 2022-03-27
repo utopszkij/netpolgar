@@ -66,5 +66,7 @@
 "FileNotImage":"Nem kép file",
 "FileToLarge":"Túl nagy méretű file",
 "FileExtensionDisabled":"Nem megfelelő file kiterjesztés",
-"FileUploadError":"Hiba file feltöltés közben"
+"FileUploadError":"Hiba file feltöltés közben",
+"Whoops! Something went wrong.":"Hibás adatok",
+"These credentials do not match our records.":"Nincs ilyen fiók vagy hibás jelszó"
 }

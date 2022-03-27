@@ -158,19 +158,24 @@ class Event extends Model {
 			"likeCount":0,
 			"disLikeCount":0,
             "memberCount":0,
+            "commentCount":0,
             "userMember": false,
             "userAdmin": false
 		}');
         if ($id == 0) {
             return $result;
         }
-        $event = $this->where('id','=',$id)->first();
+        $event = Event::where('id','=',$id)->first();
         if (!$event) {
             return $result;
         }
         Event::getLikeInfo($result, $event);
         $result->userMember = Member::userMember($event->parent_type, $event->parent);
         $result->userAdmin = Member::userAdmin($event->parent_type, $event->parent);
+        $result->commentCount = \DB::table('messages')
+            ->where('parent_type','=','events')
+            ->where('parent','=',$event->id)
+            ->count();
         return $result;
     }
 

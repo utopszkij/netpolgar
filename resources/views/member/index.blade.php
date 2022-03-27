@@ -39,7 +39,10 @@
       </thead>
       <tbody>  
         @foreach ($data as $key => $value)
-        @php 
+        @php
+            if ($value->profile_photo_pathh == null) {
+               $value->profile_photo_path = '';
+            } 
         	$value->profile_photo_path = \App\Models\Avatar::userAvatar($value->profile_photo_path, $value->email);
         @endphp
         <tr>

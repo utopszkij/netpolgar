@@ -43,7 +43,7 @@
         <tr>
             <td>{{ $value->id }}</td>
             <td>
-            	<a href="{{ \URL::to('/files/'.$value->id) }}">
+            	<a href="{{ \URL::to('/events/'.$value->id) }}">
             		{{ $value->name }}
             	</a>
             </td>

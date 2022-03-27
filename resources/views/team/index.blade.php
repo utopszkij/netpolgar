@@ -77,5 +77,6 @@
     <div>{{ __('team.notrecord') }}</div>
     @endif  
     {!! $data->links('pagination') !!}
-  </div>        
+  </div>    
+  
 </x-guest-layout>  

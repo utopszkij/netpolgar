@@ -3,7 +3,7 @@
 ?>
 		<div class="msg level{{ $treeItem->level }}">
 			@php 
-			// params: $treeItem, $parentType, $parent, $parentId 
+			// params: $treeItem, $parentType, $parent, $parentId, $member 
 			@endphp
 			<div class="msgHeader">
 				<a href="{{ \URL::to('/member/user/'. $treeItem->userId) }}">

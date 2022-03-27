@@ -4,6 +4,7 @@ return [
   	'teams' => 'Csoport',
   	'projects' => 'Projekt',
   	'polls' => 'Vita',
+    'events' => 'Esemény',
   	'tasks' => 'Feladat',
     'products' => 'Termék',
     'users' => 'Privát',
@@ -39,5 +40,8 @@ return [
     'first'=> '&lsaquo;&lsaquo;',
     'previous' => '&lsaquo;',
     'next' => '&rsaquo;',
-    'last' => '&rsaquo;&rsaquo;'
+    'last' => '&rsaquo;&rsaquo;',
+    'notreaded' => 'olvasatlan üzenetek',
+    'notreadedHelp' => 'Olvasott jelzéshez, és további akciókhoz kattints az üzenetre!',
+    'notData' => 'Nincs listázandó adat'
 ];

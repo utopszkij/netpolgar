@@ -452,6 +452,23 @@ class Message extends Model
              	}
             }
 
+            if ($parentType == 'events') {
+                $event = \DB::table('products')
+                ->where('id','=',$parentId)->first();
+                if ($event) {
+                    $member = \DB::table('members')
+                    ->where('parent_type','=',$event->parent_type)
+                    ->where('parent','=',$event->parent)
+                    ->where('user_id','=', \Auth::user()->id)
+                    ->whereIn('rank',["moderator","admin"])
+                    ->where('status','=','active')
+                    ->orderBy('rank','asc')
+                    ->first();
+                    if ($member) {
+                        $result = true;
+                    }
+                }
+            }
             // first user a system admin, ő is moderátor
             $firstUser = \DB::table('users')->orderBy('id')->first();
             if ($firstUser) {
@@ -565,6 +582,9 @@ class Message extends Model
             }
             if ($parentType == 'files') {
                 $result =  \App\Models\Member::userAdmin($parentType, $parentId);
+            }
+            if ($parentType == 'events') {
+                $result =  true; // eseményhez mindenki hozzá szólhat
             }
         }
         return $result;
@@ -711,7 +731,201 @@ class Message extends Model
                 ->where('parent','=',$parentId)
                 ->whereIn('rank',['admin','moderator'])
                 ->get();
-    }            
+    }      
+    
+    /**
+     * Bejelentkezett user olvasatlan üzenetei query builder
+     * @param int $pageSize
+     */
+    public static function getNotreadedQuery() {
+        $user = \Auth::user();
+        if ($user) {
+             
+             $msgTeams = \DB::table('messages')
+             ->select('users1.id as cid','users1.profile_photo_path as cavatar','users1.name as cname','users1.email as cemail',
+                 'users2.id as rid','users2.profile_photo_path as ravatar','users2.name as rname',
+                 'messages.value','messages.parent_type','messages.parent', 'messages.created_at',
+                 'teams.name as pname')
+                 ->join('users as users1','users1.id','messages.user_id')
+                 ->leftJoin('users as users2','users2.id','messages.reply_to')
+                 ->join('teams','teams.id','messages.parent')
+                 ->join('members','members.parent','teams.id')
+                 ->leftJoin('msgreads', function($join) {
+                     $join->on('msgreads.msg_id','=','messages.id')
+                     ->where('msgreads.user_id','=',\Auth::user()->id);
+                 })
+                 ->where('messages.parent_type','=','teams')
+                 ->where('members.parent_type','=','teams')
+                 ->where('members.user_id','=',$user->id)
+                 ->where('members.status','=','active')
+                 ->whereNull('msgreads.id');
+                 
+                 $msgProjects = \DB::table('messages')
+                 ->select('users1.id as cid','users1.profile_photo_path as cavatar','users1.name as cname','users1.email as cemail',
+                     'users2.id as rid','users2.profile_photo_path as ravatar','users2.name as rname',
+                     'messages.value','messages.parent_type','messages.parent', 'messages.created_at',
+                     'projects.name as pname')
+                 ->join('users as users1','users1.id','messages.user_id')
+                 ->leftJoin('users as users2','users2.id','messages.reply_to')
+                 ->join('projects','projects.id','messages.parent')
+                 ->join('members','members.parent','projects.id')
+                 ->leftJoin('msgreads', function($join) {
+                     $join->on('msgreads.msg_id','=','messages.id')
+                     ->where('msgreads.user_id','=',\Auth::user()->id);
+                 })
+                 ->where('messages.parent_type','=','projects')
+                 ->where('members.parent_type','=','projects')
+                 ->where('members.user_id','=',$user->id)
+                 ->where('members.status','=','active')
+                 ->whereNull('msgreads.id');
+                     
+                  $msgProductsTeams = \DB::table('messages')
+                  ->select('users1.id as cid','users1.profile_photo_path as cavatar','users1.name as cname','users1.email as cemail',
+                         'users2.id as rid','users2.profile_photo_path as ravatar','users2.name as rname',
+                         'messages.value','messages.parent_type','messages.parent', 'messages.created_at',
+                         'products.name as pname')
+                 ->join('users as users1','users1.id','messages.user_id')
+                 ->leftJoin('users as users2','users2.id','messages.reply_to')
+                 ->join('products','products.id','messages.parent')
+                 ->join('teams','teams.id','products.parent')
+                 ->join('members','members.parent','teams.id')
+                 ->leftJoin('msgreads', function($join) {
+                     $join->on('msgreads.msg_id','=','messages.id')
+                     ->where('msgreads.user_id','=',\Auth::user()->id);
+                 })
+                 ->where('messages.parent_type','=','products')
+                 ->where('products.parent_type','=','teams')
+                 ->where('members.parent_type','=','teams')
+                 ->where('members.user_id','=',$user->id)
+                 ->where('members.status','=','active')
+                 ->whereNull('msgreads.id');
+                         
+                 $msgProductsUsers = \DB::table('messages')
+                 ->select('users1.id as cid','users1.profile_photo_path as cavatar','users1.name as cname','users1.email as cemail',
+                     'users2.id as rid','users2.profile_photo_path as ravatar','users2.name as rname',
+                     'messages.value','messages.parent_type','messages.parent', 'messages.created_at',
+                     'products.name as pname')
+                 ->join('users as users1','users1.id','messages.user_id')
+                 ->leftJoin('users as users2','users2.id','messages.reply_to')
+                 ->join('products','products.id','messages.parent')
+                 ->leftJoin('msgreads', function($join) {
+                     $join->on('msgreads.msg_id','=','messages.id')
+                     ->where('msgreads.user_id','=',\Auth::user()->id);
+                 })
+                 ->where('messages.parent_type','=','products')
+                 ->where('products.parent_type','=','users')
+                 ->where('products.parent','=',$user->id)
+                 ->whereNull('msgreads.id');
+
+                 $msgPollsTeams = \DB::table('messages')
+                 ->select('users1.id as cid','users1.profile_photo_path as cavatar','users1.name as cname','users1.email as cemail',
+                     'users2.id as rid','users2.profile_photo_path as ravatar','users2.name as rname',
+                     'messages.value','messages.parent_type','messages.parent', 'messages.created_at',
+                     'polls.name as pname')
+                 ->join('users as users1','users1.id','messages.user_id')
+                 ->leftJoin('users as users2','users2.id','messages.reply_to')
+                 ->join('polls','polls.id','messages.parent')
+                 ->join('teams','teams.id','polls.parent')
+                 ->join('members','members.parent','teams.id')
+                 ->leftJoin('msgreads', function($join) {
+                     $join->on('msgreads.msg_id','=','messages.id')
+                     ->where('msgreads.user_id','=',\Auth::user()->id);
+                 })
+                 ->where('messages.parent_type','=','polls')
+                 ->where('polls.parent_type','=','teams')
+                 ->where('members.parent_type','=','teams')
+                 ->where('members.user_id','=',$user->id)
+                 ->where('members.status','=','active')
+                 ->whereNull('msgreads.id');
+                 
+                 $msgPollsTeams = \DB::table('messages')
+                 ->select('users1.id as cid','users1.profile_photo_path as cavatar','users1.name as cname','users1.email as cemail',
+                     'users2.id as rid','users2.profile_photo_path as ravatar','users2.name as rname',
+                     'messages.value','messages.parent_type','messages.parent', 'messages.created_at',
+                     'polls.name as pname')
+                 ->join('users as users1','users1.id','messages.user_id')
+                 ->leftJoin('users as users2','users2.id','messages.reply_to')
+                 ->join('polls','polls.id','messages.parent')
+                 ->join('teams','teams.id','polls.parent')
+                 ->join('members','members.parent','teams.id')
+                 ->leftJoin('msgreads', function($join) {
+                     $join->on('msgreads.msg_id','=','messages.id')
+                     ->where('msgreads.user_id','=',\Auth::user()->id);
+                 })
+                 ->where('messages.parent_type','=','polls')
+                 ->where('polls.parent_type','=','teams')
+                 ->where('members.parent_type','=','teams')
+                 ->where('members.user_id','=',$user->id)
+                 ->where('members.status','=','active')
+                 ->whereNull('msgreads.id');
+                     
+                 $msgPollsProjects = \DB::table('messages')
+                 ->select('users1.id as cid','users1.profile_photo_path as cavatar','users1.name as cname','users1.email as cemail',
+                         'users2.id as rid','users2.profile_photo_path as ravatar','users2.name as rname',
+                         'messages.value','messages.parent_type','messages.parent', 'messages.created_at',
+                         'polls.name as pname')
+                 ->join('users as users1','users1.id','messages.user_id')
+                 ->leftJoin('users as users2','users2.id','messages.reply_to')
+                 ->join('polls','polls.id','messages.parent')
+                 ->join('projects','projects.id','polls.parent')
+                 ->join('members','members.parent','projects.id')
+                 ->leftJoin('msgreads', function($join) {
+                     $join->on('msgreads.msg_id','=','messages.id')
+                     ->where('msgreads.user_id','=',\Auth::user()->id);
+                 })
+                 ->where('messages.parent_type','=','polls')
+                 ->where('polls.parent_type','=','projects')
+                 ->where('members.parent_type','=','projects')
+                 ->where('members.user_id','=',$user->id)
+                 ->where('members.status','=','active')
+                 ->whereNull('msgreads.id');
+             
+             return \DB::table('messages')
+             ->select('users1.id as cid','users1.profile_photo_path as cavatar','users1.name as cname','users1.email as cemail',
+                 'users2.id as rid','users2.profile_photo_path as ravatar','users2.name as rname',
+                 'messages.value','messages.parent_type','messages.parent', 'messages.created_at',
+                 'users3.name as pname')
+             ->join('users as users1','users1.id','messages.user_id')
+             ->leftJoin('users as users2','users2.id','messages.reply_to')
+             ->join('users as users3','users3.id','messages.parent')
+             ->leftJoin('msgreads', function($join) {
+                     $join->on('msgreads.msg_id','=','messages.id')
+                     ->where('msgreads.user_id','=',\Auth::user()->id);
+                 })
+             ->where('messages.parent_type','=','users')
+             ->where('messages.parent','=',$user->id)
+             ->whereNull('msgreads.id')
+             ->union($msgTeams)
+             ->union($msgProjects)
+             ->union($msgProductsTeams)
+             ->union($msgProductsUsers)
+             ->union($msgPollsTeams)
+             ->union($msgPollsProjects);
+        } else {
+            echo 'Fatal error not logged'; exit();
+        }
+    }
+    
+    /**
+     * Olvasatlan üzenetek lapozható lekérdezése
+     * @param int $pageSize
+     * @return paginator object
+     */
+    public static function getNotreaded( $pageSize) {
+        $q = Message::getNotReadedQuery();
+        return $q->orderBy('created_at')->paginate($pageSize);
+    }
+    
+    /**
+     * Olvasatlan üzenetek száma
+     * @param int $pageSize
+     * @return int
+     */
+    public static function getNotreadedCount() {
+        $q = Message::getNotReadedQuery();
+        return $q->count();
+    }
+    
                 
 
 }

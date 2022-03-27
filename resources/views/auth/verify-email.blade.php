@@ -32,7 +32,7 @@
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
 
-                <button type="submit" class="btn btn-primary">
+                <button type="submit" class="btn btn-primary" onclick="true">
                     {{ __('Log Out') }}
                 </button>&nbsp;
                 <a class="btn btn-secondary" href="{{ url('/') }}">

@@ -33,6 +33,16 @@ use App\Models\Minimarkdown;
    	<h3>
    		{{ __('messages.list') }}
    	</h3>
+
+	@if (\Auth::check())
+	<div class="row">
+		<div class="col-12">
+			<a href="{{ \URL::to('/message/notreaded') }}">
+				<em class="fas fa-hand-point-right"></em>{{ __('messages.notreaded') }}
+			</a>
+		</div>
+	</div>
+	@endif
 	
 	<div class="paths">
 	@foreach ($path as $pathItem)
@@ -44,6 +54,7 @@ use App\Models\Minimarkdown;
     		])
 	@endforeach
 	</div>
+	
 	
 	<div>
 	@foreach ($tree as $treeItem) 

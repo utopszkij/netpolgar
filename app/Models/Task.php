@@ -93,7 +93,7 @@ class Task extends Model {
 	 * @param Request $request
 	 * @return string, $id created new record id
 	 */	 
-	 public function saveOrStore(int &$id, Request $request): string {	
+	 public static function saveOrStore(int &$id, Request $request): string {	
 			// rekord array kialakitása
 			
 			$taskArr = [];
