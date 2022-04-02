@@ -4,7 +4,7 @@
 	         <img src="{{ URL::to('/') }}/img/logo.png" 
 	            	style="display:inline-block; float:left; margin:0 10px 0 10px; width:300px " />
 	         <h2>Áttekintés</h2>   	
-
+			
 <a name="description"></a>
 				<h3>
 				A Netpolgár egy virtuális közösségi tér. E-demokrácia, projekt menedzser,
@@ -355,3 +355,4 @@
 								
 	</div>
 </div>
+
