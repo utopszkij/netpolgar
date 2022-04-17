@@ -8,6 +8,10 @@ if ($parent) {
 
 // include_once \Config::get('view.paths')[0].'/minimarkdown.php';
 use App\Models\Minimarkdown;
+if (\Auth::user()) {
+	$loggedAvatar = \App\Models\Avatar::userAvatar(\Auth::user()->profile_photo_path, 
+												   \Auth::user()->email);
+}	
 
 ?>
 <script src="https://meet.jit.si/external_api.js"></script>
@@ -114,6 +118,10 @@ use App\Models\Minimarkdown;
     	</p>
 	</form>
 	</div>
+	@endif
+
+	<!-- jitsi start -->
+
 	<div class="row" class="chatBtn" style="border-style:solid; margin:5px; padding:10px;">
 		<h4>Video chat</h4>
 		<button type="button" class="btn  btn-secondary" onclick="jitsiStart()">
@@ -122,7 +130,6 @@ use App\Models\Minimarkdown;
 		A web böngésző biztonsági beállításai, egyes esetekben megadályozhatják ennek a funciónak a müködését.
 		Arra van szükség, hogy a web böngésző használhassa a mikrofont és a kamerát.
 	</div>
-	@endif
 	
 	<div class="help" id="jitsiHelp" style="display:none">
 		    {!! __('messages.help') !!}
@@ -133,7 +140,10 @@ use App\Models\Minimarkdown;
 	<div id="onlineMembers" style="display:none; width:15%"; float:right">
 			<h3>{{ __('messages.online') }}</h3>
 			<div id="onlineList"></div>
-	</div>		
+	</div>	
+	
+<!-- jitsi end -->
+
 	<div style="clear:both"></div>
 	@if (\Auth::check())
 	@if (($member) | 
@@ -159,7 +169,7 @@ use App\Models\Minimarkdown;
         				displayName: '{{ \Auth::user()->name }}'
     			}
             }
-            var avatar = "{{ $avatar }}";
+            var avatar = "{{ $loggedAvatar }}";
             
             var api = new JitsiMeetExternalAPI(domain, options);
 			var s = api.getParticipantsInfo();
@@ -192,6 +202,7 @@ use App\Models\Minimarkdown;
 			var top  = window.pageYOffset || document.documentElement.scrollTop;
 			scrollTop = top;
 			$('#reply'+id).show();
+			$('#jitsyButton').show();
 			$('#replyText'+id).focus();
 			if (top > 50) {
 				top = top - 50;

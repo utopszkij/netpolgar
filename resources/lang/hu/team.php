@@ -77,6 +77,7 @@ return [
     'dislike' => 'A csoport lezárását javaslom',
     'accessDenied' => 'Ez a művelet számodra nem engedélyezett. :(',
     'successSave' => 'Csoport adatok sikeresen tárolva.',
-    'orUpload' => 'Vagy file feltöltése' 
+    'orUpload' => 'Vagy file feltöltése',
+    'mail' => 'Levél a tagoknak' 
     
 ];

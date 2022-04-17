@@ -38,6 +38,10 @@ if (Auth::user()) {
 		<img src="{{ URL::to('/') }}/img/logo.png" class="logo" />    
     	Netpolgár
     </a>
+	@auth
+	<img src="{{ $avatar }}" class="loggedAvatar1" style="height:32px" />
+	@endif
+
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
       data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" 
       aria-expanded="false" aria-label="Toggle navigation" onclick="false">
@@ -132,4 +136,3 @@ if (Auth::user()) {
     </div>
   </div>
 </nav>
-

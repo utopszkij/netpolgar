@@ -117,6 +117,8 @@
 		        @if ((in_array('active_admin',$info->userRank)) & ($team->status != 'closed'))
 	            &nbsp;<a href="{{ route('teams.edit',['team' => $team->id]) }} ">
 						<em class="fas fa-edit" title="{{ __('team.edit') }}"></em>                
+				&nbsp;<a href="{{ \URL::to('/mails/form/teams/'.$team->id.'/0') }} ">
+						<em class="fas fa-envelope" title="{{ __('team.mail') }}"></em>                
    	            @endif
    	          </a>
              </h3>

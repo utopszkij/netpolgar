@@ -175,12 +175,26 @@
    			<div class="col-12">
    			   	<label>a vita hossza:</label>
    				{{ $poll->config->debateDays }} nap
+				@if ($poll->debate_start != '')
+				<strong>
+				  {{ $poll->debate_start }}
+				  &nbsp;-&nbsp;
+				  {{  date('Y.m.d', strtotime($poll->debate_start.' + '.$poll->config->debateDays.' days' ))}}
+				</strong>
+				@endif   
    			</div>
    		</div>
    		<div class="row">
    			<div class="col-12">
    			   	<label>a szavazás hossza:</label>
    				{{ $poll->config->voteDays }} nap
+				@if ($poll->debate_start != '')
+				<strong>
+				   {{  date('Y.m.d', strtotime($poll->debate_start.' + '.($poll->config->debateDays+1).' days' ))}}
+				   &nbsp;-&nbsp;
+				   {{  date('Y.m.d', strtotime($poll->debate_start.' + '.($poll->config->debateDays + $poll->config->voteDays).' days' ))}}
+				</strong>   
+				@endif   
    			</div>
    		</div>
    		<div class="row">

@@ -229,7 +229,7 @@ class Product extends Model
 		from products       
 		left outer join evaluations on evaluations.parent = products.id       
 		left outer join productcats on productcats.product_id = products.id
-		where ((evaluations.parent_type = "products") or (evaluations.parent_type is null)) ';
+		where evaluations.parent_type = "products" ';
 		if (!$userAdmin) {
 			$sql .= ' and (products.status = "active" or (products.parent_type = "users" and products.parent = '.$userId.'))';		
 		}

@@ -1,3 +1,4 @@
+<script src="https://meet.jit.si/external_api.js"></script>
 <x-guest-layout>  
 
 	<div id="memberContainer">
@@ -41,6 +42,10 @@
         
         @php 
         	$user->profile_photo_path = \App\Models\Avatar::userAvatar($user->profile_photo_path, $user->email);
+			if (\Auth::user()) {
+        		$loggedAvatar = \App\Models\Avatar::userAvatar(\Auth::user()->profile_photo_path, 
+				                                               \Auth::user()->email);
+			}	
         @endphp
         
 	    <div class="col-11 col-md-10">
@@ -50,7 +55,9 @@
 	    </div>
 	    
 	  </div> <!-- .row -->
-	  <div xlass="row">
+	  @if (\Auth::check())
+
+	  <div class="row">
 	  <h4>{{ __('member.msg') }}</h4>
         	<form method="post" action="{{ \URL::to('/message/store') }}">
 			 	@csrf
@@ -69,9 +76,27 @@
     			kép: <strong>![](http...)</strong>, 
     			link: <strong>http....</strong>
     		</p>
-        	
 	  </div>
-    
+	  <div class="row" class="chatBtn" style="border-style:solid; margin:5px; padding:10px;">
+		<h4>Video chat</h4>
+		<button type="button" class="btn  btn-secondary" onclick="jitsiStart()">
+			<em class="fas fa-video"></em>&nbsp;<em class="fas fa-microphone"></em>&nbsp;Chat
+		</button>
+		A web böngésző biztonsági beállításai, egyes esetekben megadályozhatják ennek a funciónak a müködését.
+		Arra van szükség, hogy a web böngésző használhassa a mikrofont és a kamerát.
+	</div>
+	<div class="help" id="jitsiHelp" style="display:none">
+		    {!! __('messages.help') !!}
+			<div>on-line:
+				<a href="#" id="onlineCount"></a>
+			</div>
+	</div>
+	<div id="onlineMembers" style="display:none; width:15%"; float:right">
+			<h3>{{ __('messages.online') }}</h3>
+			<div id="onlineList"></div>
+	</div>		
+	@endif
+
    <script>
 		function toggleTeamMenu() {
 			var teamMenu = document.getElementById('teamMenu');
@@ -93,7 +118,40 @@
 				document.getElementById('subMenuIcon').innerHTML = '<em class="fas fa-caret-left"></em>';
 			}
 			return false;	
-		}   
+		}  
+		@if (\Auth::check()) 
+		function jitsiStart() {
+		    $('#jitsiHelp').show();
+            var domain = "meet.jit.si";
+            var w = window.innerWidth - 15;
+            var options = {
+                roomName: "users_{{ $user->name }}",
+                width: w,
+                height: w,
+                parentNode: undefined,
+                configOverwrite: {},
+                interfaceConfigOverwrite: {
+                    filmStripOnly: true
+                },
+                userInfo: {
+        				email: '{{ \Auth::user()->email }}',
+        				displayName: '{{ \Auth::user()->name }}'
+    			}
+            }
+            var avatar = "{{ $loggedAvatar }}";
+            
+            var api = new JitsiMeetExternalAPI(domain, options);
+			var s = api.getParticipantsInfo();
+			$('#onlineCount').html(s.length);
+			api.addListener('videoConferenceJoined', function(p) {
+					api.executeCommand('displayName', '{{ \Auth::user()->name }}');
+					api.executeCommand('avatarUrl', avatar);
+					var s = api.getParticipantsInfo();
+					$('#onlineCount').html(s.length);
+			});
+			return false;
+		}
+		@endif
    </script> 
     
    

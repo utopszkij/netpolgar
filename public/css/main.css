@@ -9,6 +9,7 @@ nav.navbar .navbar-nav .notreaded a {background-color:red; color:white;}
 div.antialiased {min-height:500px;}
 main {padding-top:50px; padding-left:10px;}
 .min-h-screen {min-height:10px; height:auto;}
+.loggedAvatar1 {display:none}
 
 .pageContainer {padding:0px 10px 10px 10px; min-height:500px}
 p {display:block; width:100%; margin:5px;}
@@ -195,6 +196,7 @@ table.indexTable td {display:block; border-style:none}
 	.form-group textarea {display:block; width:auto; margin:2px}
 	a {color: blue}
 	.subMenuIcon {display:block; text-align:right}
+	.loggedAvatar1 {display:inline-block; width:auto;}
 
 	#teamMenu {padding: 2px 2px 2px 2px}
 	#teamMenu span {display:none}
@@ -226,6 +228,7 @@ table.indexTable td {display:block; border-style:none}
 @media (max-width:991px) {
 	.submenuIcon {display:inline-block}
 	.submenu {display:none}
+	.loggedAvatar1 {display:inline-block; width:auto;}
 	a {color: blue}
 	#teamMenu {padding: 2px 2px 2px 2px}
 	#teamMenu span {display:none}
