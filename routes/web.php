@@ -19,6 +19,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\MailController;
 
 /*
 |--------------------------------------------------------------------------
@@ -62,14 +63,27 @@ Route::get('/terms', function () { return view('terms'); });
 Route::get('/impressum', function () { return view('impressum'); });
 
 // message            
-Route::get('/message/tree/{parentType}/{parentId}/{offset?}',[MessageController::class, 'tree']);
+Route::get('/message/tree/{parentType}/{parentId}/{offset?}',[MessageController::class, 'tree'])
+->middleware('auth');
 Route::get('/message/moderal/{messageId}',[MessageController::class, 'moderal'])
-	->middleware('auth');
-Route::post('/message/store',[MessageController::class, 'store']);
-Route::get('/message/protest/{messageId}',[MessageController::class, 'protest']);
-Route::post('/message/saveprotest',[MessageController::class, 'saveprotest']);
-Route::get('/message/list/{parentType}/{parentId}/{replyTo}/{offset?}',[MessageController::class, 'list']);
-Route::get('/message/notreaded', [MessageController::class, 'notreaded']);
+->middleware('auth');
+Route::post('/message/store',[MessageController::class, 'store'])
+->middleware('auth');
+Route::get('/message/protest/{messageId}',[MessageController::class, 'protest'])
+->middleware('auth');
+Route::post('/message/saveprotest',[MessageController::class, 'saveprotest'])
+->middleware('auth');
+Route::get('/message/list/{parentType}/{parentId}/{replyTo}/{offset?}',[MessageController::class, 'list'])
+->middleware('auth');
+Route::get('/message/notreaded', [MessageController::class, 'notreaded'])
+->middleware('auth');
+
+// mails
+Route::get('/mails/form/{parentType}/{parent}/{offset}', [MailController::class, 'form'])
+->middleware('auth');
+Route::get('/mails/send/{parentType}/{parent}/{offset}', [MailController::class, 'send'])
+->middleware('auth');
+
 
 // poll
 Route::get('/{parentType}/{parent}/{statuses}/polls',[PollController::class, 'index']);

@@ -43,8 +43,9 @@
     
 	<div class="row">
 		<div class="col-1 col-md-2" id="pollMenu">
-			<var id="subMenuIcon" class="subMenuIcon" onclick="togglePollMenu()">
-				<em class="fas fa-caret-right"></em><br />			
+			<var id="subMenuIcon" class="subMenuIcon" 
+				onclick="togglePollMenu()">
+				&nbsp;<em class="fas fa-caret-right"></em><br />			
 			</var>
          <a href="{{ \URL::to('/'.$poll->parent_type.'/'.$poll->parent.'/'.$statuses.'/polls') }}">
             <em class="fas fa-reply"></em>
@@ -175,12 +176,26 @@
    			<div class="col-12">
    			   	<label>a vita hossza:</label>
    				{{ $poll->config->debateDays }} nap
+				@if ($poll->debate_start != '')
+				<strong>
+				  {{ $poll->debate_start }}
+				  &nbsp;-&nbsp;
+				  {{  date('Y.m.d', strtotime($poll->debate_start.' + '.$poll->config->debateDays.' days' ))}}
+				</strong>
+				@endif   
    			</div>
    		</div>
    		<div class="row">
    			<div class="col-12">
    			   	<label>a szavazás hossza:</label>
    				{{ $poll->config->voteDays }} nap
+				@if ($poll->debate_start != '')
+				<strong>
+				   {{  date('Y.m.d', strtotime($poll->debate_start.' + '.($poll->config->debateDays+1).' days' ))}}
+				   &nbsp;-&nbsp;
+				   {{  date('Y.m.d', strtotime($poll->debate_start.' + '.($poll->config->debateDays + $poll->config->voteDays).' days' ))}}
+				</strong>   
+				@endif   
    			</div>
    		</div>
    		<div class="row">
@@ -277,7 +292,7 @@
 				for (i = 0; i < spans.length; i++) {
 					spans[i].style.display="none";
 				} 	
-				document.getElementById('subMenuIcon').innerHTML = '<em class="fas fa-caret-right"></em>';
+				document.getElementById('subMenuIcon').innerHTML = '<em class="fas fa-caret-right"></em><br />';
 			} else {
 				pollMenu.style.width="100%";
 				var spans = document.getElementsByTagName('span');
@@ -285,7 +300,7 @@
 				for (i = 0; i < spans.length; i++) {
 					spans[i].style.display="inline-block";
 				} 	
-				document.getElementById('pollMenuIcon').innerHTML = '<em class="fas fa-caret-left"></em>';
+				document.getElementById('subMenuIcon').innerHTML = '<em class="fas fa-caret-left"></em>&nbsp;';
 			}
 			return false;	
 		}   

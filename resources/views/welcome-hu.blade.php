@@ -50,25 +50,20 @@
 				<p>&nbsp;</p>
 				<h5>Fő jellemzők</h5>
 				<div>
-				<p>Minden felhasználónak van egy üzenőfala, fájl, kép és videó
-				tároló területe, esemény naptára, A felhasználók &quot;ismerősnek&quot;
-				jelölhetik egymást (az ismeretséget a másik félnek is el kell
-				fogadnia). A felhasználók csoportokat hozhatnak létre,
+				<p>Minden felhasználónak  van fájl	tároló területe. A felhasználók csoportokat hozhatnak létre,
 				csatlakozhatnak mások által létrehozott csoportokhoz (a
 				csatlakozás rendjét a csoport szabályzata határozza meg). A
-				csoportoknak is van üzenő faluk, file, kép és videó tárolójuk.
+				csoportoknak is van file tárolójuk.
 				Ezek a csoport tagjai számára elérhetőek. A csoportok projekteket
 				(közösen megvalósított munkafolyamatokat, célkitűzéseket)
-				indíthatnak. A projekteknek is van üzenőfaluk, file, fotó és
-				videó területük. Ezek a projekt-gazda csoport tagjai számára
-				elérhetőek. A felhasználó egy &quot;összefésült&quot;
-				üzenőfalon láthatja a saját postjait, ismerősei postjait, azon
-				csoportok üzenőfalát amelyeknek tagja, és ezen csoportok
-				projektjeinek az üzenőfalát. A felhasználók privát üzeneteket
+				indíthatnak. A projekteknek is van file tároló területük.
+				Ezek a projekt-gazda csoport tagjai számára
+				elérhetőek.  A felhasználók privát üzeneteket
 				is küldhetnek egymásnak, üzenetet küldhet egy csoport összes
-				tagjának, összes ismerősnek is, Szellemi és anyagi termékek
-				cseréjét, megosztását virtuális, alternatív fizetőeszközös
-				web-es piactér segíti. A felhasználók NET -es szavazásokat
+				tagjának, projekt résztvevőknek, eseményre jelentkezőknek is.
+				Szellemi és anyagi termékek	cseréjét, megosztását virtuális, 
+				alternatív fizetőeszközös web-es piactér segíti. 
+				A felhasználók NET -es likvid demokrácia szerinti szavazásokat
 				indíthatnak, ezek rendelhetőek csoporthoz, projekthez,
 				kommentelhetnek, értékelhetnek, szavazhatnak. A rendszerhez bárki
 				önként csatlakozhat, ingyenesen használhatja azt.</p>
@@ -250,7 +245,7 @@
 				javaslatok „virtuális szavazó lapra kerülését”. <b><strong>Tehát
 				itt még nem arról van szó, hogy ezt a megoldást támogatod, hanem
 				csak arról, hogy a későbbi szavazásnál ez szerepeljen-e a
-				virtuális szavazó lapon.</strong>(kb. a jelenlegi "ajánlás" megfelelője) </b>Egy
+				virtuális szavazó lapon.</strong>(kb. a jelenlegi "képviselő ajánlás" megfelelője) </b>Egy
 				megoldási lehetőség akkor kerül fel a „virtuális szavazó
 				lapra” ha megkapta a vita beállításinál megadott számú
 				támogatást.</p>
@@ -314,7 +309,7 @@
 				őket meghatalmazó felhasználó nem szavaztott.</p>
 				<p>
 				<p>A szavazati jogot olyan tagra lehet átruházni aki erre 
-				vállakozott. Ez a "Tagok" képernyőn a "Képviselő tisztségre vállalkozok"
+				vállakozott. Ez a "képviseletre vállakozás" a "Tagok" képernyőn a "Képviselő tisztségre vállalkozok"
 				gomb megnyomásával történik.</p>
 				<p>Ha csopotban inditott szavazásról van szó, és a nem szavazó 
 				felhasználónak az adott csoportban nincs képviselője, vagy 
@@ -324,7 +319,8 @@
 				<p>A képviseleti megbízáss (meghatalmazás) a csoport vagy projekt "Tagok"
 				menüpontjában lévő "Tisztségviselők" linkre kattintással elérhető 
 				képernyőn a képviseletre válalkozó nevére vonatkozó "like" -al
-				történik. A "pipa" ikon jelzi jelenleg ki a képviselőd.</p> 
+				történik. A "pipa" ikon jelzi jelenleg ki a képviselőd. Ugyanitt a 
+				képviseleti megbízást vissza is lehet vonni</p> 
 				</div>
 <a name="uzenetek"></a>				
 				<p>&nbsp;</p>
@@ -339,6 +335,36 @@
 				</ul>
 				<p>Ha a web böngésző támogatja a mikrofon és kamera 
 				használatát akkor video-chat is lebonyolítható.</p>
+
+				<strong>Privát üzenet küldése egy felhasználónak</strong>
+				
+				<ul>
+					<li>A csoportok / regisztrált felhasználók / tagok menüpontjában 
+						megkeressük a felhasználót.</li>
+					<li>A megjelenő üzenetküldő formba beirjuk az üzenetet vagy 
+						a "mikrofon" + "kamera" ikonra kattintva vide chat-et inditunk</li>
+				</ul>
+				
+				<strong>Privát üzenet fogadása</strong>
+
+				A bejelentkezés után a felső menű jobb oldalán lévő "privát üzenetek" 
+				menüontban olvashatjuka nekünk küldött üzeneteket vagy csatlakozhatunk
+				a privát vide-chat -hez.
+				
+				<strong>Üzenet küldése csoportnak, projekt résztvevőknek, 
+					eseményre jelentkezőknek</strong>
+				
+					A csoportok / projekt / esemény menüjében lévő 
+					"beszélgetések" menüpontban 
+					megjelenő üzenetküldő formba beirjuk az üzenetet vagy 
+					a "mikrofon" + "kamera" ikonra kattintva vide chat-et inditunk,
+				
+				<strong>Csoport, projekt, esemény üzenet fogadása</strong>
+				
+				A csoportok / projekt / esemény menüjében lévő 
+					"beszélgetések" menüpontban olvashatjuk az üzeneteket vargy 
+					csatlakozhatunk a video-chat -hez.
+
 <a name="fileok"></a>
 				<p>&nbsp;</p>
 				<h5>File könyvtár (ß teszt)</h5>

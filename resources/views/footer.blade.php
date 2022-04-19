@@ -61,14 +61,14 @@
 		{{ __('footer.seeThis') }}
 		</a>
 		<br />	
-		<a class="btn btn-secondary" href="{{ URL::to('/') }}" 
+		<a class="btn btn-secondary" href="{{ URL::current() }}" 
 			onclick="setCookie('netpolgarCookieEnable',1,20)">
 			{{ __('footer.enableBtn') }}
 		</a>
 	</div>
 	<div id="cookieDisable" style="display:none">
 		{{ __('footer.disableLabel') }}
-		<a class="btn btn-secondary"  href="{{ URL::to('/') }}" 
+		<a class="btn btn-secondary"  href="{{ URL::current() }}" 
 			onclick="setCookie('netpolgarCookieEnable',0,20)">
 			{{ __('footer.disableBtn') }}
 		</a>

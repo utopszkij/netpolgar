@@ -21,7 +21,8 @@
     
 	<div class="row">
 		<div class="col-1 col-md-2" id="teamMenu">
-			<var id="subMenuIcon" class="subMenuIcon" onclick="toggleTeamMenu()">
+			<var id="subMenuIcon" class="subMenuIcon" 
+			   onclick="toggleTeamMenu()">
 				<em class="fas fa-caret-right"></em><br />			
 			</var>
          <a href="{{ $teamIndexUrl }}">
@@ -117,6 +118,8 @@
 		        @if ((in_array('active_admin',$info->userRank)) & ($team->status != 'closed'))
 	            &nbsp;<a href="{{ route('teams.edit',['team' => $team->id]) }} ">
 						<em class="fas fa-edit" title="{{ __('team.edit') }}"></em>                
+				&nbsp;<a href="{{ \URL::to('/mails/form/teams/'.$team->id.'/0') }} ">
+						<em class="fas fa-envelope" title="{{ __('team.mail') }}"></em>                
    	            @endif
    	          </a>
              </h3>
@@ -263,7 +266,7 @@
 				for (i = 0; i < spans.length; i++) {
 					spans[i].style.display="inline-block";
 				} 	
-				document.getElementById('subMenuIcon').innerHTML = '<em class="fas fa-caret-left"></em>';
+				document.getElementById('subMenuIcon').innerHTML = '<em class="fas fa-caret-left"></em>&nbsp;';
 			}
 			return false;	
 		}   
