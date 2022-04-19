@@ -43,8 +43,9 @@
     
 	<div class="row">
 		<div class="col-1 col-md-2" id="pollMenu">
-			<var id="subMenuIcon" class="subMenuIcon" onclick="togglePollMenu()">
-				<em class="fas fa-caret-right"></em><br />			
+			<var id="subMenuIcon" class="subMenuIcon" 
+				onclick="togglePollMenu()">
+				&nbsp;<em class="fas fa-caret-right"></em><br />			
 			</var>
          <a href="{{ \URL::to('/'.$poll->parent_type.'/'.$poll->parent.'/'.$statuses.'/polls') }}">
             <em class="fas fa-reply"></em>
@@ -291,7 +292,7 @@
 				for (i = 0; i < spans.length; i++) {
 					spans[i].style.display="none";
 				} 	
-				document.getElementById('subMenuIcon').innerHTML = '<em class="fas fa-caret-right"></em>';
+				document.getElementById('subMenuIcon').innerHTML = '<em class="fas fa-caret-right"></em><br />';
 			} else {
 				pollMenu.style.width="100%";
 				var spans = document.getElementsByTagName('span');
@@ -299,7 +300,7 @@
 				for (i = 0; i < spans.length; i++) {
 					spans[i].style.display="inline-block";
 				} 	
-				document.getElementById('pollMenuIcon').innerHTML = '<em class="fas fa-caret-left"></em>';
+				document.getElementById('subMenuIcon').innerHTML = '<em class="fas fa-caret-left"></em>&nbsp;';
 			}
 			return false;	
 		}   

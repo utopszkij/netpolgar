@@ -17,16 +17,16 @@ class MailController extends Controller
 	 * @param Request $request
      * @return \Illuminate\Http\Response
      */
-    public function form(string $parentType, int $parent, int $offset, Rerquest $request)   {
-		$subject = $request->session->input('subject','');
-		$mailbody = $request->session->input('mailbody','');
+    public function form(string $parentType, int $parent, int $offset, Request $request)   {
+		$subject = $request->session()->get('subject','');
+		$mailbody = $request->session()->get('mailbody','');
 		$parentRec = \DB::table($parentType)->where('id','=',$parent)->first();
 		$total = $request->input('total',0);
 		if (\Auth::check()) {
 			$admin = \DB::table('members')
 			->where('parent_type','=',$parentType)
 			->where('parent','=',$parent)
-			->where('user_id','=',\Auth:uuser()->id)
+			->where('user_id','=',\Auth::user()->id)
 			->where('rank','=','admin')
 			->where('status','=','active')
 			->first();
@@ -40,7 +40,7 @@ class MailController extends Controller
 						"subject" => $subject,
 						"mailbody" => $mailbody,
 						"total" => $total 
-					])
+					]);
 				} else {
 					echo 'Fatal error parent not found'; exit();
 				}
@@ -63,16 +63,19 @@ class MailController extends Controller
 	 * @param Request $request
      */
     public function send(string $parentType, int $parent, int $offset, Request $request)   {
+		$result = '';
 		$subject = $request->input('subject','');
 		$mailbody = $request->input('mailbody','');
-		$request->session->put('subject',$subject);
-		$request->session->put('mailbody','mailbody');
+		$mailbody = str_replace('&lt;','<',$mailbody);
+		$mailbody = str_replace('&gt;','>',$mailbody);
+		$request->session()->put('subject',$subject);
+		$request->session()->put('mailbody','mailbody');
 		$parentRec = \DB::table($parentType)->where('id','=',$parent)->first();
 		if (\Auth::check()) {
 			$admin = \DB::table('members')
 			->where('parent_type','=',$parentType)
 			->where('parent','=',$parent)
-			->where('user_id','=',\Auth:uuser()->id)
+			->where('user_id','=',\Auth::user()->id)
 			->where('rank','=','admin')
 			->where('status','=','active')
 			->first();
@@ -87,34 +90,35 @@ class MailController extends Controller
 					->where('rank','=','member')
 					->where('status','=','active')
 					->get();
-
-// TEST 
-// $emails = ['tibor.fogler@gmail.com', 'fogler@t-email.hu'];
-
-
+					$j = 0;
 					if ($offset < count($emails)) {
 						for ($i = $offset; $i < ($offset + 10); $i++) {
-							if ($i í count($emails)) {
+							if ($i < count($emails)) {
 								// levélküldés $emails[$i] -nek
-								/* TEST
 								\Mail::to($emails[$i])
-								->send(new \App\Mail\newsletter($subject, $mailbody);						
+								->send(new \App\Mail\NewsletterMail($subject, $mailbody));						
+								$j++;
 								if (\Mail::failures()) {
 							   		$errors .= 'mail send error. target:'.$emails[$i].' ';
 								}
-								*/
 							}	
 						}	
+						$offset = $offset + $j;
+						if ($errors != '') {
+							$result = redirect()->to(\URL::to('/mails/form/'.$parentType.'/'.$parent.'/'.$offset.'?total='.count($emails)))
+							->width('error',$errors);
+						} else if ($offset < count($emails)) {
+							$result = redirect()->to(\URL::to('/mails/form/'.$parentType.'/'.$parent.'/'.$offset.'?total='.count($emails)));
+						} else {
+							$result = redirect()->to(\URL::to('/'))->with('success','emails sends');
+						}	
 					} else {
-						$result = redirect()->to(\URL::to('/')->with('success','emails sends');
+						if (count($emails) == 0) {
+							$result = redirect()->to(\URL::to('/'))->with('error','not members');
+						} else {
+							$result = redirect()->to(\URL::to('/'))->with('success','emails sends');
+						}
 					}
-					$offset = $offset + 10;
-					if ($error != '') {
-						$result = redirect()->to(\URL::to('/mails/form/'.$parentType.'/'.$parent.'/'.$offset.'?total='.count($emails))
-						->width('error',$errors);
-					} else {
-						$result = redirect()->to(\URL::to('/mails/form/'.$parentType.'/'.$parent.'/'.$offset.'?total='.count($emails));
-					}	
 				} else {
 					echo 'Fatal error parent not found'; exit();
 				}
@@ -124,6 +128,7 @@ class MailController extends Controller
 		} else {
 			echo 'Fatal error not logged'; exit();
 		}
+		return $result;
     }
 }
 

@@ -21,7 +21,8 @@
     
 	<div class="row">
 		<div class="col-1 col-md-2" id="teamMenu">
-			<var id="subMenuIcon" class="subMenuIcon" onclick="toggleTeamMenu()">
+			<var id="subMenuIcon" class="subMenuIcon" 
+			   onclick="toggleTeamMenu()">
 				<em class="fas fa-caret-right"></em><br />			
 			</var>
          <a href="{{ $teamIndexUrl }}">
@@ -265,7 +266,7 @@
 				for (i = 0; i < spans.length; i++) {
 					spans[i].style.display="inline-block";
 				} 	
-				document.getElementById('subMenuIcon').innerHTML = '<em class="fas fa-caret-left"></em>';
+				document.getElementById('subMenuIcon').innerHTML = '<em class="fas fa-caret-left"></em>&nbsp;';
 			}
 			return false;	
 		}   

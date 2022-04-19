@@ -25,7 +25,7 @@ Célja egy alternatív hierarchia mentes, egyenrangú autonóm egyedekből áll�
 
 ### Fő jellemzők
 
-Minden felhasználónak van egy üzenőfala, fájl,kép és videó tároló területe, esemény naptára, A felhasználók "ismerősnek" jelölhetik egymást (az ismeretséget a másik félnek is el kell fogadnia), A felhasználók csoportokat hozhatnak létre, csatlakozhatnak mások által létrehozott csoportokhoz (a csatlakozás rendjét a csoport szabályzata határozza meg). A csoportoknak is van üzenő faluk, file, kép és videó tárolójuk. Ezek a csoport tagjai számára elérhetőek, A csoportok projekteket (közösen megvalósított munkafolyamatokat, célkitűzéseket) indíthatnak. A projekteknek is van üzenőfaluk, file, fotó és videó területük. Ezek a projekt-gazda csoport tagjai számára elérhetőek, A felhasználó egy "összefésült" üzenőfalon láthatja a saját postjait, ismerősei postjait, azon csoportok üzenőfalát amelyeknek tagja, és ezen csoportok projektjeinek az üzenőfalát, A felhasználók privát üzeneteket is küldhetnek egymásnak, üzenet küldhet egy csoport összes tagjának, összes ismerősnek is, Szellemi és anyagi termékek cseréjét, megosztását virtuális, alternatív fizetőeszközös web-es piactér segít, A felhasználók NET -es szavazásokat indíthatnak, ezek rendelhetőek csoporthoz, projekthez, kommentelhetnek, értékelhetnek, szavazhatnak, A rendszerhez bárki önként csatlakozhat, ingyenesen használhatja azt.
+Minden felhasználónak van egy fájl tároló területe. A felhasználók csoportokat hozhatnak létre, csatlakozhatnak mások által létrehozott csoportokhoz (a csatlakozás rendjét a csoport szabályzata határozza meg). A csoportoknak is van  file tárolójuk. Ezek a csoport tagjai számára elérhetőek, A csoportok projekteket (közösen megvalósított munkafolyamatokat, célkitűzéseket) indíthatnak. A projekteknek is van file területük, feladatok adhatóak meg, amik hez felelősök jelölhetők ki, nyilvántartható a feladatok teljesítésének folyamata. Ezek a projekt-gazda csoport tagjai számára elérhetőek. A felhasználók privát üzeneteket is küldhetnek egymásnak, üzenet küldhet egy csoport összes tagjának, projkt tagoknak is. Szellemi és anyagi termékek cseréjét, megosztását virtuális, alternatív fizetőeszközös web-es piactér segít, A felhasználók NET -es szavazásokat indíthatnak, ezek rendelhetőek csoporthoz, projekthez, kommentelhetnek, értékelhetnek, szavazhatnak, A rendszerhez bárki önként csatlakozhat, ingyenesen használhatja azt.
 
 ## technikai infok
 
@@ -65,7 +65,7 @@ php artisan migrate
 
 composer update
 
-npm ipdate
+npm update
 
 github -ról a sw legújabb "master" branch feltöltése a web szerverre
 
