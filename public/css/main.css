@@ -10,7 +10,9 @@ div.antialiased {min-height:500px;}
 main {padding-top:50px; padding-left:10px;}
 .min-h-screen {min-height:10px; height:auto;}
 .loggedAvatar1 {display:none}
-
+.help {background-color:#cdf7d9; color:black; padding:10px; margin:5px; border-radius:10px}
+.logLink {color:#808080; cursor:pointer}
+.log {background-color:#d0d0d0; color:#808080}
 .pageContainer {padding:0px 10px 10px 10px; min-height:500px}
 p {display:block; width:100%; margin:5px;}
 h1 {font-size:22pt; font-weight:bold; margin:20px 0px 20px 0px}

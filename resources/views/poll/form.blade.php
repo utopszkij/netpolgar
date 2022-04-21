@@ -90,7 +90,9 @@
                     {{ __('poll.description') }}
                     </label>
                     <textarea class="form-control" cols="80" rows="5" style="height:150px" 
-                    name="description" placeholder="Leírás">{!! $poll->description !!}</textarea>
+                    name="description" placeholder="Leírás">{!! \App\Models\Minimarkdown::stripLog($poll->description) !!}</textarea>
+					<br />
+					<label></label>Mini markdown szintaxis: kiemelt:**...**, dölt betü:*...*, kép: ![](url), link: http[s]://...., emojs: :), :(
                 </div>
             </div>
          </div>

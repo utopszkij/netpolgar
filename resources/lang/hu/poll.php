@@ -64,4 +64,22 @@ return [
     'successSave' => 'Adatok sikeresen tárolva.',
     'result' => 'Eredmény',
     'subResult' => 'Részeredmény', 
+
+    'help' => 'Döntési folyamat:
+    <ol>
+      <li><strong>1. Javaslat</strong>: Egy tag javasolt egy elföntendő kérdést, 
+        és hozzá megoldási alternatívákat. A többiek a "like" gombbal jelezhetik, 
+        hogy támogatják a kérdées "napirendre tüzését". Ha a javaslat
+        elérte az előírt támogatottságot akkor "vitává" alakul.</li>
+      <li><strong>2. Vita</strong>: Minden tag javasolhat új megoldási alternatívákat,
+        illteve a "like" gombbal támogathatja mások megoldási javaslatait.
+        A beállított vita időszak letelte után "szavazássá" alakul, a szavazó
+        lépernyőre azok a megoldási javaslatok kerülnek fel amelyek megkapták
+        a beállított támogatást.</li>
+      <li><strong>3. Szavazás</strong>: a beállított szavazás tipusnak megfelelő, 
+        a beállított szavazási dőtartamig tartó szavazás. Szavazás közben a 
+        részeredmény,  lezárulása után a végeredmény megtekinthető. A "likvid szavazás"
+        algoritmus szerinti kiértékelés a szavazás lezárásakor történik meg.</li>
+    </ol>
+    '
 ];

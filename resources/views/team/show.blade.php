@@ -220,7 +220,7 @@
 				<img src="{{ $team->avatar }}" alt="logo" title="logo"
 					style="float:right; width:25%" />        		
             <div style="width:70%">
-            	{!! str_replace("\n",'<br />',$team->description) !!}
+				{!! \App\Models\Minimarkdown::miniMarkdown($team->description) !!}
             	<h4>Beállítások</h4>
 					<div class="config" style="display:inline-block; width:500px">
 						  tisztségek:  {{ implode(',',$team->config->ranks) }}<br />	

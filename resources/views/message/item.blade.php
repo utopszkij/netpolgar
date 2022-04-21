@@ -11,7 +11,7 @@
 					{{ $treeItem->creator }}&nbsp;
 				</a>	
 				{{ $treeItem->time }}&nbsp;
-				@if ($moderator)
+				@if (($moderator) | (\Auth::check() & ($treeItem->user_id == \Auth::user()->id)))
 					<a href="{{ \URL::to('/message/moderal/'.$treeItem->id) }}"><em class="fas fa-edit"></em></a>
 				@endif
 			</div>

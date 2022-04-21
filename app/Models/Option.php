@@ -119,8 +119,8 @@ class Option extends Model
 				if ($request->input('optionId',0) == 0) {
 						$newOption = $this->create([
 							'poll_id' => $request->input('pollId'),
-							'name' => strip_tags($request->input('name')),
-							'description' => '',
+							'name' => mb_substr(strip_tags($request->input('description')),0,80),
+							'description' => strip_tags($request->input('description')),
 							'status' => 'proposal',
 							'created_by' => \Auth::user()->id				
 						]);
@@ -134,10 +134,21 @@ class Option extends Model
 						]);
 						$this->checkStatus($newOption->id);
 				} else {
+					$old = $this->where('id','=',$request->input('optionId'))->first();
+					if ($old->description == '') {
+						$old->description = $old->name;
+					}
+					$newDescription = strip_tags($request->input('description'));
+					$name = mb_substr($newDescription,0,80);
+					$log = \App\Models\Minimarkdown::buildLog($old->description, $newDescription);	
 					$this->checkStatus($request->input('optionId'));
+					if ($log != '') {
+						$newDescription .= '{log}'.$log;
+					}
 					$this->where('id','=',$request->input('optionId'))
 					->update([
-						'name' => strip_tags($request->input('name'))
+						'description' => $newDescription,
+						'name' => $name
 					]);
 				}
 			} catch (\Illuminate\Database\QueryException $exception) {

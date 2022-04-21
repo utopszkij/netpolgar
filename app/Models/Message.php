@@ -653,7 +653,7 @@ class Message extends Model
 	}
 	
 	/**
-	 * Új message tárolása vagy moderálás tárolása
+	 * Új message tárolása, módosítás tárolása vagy moderálás tárolása
 	 * @param Request
 	 * @param bool $member
 	 * @param boll $moderator
@@ -675,6 +675,7 @@ class Message extends Model
         $value = $request->input('value');
         $messageId = $request->input('messageId',0);
         $backURL = $request->input('backURL','');
+        $old = $this->where('id','=',$messageId)->first();
         if ($messageId == 0) {
             // new message
             $moderatorInfo = '';
@@ -698,10 +699,22 @@ class Message extends Model
             } else {
                 $errorInfo = 'not logged or not member';
             }
-        } else if ($moderator) {
-            // moderálás tárolása    
-            $moderatorInfo = $request->input('moderator_info','');
-            $moderatorId = $userId;
+        } else if (($moderator) | (\Auth::user()->id == $old->user_id)) {
+            // moderálás vagy módosítás tárolása    
+            if ($moderator) {
+                $moderatorId = $userId;
+                $moderatorInfo = $request->input('moderator_info','');
+            } else {
+                $moderatorId = $old->moderated_by;
+                $moderatorInfo = $old->moderator_info;
+            }    
+            if (($moderatorInfo == null) | ($moderatorInfo == '')) {
+                $moderatorInfo = $old->moderator_info;
+            }
+            $log = \App\Models\Minimarkdown::buildLog($old->value, $value);
+            if ($log != '') {
+                $value .= '{log}'.$log;
+            }
             try {
                 \DB::table('messages')
                 ->where('id','=',$messageId)

@@ -43,5 +43,8 @@ return [
     'last' => '&rsaquo;&rsaquo;',
     'notreaded' => 'olvasatlan üzenetek',
     'notreadedHelp' => 'Olvasott jelzéshez, és további akciókhoz kattints az üzenetre!',
-    'notData' => 'Nincs listázandó adat'
+    'notData' => 'Nincs listázandó adat',
+    'edit' => 'Üzenet módosítás',
+    'send' => 'Küldés',
+    'moderator_info' => 'Moderátor infó'
 ];

@@ -76,6 +76,9 @@
 		
 		<div class="col-11 col-md-10" id="pollBody">
 
+		 <div class="col-11 com-md-10 help">
+				 {!! __('poll.help') !!}
+		 </div>
 	      <div class="col-11 col-md-10">
              <h3>
              	{{ $poll->name }}
@@ -89,6 +92,7 @@
          </div>
 
          <div class="col-11 col-md-10">
+			<strong> 
              	@if ($poll->status == 'proposal')
              	<em class="fas fa-question"></em>
              	@endif
@@ -105,11 +109,12 @@
              	<em class="fas fa-lock"></em>
              	@endif
 	        	{{ __('poll.'.$poll->status) }}
+			</strong>	
 	        	&nbsp;&nbsp;&nbsp;&nbsp;
         </div>
         
 	    <div class="col-11 col-md-10">
-            	{!! str_replace("\n",'<br />',$poll->description) !!}
+            	{!! \App\Models\Minimarkdown::miniMarkdown($poll->description) !!}
 		</div>
 		
    	@if (($poll->status == 'proposal') & ($info->userMember))
@@ -180,7 +185,7 @@
 				<strong>
 				  {{ $poll->debate_start }}
 				  &nbsp;-&nbsp;
-				  {{  date('Y.m.d', strtotime($poll->debate_start.' + '.$poll->config->debateDays.' days' ))}}
+				  {{  date('Y.m.d', strtotime($poll->debate_start.' + '.($poll->config->debateDays - 1).' days' ))}}
 				</strong>
 				@endif   
    			</div>
@@ -191,9 +196,9 @@
    				{{ $poll->config->voteDays }} nap
 				@if ($poll->debate_start != '')
 				<strong>
-				   {{  date('Y.m.d', strtotime($poll->debate_start.' + '.($poll->config->debateDays+1).' days' ))}}
+				   {{  date('Y.m.d', strtotime($poll->debate_start.' + '.($poll->config->debateDays).' days' ))}}
 				   &nbsp;-&nbsp;
-				   {{  date('Y.m.d', strtotime($poll->debate_start.' + '.($poll->config->debateDays + $poll->config->voteDays).' days' ))}}
+				   {{  date('Y.m.d', strtotime($poll->debate_start.' + '.($poll->config->debateDays + $poll->config->voteDays - 1).' days' ))}}
 				</strong>   
 				@endif   
    			</div>
@@ -213,13 +218,16 @@
 		@foreach ($options as $option)
 			@php 
 			$optionInfo = getOptionInfo($option); 
+			if ($option->description == '') {
+				$option->description = $option->name;
+			}
 			@endphp
 		    <li>
 		     <em class="fas fa-caret-right"></em>&nbsp;
 			  @if ($option->status == 'proposal')
 					<strong>{{ __('poll.proposalOption') }}</strong>&nbsp;
 			  @endif
-			  {{ $option->name }}
+			  {!! \App\Models\Minimarkdown::miniMarkdown($option->description) !!}
 			  @if ($poll->config->pollType != 'yesno')
 				  @if (($userMember) & 
 					   ($option->status == 'proposal')) 

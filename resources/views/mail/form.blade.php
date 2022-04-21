@@ -25,6 +25,16 @@
          <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-12">
                 <div class="form-group">
+                    <label>Addressed:</label>
+                    <input type="text" name="addresed" value="all" 
+                    	style="width:800px" class="form-control">
+                    <br />"all": all mebbers or "email1, email2,..."    
+                </div>
+            </div>
+         </div>
+         <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12">
+                <div class="form-group">
                     <label>Subject:</label>
                     <input type="text" name="subject" value="{{ $subject }}" 
                     	style="width:800px" class="form-control">

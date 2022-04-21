@@ -5,8 +5,14 @@
 			// hiba üzenettel validátor hiba miatt lett aktiválva
 			// ilyenkor a korábban kitöltött értékeket kell felhozni.
 			$poll->name = \Request::old('name');
+			$option->description = \Request::old('description');
 		@endphp
 	@endif
+	@php 
+	if ($option->description == '') {
+		$option->description = $option->name;
+	}
+	@endphp
 	<div class="optionController">
     <div class="row">
         <div class="col-lg-12 margin-tb">
@@ -37,8 +43,9 @@
             <div class="col-xs-12 col-sm-12 col-md-12">
                 <div class="form-group">
                     <label>{{ __('option.name') }}:</label>
-                    <input type="text" name="name" value="{{ $option->name }}"
-                    	style="width:500px" class="form-control" placeholder="Név">
+                    <textarea cols="80" rows="5" name="description">{{ \App\Models\Minimarkdown::stripLog($option->description) }}</textarea>
+					<br />
+					<label></label>Hosszabb szöveg esetén, a szavazó képernyőn csak az első 80 karketer lesz látható!
                 </div>
             </div>
          </div>

@@ -62,7 +62,7 @@
             	{{ $value->name }}
             	</a>
             </td>
-            <td>{{ \Str::limit($value->description, 100) }}</td>
+            <td>{{ App\Models\Minimarkdown::strLimit($value->description,90) }}</td>
         </tr>
         @endforeach
        </tbody> 

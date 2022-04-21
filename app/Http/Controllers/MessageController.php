@@ -202,7 +202,7 @@ class MessageController extends Controller {
     
     /**
      * új üzenet tárolása
-     * moderálás tárolása
+     * moderálás vagy modosítás tárolása
      * csak bejelentkezett csoport member használhatja
      * @param Request $request
      * @return laravel redirect
@@ -226,10 +226,11 @@ class MessageController extends Controller {
 				$result = \Redirect::back()->with('error',$errorInfo);
 			}
 		} else {
+            $url = \URL::to('/message/tree/'.$parent_type.'/'.$parent);
 			if ($errorInfo == '') {
-				$result = \Redirect::back()->with('success',__('messages.saved'));
+				$result = \Redirect::to($url)->with('success',__('messages.saved'));
 			} else {
-				$result = \Redirect::back()->with('error',$errorInfo);
+				$result = \Redirect::to($url)->with('error',$errorInfo);
 			}
 		}
         return $result;
@@ -252,6 +253,11 @@ class MessageController extends Controller {
                 $avatar = '';
             }
             if (Message::isModerator($message->parent_type, $message->parent)) {
+                $result = view('message.moderator',[
+                    "myMessage" => $message,
+                    "backURL" => urlencode(\URL::previous())
+                ]);
+            } else if (\Auth::check() & (\Auth::user()->id == $message->user_id)) {
                 $result = view('message.moderator',[
                     "myMessage" => $message,
                     "backURL" => urlencode(\URL::previous())

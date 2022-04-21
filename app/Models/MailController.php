@@ -64,7 +64,7 @@ class MailController extends Controller
      */
     public function send(string $parentType, int $parent, int $offset, Request $request)   {
 		$result = '';
-		$addressed = $request->input('addresed','');
+		$addressed = $request->input('addressed','');
 		$subject = $request->input('subject','');
 		$mailbody = $request->input('mailbody','');
 		$mailbody = str_replace('&lt;','<',$mailbody);
@@ -106,6 +106,8 @@ class MailController extends Controller
 								if (\Mail::failures()) {
 							   		$errors .= 'mail send error. target:'.$emails[$i].' ';
 								}
+								
+								echo 'mail send to: '.$emails[$i].' '.$subject.' '.$mailbody.' '.$errors; exit();
 							}	
 						}	
 						$offset = $offset + $j;

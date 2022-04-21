@@ -115,6 +115,13 @@ class Team extends Model {
 					]);
 					$this->checkStatus($teamRec->id);
 			 	} else {
+					// modositás log kialakítása 
+					$old = $model->where('id','=',$id)->first();
+					$log = Minimarkdown::buildLog($old->description, teamArr['description']);
+					if ($log != '') {	
+						$teamArr['description'] .= '{log}'.$log;	
+					}	
+					// rekord tárolás
 					$model->where('id','=',$id)
 					->update($teamArr);			 	
 			 	}	
