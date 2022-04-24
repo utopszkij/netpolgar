@@ -210,7 +210,12 @@ class Poll extends Model
      * @return bool
      */
     public static function userMember(string $parentType, int $parentId):bool {
-        return \App\Models\Member::userMember($parentType, $parentId);
+        if (\Auth::check()) {
+            $result =  \App\Models\Member::userMember($parentType, $parentId, \Auth::user()->id);
+        } else {
+            $result = false;
+        }    
+        return $result;
     }
 
     /**

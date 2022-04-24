@@ -45,37 +45,44 @@
       <input type="hidden" name="pollId" value="{{ $poll->id }}" />
       
 		@if ($poll->config->pollType == 'yesno')
-	   <div class="row">
-         <div class="col-xs-12 col-sm-12 col-md-12 text-center">
-         <input name="vote" type="radio" value="1" checked="checked" />
-         {{ __('poll.yes') }}&nbsp;&nbsp;&nbsp;
-         <input name="vote" type="radio" value="0" />
-         {{ __('poll.no') }}&nbsp;&nbsp;&nbsp;
-			<br />
-			<br />
-			<br />
-			</div>
-		</div>			 
+	    <div class="row">
+			<div class="col-xs-12 col-sm-12 col-md-12 text-center">
+				<ul>
+				@foreach ($options as $option)
+				<li>
+					<input type="radio" name="vote" value="{{ $option->id }}" checked="checked" />
+					{{ $option->name }}
+				</li>
+				@endforeach
+				</ul>
+				<br />
+			</div>	
+		</div>	
 		@endif
 
 		@if ($poll->config->pollType == 'onex')
-	   <div class="row">
-         <div class="col-xs-12 col-sm-12 col-md-12 text-center">
-         <ul>
-         @foreach ($options as $option)
-         <li>
-         	<input type="radio" name="vote" value="{{ $option->id }}" checked="checked" />
-         	{{ $option->name }}
-         </li>
-         @endforeach
-         </ul>
-         <br />
+	    <div class="row">
+			<div class="col-xs-12 col-sm-12 col-md-12 text-center">
+				<ul>
+				@foreach ($options as $option)
+					<li>
+						<input type="radio" name="vote" value="{{ $option->id }}" checked="checked" />
+						{{ $option->name }}
+					</li>
+				@endforeach
+				</ul>
+				<br />
 			</div>
 		</div>	
 		@endif
 
 		@if ($poll->config->pollType == 'morex') 
-	   <div class="row">
+		<div class="row">
+        	<div class="col-xs-12 col-sm-12 col-md-12 text-center help">
+				Több is bejelölhető
+			</div>	
+		</div>	
+		 <div class="row">
          <div class="col-xs-12 col-sm-12 col-md-12 text-center">
          <ul>
          @foreach ($options as $p => $option)
@@ -92,7 +99,7 @@
 
 		@if ($poll->config->pollType == 'pref') 
 	   <div class="row">
-         <div class="col-xs-12 col-sm-12 col-md-12 text-center">
+         <div class="col-xs-12 col-sm-12 col-md-12 text-center help">
          A <em class="fas fa-angle-up"></em> /
          <em class="fas fa-angle-down"></em> gombokkal rendezd sorrendbe a
          lehetőségeket! Legfelül legyen amit a legjobbnak tartasz. Legalul amit

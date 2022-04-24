@@ -19,7 +19,7 @@ class MailController extends Controller
      */
     public function form(string $parentType, int $parent, int $offset, Request $request)   {
 		$subject = $request->session()->get('subject','');
-		$mailbody = $request->session()->get('mailbody','');
+		$mailbody = $request->session()->get('mailbody','<div><h2>megszólítás</h2><p>szöveg</p><a href="link">link</a></div>');
 		$parentRec = \DB::table($parentType)->where('id','=',$parent)->first();
 		$total = $request->input('total',0);
 		if (\Auth::check()) {
@@ -70,7 +70,7 @@ class MailController extends Controller
 		$mailbody = str_replace('&lt;','<',$mailbody);
 		$mailbody = str_replace('&gt;','>',$mailbody);
 		$request->session()->put('subject',$subject);
-		$request->session()->put('mailbody','mailbody');
+		$request->session()->put('mailbody',$mailbody);
 		$parentRec = \DB::table($parentType)->where('id','=',$parent)->first();
 		if (\Auth::check()) {
 			$admin = \DB::table('members')

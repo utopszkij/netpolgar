@@ -1,6 +1,9 @@
 ﻿<?php
 return [
   	'list' => 'Üzenetek',
+    'tree' => 'Üzenet fa',
+    'thread' => 'Üzenet láncolat (előzmények és válaszok)',
+    "ofMessages" => 'üzenetei',
   	'teams' => 'Csoport',
   	'projects' => 'Projekt',
   	'polls' => 'Vita',
@@ -14,6 +17,7 @@ return [
     'clearSearch' => 'Összes',
     'moderation' => 'Moderálás',
     'notrecords' => 'Nincs listázandó adat',
+    'noThread' => 'Nincs előzménye és nincs rá válasz sem',
     'online' => 'Jelenleg on-line',
     'enableBtn' => 'Engedélyezem',
     'help' => 'Engedélyezd a kamera és mikrofon használatát. 

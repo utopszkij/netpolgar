@@ -1,6 +1,15 @@
  <footer id="footer">
     <div class="footer-top">
       <div class="container">
+	  	<div class="fb-share-button" data-href="{{ \URL::current() }}" 
+		  data-layout="button" 
+		  data-size="large">
+		  <a target="_blank" style="background-color:blue; font-size:20px; font-weight:bolder; color:white; padding:2px 10px 2px 10px; border-radius:14px;"
+		    onclick="return true"
+		    href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(\URL::current()) }}&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">
+			  facebook 
+		  </a>Megosztás
+		</div>		  
         <div class="row footer-info">
 
 				<div class="col-sm-6  footer-links">

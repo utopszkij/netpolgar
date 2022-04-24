@@ -6,6 +6,11 @@
 			// params: $treeItem, $parentType, $parent, $parentId, $member 
 			@endphp
 			<div class="msgHeader">
+				<div style="text-align:right">
+					<a href="{{ \URL::to('/message/protest/'.$treeItem->id) }}">
+						<var class="protest"><em class="fas fa-ban"></em>Jelentem</var>
+					</a>
+				</div>
 				<a href="{{ \URL::to('/member/user/'. $treeItem->userId) }}">
 					<img class="avatar" src="{{ $treeItem->avatar }}" />&nbsp;
 					{{ $treeItem->creator }}&nbsp;
@@ -14,6 +19,10 @@
 				@if (($moderator) | (\Auth::check() & ($treeItem->user_id == \Auth::user()->id)))
 					<a href="{{ \URL::to('/message/moderal/'.$treeItem->id) }}"><em class="fas fa-edit"></em></a>
 				@endif
+				&nbsp;
+				<a href="{{ \URL::to('message/thread/'.$treeItem->id) }}" title="{{ __('messages.thread')}}">
+					<em class="fas fa-sort"></em>
+				</a>	
 			</div>
 			<div class="msgBody">
 				@if ($treeItem->replyTo[1] != '')
@@ -42,24 +51,21 @@
 					{{ $treeItem->disLikeCount }}</em>
 				</a>&nbsp;
 				@if (\Auth::check())
-    				@if (($member) | 
-    					 (($parentType == 'users') & ($parentId == \Auth::user()->id))
-    					)
-        				<a href="#" onclick="replyClick({{ $treeItem->id }})">
-        					<em class="fas fa-reply"></em> Válasz
-        				</a>&nbsp;&nbsp;&nbsp;
-        				<a href="{{ \URL::to('/message/list/'. $parentType.'/'.$parent->id.'/'.$treeItem->id) }}">
-        					{{ $treeItem->replyCount }} db válasz
-        				</a>&nbsp;&nbsp;&nbsp;
-        			@else
-       					{{ $treeItem->replyCount }} db válasz
-    				@endif
+					@if (($member) | 
+						(($parentType == 'users') & ($parentId == \Auth::user()->id))
+						)
+						<a href="#" onclick="replyClick({{ $treeItem->id }})">
+							<em class="fas fa-reply"></em> Válasz
+						</a>&nbsp;&nbsp;&nbsp;
+						<a href="{{ \URL::to('/message/list/'. $parentType.'/'.$parent->id.'/'.$treeItem->id) }}">
+							{{ $treeItem->replyCount }} db válasz
+						</a>&nbsp;&nbsp;&nbsp;
+					@else
+						{{ $treeItem->replyCount }} db válasz
+					@endif
 				@else
-   					{{ $treeItem->replyCount }} db válasz
+					{{ $treeItem->replyCount }} db válasz
 				@endif
-				<a href="{{ \URL::to('/message/protest/'.$treeItem->id) }}">
-					<var class="protest"><em class="fas fa-ban"></em>Jelentem</var>
-				</a>&nbsp;
 			</div>
 			<div id="reply{{ $treeItem->id }}" style="display: none">
             	<form method="post" action="{{ \URL::to('/message/store') }}">
@@ -77,6 +83,10 @@
                 	<button type="submit" class="btn btn-primary">
                 		<em class="fas fa-paper-plane"></em>{{ __('messages.send') }}
                 	</button>
+                	<a href="{{ \URL::current() }}" class="btn btn-secondary" style="color:white">
+					<em class="fas fa-ban"></em>{{ __('messages.cancel') }}
+                	</a>
+					
             	</form>
 			</div>
 		</div>	

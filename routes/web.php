@@ -77,6 +77,8 @@ Route::get('/message/list/{parentType}/{parentId}/{replyTo}/{offset?}',[MessageC
 ->middleware('auth');
 Route::get('/message/notreaded', [MessageController::class, 'notreaded'])
 ->middleware('auth');
+Route::get('/message/thread/{id}', [MessageController::class, 'thread'])
+->middleware('auth');
 
 // mails
 Route::get('/mails/form/{parentType}/{parent}/{offset}', [MailController::class, 'form'])

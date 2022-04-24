@@ -9,5 +9,7 @@ return [
 	'list' => 'Leadott szavazatok',
 	'voteNotFound' => 'Nincs ilyen szavazat',
 	'pollNotFound' => 'Nincs ilyen szavazás',
-    'name' => 'Név'
+    'name' => 'Név',
+	'voteExists' => 'Te már szavaztál',
+	'accesDenied' => 'Te itt nem szavazhatsz'
 ];

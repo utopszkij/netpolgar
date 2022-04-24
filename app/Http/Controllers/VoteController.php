@@ -43,12 +43,10 @@ class VoteController extends Controller {
 					'parent' => $parent				
 				]);
 			} else {
-			$result = redirect()->back()
-			->with('error',$errorInfo);
+				$result = redirect()->to('/polls/'.$poll->id)->with('error',$errorInfo);
 			}
 		} else {
-			$result = redirect()->back()
-			->with('error','Fatal error parent not found');
+			$result = redirect()->to('/')->with('error','Fatal error parent not found');
 		}
 		return $result;
 	}
@@ -142,7 +140,7 @@ class VoteController extends Controller {
 				'backURL' => \URL::previous()			
 			]);			
 		} else {
-			$result = redirect()->back()->with('error','poll not found');		
+			$result = redirect()->to('/')->with('error','poll not found');		
 		}
 		return $result;
 	}
@@ -195,6 +193,7 @@ class VoteController extends Controller {
 	public function csv(Poll $poll) {
 			$poll->config = JSON_decode($poll->config);
 			$data = Vote::getVotes($poll,0,0);
+		
 			foreach ($data as $d1) {
 				$d1->ballot_id = ($d1->ballot_id * 24) + 1435;			
 			}
@@ -222,11 +221,13 @@ class VoteController extends Controller {
 					$d1->position = $d1->position + 1;
 				}
 			}
+		
+		
 			header('Content-type: text/csv');
 			header('Content-Disposition: attachment; filename="votes.csv"');
-			echo '"ballot_id";"position";""option_id";"option_name"'."\n";
+			echo '"ballot_id";"position";"option_name"'."\n";
 			foreach($data as $d1) {
-				echo $d1->ballot_id.';'.$d1->position.';'.$d1->option_id.';"'.$d1->name.'"'."\n";			
+				echo $d1->ballot_id.';'.$d1->position.';"'.$d1->name.'"'."\n";			
 			}
 			exit();
 	}

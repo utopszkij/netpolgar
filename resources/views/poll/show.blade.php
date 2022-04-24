@@ -108,7 +108,7 @@
              	@if ($poll->status == 'closed')
              	<em class="fas fa-lock"></em>
              	@endif
-	        	{{ __('poll.'.$poll->status) }}
+	        	{{ __('poll.'.$poll->status) }} <var class="help">{!! __('poll.'.$poll->status.'Help') !!}</var>
 			</strong>	
 	        	&nbsp;&nbsp;&nbsp;&nbsp;
         </div>
@@ -122,13 +122,14 @@
    			<a href="{{ \URL::to('/like/polls/'.$poll->id) }}" 
    			   title="a vita megnyitását javaslom">
         	   @if ($info->userLiked)
-        			<em class="fas fa-check"></em>
+			   <em class="fas fa-thumbs-up liked"></em>
+			   @else
+			   <em class="fas fa-thumbs-up"></em>
         	   @endif
-        	   <em class="fas fa-thumbs-up"></em>
         	</a>
         	<a href="{{ \URL::to('/likeinfo/polls/'.$poll->id) }}">
    				({{ $info->likeCount }}/{{ $info->likeReq}})
-	      </a>	
+	      	</a>	
 			{{ __('poll.like') }}
        </div>
       @else
@@ -276,6 +277,15 @@
 		     ($info->userMember) &  
 		     (!$info->userVoted)
 		    )
+			<div class="row">
+			<a href="{{ \URL::to('/'.$poll->id.'/votes/create') }}" class="btn btn-primary">
+				<em class="fas fa-envelope-open-text"></em>
+				{{ __('poll.voteNow') }}
+			</a>
+		</div>		
+		@endif
+
+		@if ((!\Auth::check()) & ($poll->status == 'vote')) 
 		<div class="row">
 			<a href="{{ \URL::to('/'.$poll->id.'/votes/create') }}" class="btn btn-primary">
 				<em class="fas fa-envelope-open-text"></em>

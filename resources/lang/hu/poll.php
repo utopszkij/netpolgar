@@ -7,12 +7,18 @@ return [
     'debates' => 'Viták',
     'polls' => 'Szavazások',
 
-    
     'status' => 'Státusz',
     'debate' => 'Vita',
     'active' => 'Aktív',
     'closed' => 'Lezárt szavazás',
     'proposal' => 'Javasolt vita',
+
+    'debateHelp' => 'Támogasd a leírás alatt lévő <em class="fas fa-thumbs-up"></em> -al a vita meginditását!',
+    'activeHelp' => 'Aktív',
+    'closedHelp' => 'Lezárult. Már nem lehet szavazni, kommentelni',
+    'voteHelp' => 'Most folyik a szavazás',
+    'proposalHelp' => 'Javasolj új választható opciókat, támogasd <em class="fas fa-thumbs-up"></em> -al mások ilyen javaslatait!',
+
     'proposalOption' => 'Javasolt opció',
     'canceled' => 'Megszakított vita',
     'vote' => 'Szavazás',
@@ -67,13 +73,13 @@ return [
 
     'help' => 'Döntési folyamat:
     <ol>
-      <li><strong>1. Javaslat</strong>: Egy tag javasolt egy elföntendő kérdést, 
+      <li><strong>1. Javaslat</strong>: Egy tag javasolt egy eldöntendő kérdést, 
         és hozzá megoldási alternatívákat. A többiek a "like" gombbal jelezhetik, 
-        hogy támogatják a kérdées "napirendre tüzését". Ha a javaslat
+        hogy támogatják a kérdés "napirendre tüzését". Ha a javaslat
         elérte az előírt támogatottságot akkor "vitává" alakul.</li>
       <li><strong>2. Vita</strong>: Minden tag javasolhat új megoldási alternatívákat,
         illteve a "like" gombbal támogathatja mások megoldási javaslatait.
-        A beállított vita időszak letelte után "szavazássá" alakul, a szavazó
+        A vita a beállított vita időszak letelte után "szavazássá" alakul, a szavazó
         lépernyőre azok a megoldási javaslatok kerülnek fel amelyek megkapták
         a beállított támogatást.</li>
       <li><strong>3. Szavazás</strong>: a beállított szavazás tipusnak megfelelő, 
