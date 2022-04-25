@@ -231,7 +231,8 @@ class Product extends Model
 		left outer join productcats on productcats.product_id = products.id
 		where ((evaluations.parent_type = "products") or (evaluations.parent_type is null)) ';
 		if (!$userAdmin) {
-			$sql .= ' and (products.status = "active" or (products.parent_type = "users" and products.parent = '.$userId.'))';		
+			$sql .= ' and (products.status = "active" or 
+			              (products.parent_type = "users" and products.parent = '.$userId.'))';		
 		}
 		if ($search != '') {
 			$sql .= ' and products.name like "%'.$search.'%" ';
@@ -246,7 +247,6 @@ class Product extends Model
 		group by products.id, products.name, products.avatar, products.price,
 			   products.stock, products.unit, products.status 
 		order by '.$orderArr[0].' '.$orderArr[1];
-		
 		$data = new \stdClass();
 		$data->items = \DB::select($sql);
 		$data->currentPage = $page;
@@ -278,7 +278,7 @@ class Product extends Model
 		from products       
 		left outer join evaluations on evaluations.parent = products.id       
 		left outer join productcats on productcats.product_id = products.id
-		where evaluations.parent_type = "products" ';
+		where (evaluations.parent_type = "products" or evaluations.parent_type is null)';
 		if (!$userAdmin) {
 			$sql .= ' and (products.status = "active" or (products.parent_type = "users" and products.parent = '.$userId.'))';		
 		}
@@ -295,7 +295,6 @@ class Product extends Model
 		group by products.id, products.name, products.avatar, products.price,
 			   products.stock, products.unit, products.status 
 		order by '.$orderArr[0].' '.$orderArr[1];
-		
 		$data = new \stdClass();
 		$data->items = \DB::select($sql);
 		$data->currentPage = $page;

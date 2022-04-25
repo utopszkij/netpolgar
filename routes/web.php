@@ -20,6 +20,7 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\MailController;
+use App\Http\Controllers\HelpController;
 
 /*
 |--------------------------------------------------------------------------
@@ -166,6 +167,9 @@ Route::get('/events/{eventId}/subscription',[EventController::class, 'subscripti
 ->middleware('auth');
 Route::post('/events',[EventController::class, 'store']);
 Route::post('/events/{eventId}',[EventController::class, 'update']);
+
+// help
+Route::get('/help',[HelpController::class, 'show']);
 
 
 /*----------------------------------

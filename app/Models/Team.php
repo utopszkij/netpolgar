@@ -117,7 +117,7 @@ class Team extends Model {
 			 	} else {
 					// modositás log kialakítása 
 					$old = $model->where('id','=',$id)->first();
-					$log = Minimarkdown::buildLog($old->description, teamArr['description']);
+					$log = Minimarkdown::buildLog($old->description, $teamArr['description']);
 					if ($log != '') {	
 						$teamArr['description'] .= '{log}'.$log;	
 					}	

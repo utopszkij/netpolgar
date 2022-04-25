@@ -18,6 +18,12 @@ if (\Auth::user()) {
 <x-guest-layout>
 <div id="messages" class="pageContainer row messagesTree">
 	<p>&nbsp;</p>
+	<div class="helpBtn">
+		<a href="{{ \URL::to('/help').'?name=beszelgetes' }}" target="_help" 
+			onclick="true"">
+				<em class="fas fa-book"></em>Súgó
+		</a>	
+	</div>
 	<h2>
 		<a href="{{ \URL::to('/'.$parentType.'/'.$parent->id) }}">
 			<em class="fas fa-hand-point-right"></em>
@@ -32,6 +38,7 @@ if (\Auth::user()) {
 			@endif
 			&nbsp;{{ $parent->name }}
 		</a>
+		&nbsp;
 	</h2>
 	<p> {{ __('messages.'.$parentType) }}</p>
 	@if (\Auth::check())

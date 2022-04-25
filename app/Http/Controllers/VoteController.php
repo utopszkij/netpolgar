@@ -37,6 +37,19 @@ class VoteController extends Controller {
 			$info = $model->getInfo($poll, $parent);
 			$errorInfo = $this->accessRight('create',$poll, $info);
 			if ($errorInfo == '') {
+
+				// ha nincs hozzá ballot (később regisztrált) akkor most létrehozzuk...
+				$ballot = \DB::table('ballots')
+				->where('poll_id','=',$poll->id)
+				->where('user_id','=',\Auth::user()->id)
+				->first();
+				if (!$ballot) {
+					\DB::table('ballots')->insert(
+						["poll_id" => $poll->id,
+						 "user_id" => \Auth::user()->id]
+					);
+				}
+
 				$result = view('vote.form',[
 					'poll' => $poll,
 					'options' => $options,

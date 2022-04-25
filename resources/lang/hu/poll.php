@@ -13,11 +13,11 @@ return [
     'closed' => 'Lezárt szavazás',
     'proposal' => 'Javasolt vita',
 
-    'debateHelp' => 'Támogasd a leírás alatt lévő <em class="fas fa-thumbs-up"></em> -al a vita meginditását!',
+    'proposaleHelp' => 'Támogasd a leírás alatt lévő <em class="fas fa-thumbs-up"></em> -al a vita meginditását!',
+    'debateHelp' => 'Javasolj új választható opciókat, támogasd <em class="fas fa-thumbs-up"></em> -al mások ilyen javaslatait!',
     'activeHelp' => 'Aktív',
     'closedHelp' => 'Lezárult. Már nem lehet szavazni, kommentelni',
     'voteHelp' => 'Most folyik a szavazás',
-    'proposalHelp' => 'Javasolj új választható opciókat, támogasd <em class="fas fa-thumbs-up"></em> -al mások ilyen javaslatait!',
 
     'proposalOption' => 'Javasolt opció',
     'canceled' => 'Megszakított vita',

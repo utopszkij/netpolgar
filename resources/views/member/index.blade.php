@@ -63,12 +63,13 @@
                 <!-- tagokat megjelenitő képernyő --> 
             	@if (($value->status == 'proposal') & 
             	     ($rank == 'member'))
-            	   @if ($info->userLiked[$key])
-            	   <em class="fas -fa-check"></em>	
-            	   @endif
-            		<a href="{{ \URL::to('/like/members/'.$value->id) }}">
-            			<em class="fas fa-thumbs-up"></em>
-            			{{ __('member.like') }}
+					<a href="{{ \URL::to('/like/members/'.$value->id) }}">
+            	   	@if ($info->userLiked[$key])
+					   <em class="fas -fa-thumbs-up liked"></em>	
+					@else
+						<em class="fas -fa-thumbs-up"></em>	
+            	    @endif
+           			{{ __('member.like') }}
             		</a>&nbsp;
             		<a href="{{ \URL::to('/likeinfo/members/'.$value->id) }}">
             			{{ $info->likeCount[$key] }} / {{ $info->likeReqMember }}
@@ -76,12 +77,13 @@
             	@endif
             	@if (($value->status == 'active') & 
             	     ($rank == 'member'))
-            	   @if ($info->userDisLiked[$key])
-            	   <em class="fas fa-check"></em>	
-            	   @endif
-            		<a href="{{ \URL::to('/dislike/members/'.$value->id) }}">
-            			<em class="fas fa-thumbs-down"></em>
-            			{{ __('member.disLikeMember') }}
+					<a href="{{ \URL::to('/dislike/members/'.$value->id) }}">
+						@if ($info->userDisLiked[$key])
+							<em class="fas fa-thumbs-down liked"></em>
+						@else
+							<em class="fas fa-thumbs-down"></em>
+						@endif
+						{{ __('member.disLikeMember') }}
             		</a>&nbsp;
             		<a href="{{ \URL::to('/likeinfo/members/'.$value->id) }}">
 	           			{{ $info->disLikeCount[$key] }} / {{ $info->disLikeReqMember }}
@@ -93,12 +95,13 @@
             		 ($value->rank != __('member.member')) &
             		 ($value->rank != __('member.accredited')) &
             		 ($rank == 'notmember'))
-            	   @if ($info->userLiked[$key])
-            	   <em class="fas fa-check"></em>	
-            	   @endif
-            		<a href="{{ \URL::to('/like/members/'.$value->id) }}">
-            			<em class="fas fa-thumbs-up"></em>
-            			{{ __('member.like') }}
+					<a href="{{ \URL::to('/like/members/'.$value->id) }}">
+						@if ($info->userLiked[$key])
+            	   			<em class="fas fa-thumbs-up liked"></em>	
+						@else
+							<em class="fas fa-thumbs-up"></em>	
+            	   		@endif
+						{{ __('member.like') }}
             		</a>&nbsp;
             		<a href="{{ \URL::to('/likeinfo/members/'.$value->id) }}">
             			{{ $info->likeCount[$key] }} / {{ $info->likeReqRank }}
@@ -106,27 +109,29 @@
             	@endif
             	@if (($value->rank == __('member.accredited')) &
             	     ($rank == 'notmember'))
-            	   @if ($info->userLiked[$key])
-            	   <em class="fas fa-check"></em>	
-            	   @endif
-            		<a href="{{ \URL::to('/like/members/'.$value->id) }}">
-            			<em class="fas fa-thumbs-up"></em>
-            			{{ __('member.accredite') }}
+					<a href="{{ \URL::to('/like/members/'.$value->id) }}">
+						@if ($info->userLiked[$key])
+	            			<em class="fas fa-thumbs-up liked"></em>
+						@else
+	            			<em class="fas fa-thumbs-up"></em>
+						@endif
+						{{ __('member.accredite') }}
             		</a>&nbsp;
             		<a href="{{ \URL::to('/likeinfo/members/'.$value->id) }}">
             			{{ $info->likeCount[$key] }} 
 					</a>
-            	@endif
+				@endif	
             	@if (($value->status == 'active') & 
             	     ($value->rank != __('member.member')) &
             	     ($value->rank != __('member.accredited')) &
             	     ($rank == 'notmember'))
-            	   @if ($info->userDisLiked[$key])
-            	   <em class="fas fa-check"></em>	
-            	   @endif
-            		<a href="{{ \URL::to('/dislike/members/'.$value->id) }}">
-            			<em class="fas fa-thumbs-down"></em>
-            			{{ __('member.disLikeRank') }}
+					<a href="{{ \URL::to('/dislike/members/'.$value->id) }}">
+						@if ($info->userDisLiked[$key])
+							<em class="fas fa-thumbs-down liked"></em>
+						@else
+							<em class="fas fa-thumbs-down"></em>
+						@endif
+						{{ __('member.disLikeRank') }}
             		</a>&nbsp;
             		<a href="{{ \URL::to('/likeinfo/members/'.$value->id) }}">
 	           			{{ $info->disLikeCount[$key] }} / {{ $info->disLikeReqRank }}

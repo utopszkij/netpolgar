@@ -108,7 +108,8 @@
              	@if ($poll->status == 'closed')
              	<em class="fas fa-lock"></em>
              	@endif
-	        	{{ __('poll.'.$poll->status) }} <var class="help">{!! __('poll.'.$poll->status.'Help') !!}</var>
+	        	{{ __('poll.'.$poll->status) }} 
+				<var class="help">{!! __('poll.'.$poll->status.'Help') !!}</var>
 			</strong>	
 	        	&nbsp;&nbsp;&nbsp;&nbsp;
         </div>
@@ -133,6 +134,7 @@
 			{{ __('poll.like') }}
        </div>
       @else
+		<!-- zavaró ha ki van írva, főleg ha közben regisztráltak igy a likeReq változhatott 
 	    <div class="col-11 col-md-10">
      	   <em class="fas fa-thumbs-up"></em>
         	</a>
@@ -141,6 +143,7 @@
 	      </a>	
 			{{ __('poll.liked') }}
        </div>
+		-->
    	@endif
    		
    		<div class="row">
@@ -244,11 +247,13 @@
 						</a>
 						{{ __('poll.optionLike') }}
 				  @else
+				        <!-- zavaró ha ki van írva (lásd fentebb)
 						<em class="fas fa-thumbs-up"></em>
 						<a href="{{ \URL::to('/likeinfo/options/'.$option->id) }}">
 						{{ $optionInfo->likeCount }} / {{ $optionInfo->likeReq }}
 						</a>
 						{{ __('poll.optionLiked') }}
+						-->
 				  @endif				
 			  @endif	  
 			  @if ($userAdmin)

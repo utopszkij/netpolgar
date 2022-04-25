@@ -136,18 +136,13 @@ class ProductController extends Controller {
     public function create($team) {
 
 		 if (is_string($team)) {
-			$team = Product::where('id','=',$team)->first();
+			$team = Team::where('id','=',$team)->first();
 		 }
 		 if (!$this->accessCheck('create', $team, false)) {
 				return redirect()->to('/teams/'.$team->id);
 		 }
     	  
     	 $product = Product::emptyRecord();
-    	 if (is_string($team)) {
-				$team = \DB::table('teams')->where('id','=',$team)->first();    	  
-    	 } else {
-				$team = false;    	  
-    	 } 
     	 if ($team) {
     	  		$product->parent_type = 'teams';
     	  		$product->parent = $team->id;
