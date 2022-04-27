@@ -28,7 +28,7 @@ class MessageController extends Controller {
      * @param record $parent
      * @return array
      */
-    protected function buildLinks(int $offset, int $total, string $parentType, $parent): array {
+    protected function buildLinksTree(int $offset, int $total, string $parentType, $parent): array {
         $links = [];
         $page = 1;
         $w = 0;
@@ -51,6 +51,39 @@ class MessageController extends Controller {
     }
     
     /**
+     * lapozó linkek kialakítása
+     * @param int $offset
+     * @param int $total
+     * @param string $parentType
+     * @param record $parent
+     * @return array
+     */
+    protected function buildLinksList(int $offset, int $total, string $parentType, $parent): array {
+        $links = [];
+        $page = 1;
+        $w = 0;
+        $links[] = ["first", __('messages.first'), \URL::to('/message/list/'.$parentType.'/'.$parent->id.'/0') ];
+        while ($w < $total) {
+            if (($w >= $offset - 20) & ($w <= $offset + 20)) {
+                 if ($w == $offset) {
+                     $links[] = ["actual", $page, \URL::to('/message/list/'.$parentType.'/'.$parent->id.'/'.$w) ];
+                 } else {
+                     $links[] = ["other", $page, \URL::to('/message/list/'.$parentType.'/'.$parent->id.'/'.$w) ];
+                 }
+             }
+            $w = $w + 10;
+            $page++;
+        }
+        $page = $page - 1;
+        $w = $w - 10;
+        $links[] = ["last", __('messages.last'), \URL::to('/message/list/'.$parentType.'/'.$parent->id.'/'.$w) ];
+        for ($i=0; $i<count($links); $i++) {
+            $links[$i][2] .= '?filterUserName='.\Request::input('filterUserName','');
+        }
+        return $links;
+    }
+
+    /**
      * üzenetek fa szerkezetű lapozható megjelenitője
      */
     public function tree(Request $request, string $parentType, int $parent, int $offset = -1) {
@@ -66,10 +99,8 @@ class MessageController extends Controller {
         if (($parentType == 'users') & ($parent != $userId)) {
             return \Redirect::back()->with('error',__('messages.accessDenied'));
         }
-        
         $moderator = Message::isModerator($parentType, $parent);
         $member = Message::isMember($parentType, $parent);
-        
         $parentTable = \DB::table($parentType);
         $parent = $parentTable->where('id','=',$parent)->first();
         if (!$parent) {
@@ -120,9 +151,10 @@ class MessageController extends Controller {
             }
         }
         
-        $links = $this->buildLinks($offset, $total, $parentType, $parent);
+        $links = $this->buildLinksTree($offset, $total, $parentType, $parent);
         
         return view('message.tree',[
+           "title" => __('messages.tree'),
            "avatar" => $avatar, 
            "parentType" => $parentType,
            "parentId" => $parent->id,
@@ -132,12 +164,74 @@ class MessageController extends Controller {
            "path" => $path,
            "tree" => $model->tree,
            "total" => $total,
-           "links" => $links
+           "links" => $links,
+           "filterUserName" => ""
         ]);        
+    }
+
+    /**
+     * Üzenet szál megjelenítése, amelyik tartalmazza az $id elemet
+     */
+    public function thread(Request $request, int $id) {
+        $rec = \DB::table('messages')->where('id','=',$id)->first();
+        $model = new \App\Models\Message();
+        $model->getThread($id);
+        if (count($model->tree) == 0) {
+            return \Redirect::back()->with('error',__('messages.noThread'));
+        }
+        $total = count($model->tree);
+        if (\Auth::user()) {
+            $userId = \Auth::user()->id;
+            $avatar = $this->avatar(\Auth::user()->profile_photo_path, \Auth::user()->email);
+        } else {
+            $userId = 0;
+            $avatar = '';
+        }
+        $parentType = $rec->parent_type;
+        $parent = $rec->parent;
+        $offset = 0;
+        // privát üzenetek közül csak a saját üzeneteit olvashatja
+        if (($parentType == 'users') & ($parent != $userId)) {
+            return \Redirect::back()->with('error',__('messages.accessDenied'));
+        }
+        
+        $moderator = Message::isModerator($parentType, $parent);
+        $member = Message::isMember($parentType, $parent);
+        
+        $parentTable = \DB::table($parentType);
+        $parent = $parentTable->where('id','=',$parent)->first();
+        if (!$parent) {
+            echo 'Fatal error parent not found'; exit();
+        }
+        foreach ($model->tree as $treeItem) {
+            $model->getInfo($treeItem);
+            if ($userId > 0) {
+                Message::setReaded($treeItem->id, $userId);
+            }
+        }
+        $path = [];
+        $links = $this->buildLinksList($offset, $total, $parentType, $parent);
+        return view('message.tree',[
+           "title" => __('messages.thread'), 
+           "avatar" => $avatar, 
+           "parentType" => $parentType,
+           "parentId" => $parent->id,
+           "parent" => $parent,  
+           "member" => $member,
+           "moderator" => $moderator,
+           "path" => $path,
+           "tree" => $model->tree,
+           "total" => $total,
+           "links" => $links,
+           "filterUserName" => ""
+        ]);        
+
     }
     
     /**
      * üzenetek lista formájú lapozható megjelenitője
+     * ha a request -ben filterUserName adott akkor csak az általa írtakat
+     * 
      */
     public function list(Request $request, string $parentType, int $parent, int $replyTo, int $offset = -1) {
         if (\Auth::user()) {
@@ -152,6 +246,7 @@ class MessageController extends Controller {
         if (($parentType == 'users') & ($parent != $userId)) {
             return \Redirect::back()->with('error',__('messages.accessDenied'));
         }
+        $filterUserName = $request->input('filterUserName','');
         
         $moderator = Message::isModerator($parentType, $parent);
         $member = Message::isMember($parentType, $parent);
@@ -164,15 +259,19 @@ class MessageController extends Controller {
             $model->getInfo($pathItem);
             $level++;
         }
-        $model->getListItem($parentType, $parent->id, $replyTo, $level);
+        if ($filterUserName == '') {
+            $model->getListItem($parentType, $parent->id, $replyTo, $level);
+        } else {
+            $model->tree = $model->getByUser($parentType, $parent->id, $filterUserName);
+        }    
         $total = count($model->tree);
-        
         // ha $offset alapértelmezett akkor az utolsó lapot jelenitem meg
         if ($offset < 0) {
             $offset = 0;
             while ($offset < count($model->tree)) {
                 $offset = $offset + 10;
             }
+            $offset = $offset - 10;
         }
         
         $model->tree = array_splice($model->tree, $offset, 10);
@@ -183,13 +282,20 @@ class MessageController extends Controller {
             }
         }
                 
-        $links = $this->buildLinks($offset, $total, $parentType, $parent);
+        $links = $this->buildLinksList($offset, $total, $parentType, $parent);
         
+        if ($filterUserName != '') {
+            $title = $filterUserName.' '.__('messages.ofMessages');
+        } else {
+            $title = __('messages.list');
+        }
         return view('message.tree',[
+            "title" => $title,
             "avatar" => $avatar,
             "parentType" => $parentType,
             "parentId" => $parent->id,
             "parent" => $parent,
+            "filterUserName" => $filterUserName,
             "member" => $member,
             "moderator" => $moderator,
             "path" => $path,
@@ -202,7 +308,7 @@ class MessageController extends Controller {
     
     /**
      * új üzenet tárolása
-     * moderálás tárolása
+     * moderálás vagy modosítás tárolása
      * csak bejelentkezett csoport member használhatja
      * @param Request $request
      * @return laravel redirect
@@ -226,10 +332,11 @@ class MessageController extends Controller {
 				$result = \Redirect::back()->with('error',$errorInfo);
 			}
 		} else {
+            $url = \URL::to('/message/tree/'.$parent_type.'/'.$parent);
 			if ($errorInfo == '') {
-				$result = \Redirect::back()->with('success',__('messages.saved'));
+				$result = \Redirect::to($url)->with('success',__('messages.saved'));
 			} else {
-				$result = \Redirect::back()->with('error',$errorInfo);
+				$result = \Redirect::to($url)->with('error',$errorInfo);
 			}
 		}
         return $result;
@@ -252,6 +359,11 @@ class MessageController extends Controller {
                 $avatar = '';
             }
             if (Message::isModerator($message->parent_type, $message->parent)) {
+                $result = view('message.moderator',[
+                    "myMessage" => $message,
+                    "backURL" => urlencode(\URL::previous())
+                ]);
+            } else if (\Auth::check() & (\Auth::user()->id == $message->user_id)) {
                 $result = view('message.moderator',[
                     "myMessage" => $message,
                     "backURL" => urlencode(\URL::previous())

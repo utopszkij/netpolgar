@@ -94,11 +94,14 @@ class Project extends Model
         $result->memberCount = $t->select('distinct user_id')
         ->where('parent_type','=','projects')
         ->where('parent','=',$project->id)
+		->where('rank','=','member')
         ->where('status','=','active')
         ->count();
+        $t = \DB::table('members');
         $result->parentMemberCount = $t->select('distinct user_id')
         ->where('parent_type','=','teams')
         ->where('parent','=',$project->team_id)
+		->where('rank','=','member')
         ->where('status','=','active')
         ->count();
         if (is_string($project->config)) {

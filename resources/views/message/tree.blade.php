@@ -18,6 +18,12 @@ if (\Auth::user()) {
 <x-guest-layout>
 <div id="messages" class="pageContainer row messagesTree">
 	<p>&nbsp;</p>
+	<div class="helpBtn">
+		<a href="{{ \URL::to('/help').'?name=beszelgetes' }}" target="_help" onclick="true">  
+		<!-- a href="#" onclick="help('messages')"> -->
+			<em class="fas fa-book"></em>Súgó
+		</a>	
+	</div>
 	<h2>
 		<a href="{{ \URL::to('/'.$parentType.'/'.$parent->id) }}">
 			<em class="fas fa-hand-point-right"></em>
@@ -32,93 +38,112 @@ if (\Auth::user()) {
 			@endif
 			&nbsp;{{ $parent->name }}
 		</a>
+		&nbsp;
 	</h2>
 	<p> {{ __('messages.'.$parentType) }}</p>
-   	<h3>
-   		{{ __('messages.list') }}
-   	</h3>
-
 	@if (\Auth::check())
-	<div class="row">
-		<div class="col-12">
-			<a href="{{ \URL::to('/message/notreaded') }}">
-				<em class="fas fa-hand-point-right"></em>{{ __('messages.notreaded') }}
-			</a>
-		</div>
-	</div>
-	@endif
-	
-	<div class="paths">
-	@foreach ($path as $pathItem)
-    		@include('message.item', [
-    			'treeItem' => $pathItem,
-    			'parentType' => $parentType,
-    			'parent' => $parent,
-    			'parentId' => $parent->id 
-    		])
-	@endforeach
-	</div>
-	
-	
-	<div>
-	@foreach ($tree as $treeItem) 
-		@php if ($treeItem->level > 4) $treeItem->level = 4; @endphp
-		@if ($treeItem->id > 0)
-    		@include('message.item', [
-    			'treeItem' => $treeItem,
-    			'parentType' => $parentType,
-    			'parent' => $parent,
-    			'parentId' => $parent->id 
-    		])
-		@else
-			<div class="excluded">
-    			<a href="{{ \URL::to('/message/list/'.$parentType.'/'.$parent->id.'/'.$treeItem->replyTo[0]) }}">
-    				...
-    			</a>
+		<div class="row">
+			<div class="col-12">
+				<a href="{{ \URL::to('/message/notreaded') }}">
+					<em class="fas fa-hand-point-right"></em>{{ __('messages.notreaded') }}
+				</a>
 			</div>
-		@endif
-	@endforeach
-	</div>
-	
-	<nav>
-	<ul class="pagination pull-right">
-	@foreach ($links as $link)
-		@if ($link[0] == 'actual')
-		<li class="page-item active" title="{{ $link[1] }}">
-		<span class="page-link">{!! $link[1] !!}</span>
-		</li>
-		@else
-		<li class="page-item" title="{{ $link[1] }}">
-		<a href="{{ $link[2] }}" class="page-link">{!! $link[1] !!}</a>
-		</li>
-		@endif
-	@endforeach
-	</ul>
-	</nav>
-	
-	@if (($member) & ($parentType != 'users'))
-	<div class="row newMsg">
-	<form method="post" action="{{ \URL::to('/message/store') }}">
-	 	@csrf
-		<input type="hidden" name="parent_type" value="{{ $parentType}}" />
-		<input type="hidden" name="parent" value="{{ $parentId }}" />
-		<input type="hidden" name="reply_to" value="0" />
-		<input type="hidden" name="msg_type" value="" />
-    	<textarea name="value" cols="60" rows="4" style="width:70%"></textarea>
-    	<button type="submit" class="btn btn-primary">
-    		<em class="fas fa-paper-plane"></em>{{ __('messages.send') }}
-    	</button>
-    	<p>használható korlátozott "markdown" szintaxis.
-    		kiemelt: <strong>**...**</strong>,
-    		dölt betüs: <strong>*...*</strong> ,
-    		kép: <strong>![](http...)</strong>, 
-    		link: <strong>http....</strong>
-    		:(,   :),  :|<br />
-			max. 3 kép lehet, max. képfile méret: 2M
-    	</p>
-	</form>
-	</div>
+		</div>
 	@endif
+	@if ($title != __('messages.tree'))
+		<div class="col-12">
+				<a href="{{ \URL::to('/message/tree/'.$parentType.'/'.$parent->id) }}">
+					<em class="fas fa-hand-point-right"></em>{{ __('messages.tree') }}
+				</a>
+		</div>
+	@endif
+
+	<h4>{{ $title }}</h4>   
+	<div id="forum">
+		<form method="get" action="{{ \URL::to('/message/list/'.$parentType.'/'.$parent->id.'/0') }}">
+			<input type="hidden" name="page" value="0" />
+			<input type="hidden" name="offset" value="0" />
+			Szürés, csak <input type="text" name="filterUserName" value="{{ $filterUserName }}"/> üzenetei
+			<button type="submit" class="btn btn-primary">
+				<em class="fas fa-search"></em>
+				szűrés</button>
+		</form>	
+		
+		<div class="paths">
+		@foreach ($path as $pathItem)
+				@include('message.item', [
+					'treeItem' => $pathItem,
+					'parentType' => $parentType,
+					'parent' => $parent,
+					'parentId' => $parent->id 
+				])
+		@endforeach
+		</div>
+		
+		
+		<div>
+		@foreach ($tree as $treeItem) 
+			@php if ($treeItem->level > 4) $treeItem->level = 4; @endphp
+			@if ($treeItem->id > 0)
+				@include('message.item', [
+					'treeItem' => $treeItem,
+					'parentType' => $parentType,
+					'parent' => $parent,
+					'parentId' => $parent->id 
+				])
+			@else
+				<div class="excluded">
+					<a href="{{ \URL::to('/message/list/'.$parentType.'/'.$parent->id.'/'.$treeItem->replyTo[0]) }}">
+						...
+					</a>
+				</div>
+			@endif
+		@endforeach
+		</div>
+		
+		<nav>
+		<ul class="pagination pull-right">
+		@foreach ($links as $link)
+			@if ($link[0] == 'actual')
+			<li class="page-item active" title="{{ $link[1] }}">
+			<span class="page-link">{!! $link[1] !!}</span>
+			</li>
+			@else
+			<li class="page-item" title="{{ $link[1] }}">
+			<a href="{{ $link[2] }}" class="page-link">{!! $link[1] !!}</a>
+			</li>
+			@endif
+		@endforeach
+		</ul>
+		</nav>
+		
+		@if (($member) & ($parentType != 'users'))
+		<div class="row newMsg">
+		<form method="post" action="{{ \URL::to('/message/store') }}">
+			@csrf
+			<input type="hidden" name="parent_type" value="{{ $parentType}}" />
+			<input type="hidden" name="parent" value="{{ $parentId }}" />
+			<input type="hidden" name="reply_to" value="0" />
+			<input type="hidden" name="msg_type" value="" />
+			<textarea name="value" cols="60" rows="4" style="width:70%"></textarea>
+			<button type="submit" class="btn btn-primary">
+				<em class="fas fa-paper-plane"></em>{{ __('messages.send') }}
+			</button>
+			<a href="{{ \URL::current() }}" class="btn btn-secondary" style="color:white">
+					<em class="fas fa-ban"></em>{{ __('messages.cancel') }}
+           	</a>
+			<p>használható korlátozott "markdown" szintaxis.
+				kiemelt: <strong>**...**</strong>,
+				dölt betüs: <strong>*...*</strong> ,
+				kép: <strong>![](http...)</strong>, 
+				link: <strong>http....</strong>
+				:(,   :),  :|<br />
+				max. 3 kép lehet, max. képfile méret: 2M
+			</p>
+		</form>
+		</div>
+		@endif
+	</div>
 
 	<!-- jitsi start -->
 
@@ -149,16 +174,18 @@ if (\Auth::user()) {
 	@if (($member) | 
 		 (($parentType == 'users') & ($parentId == \Auth::user()->id))
 		)
-		<div id="jitsi">
+		<div id="jitsi" style="height:600px"></div>
 		<script type="text/javascript">
    		function jitsiStart() {
+			$('#forum').hide();   
 		    $('#jitsiHelp').show();
             var domain = "meet.jit.si";
-            var w = window.innerWidth - 15;
+            var w = window.innerWidth * 0.9;
+            var h = window.innerHeight * 0.9;
             var options = {
                 roomName: "{{ $parentType }}_{{ $parent->name }}",
                 width: w,
-                height: w,
+                height: h,
                 parentNode: undefined,
                 configOverwrite: {},
                 interfaceConfigOverwrite: {

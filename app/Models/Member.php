@@ -43,6 +43,7 @@ class Member extends Model
         $memberCount = $t->selectRaw('distinct user_id')
         ->where('parent_type','=',$parentType)
         ->where('parent','=',$parent->id)
+        ->where('rank','=','member')
         ->where('status','=','active')
         ->count();
         $result->memberCount = $memberCount;
@@ -405,7 +406,18 @@ class Member extends Model
                 $result = (\DB::table('members')
                     ->where('user_id','=',$userId)
                     ->where('parent_type','=',$parentType)
+                    ->where('parent','=',$parentId)
                     ->where('status','=','active')
+                    ->where('rank','=','member')
+                    ->count() > 0);
+            }
+            if (!$result) {
+                $result = (\DB::table('members')
+                    ->where('user_id','=',$userId)
+                    ->where('parent_type','=','teams')
+                    ->where('parent','=',2)
+                    ->where('status','=','active')
+                    ->where('rank','=','member')
                     ->count() > 0);
             }
         }

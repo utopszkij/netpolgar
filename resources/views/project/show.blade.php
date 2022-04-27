@@ -148,18 +148,21 @@
         			</a>
         		@endif
         		@if ((count($info->userParentRank) > 0) & ($project->status == 'proposal'))
-        			<a class="btn btn-success" 
-        			   href="{{ \URL::to('/like/projects/'.$project->id) }}" 
-        			   title="a csoport aktiválását javaslom">
-        				@if ($info->userLiked)
-        				<em class="fas fa-check"></em>
-        				@endif
-        				<em class="fas fa-thumbs-up"></em>
-        				<a href="{{ \URL::to('/likeinfo/projects/'.$project->id) }}">
+					@if ($info->userLiked)
+						<a 	href="{{ \URL::to('/like/projects/'.$project->id) }}" 
+							title="a csoport aktiválását javaslom">
+							<em class="fas fa-thumbs-up liked"></em>
+						</a>
+					@else 
+						<a 	href="{{ \URL::to('/like/projects/'.$project->id) }}" 
+							title="a csoport aktiválását javaslom">
+							<em class="fas fa-thumbs-up"></em>
+						</a>
+					@endif
+					<a href="{{ \URL::to('/likeinfo/projects/'.$project->id) }}">
 	        				({{ $info->likeCount }}/{{ $info->likeReq}})
-	        			</a>	
-						{{ __('project.like') }}
-        			</a>
+	        		</a>	
+					{{ __('project.like') }}
         		@endif
         </div>
 	     <div class="col-11 col-md-10">

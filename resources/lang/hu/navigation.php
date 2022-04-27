@@ -18,5 +18,6 @@ return [
     'account' => 'NTC folyószámla',
     'products' => 'Termékek',
     'files' => 'Fileok',
-    'notreaded' => 'Olvasatlan üzenet'
+    'notreaded' => 'Olvasatlan üzenet',
+    'manual' => 'Felhasználói dokumentáció'
 ];

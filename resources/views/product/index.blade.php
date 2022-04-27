@@ -85,6 +85,11 @@
 	@endphp
 
 	<div id="products">
+		<div class="helpBtn"style="top:200px">
+			<a href="#" onclick="help('products')">
+				<em class="fas fa-book"></em>Súgó
+			</a>	
+		</div>
 		@if (\Auth::user())
 		<div class="row">
 			<div class="col-12">

@@ -115,6 +115,13 @@ class Team extends Model {
 					]);
 					$this->checkStatus($teamRec->id);
 			 	} else {
+					// modositás log kialakítása 
+					$old = $model->where('id','=',$id)->first();
+					$log = Minimarkdown::buildLog($old->description, $teamArr['description']);
+					if ($log != '') {	
+						$teamArr['description'] .= '{log}'.$log;	
+					}	
+					// rekord tárolás
 					$model->where('id','=',$id)
 					->update($teamArr);			 	
 			 	}	
@@ -486,7 +493,7 @@ class Team extends Model {
             from users
             left outer join members on members.parent_type = "teams" and
                                       members.parent = 1 and members.user_id = users.id
-            where members.id is null
+            where (users.email not like "deleted%") and  members.id is null
           ');  
        } catch (\Illuminate\Database\QueryException $exception) {
            echo JSON_encode($exception->errorInfo); exit();

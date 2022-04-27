@@ -1,19 +1,24 @@
 <x-guest-layout>  
 	<div id="pollContainer">
+	<div class="helpBtn">
+		<a href="#" onclick="help('polls')">
+			<em class="fas fa-book"></em>Súgó
+		</a>	
+	</div>
     <div class="row" style="margin-top: 5rem;">
         <div class="col-lg-12 margin-tb">
             <div class="pull-left">
             	<p>&nbsp;</p>
             	<h2>
             		<a href="{{ \URL::to('/'.$parentType.'/'.$parent->id) }}">
-            		<em class="fas fa-hand-point-right"></em>
-						@if ($parentType == 'teams')
-						<em class="fas fa-user-friends"></em>
-						@endif
-						@if ($parentType == 'projects')
-						<em class="fas fa-cogs"></em>
-						@endif
-            		&nbsp;{{ $parent->name }} 
+                  <em class="fas fa-hand-point-right"></em>
+                  @if ($parentType == 'teams')
+                  <em class="fas fa-user-friends"></em>
+                  @endif
+                  @if ($parentType == 'projects')
+                  <em class="fas fa-cogs"></em>
+                  @endif
+                  &nbsp;{{ $parent->name }} 
             		</a>
             	</h2>
             	@if ($statuses == 'proposal-debate')
@@ -60,7 +65,7 @@
             	</a>
             	</h4>
             </td>
-            <td>{{ \Str::limit($value->description, 90) }}</td>
+            <td>{{ App\Models\Minimarkdown::strLimit($value->description,90) }}</td>
         </tr>
         @endforeach
       </tbody>  

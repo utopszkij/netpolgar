@@ -1,5 +1,10 @@
 <x-guest-layout>  
 	<div id="fileContainer">
+    <div class="helpBtn">
+			<a href="#" onclick="help('files')">
+				<em class="fas fa-book"></em>Súgó
+			</a>	
+	</div>
     <div class="row" style="margin-top: 5rem;">
         <div class="col-lg-12 margin-tb">
             <div class="pull-left">

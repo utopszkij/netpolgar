@@ -11,6 +11,7 @@ class Minimarkdown {
 *      **...**        kiemelt szöveg
 *      *....*  dölt betüs szöveg
 *      :(  :)  :|     emotions 
+*      {log}...EOF változás log
 */
 
 	/**
@@ -62,11 +63,17 @@ class Minimarkdown {
 	 * @return html string
 	 */
 	public static function miniMarkdown($s) {
-		 $s = strip_tags($s,['br<img src="homokozo.png" alt="" /><img src="homokozo.png" alt="" />']);
+		$s = strip_tags($s,['br<img src="homokozo.png" alt="" /><img src="homokozo.png" alt="" />']);
 	    $s = str_replace("\r\n",'<br />',$s);       // \r\n --> <br />
 	    $s = str_replace("\n",'<br />',$s);         // \n --> <br />
 	    $s = str_replace("\r",'<br />',$s);         // \r --> <br />
-	    $imgs = [];
+	    $w = explode('{log}',$s);
+		$log = '';
+		$s = $w[0];
+		if (count($w) > 1) {
+			$log = $w[1];
+		}
+		$imgs = [];
 		 preg_match_all('~!\[\]\([^\s<]+\)~',$s, $imgs);
 		 // ne legyen több mint 3 kép
 		 for ($i=3; $i<count($imgs[0]); $i++) {
@@ -113,8 +120,70 @@ class Minimarkdown {
 	    $s = str_replace(':)','<em class="fas fa-grin"></em>',$s);
 	    $s = str_replace(':(','<em class="fas fa-frown"></em>',$s);
 	    $s = str_replace(':|','<em class="fas fa-flushed"></em>',$s);
+		if ($log != '') {
+			$s .= '<p class="logLink" onclick="'."$('.log').toggle()".'">Módosítva</p>
+			<div class="log" style="display:none">'.$log.'</div>';
+		}
 	    return $s;
 	}
+
+	/**
+	 * log eltávolitása a minimarkdown stringből
+	 * @param string miniMarkdownBody + log
+	 * @return string miniMarkdownBody
+	 */
+	public static function stripLog(string $s): string {
+		$log = '';
+		$w = explode('{log}',$s);
+		$s = $w[0];
+		if (count($w) > 1) {
+			$log = $w[1];
+		}
+		return $s;
+	}
+
+	/**
+	 * log kiemelése a minimarkdown stringből
+	 * @param string miniMarkdownBody + log
+	 * @return string log
+	 */
+	public static function getLog(string $s): string {
+		$log = '';
+		$w = explode('{log}',$s);
+		$s = $w[0];
+		if (count($w) > 1) {
+			$log = $w[1];
+		}
+		return $log;
+	}
+
+	/**
+	 * log képzése
+	 * @param string $old miniMarkdowsBody + oldlog
+	 * @param string $new mimiMarkdownBody
+	 * @return string $newLog
+	 */
+	public static function buildLog(string $old, string $new) : string {
+		$oldBody = Minimarkdown::stripLog($old); 
+		$log = Minimarkdown::getLog($old); 
+		if ($new != $oldBody) {
+			$log .= date('Y.m.d H:i:s')."\n".$oldBody."\n";
+		}
+		return $log;
+	}
+
+	/**
+	 * miniMarkdownBody első néhány karaktere html kiszürve.
+	 */
+	public static function strLimit(string $s, int $length): string {
+		$body = Minimarkdown::stripLog($s);
+		$html = Minimarkdown::miniMarkdown($body);
+		$html = str_replace('<br />',' ',$html);
+		return mb_substr(strip_tags($html),0,$length);
+	}
+
+
+
 }
 
 ?>

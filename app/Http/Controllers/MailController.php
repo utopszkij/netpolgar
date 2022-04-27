@@ -64,6 +64,7 @@ class MailController extends Controller
      */
     public function send(string $parentType, int $parent, int $offset, Request $request)   {
 		$result = '';
+		$addressed = $request->input('addresed','');
 		$subject = $request->input('subject','');
 		$mailbody = $request->input('mailbody','');
 		$mailbody = str_replace('&lt;','<',$mailbody);
@@ -82,15 +83,19 @@ class MailController extends Controller
 			if ($admin) {
 				if ($parentRec) {
 					$errors = '';
-					$emails = \DB::table('members')
-					->select('users.email')
-					->leftJoin('users','users.id','members.user_id')
-					->where('parent_type','=',$parentType)
-					->where('parent','=',$parent)
-					->where('rank','=','member')
-					->where('status','=','active')
-					->get();
 					$j = 0;
+					if ($addressed == 'all') {
+						$emails = \DB::table('members')
+						->select('users.email')
+						->leftJoin('users','users.id','members.user_id')
+						->where('parent_type','=',$parentType)
+						->where('parent','=',$parent)
+						->where('rank','=','member')
+						->where('status','=','active')
+						->get();
+					} else {	
+						$emails = explode(',',$addressed);
+					}
 					if ($offset < count($emails)) {
 						for ($i = $offset; $i < ($offset + 10); $i++) {
 							if ($i < count($emails)) {

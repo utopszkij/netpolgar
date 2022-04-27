@@ -191,7 +191,7 @@
         			   href="{{ \URL::to('/dislike/teams/'.$team->id) }}" 
         			   title="a csoport lezárását javaslom">
         				@if ($info->userDisLiked)
-        				<em class="fas fa-check"></em>
+        					<em class="fas fa-check"></em>
         				@endif
         				<em class="fas fa-thumbs-down"></em>
         				<a href="{{ \URL::to('/likeinfo/teams/'.$team->id) }}">
@@ -201,18 +201,21 @@
         			</a>
         		@endif
         		@if ((count($info->userParentRank) > 0) & ($team->status == 'proposal'))
-        			<a class="btn btn-success" 
-        			   href="{{ \URL::to('/like/teams/'.$team->id) }}" 
-        			   title="a csoport aktiválását javaslom">
-        				@if ($info->userLiked)
-        				<em class="fas fa-check"></em>
-        				@endif
-        				<em class="fas fa-thumbs-up"></em>
-        				<a href="{{ \URL::to('/likeinfo/teams/'.$team->id) }}">
-	        				({{ $info->likeCount }}/{{ $info->likeReq}})
-	        			</a>	
-						{{ __('team.like') }}
-        			</a>
+					@if ($info->userLiked)
+					<a 	href="{{ \URL::to('/like/teams/'.$team->id) }}" 
+							title="a csoport aktiválását javaslom">
+							<em class="fas fa-thumbs-up liked"></em>
+						</a>
+					@else 
+					<a 	href="{{ \URL::to('/like/teams/'.$team->id) }}" 
+							title="a csoport aktiválását javaslom">
+							<em class="fas fa-thumbs-up"></em>
+						</a>
+					@endif
+					<a href="{{ \URL::to('/likeinfo/teams/'.$team->id) }}">
+								({{ $info->likeCount }}/{{ $info->likeReq}})
+							{{ __('team.like') }}
+					</a>
         		@endif
         </div>
         
@@ -220,7 +223,7 @@
 				<img src="{{ $team->avatar }}" alt="logo" title="logo"
 					style="float:right; width:25%" />        		
             <div style="width:70%">
-            	{!! str_replace("\n",'<br />',$team->description) !!}
+				{!! \App\Models\Minimarkdown::miniMarkdown($team->description) !!}
             	<h4>Beállítások</h4>
 					<div class="config" style="display:inline-block; width:500px">
 						  tisztségek:  {{ implode(',',$team->config->ranks) }}<br />	

@@ -20,6 +20,7 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\MailController;
+use App\Http\Controllers\HelpController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,6 +34,10 @@ use App\Http\Controllers\MailController;
 */
 
 Route::get('/construction', function() { return view('construction'); } );
+
+// help
+Route::get('/help',[HelpController::class, 'show']);
+Route::get('/help/page/{name}',[HelpController::class, 'page']);
 
 // team
 Route::resource('parents.teams', TeamController::class)->shallow();
@@ -76,6 +81,8 @@ Route::post('/message/saveprotest',[MessageController::class, 'saveprotest'])
 Route::get('/message/list/{parentType}/{parentId}/{replyTo}/{offset?}',[MessageController::class, 'list'])
 ->middleware('auth');
 Route::get('/message/notreaded', [MessageController::class, 'notreaded'])
+->middleware('auth');
+Route::get('/message/thread/{id}', [MessageController::class, 'thread'])
 ->middleware('auth');
 
 // mails
@@ -164,6 +171,7 @@ Route::get('/events/{eventId}/subscription',[EventController::class, 'subscripti
 ->middleware('auth');
 Route::post('/events',[EventController::class, 'store']);
 Route::post('/events/{eventId}',[EventController::class, 'update']);
+
 
 
 /*----------------------------------

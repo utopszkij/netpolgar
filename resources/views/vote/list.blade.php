@@ -15,28 +15,51 @@
 
      
     <table class="table table-bordered">
-        <tr>
-            <th>{{ __('vote.ballotId') }}</th>
-            <th></th>
-            <th>{{ __('vote.name') }}</th>
-            <th></th>
-        </tr>
-        @foreach ($data as $key => $value)
-        <tr>
-            <td>{{ $value->ballot_id }}</td>
-            <td>{{ $value->position }}</td>
-            <td>{{ \Str::limit($value->name, 50) }}</td>
-            <td>
-            	@if ($poll->config->secret == 0)
-            		@if ($value->accreditedName != '')
-	            		{{ $value->userName }} --> {{ $value->accreditedName}}
-            		@else
-            			{{ $value->userName }}
-            		@endif
-            	@endif
-            </td>
-        </tr>
-        @endforeach
+        @if ($poll->config->secret == 0) 
+            <h4>Nyilt szavazás</h4>
+            <thead>
+                <tr>
+                    <th>{{ __('vote.name') }}</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($data as $key => $value)
+                <tr>
+                    <td>
+                        @if ($value->accreditedName != '')
+                            {{ $value->userName }} --> {{ $value->accreditedName}}
+                        @else
+                            {{ $value->userName }}
+                        @endif
+                    </td>
+                    <td>{{ $value->position }}</td>
+                    <td>{{ $value->name }}</td>
+                </tr>
+                @endforeach
+            </tbody>
+        @else
+            <h4>Titkos szavazás</h4>
+            <thead>
+                <tr>
+                    <th>{{ __('vote.ballot_id') }}</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($data as $key => $value)
+                <tr>
+                    <td>
+                        {{ $value->ballot_id }}
+                    </td>
+                    <td>{{ $value->position }}</td>
+                    <td>{{ $value->name }}</td>
+                </tr>
+                @endforeach
+            </tbody>
+        @endif
     </table>
     @if (count($data) == 0)
     	<div>{{ __('vote.voteNotFound') }}</div>

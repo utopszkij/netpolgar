@@ -45,7 +45,7 @@ return [
    'decisions' => 'Határozatok',
    'comments' => 'Beszélgetések',
    'events' => 'Események',
-   'files' => 'Fileok',
+   'files' => 'File-ok',
    'orders' => 'Megrendelések',
     
    'active' => 'Aktív',

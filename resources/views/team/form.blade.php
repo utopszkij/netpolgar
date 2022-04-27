@@ -98,7 +98,9 @@
                     {{ __('team.description') }}
                     </label>
                     <textarea class="form-control" cols="80" rows="5" style="height:150px" 
-                    name="description" placeholder="Leírás">{!! $team->description !!}</textarea>
+                    name="description" placeholder="Leírás">{!! \App\Models\Minimarkdown::stripLog($team->description) !!}</textarea>
+					<br />
+					<label></label>Mini markdown szintaxis bold:**..**, dölt: *..*, kép: ![](url), link: http[s]://..., emotions:  :), :(
                 </div>
             </div>
          </div>

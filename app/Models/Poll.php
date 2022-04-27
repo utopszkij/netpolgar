@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use \App\Rules\LiquedRule;
-
+use \App\Models\Minimarkdown;
 
 class Poll extends Model
 {
@@ -210,7 +210,12 @@ class Poll extends Model
      * @return bool
      */
     public static function userMember(string $parentType, int $parentId):bool {
-        return \App\Models\Member::userMember($parentType, $parentId);
+        if (\Auth::check()) {
+            $result =  \App\Models\Member::userMember($parentType, $parentId, \Auth::user()->id);
+        } else {
+            $result = false;
+        }    
+        return $result;
     }
 
     /**
@@ -309,6 +314,13 @@ class Poll extends Model
 				]);
                 Poll::checkStatus($id);
             } else {
+                // változás napló kialakítása
+                $old = $model->where('id','=',$id)->first();
+                $log = Minimarkdown::buildLog($old->description, $pollArr['description']);
+                if ($log != '') {
+                    $pollArr['description'] .= '{log}'.$log;  
+                }
+                // poll rekord tárolása
                 $model->where('id','=',$id)->update($pollArr);
             }
         } catch (\Illuminate\Database\QueryException $exception) {

@@ -635,10 +635,13 @@ class Message extends Model
 	public static function getReplyPath(int $replyTo):array {	
 		$path = [];
 		$rec = \DB::table('messages')->where('id','=', $replyTo)->first();
-		if ($rec) {
+        if ($rec) {
 			$path[] = $rec;
 			while ($rec->reply_to > 0) {
 				$rec = \DB::table('messages')->where('id','=', $rec->reply_to)->first();
+
+                echo 'getReplyPath ciklus '.$rec->id.' '.$rec->reply_to.'<br />';
+
 				
 				if ($rec) {
 					$path[] = $rec;
@@ -653,7 +656,7 @@ class Message extends Model
 	}
 	
 	/**
-	 * Új message tárolása vagy moderálás tárolása
+	 * Új message tárolása, módosítás tárolása vagy moderálás tárolása
 	 * @param Request
 	 * @param bool $member
 	 * @param boll $moderator
@@ -675,6 +678,7 @@ class Message extends Model
         $value = $request->input('value');
         $messageId = $request->input('messageId',0);
         $backURL = $request->input('backURL','');
+        $old = $this->where('id','=',$messageId)->first();
         if ($messageId == 0) {
             // new message
             $moderatorInfo = '';
@@ -698,10 +702,22 @@ class Message extends Model
             } else {
                 $errorInfo = 'not logged or not member';
             }
-        } else if ($moderator) {
-            // moderálás tárolása    
-            $moderatorInfo = $request->input('moderator_info','');
-            $moderatorId = $userId;
+        } else if (($moderator) | (\Auth::user()->id == $old->user_id)) {
+            // moderálás vagy módosítás tárolása    
+            if ($moderator) {
+                $moderatorId = $userId;
+                $moderatorInfo = $request->input('moderator_info','');
+            } else {
+                $moderatorId = $old->moderated_by;
+                $moderatorInfo = $old->moderator_info;
+            }    
+            if (($moderatorInfo == null) | ($moderatorInfo == '')) {
+                $moderatorInfo = $old->moderator_info;
+            }
+            $log = \App\Models\Minimarkdown::buildLog($old->value, $value);
+            if ($log != '') {
+                $value .= '{log}'.$log;
+            }
             try {
                 \DB::table('messages')
                 ->where('id','=',$messageId)
@@ -924,6 +940,49 @@ class Message extends Model
     public static function getNotreadedCount() {
         $q = Message::getNotReadedQuery();
         return $q->count();
+    }
+
+    /**
+     * adott parentType/parent/userId uzenetek lapozható listája
+     * @param string $parentType
+     * @param int $parent
+     * @param string $userName
+     * @param int $pageSize
+     * @return array
+     */
+    public static function getByUser(string $parentType, int $parent, string $userName) {
+
+        $q = \DB::table('messages')
+        ->select('users1.id as cid','users1.profile_photo_path as cavatar','users1.name as cname','users1.email as cemail',
+            'users2.id as rid','users2.profile_photo_path as ravatar','users2.name as rname',
+            'messages.id','messages.value','messages.parent_type','messages.parent', 'messages.created_at',
+            'parent.name as pname')
+        ->join('users as users1','users1.id','messages.user_id')
+        ->leftJoin('users as users2','users2.id','messages.reply_to')
+        ->leftJoin($parentType.' as parent','parent.id','messages.parent')
+        ->where('messages.parent_type','=',$parentType)
+        ->where('messages.parent','=',$parent)
+        ->where('users1.name','=',$userName);
+        $recs = $q->orderBy('created_at')->get();
+        $result = [];
+        foreach ($recs as $rec) {
+            $rec->level = 0;
+            $result[] = $rec;
+        }
+        return $result;
+    }
+
+    /**
+     * üzenet szál beolvasása, amelyik tartalmazza az $id üzenetet
+     * @param int $id
+     * @return array
+     */
+    public function getThread(int $id) {
+        $path = $this->getReplyPath($id);
+        $root = $path[0];
+        $this->tree = [];
+        $count = $this->getTreeItem($root->parent_type, $root->parent, $root->id, 0);
+        return $this->tree;
     }
     
                 
