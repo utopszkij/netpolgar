@@ -84,6 +84,17 @@
 	function popupClose() {
 		$('#popup').hide();	
 	}
+
+	function help(name) {
+		var url = "{{ \URL::to('/help/page')}}/"+name;
+		if (window.innerWidth < 575) {
+			url += "?m=p";
+		} else {
+			url += "?m=d";
+		}
+		window.open(url, '_help').focus();
+		return false;
+	}
 	
 	$(function() {
 		// türelem kérő animáció az a és button elemekre

@@ -19,9 +19,9 @@ if (\Auth::user()) {
 <div id="messages" class="pageContainer row messagesTree">
 	<p>&nbsp;</p>
 	<div class="helpBtn">
-		<a href="{{ \URL::to('/help').'?name=beszelgetes' }}" target="_help" 
-			onclick="true"">
-				<em class="fas fa-book"></em>Súgó
+		<a href="{{ \URL::to('/help').'?name=beszelgetes' }}" target="_help" onclick="true">  
+		<!-- a href="#" onclick="help('messages')"> -->
+			<em class="fas fa-book"></em>Súgó
 		</a>	
 	</div>
 	<h2>

@@ -61,6 +61,12 @@ if (Auth::user()) {
           	{{ __('navigation.market') }}
           </a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link" aria-current="page" target="_help" onclick="true" 
+          	href="{{ URL::to('/help/page/home') }}">
+          	{{ __('navigation.manual') }}
+          </a>
+        </li>
         @if ($notReadedCount > 0)
         <li class="nav-item  notreaded">
           <a class="nav-link" aria-current="page" 

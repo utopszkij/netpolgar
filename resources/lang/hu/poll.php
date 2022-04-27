@@ -53,7 +53,7 @@ return [
     'comments' => 'Hozzászólások',
     'votes' => 'Leadott szavazatok',
     'check' => 'Saját szavazatom',
-    'files' => 'Fájlok',
+    'files' => 'File-ok',
     'events' => 'Események',
     'edit' => 'Szerkesztés',
     'add' => 'Új vita indítását javaslom',

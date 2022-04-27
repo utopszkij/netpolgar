@@ -10,10 +10,16 @@ div.antialiased {min-height:500px;}
 main {padding-top:50px; padding-left:10px;}
 .min-h-screen {min-height:10px; height:auto;}
 .loggedAvatar1 {display:none}
-.help {background-color:#cdf7d9; color:black; padding:10px; margin:5px; border-radius:10px}
+
+.help {background-color:#cdf7d9; color:black;
+	 padding:10px; margin:5px; border-radius:10px; max-width:98%}
 .helpBtn {width:auto; position:fixed; z-index:2; top:90px; right:5px; opacity:0.7;
    background-color: #cdf7d9; color:black; padding:10px; 
    border-style:solid; border-width:1px; border-color:black;  border-radius:10px}
+.help img {display:inline-block; width:95%; max-width:500px;}
+.help ul {margin-left:30px; list-style:disc}
+.help .remark {margin-left:30px; color:#3f913b}
+
 .logLink {color:#808080; cursor:pointer}
 .log {background-color:#d0d0d0; color:#808080}
 .pageContainer {padding:0px 10px 10px 10px; min-height:500px}

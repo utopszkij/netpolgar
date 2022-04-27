@@ -35,6 +35,10 @@ use App\Http\Controllers\HelpController;
 
 Route::get('/construction', function() { return view('construction'); } );
 
+// help
+Route::get('/help',[HelpController::class, 'show']);
+Route::get('/help/page/{name}',[HelpController::class, 'page']);
+
 // team
 Route::resource('parents.teams', TeamController::class)->shallow();
 Route::get('/team/tree', [TeamController::class, 'tree']);
@@ -168,8 +172,6 @@ Route::get('/events/{eventId}/subscription',[EventController::class, 'subscripti
 Route::post('/events',[EventController::class, 'store']);
 Route::post('/events/{eventId}',[EventController::class, 'update']);
 
-// help
-Route::get('/help',[HelpController::class, 'show']);
 
 
 /*----------------------------------
