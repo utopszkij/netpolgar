@@ -751,7 +751,7 @@ class Message extends Model
     
     /**
      * Bejelentkezett user olvasatlan üzenetei query builder
-     * @param int $pageSize
+     * @param int $userId
      */
     public static function getNotreadedQuery() {
         $user = \Auth::user();

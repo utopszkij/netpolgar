@@ -26,7 +26,7 @@ class CreateEventsTable extends Migration
             $table->date('date')->nullable();
             $table->integer('hours')->nullable(); 
             $table->integer('minutes')->nullable();
-            $table->integer('kength')->nullable();
+            $table->string('length')->nullable();
             $table->timestamp('createdd_at')->useCurrent()->nullable();
             $table->timestamp('updated_at')->useCurrent()->nullable();
             $table->biginteger('created_by')->unsigned()->nullable();

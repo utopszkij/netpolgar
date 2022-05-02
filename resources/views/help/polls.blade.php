@@ -22,6 +22,10 @@ A vita közben a csoport adminisztrátorok és a vitát kezdeményező felhaszn�
 <p>
 A vita beállításainál megadott napig tartó vita után indul meg a szavazás, ami ugyancsak a beállításoknál megadott ideig tart.
 </p>
+<p><em class="fas fa-hand-point-right"></em><a href="/help/page/vita-javaslat" onclick="true">
+  Vita javsalat, "Javasolt viták" támogatása</a></p>
+<p><em class="fas fa-hand-point-right"></em><a href="/help/page/vita" onclick="true">
+  Vita lefolytatása</a></p>
 
 <h2>Szavazások</h2>
 <p>A szavazás lehet:</p>
@@ -35,10 +39,15 @@ A vita beállításainál megadott napig tartó vita után indul meg a szavazás
 A szavazás lehet titkos vagy nyílt.
 </p>
 <p>
-A szavazás lehet "likvid" müködésű is.
+A szavazás lehet "likvid" működésű is.
 </p>
 <p>
-A szavazás közben folyamatosan megtekinthetőek a rész eredmények és lekérhető a már megadott szavazatokat tartalmazó CSV fájl (ez nem tartalmaz a szavazatot leadó személy azonosítására alkalmas adatot). Ezen CSV fájl segítségével független ellenőrök ellenőrizhetik a szavazat összesítés helyességét, illetve a szavazás különböző időpontjaiban lekért CSV fájlok összevetésével vizsgálhatják, hogy esetleg történt-e visszamenőleges módosítás az adatbázisban.
+A szavazás közben folyamatosan megtekinthetőek a rész eredmények és 
+lekérhető a már megadott szavazatokat tartalmazó CSV fájl 
+(ez titkos szavazásnál nem tartalmaz a szavazatot leadó személy azonosítására alkalmas adatot). 
+Ezen CSV fájl segítségével független ellenőrök ellenőrizhetik a szavazat összesítés helyességét, 
+illetve a szavazás különböző időpontjaiban lekért CSV fájlok összevetésével vizsgálhatják, 
+hogy esetleg történt-e visszamenőleges módosítás az adatbázisban.
 </p>
 <p>
 A szavazás során a szavazó képernyőjén megjelenik egy szavazat azonosító szám. Ezt a számot senki más nem ismeri csak aki a szavazatot leadta. Ha feljegyzi ezt a számot, ennek segítségével később bármikor ellenőrizheti, hogy a szavazata szerepel-e az adatbázisban (és a CSV fájlban), és a helyes tartalommal szerepel-e?
@@ -47,18 +56,29 @@ A szavazás során a szavazó képernyőjén megjelenik egy szavazat azonosító
 A sorba rendező szavazás kiértékelése Condorcet – Schulze metod szerint történik.
 </p>
 <p>
-Ha a szavazás "likvid" tipusú, akkor; - ha egy felhasználó nem szavaz, akkor helyette az adott csoportban vagy projektben általa kijelőlt "képviselője" szavazatát vesszük figyelembe. Tehát a "képviselők" szavazata akkor sullyal esik számtásba ahány őket meghatalmazó felhasználó nem szavaztott.
+Ha a szavazás "likvid" típusú, akkor - ha egy felhasználó nem szavaz, akkor helyette az adott 
+csoportban vagy projektben általa kijelőlt "képviselője" szavazatát vesszük figyelembe. 
+Tehát a "képviselők" szavazata akkor súllyal esik számításba ahány őket meghatalmazó felhasználó 
+nem szavazott.
 </p>
 <p>
-A szavazati jogot olyan tagra lehet átruházni aki erre vállakozott. 
-Ez a "képviseletre vállakozás" a "Csoport" vagy "Projekt"  "Tagok" almenüjében a "Képviselő tisztségre vállalkozok" gomb megnyomásával történik.
+A szavazati jogot olyan tagra lehet átruházni aki erre vállalkozott. 
+Ez a "képviseletre vállalkozás" a "Csoport" vagy "Projekt"  "Tagok" almenüjében a "Képviselő 
+tisztségre vállalkozok" gomb megnyomásával történik.
 </p>
 <p>
-Ha csopotban inditott szavazásról van szó, és a nem szavazó felhasználónak az adott csoportban nincs képviselője, vagy az sem szavazott; - akkor a felsőbb szintű csoportban lévő képviselője szavazatát használjuk. Ha ott sincs képviselő vagy az sem szavazott; - akkor még feljebb lévő csoportban lévőt és így tovább.
+Ha csopotban indított szavazásról van szó, és a nem szavazó felhasználónak az adott csoportban 
+nincs képviselője, vagy az sem szavazott - akkor a felsőbb szintű csoportban lévő képviselője 
+szavazatát használjuk. Ha ott sincs képviselő vagy az sem szavazott - akkor még feljebb lévő c
+soportban lévőt és így tovább.
 </p>
 <p>
-A képviseleti megbízáss (meghatalmazás) a csoport vagy projekt "Tagok" menüpontjában lévő "Tisztségviselők" linkre kattintással elérhető képernyőn a képviseletre válalkozó nevére vonatkozó "like" -al történik. A "pipa" ikon jelzi jelenleg ki a képviselőd. Ugyanitt a képviseleti megbízást vissza is lehet vonni
+A képviseleti megbízáss (meghatalmazás) a csoport vagy projekt "Tagok" menüpontjában lévő "Tisztségviselők" 
+linkre kattintással elérhető képernyőn a képviseletre vállalkozó nevére vonatkozó "like" -al történik. 
+A "pipa" ikon jelzi jelenleg ki a képviselőd. Ugyanitt a képviseleti megbízást vissza is lehet vonni.
 </p>
- 
+<p><em class="fas fa-hand-point-right"></em><a href="/help/page/szavazas" onclick="true">
+  Szavazás lefolytatása</a></p>
+
 </div>
  

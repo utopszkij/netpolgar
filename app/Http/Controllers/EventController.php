@@ -18,7 +18,6 @@ class EventController extends Controller {
      /**
      * a bejelentkezett felhasználó a like ikonra kattintott
      * - ha korábban már lájkolta akkor törli az                    {!! $event->description !!}
-t a likes táblából
      * - ha korábban még nem lájkolta a akkor létrehozza a likes táblában
      * @param string $parent_type
      * @param string $parent
@@ -123,6 +122,10 @@ t a likes táblából
         if (\Auth::check()) {
             if (Member::userAdmin($parentType, $parentId)) {
                 if ($this->model->valid($request)) {
+
+
+// echo 'AAAAA '; exit();
+
                     $errorInfo = $this->model->updateOrCreate($request);
                     if ($errorInfo == '') {
                         $result = redirect()->to(\URL::to('/'.$parentType.'/'.$parentId.'/events'))

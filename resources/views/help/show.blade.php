@@ -26,16 +26,26 @@
     <script>
         var name = "{{ $name }}";
         var url = '';
+        var m = "{{ $m }}";
         var urls = {
             d_beszelgetes : "https://docs.google.com/presentation/d/e/2PACX-1vT0aecyJmHb4oPIY6_u6u8eORZPV97rw9XoXWUmZN6FJhTJfYrc9QkWG8Pgg6IZa-gwotZTCeWA1iyM/embed?start=false&loop=false&delayms=3000",
             p_beszelgetes : "https://docs.google.com/presentation/d/e/2PACX-1vTR9nVg6KuFdFw94Rn9q9sOAQYcWSncF5qZ1svqbIfFmJz521Z8Cq7e9sr1ecIpGW5W4TvzqAyUZRQG/embed?start=false&loop=false&delayms=3000" 
         };
         $('#ifrm').attr('height',(window.innerHeight - 100));
         $('#ifrm').attr('width',(window.innerWidth - 40));
-        if (window.innerWidth < 575) {
-            phoneClick();
+        if (m == '?') {
+            if (window.innerWidth < 575) {
+                phoneClick();
+            } else {
+                desktopClick();
+            }
         } else {
-            desktopClick();
+            if (m == 'd') {
+                desktopClick();
+            }
+            if (m == 'p') {
+                phoneClick();
+            }
         }
         function phoneClick() {
             url = urls['p_'+name];
