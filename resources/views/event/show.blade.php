@@ -34,7 +34,8 @@ use App\Models\Minimarkdown;
             <a href="{{ \URL::to('/events/'.$event->id.'/delete') }}">
             	<em class="fas fa-eraser" title="törlés"></em>
             </a>&nbsp;
-             
+			&nbsp;<a href="{{ \URL::to('/mails/form/events/'.$event->id.'/0') }} ">
+						<em class="fas fa-envelope" title="{{ __('team.mail') }}"></em>                
             @endif
 		</h2>	
 		</div>
@@ -49,10 +50,6 @@ use App\Models\Minimarkdown;
 			   <div class="form-group">
 		        	<label>ID:</label>{{ $event->id }}
 		        </div>
-                <div class="form-group">
-                    <label>{{ __('event.avatar') }} (max 2M):</label>
-                    {{ $event->avatar }} 
-				</div>
                 <div class="form-group">
                     <label style="vertical-align: top;">
                     {{ __('event.description') }}:

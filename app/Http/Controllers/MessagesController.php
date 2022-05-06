@@ -336,5 +336,18 @@ class MessagesController extends Controller {
         }
         return $result;
     }
+
+    /** 
+     * API user olvasatlan üzeneteit adja vissza
+     * @param int userId
+     * @return {count:#}
+     */
+    public function getnotreaded(int $userId, Request $request) {
+        \Auth::loginUsingId($userId, TRUE);
+        $result = new \stdClass();
+        $result->count = \App\Models\Message::getNotreadedCount($userId);
+        \Auth::logout();
+        return $result;
+    }
 }
 

@@ -34,7 +34,7 @@
 				<em class="fas fa-shopping-basket"></em>
 				<span>{{ __('member.products') }}</span><br />			
 		 </a>
-		 <a href="{{ URL::to('/construction') }}" title="Fájlok">
+		 <a href="{{ URL::to('/users/'.$member->user_id.'/files') }}" title="Fájlok">
 				<em class="fas fa-folder-open"></em>
 				<span>{{ __('member.files') }}</span><br />			
 		 </a>

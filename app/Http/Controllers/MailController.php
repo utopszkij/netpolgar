@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use App\Models\Minimarkdown;
 class MailController extends Controller
 {
     /**
@@ -20,6 +20,7 @@ class MailController extends Controller
     public function form(string $parentType, int $parent, int $offset, Request $request)   {
 		$subject = $request->session()->get('subject','');
 		$mailbody = $request->session()->get('mailbody','');
+		$addressed = $request->session()->get('addressed','all');
 		$parentRec = \DB::table($parentType)->where('id','=',$parent)->first();
 		$total = $request->input('total',0);
 		if (\Auth::check()) {
@@ -39,6 +40,7 @@ class MailController extends Controller
 						"offset" => $offset,
 						"subject" => $subject,
 						"mailbody" => $mailbody,
+						"addressed" => $addressed,
 						"total" => $total 
 					]);
 				} else {
@@ -53,7 +55,7 @@ class MailController extends Controller
     }
 
 	/**
-     * 10 db levél elküldése. Ha van még küldendő akkor vissza a formhoz
+     * 1 db levél elküldése. Ha van még küldendő akkor vissza a formhoz
 	 * a küldendő levél szövegét és subjektjét sessionba tárolja
 	 * csak a $parentType adminisztrátorok használhatják
 	 * @param string $parentType
@@ -70,7 +72,8 @@ class MailController extends Controller
 		$mailbody = str_replace('&lt;','<',$mailbody);
 		$mailbody = str_replace('&gt;','>',$mailbody);
 		$request->session()->put('subject',$subject);
-		$request->session()->put('mailbody','mailbody');
+		$request->session()->put('mailbody',$mailbody);
+		$request->session()->put('addressed',$addressed);
 		$parentRec = \DB::table($parentType)->where('id','=',$parent)->first();
 		if (\Auth::check()) {
 			$admin = \DB::table('members')
@@ -86,7 +89,7 @@ class MailController extends Controller
 					$j = 0;
 					if ($addressed == 'all') {
 						$emails = \DB::table('members')
-						->select('users.email')
+						->select('users.email','users.name')
 						->leftJoin('users','users.id','members.user_id')
 						->where('parent_type','=',$parentType)
 						->where('parent','=',$parent)
@@ -94,18 +97,38 @@ class MailController extends Controller
 						->where('status','=','active')
 						->get();
 					} else {	
-						$emails = explode(',',$addressed);
+						$w = explode(',',$addressed);
+						$emails = [];
+						foreach ($w as $w1) {
+							$emails[] = JSON_decode('{"email":"'.trim($w1).'", "name":"'.$w1.'"}');
+						}
 					}
+
 					if ($offset < count($emails)) {
-						for ($i = $offset; $i < ($offset + 10); $i++) {
+						for ($i = $offset; $i < ($offset + 1); $i++) {
 							if ($i < count($emails)) {
-								// levélküldés $emails[$i] -nek
-								\Mail::to($emails[$i])
-								->send(new \App\Mail\NewsletterMail($subject, $mailbody));						
+								// levél szöveg kialakítása
+								$mailbody = str_replace('{name}',$emails[$i]->name, $mailbody);
+								$mailbody = '<html>'.
+								'<head><meta charset="utf-8"></head>'.
+								'<body>'.Minimarkdown::miniMarkdown($mailbody).
+								'</body></html>';	
+			
+								/* levélküldés $emails[$i] -nek */
+								\Mail::to(['html' => $emails[$i]->email])
+								->send(new \App\Mail\NewsletterMail($subject, $mailbody)); 
+								if (!file_exists('./storage/maillog.txt')) {
+									$fp = fopen('./storage/maillog.txt','w+');
+								} else {	
+									$fp = fopen('./storage/maillog.txt','a+');
+								}
+								fwrite($fp, \Auth::user()->name.' to= '.$emails[$i]->email. ' '.date('H:i:s')."\n");
 								$j++;
 								if (\Mail::failures()) {
-							   		$errors .= 'mail send error. target:'.$emails[$i].' ';
+							   		$errors .= 'mail send error. target:'.$emails[$i]->email.' ';
+									fwrite($fp, '******** mail error'."\n");   
 								}
+								fclose($fp);
 							}	
 						}	
 						$offset = $offset + $j;

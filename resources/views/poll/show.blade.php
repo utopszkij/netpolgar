@@ -260,6 +260,7 @@
 			  <a href="{{ \URL::to('/options/'.$option->id.'/edit') }}">
 				<em class="fas fa-edit"></em>			  
 			  </a>
+			  
 			  @endif
 			</li>  
 		@endforeach

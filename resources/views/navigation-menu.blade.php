@@ -26,12 +26,14 @@ if (Auth::user()) {
 			$user->profile_photo_url);
 	}	
 	Auth::user()->avatar = $avatar;
-	$notReadedCount = \App\Models\Message::getNotreadedCount();
+	// inkább ajax -al kellene lekérni  
+	// $notReadedCount = \App\Models\Message::getNotreadedCount();
 } else {
 	$notReadedCount = 0;
 }
 @endphp
   
+
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="container-fluid">
     <a class="navbar-brand" href="{{ URL::to('/') }}">
@@ -67,14 +69,12 @@ if (Auth::user()) {
           	{{ __('navigation.manual') }}
           </a>
         </li>
-        @if ($notReadedCount > 0)
-        <li class="nav-item  notreaded">
+        <li id="notreaded" class="nav-item  notreaded" style="display:none">
           <a class="nav-link" aria-current="page" 
           	href="{{ URL::to('/message/notreaded') }}">
-          	{{ $notReadedCount }} db {{ __('navigation.notreaded') }}
+          	<var></var> db {{ __('navigation.notreaded') }}
           </a>
         </li>
-        @endif
       </ul>
       <ul class="navbar-nav mb-2 mb-lg-0">
       	@auth
@@ -142,3 +142,18 @@ if (Auth::user()) {
     </div>
   </div>
 </nav>
+@if (\Auth::check())
+<script type="text/javascript">
+	// notreaded count lekérése
+	$.ajax({
+  		url: "{{ \URL::to('/api/messages/getnotreaded/'.\Auth::user()->id) }}",
+	}).done(function(result) {
+  		console.log(result);
+	    if (result.count > 0) {
+				$('#notreaded').show();
+				$('#notreaded var').html(result.count);
+		}
+
+	});
+</script>
+@endif

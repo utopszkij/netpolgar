@@ -33,7 +33,7 @@
 	@endif
 
 
-    <table class="table table-bordered">
+    <table class="table table-bordered indexTable">
     	<thead>
         <tr>
             <th>{{ __('event.id') }}</th>

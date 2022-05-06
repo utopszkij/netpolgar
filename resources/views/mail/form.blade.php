@@ -18,7 +18,7 @@
         </div>
     </div>
  
-   <form action="{{ \URL::to('/mails/send/'.$parentType.'/'.$parent.'/'.$offset) }}">
+   <form id="form1" action="{{ \URL::to('/mails/send/'.$parentType.'/'.$parent.'/'.$offset) }}">
          <input type="hidden" name="parentType" value="{{ $parentType }}" class="form-control" placeholder="">
          <input type="hidden" name="parent" value="{{ $parent }}" class="form-control" placeholder="">
          <input type="hidden" name="offset" value="{{ $offset }}" class="form-control" placeholder="">
@@ -26,9 +26,9 @@
             <div class="col-xs-12 col-sm-12 col-md-12">
                 <div class="form-group">
                     <label>Addressed:</label>
-                    <input type="text" name="addresed" value="all" 
+                    <input type="text" name="addresed" value="{{ $addressed }}" 
                     	style="width:800px" class="form-control">
-                    <br />"all": all mebbers or "email1, email2,..."    
+                    <br />"all": all members or "email1, email2,..."    
                 </div>
             </div>
          </div>
@@ -44,13 +44,13 @@
          <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-12">
                 <div class="form-group">
-                    <label>MailBody (html):</label>
-                    <textarea cols="80" rows="10"" name="mailbody" style="width:800px" class="form-control">{{ $mailbody}}</textarea>
+                    <label>MailBody:</label>
+                    <textarea cols="80" rows="10"" name="mailbody" style="width:800px" class="form-control">{!! $mailbody !!}</textarea>
+                    <br />
+                    Mini markdown **bold**, http[s]:..., #...., ##...., {name},  image:![](url)
                 </div>
             </div>
          </div>
-         <div>Ez a szerver oránként 50 levél kiküldsését engedélyezi. 
-             Ezért a 10-es csomagok kiküldése között célszerű legalább 6 percet várni!</div>
          <div><strong><var id="stopper"></var></strong></div>    
          <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-12">
@@ -60,22 +60,38 @@
             </div>
          </div>
     </form>
+    @if ($offset > 0) 
+    <p><strong>
+        This page will be sent automatically in {{ env('MAIL_WAIT_SEC',120) }} seconds.
+        </strong>
+    </p>
+    @endif
     <script>
         var min = 0;
         var sec = 0;
+        var counter = 0;
+        var offset = {{ $offset }};
+        var mailWaitSec = {{ env('MAIL_WAIT_SEC',120) }}; 
         $(function() {
-            $('#stopper').html(min+':'+sec);
-            setTimeout('step()',1000);
+            if (offset > 0) {
+              $('#stopper').html(min+':'+sec);
+              setTimeout('step()',1000);
+            }  
         });
         function step() {
-            if (sec < 60) {
+            counter++;
+            if (sec < 59) {
                 sec++;
             } else {
                 sec = 0;
                 min++;
             }
             $('#stopper').html(min+':'+sec);
-            setTimeout('step()',1000);
+            if ((counter >= mailWaitSec) & (offset > 0)) {
+                 $('#form1').submit();   
+            } else {
+                setTimeout('step()',1000);
+            }    
         }
     </script>    
 </x-guest-layout>  

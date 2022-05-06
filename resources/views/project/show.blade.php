@@ -68,6 +68,9 @@
 		        @if ((in_array('active_admin',$info->userRank)) & ($project->status != 'closed'))
 	            &nbsp;<a href="{{ \URL::to('/projects/'.$project->id.'/edit') }} ">
 						<em class="fas fa-edit" title="{{ __('project.edit') }}"></em>                
+				&nbsp;<a href="{{ \URL::to('/mails/form/projects/'.$project->id.'/0') }} ">
+						<em class="fas fa-envelope" title="{{ __('team.mail') }}"></em>                
+
    	            @endif
    	          </a>
              </h3>

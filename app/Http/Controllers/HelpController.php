@@ -11,7 +11,8 @@ class HelpController extends Controller {
      * URL param name - help logikai neve
      */
     public function show(Request $request) {
-        return view('help.show',["name" => $request->input('name','home')]);
+        return view('help.show',["name" => $request->input('name','home'),
+                                 "m" => $request->input('m','?')]);
     }
 
     /**

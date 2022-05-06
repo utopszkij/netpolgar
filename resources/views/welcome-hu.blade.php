@@ -1,8 +1,10 @@
 <div id="leiras">
 <h2>Leírás</h2>
-	<div class="leirasBody">
-	         <img src="{{ URL::to('/') }}/img/logo.png" 
-	            	style="display:inline-block; float:left; margin:0 10px 0 10px; width:300px " />
+
+
+<div class="leirasBody">
+	         <!-- img src="{{ URL::to('/') }}/img/logo.png" 
+	            	style="display:inline-block; float:left; margin:0 10px 0 10px; width:300px " / -->
 	         <h2>Áttekintés</h2>   	
 			
 <a name="description"></a>
@@ -32,6 +34,10 @@
 					</ul>				
 				</div>
 				<div class="tartalom">
+
+
+				@include('help.home')
+<!--
 <a name="description1"></a>				
 					<h4>Tartalomjegyzék</h4>
 					<ul>
@@ -378,7 +384,7 @@
 				post data méret). Az összes feltöltendő fájl méretét a fizikailag rendelkezésre 
 				álló tároló kapacitás korlátozza</p>
 				<p>Bizronsági okokból php, html, html, js fájlok feltöltése nem engedélyezett.</p>
-								
+-->								
 	</div>
 </div>
 

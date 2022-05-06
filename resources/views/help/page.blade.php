@@ -5,16 +5,22 @@
 <body>	
    <div id="help" class="row help">
         <div class="col-3" style="text-align:left; padding:2px">
-            <a href="{{ \URL::to('/help/page/home?m='.$m) }}"><em class="fas fa-home"></em>Kezdőlaop</a>
+            <a href="{{ \URL::to('/help/page/home?m='.$m) }}"><em class="fas fa-home"></em>Kezdőlap</a>
         </div>
         <div class="col-9" style="text-align:right; padding:2px">
-            @if (file_exists('../resources/views/help/'.$name.'_p.blade.php')) 
-                <a href="/help/page/{{ $name }}&m=d" 
+            @php
+                $name_p = str_replace('_d','_p',$name);
+                $name_d = str_replace('_p','_d',$name);
+            @endphp
+            @if (file_exists('../resources/views/help/'.$name_p.'.blade.php') &
+                 file_exists('../resources/views/help/'.$name_d.'.blade.php') &
+                 ($name_p != $name_d)) 
+                <a href="/help/page/{{ $name_d }}" 
                     onclick="true;" title="desktop, laptop">
                     <em class="fas fa-desktop"></em>
                 </a>
                 &nbsp;
-                <a href="/help/page/{{ $name }}&m=p" o
+                <a href="/help/page/{{ $name_p }}" o
                     nclick="true" title="okostelefon">
                     <em class="fas fa-mobile-alt"></em>
                 </a>
