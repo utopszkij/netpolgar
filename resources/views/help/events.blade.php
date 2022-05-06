@@ -8,7 +8,9 @@ Az események témakörökhöz rendelhetőek.
 Az események csoporthoz vagy projekthez kapcsolódhatnak. 
 Az esemény szervező email-ben meghívókat küldhet ki. 
 A regisztrált felhasználók jelentkezhetnek az eseményre. 
-Az esemény felvitelekor a felvívő lesz az adminisztrátor, később további adminisztrátorokat is kijelölhet. 
+Az esemény felvitelekor a felvívő lesz az adminisztrátor, később további 
+adminisztrátorokat is kijelölhet. 
+Az adminisztrátorok körlevel küldhetnek a csoport tagjainak.
 </p>
 </div>
  

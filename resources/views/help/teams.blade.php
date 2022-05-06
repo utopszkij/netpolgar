@@ -36,7 +36,9 @@ azonnal megnyílik.)
 A csoport tagjai javasolhatják a csoport lezárását. A csoport akkor lesz lezárva ha a tagok – a csoport beállításainál %-ban megadott – hányada javasolta a lezárást.
 </p>
 <p>
-Minden csoportnak van legalább egy „adminisztrátora” alapértelmezetten a csoportot javasló felhasználó az adminisztrátor. Az adminisztrátor moderálhatja a csoportban lévő beszélgetéseket, módosíthat, javíthat a vita kérdések és a hozzájuk tartozó alternatívák szövegein, módosíthatja a csoport nevét, leírását és beállításait.
+Minden csoportnak van legalább egy „adminisztrátora” alapértelmezetten a csoportot javasló felhasználó az adminisztrátor. Az adminisztrátor moderálhatja a csoportban lévő beszélgetéseket, módosíthat, javíthat a vita kérdések és a hozzájuk 
+tartozó alternatívák szövegein, módosíthatja a csoport nevét, leírását és beállításait.
+Az adminisztrátorok körlevel küldhetnek a csoport tagjainak.
 </p>
 <p>
 A csoport aktiválása után bármelyik csoport tag jelentkezhet adminisztrátornak. A tisztséget akkor töltheti be ha a csoport tagok – a csoport beállításnál %-ban megadott – hányada támogatja azt.

@@ -114,8 +114,19 @@ class Minimarkdown {
 	    $s = preg_replace($em, '<em>$0</em>', $s);
 	    $s = str_replace('<em>*','<em>',$s);
 	    $s = str_replace('*</em>','</em>',$s);
-	    
-	
+
+	    // ##.....<br /> -> <h2>.....</h2>
+		$h2 = '~\#\#([^\<<]+)\<~i';
+	    $s = preg_replace($h2, '<h2>$0/h2>', $s);
+	    $s = str_replace('<h2>##','<h2>',$s);
+	    $s = str_replace('</h2>br />','</h2>',$s);
+
+	    // #.....<br /> -> <h1>.....</h1>
+		$h1 = '~\#([^\<<]+)\<~i';
+	    $s = preg_replace($h1, '<h1>$0/h1>', $s);
+	    $s = str_replace('<h1>#','<h1>',$s);
+	    $s = str_replace('</h1>br />','</h1>',$s);
+
 		 // emotions
 	    $s = str_replace(':)','<em class="fas fa-grin"></em>',$s);
 	    $s = str_replace(':(','<em class="fas fa-frown"></em>',$s);
