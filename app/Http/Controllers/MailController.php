@@ -117,10 +117,10 @@ class MailController extends Controller
 								/* levélküldés $emails[$i] -nek */
 								\Mail::to(['html' => $emails[$i]->email])
 								->send(new \App\Mail\NewsletterMail($subject, $mailbody)); 
-								if (!file_exists('./storage/maillog.txt')) {
-									$fp = fopen('./storage/maillog.txt','w+');
+								if (!file_exists('./storage/logs/maillog.txt')) {
+									$fp = fopen('./storage/logs/maillog.txt','w+');
 								} else {	
-									$fp = fopen('./storage/maillog.txt','a+');
+									$fp = fopen('./storage/logs/maillog.txt','a+');
 								}
 								fwrite($fp, \Auth::user()->name.' to= '.$emails[$i]->email. ' '.date('H:i:s')."\n");
 								$j++;

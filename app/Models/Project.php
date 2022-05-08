@@ -28,7 +28,7 @@ class Project extends Model
     	$result = JSON_decode('{
 			"id":0,
 			"name":"",
-			"parent":0,
+			"team_id":0,
 			"description":"",
 			"avatar":"/img/project.png",
 			"deadline":"'.date('Y-m-d').'",
@@ -64,9 +64,18 @@ class Project extends Model
         // like, disLike, memberCount infok
         $parent = \DB::table('teams')->where('id','=',$project->team_id)->first();
         if (!$parent) {
-				echo 'Fatal error parent not found'; exit();        
-        }
-        $parent->config = JSON_decode($parent->config);
+			$parent = \App\Models\Team::emptyRecord();
+	        $result->likeCount = 0;
+	        $result->disLikeCount = 0;
+			$result->userLiked = false;
+			$result->userDisLiked = false;
+			$result->memberCount = 0;
+			$result->parentMemberCount = 0;
+			$result->likeReq = 0;
+			$result->DislikeReq = 0;
+		} else {
+        	$parent->config = JSON_decode($parent->config);
+		}	
         $user = \Auth::user();
         $t = \DB::table('likes');
         $result->likeCount = $t->where('parent_type','=','projects')
@@ -188,7 +197,7 @@ class Project extends Model
 		$t = \DB::Table('teams');    		
 		$team = $t->where('id','=',$project->team_id)->first();
 		if (!$team) {
-		    echo 'Fatal error team not found'; exit();
+			$team = \App\Models\Team::emptyRecord();
 		}
 		$result = Project::getInfoFromTeam($team);
 		$result->accredited = false;
