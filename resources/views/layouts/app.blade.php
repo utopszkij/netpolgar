@@ -4,8 +4,8 @@
     	@include('layouts/htmlhead')
     </head>
     <body class="font-sans antialiased">
+    <script>console.log('body után'); alert(1);</script>
         <x-jet-banner />
-
         <div class="min-h-screen bg-gray-100" id="appBlade">
             @livewire('navigation-menu')
             <!-- Page Content -->

@@ -179,7 +179,7 @@ class ProjectController extends Controller
 						->first();
 					if ($u) {
 					    $task->assign = [$u->name, 
-					        \App\Models\User::userAvatar($u->profile_photo_path, $u->email)
+					        \App\Models\Avatar::userAvatar($u->profile_photo_path, $u->email)
 					    ];
 					} else {
 						$task->assign=['','']; 					

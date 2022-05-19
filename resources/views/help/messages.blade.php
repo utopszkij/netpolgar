@@ -33,11 +33,11 @@
     </p>
     <p>&nbsp;</p>
     <p><a = href="/help/page/forum_d" onclick="true">
-        <em class="fas fa-hand-point-right"></em>Fórum kezelése asztali gépen, lapotopon</a></p>
+        <em class="fas fa-hand-point-right"></em>Fórum kezelése asztali gépen, laptopon</a></p>
     <p><a = href="/help/page/forum_p" onclick="true">
         <em class="fas fa-hand-point-right"></em>Fórum kezelése okostelefonon</a></p>
     <p><a = href="/help/page/chat_d" onclick="true">
-        <em class="fas fa-hand-point-right"></em>Videó/audió/szöveges chat  kezelése asztali gépen, lapotopon</a></p>
+        <em class="fas fa-hand-point-right"></em>Videó/audió/szöveges chat  kezelése asztali gépen, laptopon</a></p>
     <p><a = href="/help/page/chat_p" onclick="true">
         <em class="fas fa-hand-point-right"></em>Videó/audió/szöveges chat  kezelése okostelefonon</a></p>
 </div>

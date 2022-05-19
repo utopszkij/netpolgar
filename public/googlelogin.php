@@ -7,7 +7,7 @@
 * sikeres login után a SITEURL -t hivja meg, usercode url paraméterben
 * küldve a user adatokat
 * $userCode = base64_encode($guser->name).'-'.
-*				$fbuser->id.'-'.md5($guser->id.FB_SECRET).'-'. !!! FIGYELEM FB_SECRET !!!
+*				$guser->id.'-'.md5($guser->id.FB_SECRET).'-'. !!! FIGYELEM FB_SECRET !!!
 *				base64_encode($guser->email).'-'.
 *				base64_encode($guser->picture);
 *
@@ -24,17 +24,28 @@
 *
 * szükséges DEFINE -k: SITEURL, FB_SECRET, 
 *           GOOGLE_APPID, GOOGLE_SECRET, GOOGLE_REDIRECT
+*           ha van laravel .env file; akkor abból olvassa ki ezeket 
 */
-
-// include_once __DIR__.'/../config.php';
-
-DEFINE('SITEURL','http://szakacskonyv.great-site.net');
-DEFINE('FB_SECRET',''); 
-DEFINE('GOOGLE_APPID',
-'');
-DEFINE('GOOGLE_SECRET','');
-DEFINE('GOOGLE_REDIRECT','https://netpolgar.hu/googlelogin.php');
-
+if (file_exists(__DIR__.'/../.env')) {
+	$lines = file(__DIR__.'/../.env');
+	foreach ($lines as $line) {
+		$w = explode('=',$line);
+		if (trim($w[0]) == 'Facebook_app_id') {
+			DEFINE('FB_APPID', str_replace("'",'',trim($w[1])));
+		}
+		if (trim($w[0]) == 'Facebook_secret') {
+			DEFINE('FB_SECRET', str_replace("'",'',trim($w[1])));
+		}
+		if (trim($w[0]) == 'Google_app_id') {
+			DEFINE('GOOGLE_APPID', str_replace("'",'',trim($w[1])));
+		}
+		if (trim($w[0]) == 'Google_secret') {
+			DEFINE('GOOGLE_SECRET', str_replace("'",'',trim($w[1])));
+		}
+	}
+	DEFINE('GOOGLE_REDIRECT',$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
+	DEFINE('SITEURL',$_SERVER['HTTP_HOST'].str_replace('/googlelogin.php','',$_SERVER['REQUEST_URI']));
+}
 
 /**
 * távoli URL hívás   
@@ -103,7 +114,7 @@ if (isset($_GET['code'])) {
 	$code = $_GET['code'];
   	if (isset($_GET['state'])) {
  	 	 $state = urldecode($_GET['state']);
-  		 if ($state == '0') {
+  		 if ($state == 0) {
 			$state = SITEURL;  		 
   		 }	
   	} else {

@@ -11,20 +11,41 @@ use Exception;
 use Auth;
 
 class SocialController extends Controller {
+	/**
+	* facebook login képernyőt jelenit meg
+	* ha 'state' nem érkezik a GET param-ban akkor a sessionból veszi a 'loginPrevious' -t
+	* amit a Middleware.authenticate állított be.
+	* 'state' -t tovább küldi, a sessionban a 'loginPrevious' -t ''-ra állítja.
+	*/
     public function facebookRedirect() {
-        return Socialite::driver('facebook')->redirect();
-    }
+		$state = \Request::input('state',\Session::get('loginPrevious',''));
+		\Session::put('loginPrevious','');
+		$url = 'https://www.facebook.com/v12.0/dialog/oauth'.
+			'?client_id='.env('Facebook_app_id').
+			'&redirect_uri='.urlencode(\URL::to('/auth/facebook/callback')).
+        	'&state='.urlencode($state);
+	     echo '<script>document.location="'.$url.'";</script>'; 
+		 exit();
+	}		
+
+	/**
+	* google login képernyőt jelenit meg
+	* ha 'state' nem érkezik a GET param-ban akkor a sessionból veszi a 'loginPrevious' -t
+	* amit a Middleware.authenticate állított be.
+	* 'state' -t tovább küldi, sessionban a 'loginPrevious'-t '' -ra állítja.
+	*/
     public function googleRedirect() {
-        return Socialite::driver('google')->redirect();
-    }
-    public function githubRedirect() {
-		$url = 'https://github.com/login/oauth/authorize'.
-		  '?client_id='.env('Github_app_id').
-		  '&scope=user'.
-		  '&state=123456789'.
-		  '&login=LoginStr';
-		  echo '<script>location="'.$url.'";</script>'; exit();
-//        return Socialite::driver('github')->redirect();
+		$state = \Request::input('state',\Session::get('loginPrevious',''));
+		\Session::put('loginPrevious','');
+		
+		$url = 'https://accounts.google.com/o/oauth2/v2/auth'.
+		'?client_id='.env('Google_app_id').
+		'&response_type=code'.
+		'&scope=openid%20email'.
+		'&redirect_uri='.urlencode(\URL::to('/auth/google/callback')).
+		'&state='.urlencode($state);	
+	     echo '<script>document.location="'.$url.'";</script>'; 
+		 exit();
     }
     
 	/**
@@ -63,6 +84,10 @@ class SocialController extends Controller {
 	        return JSON_decode($response);
 	}    
     
+	/**
+	* a users táblában a field legyen egyedi! Ha már létezik akkor
+	* kiegésziti egy sorszámmal
+	*/
 	protected function makeUnique(string $field, string $value):string {
 	    $i = 1;
 	    $result = $value;
@@ -75,8 +100,66 @@ class SocialController extends Controller {
 	    return $result;
 	}
 	
+	/**
+	* redirect a $state -ra, kodoltan küldve a user adatokat
+	* @param object $guser {id, name, email, picture}
+	* @param string $state
+	* @return laravel redirect
+	*/
+	protected function redirectToState($guser, string $state) {			
+			$userCode = base64_encode($guser->name).'-'.
+				$guser->id.'-'.
+				md5($guser->id.env('Facebook_secret')).'-'.
+				base64_encode($guser->email).'-'.
+				base64_encode($guser->picture);
+			if (strpos('?',$state) > 0) {
+				$url = $state.'&usercode='.$userCode;
+			} else {	
+				$url = $state.'?usercode='.$userCode;
+			}	
+			$L = strlen(env('APP_URL'));
+			if (substr($url,0,$L) == substr(env('APP_URL'),0,$L)) {
+				return redirect($url);
+			} else {
+				echo '<script>location="'.$url.'";</script>';
+				exit();
+			}	
+	}
+	
+	/**
+	* $guser bejelentkeztetése (ha nincs akkor létrehozza és bejelntkezteti)
+	* @param object $guser
+	* @param string $idName
+	*/
+	protected function doLogin($guser, string $idName) {		
+		try {
+			// nézzük van-e már ilyen user rekord?
+			$isUser = User::where($idName, '=', $guser->id)->first();
+			if (!$isUser) {
+				 $isUser = User::where('email', $guser->email)->first();
+			}
+
+			// ha van bejelentkeztetjük, ha nincs létrehozzuk												            
+			if($isUser){
+				Auth::login($isUser);
+			}else{
+				$arr = ['name' => $this->makeUnique('name',$guser->name),
+						'email' => $guser->email,
+						'email_verified_at' => date('Y-m-d'),
+						'password' => encrypt(date('YmdHis').rand(1000,9999))];
+				$arr[$idName] = $guser->id;							  
+				$createUser = User::create($arr);
+				User::where('email','=',$guser->email)
+					->update(["email_verified_at" => date('Y-m-d')]);
+				Auth::login($createUser);
+		   } 	 	
+		} catch (Exception $exception) {
+			dd($exception->getMessage());
+		}	
+	}
+
+    /* azt hiszem ez nem kell
     public function loginWithSocial(string $socName, string $field) {
-    	
 			// itt lehetne egyszer használatos remembercode -ot generálni és tárolni a user rekorba.
 			// valahol a backend fő programjában minden aktivizálásnál
 			//  - az elavult (túl régi) remember kodokat törli. 
@@ -103,154 +186,115 @@ class SocialController extends Controller {
             dd($exception->getMessage());
         }
     }
+	*/
     
+	/**
+	* facebook login callback function
+	* GET params: code, state
+	* ha 'state' nem '' akkor a sikeres login után hivandó távoli URL-t tartalmazza
+	* aminek kodolva küldeni kell a user adatokat. 
+	*/
     public function loginWithFacebook() {
     	if (\Request::input('code','') != '') {
 			$code = \Request::input('code');
-	   	$state = \Request::input('state');
-      	$token = $this->apiRequest(
-   	      'https://graph.facebook.com/oauth/access_token',
-   		   ['client_id' => env('Facebook_app_id'),
-             'client_secret' => env('Facebook_secret'),
-   		     'grant_type' => 'authorization_code',
-             'redirect_uri' => \URL::to('/').'/auth/facebook/callback',
-             'state' => $state,
-             'code' => $code
-   		   ]
+	   		$state = \Request::input('state');
+      		$token = $this->apiRequest(
+				'https://graph.facebook.com/oauth/access_token',
+				['client_id' => env('Facebook_app_id'),
+				 'client_secret' => env('Facebook_secret'),
+				 'grant_type' => 'authorization_code',
+				 'redirect_uri' => \URL::to('/').'/auth/facebook/callback',
+				 'state' => $state,
+				 'code' => $code
+				]
 	    	);
 	    	if (isset($token->access_token)) {
-            $url="https://graph.facebook.com/v2.3/me?fields=id,name,picture";
-   			$fbuser = $this->apiRequest(
-   				$url,
+            	$url="https://graph.facebook.com/v2.3/me?fields=id,name,picture";
+   				$fbuser = $this->apiRequest(
+   					$url,
 					['access_token' => $token->access_token]
 				);
-			   if (!isset($fbuser->error)) {
-			    		// sikeres fb login guser:{id, name, picture, email}
-						try {
-							// nézzük van-e már ilyen user rekord?
-				            $isUser = User::where('fb_id', $fbuser->id)->first();
-								if (!$isUser) {
-				            	 $isUser = User::where('name', $fbuser->name)->first();
-							}
+			   	if (!isset($fbuser->error)) {
+			    		// sikeres fb login fbuser:{id, name}
+					    $fbuser->email = $fbuser->id.'@fb.fb';
+						$fbuser->picture = '';
+						$this->doLogin($fbuser,'fb_id');
 
-							// ha van bejelentkeztetjük, ha nincs létrehozzuk												            
-				            if($isUser){
-				                Auth::login($isUser);
-				            }else{
-					            $createUser = User::create([
-					                    'name' => $this->makeUnique('name',$fbuser->name),
-					                    'email' => 'none_'.$fbuser->id.'@fb.fb',
-					                    'fb_id' => $fbuser->id,
-					                    'email_verified_at' => date('Y-m-d'),
-					                    'password' => encrypt(date('YmdHis').rand(1000,9999))
-					            ]);
-					            Auth::login($createUser);
-				           } 	 	
-				        } catch (Exception $exception) {
-				            dd($exception->getMessage());
-				        }			    		
+						// ha 'state' érkezett akkor kodolt user adat átadással 
+						// hivjuk a 'state' url-t
+						if ($state != '') {
+							return $this->redirectToState($fbuser, $state);
+						}	
 			   } else {
 			    		echo 'Fatal error facebook login '.JSON_encode($fbuser->error); exit();
 			   }	
 			} else {
 		    		echo 'Fatal error facebook login invalid call'; exit();
 			}
-			return redirect('/');	
+	        return redirect(\URL::previous());
 	    }
-	    exit();	
-    	// return $this->loginWithSocial('facebook','fb_id');
     }
+	
+	/**
+	* google login callback function
+	* GET params: code, state
+	* ha 'state' nem '' akkor a sikeres login után hivandó távoli URL-t tartalmazza
+	* aminek kodolva küldeni kell a user adatokat. 
+	*/
     public function loginWithGoogle() {
 		/**
-		* valamiért az eredeti nem mükszik. amikor ide jön a vezérlés akkor:
-		*  $request->input -ban van sate, code, scope, authuser=0, promtt=consent
+		*  amikor ide jön a vezérlés akkor:
+		*  $request->input -ban van sate, code, scope, authuser=0, promt=consent
     	*/
     	if (\Request::input('code','') != '') {
-			$code = \Request::input('code');
-	   	$state = \Request::input('state');
-      	$token = $this->apiRequest(
-   	      'https://oauth2.googleapis.com/token',
-   		   ['client_id' => env('Google_app_id'),
-             'client_secret' => env('Google_secret'),
-   		     'grant_type' => 'authorization_code',
-             'redirect_uri' => \URL::to('/').'/auth/google/callback',
-             'state' => $state,
-             'code' => $code
-   		   ]
-	    	);
-		   if (isset($token->access_token)) {
-		   		$url="https://www.googleapis.com/oauth2/v1/userinfo?alt=json";
-	   			$guser = $this->apiRequest(
-	   				$url,
-					   ['access_token' => $token->access_token]);
-			    	if (!isset($guser->error)) {
-			    		// sikeres google login guser:{id, name, picture, email}
-						try {
-							// nézzük van-e már ilyen user rekord?
-						    $isUser = User::where('google_id', $guser->id)->first();
-						    if (!$isUser) {
-				            	 $isUser = User::where('email', $guser->email)->first();
-				            }	
-				             
-				            // Auth::login($isUser);
-						    // }else {
-							// $isUser = User::where('email', $guser->email)->first();
-							    if ($isUser) {
-							        Auth::login($isUser);
-							    }else{
-					                $createUser = User::create([
-					                    'name' => $this->makeUnique('name',$guser->name),
-					                    'email' => $guser->email,
-					                    'google_id' => $guser->id,
-					                    'email_verified_at' => date('Y-m-d'),
-					                    'password' => encrypt(date('YmdHis').rand(1000,9999))
-					                ]);
-					                Auth::login($createUser);
-							    }
-				           // } 	 	
-				        } catch (Exception $exception) {
-				            dd($exception->getMessage());
-				        }			    		
+			$code = \Request::input('code','');
+	   		$state = \Request::input('state','');
+			$token = $this->apiRequest(
+					'https://oauth2.googleapis.com/token',
+					['client_id' => env('Google_app_id'),
+					 'client_secret' => env('Google_secret'),
+					 'grant_type' => 'authorization_code',
+					 'redirect_uri' => \URL::to('/').'/auth/google/callback',
+					 'state' => $state,
+					 'code' => $code
+					]
+			);
+		   	if (isset($token->access_token)) {
+		   			$url="https://www.googleapis.com/oauth2/v1/userinfo?alt=json";
+	   				$guser = $this->apiRequest(
+	   					$url,
+						['access_token' => $token->access_token]
+					);
+			   	if (!isset($guser->error)) {
+			    		// sikeres google login 
+						// guser:{id, name, picture, email}
+						
+						// bizonyos esetekben a user nevét nem küldi :(	
+						if (!isset($guser->name)) {
+							if (isset($guser->email)) {		   
+								$w = explode('@',$guser->email);
+								$guser->name = $w[0];
+							} else {
+								$guser->name = 'g_'.$guser->id;
+							}	
+						}		
+						$this->doLogin($guser,'google_id');
+						
+						// ha 'state' érkezett akkor kodolt user adat átadással 
+						// hivjuk a 'state' url-t
+						if ($state != '') {
+							return $this->redirectToState($guser, $state);
+						}
 			    	} else {
-			    		echo 'Fatal error google login '.JSON_encode($guser->error); exit();
+			    		echo 'Fatal error in google get user info '.JSON_encode($guser->error); exit();
 			    	}	
-		   } else {
-	    		echo 'Fatal error google login not access_token '.JSON_encode($token); exit();
-		   } 
+		   		} else {
+	    			echo 'Fatal error google login not "access_token" '.JSON_encode($token); exit();
+		   		} 
 	   } else {
-    		echo 'Fatal error github login incorrect call'; exit();
+    		echo 'Fatal error goggle login not "code" param'; exit();
 	   }
-      return redirect('/');
+       return redirect(\URL::previous());
     }
     
-    public function loginWithGithub() {
-        
-        // sajnos ez nem müködik a guser null értéket ad vissza :(
-        
-    	if (\Request::input('code','') != '') {
-			$code = \Request::input('code');
-	   	$state = \Request::input('state');
-      	$token = $this->apiRequest(
-   	      'https://github.com/login/oauth/access_token',
-   		   ['client_id' => env('Github_app_id'),
-             'client_secret' => env('Github_secret'),
-             'redirect_uri' => \URL::to('/').'/auth/github/callback',
-             'state' => $state,
-             'code' => $code
-   		   ]
-	    	);
-		   if (isset($token->access_token)) {
-		   		echo 'access_token='.JSON_encode($token).'<br>';
-		   		$url="https://api.github.com/user";
-	   			$guser = $this->apiRequest($url,['access_token' => $token->access_token]);
-	   			echo JSON_encode($guser); exit();	
-	   	} else {
-	    		echo 'Fatal error github login not access_token'; exit();
-	   	}			
-		} else {
-    		echo 'Fatal error github login incorrect call'; exit();
-		}    	
-		return redirect('/') ;   	
-    	// return $this->loginWithSocial('github','github_id');
-    }
 }
