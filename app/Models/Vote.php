@@ -92,10 +92,11 @@ class Vote extends Model {
 			'accredited_id' => 0,
 			'user_id' => 0
 		];
-		if (!$poll->config->secret) {
+		if (!$poll->config->secret) {    
 			$voteArr['user_id'] = $user->id;		
 		}
 		try {
+			// tárolás a votes táblába
 			if (($poll->config->pollType == 'yesno') |
 				($poll->config->pollType == 'onex')) {
 				$voteArr['option_id'] = $request->input('vote');
@@ -120,6 +121,22 @@ class Vote extends Model {
 					}			
 				}
 			}
+			
+			// tárolás a voted táblába
+			\DB::select('create table if not exists voted(
+				poll_id bigint,
+				user_id bigint,
+				index user_id_key (user_id)
+			)');
+			$w = \DB::table('voted')->where('poll_id','=',$poll->id)
+				->where('user_id','=',$user->id)
+				->first();
+			if (!$w) {	
+				\DB::table('voted')->insert(['poll_id' => $poll->id,
+				 'user_id' => $user->id]);
+			}
+
+			// titkos szavazásnál user_id törlése a ballots táblábol
 			if (($poll->config->secret) & ($result == '')) {
 				\DB::table('ballots')
 				->where('poll_id','=',$poll->id)
@@ -128,10 +145,14 @@ class Vote extends Model {
 			}
 		} catch (\Illuminate\Database\QueryException $exception) {
 			$result = JSON_encode($exception->errorInfo);
-			 \DB::table('votes')
-				->where('ballot_id','=',$ballot->id)
-				->delete();		    
-		}
+			\DB::table('votes')
+			->where('ballot_id','=',$ballot->id)
+			->delete();		    
+			\DB::table('voted')
+			->where('poll_id','=',$poll->id)
+			->where('user_id','=',$user->id)
+			->delete();		    
+}
 		return $result;	
 	}		
 				

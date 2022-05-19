@@ -7,6 +7,7 @@ use App\Models\Team;
 use App\Models\Member;
 use Illuminate\Http\Request;
 
+
 class ProjectController extends Controller
 {
     /**
@@ -15,6 +16,7 @@ class ProjectController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Team $team)   {
+
 		$data = Project::getData($team->id,8);
         if (count($data) > 0) {   			 
     		$info = Project::getInfo($data[0]);
@@ -177,7 +179,7 @@ class ProjectController extends Controller
 						->first();
 					if ($u) {
 					    $task->assign = [$u->name, 
-					        \App\Models\User::userAvatar($u->profile_photo_path, $u->email)
+					        \App\Models\Avatar::userAvatar($u->profile_photo_path, $u->email)
 					    ];
 					} else {
 						$task->assign=['','']; 					

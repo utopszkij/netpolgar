@@ -82,10 +82,10 @@ class Poll extends Model
                 $result->userAdmin = true;
             }
             if ($poll->config->secret) {
-                $result->userVoted = (\DB::table('ballots')
+                $result->userVoted = ( \DB::table('voted')
                     ->where('poll_id','=',$poll->id)
                     ->where('user_id','=',$user->id)
-                    ->count() <= 0);
+                    ->count() > 0); 
             } else {
                 $result->userVoted = ( \DB::table('votes')
                     ->where('poll_id','=',$poll->id)

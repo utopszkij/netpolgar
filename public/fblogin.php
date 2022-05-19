@@ -5,11 +5,31 @@
 
 // jelen változat a netpolgar.hu fő könyvtárba töltendő fel (ehez van fb login app)
 
-DEFINE('SITEURL','http://szakacskonyv.great-site.net');
-DEFINE('FB_APPID','');
-DEFINE('FB_SECRET','');
-DEFINE('FB_REDIRECT','https://netpolgar.hu/fblogin.php');
-
+if (file_exists(__DIR__.'/../.env')) {
+	$lines = file(__DIR__.'/../.env');
+	foreach ($lines as $line) {
+		$w = explode('=',$line);
+		if (trim($w[0]) == 'Facebook_app_id') {
+			DEFINE('FB_APPID', str_replace("'",'',trim($w[1])));
+		}
+		if (trim($w[0]) == 'Facebook_secret') {
+			DEFINE('FB_SECRET', str_replace("'",'',trim($w[1])));
+		}
+		if (trim($w[0]) == 'Google_app_id') {
+			DEFINE('GOOGLE_APPID', str_replace("'",'',trim($w[1])));
+		}
+		if (trim($w[0]) == 'Google_secret') {
+			DEFINE('GOOGLE_SECRET', str_replace("'",'',trim($w[1])));
+		}
+	}
+	DEFINE('FB_REDIRECT',$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
+	DEFINE('SITEURL',$_SERVER['HTTP_HOST'].str_replace('/googlelogin.php','',$_SERVER['REQUEST_URI']));
+} else {
+	DEFINE('SITEURL','http://szakacskonyv.great-site.net');
+	DEFINE('FB_APPID','');
+	DEFINE('FB_SECRET','');
+	DEFINE('FB_REDIRECT','https://netpolgar.hu/fblogin.php');
+}
 
 /**
 * távoli URL hívás   

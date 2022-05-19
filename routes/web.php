@@ -35,6 +35,24 @@ use App\Http\Controllers\HelpController;
 
 Route::get('/construction', function() { return view('construction'); } );
 
+// Mycron 
+// ennek AJAX -os hivását be kell tenni a programba, 
+// úgy hogy minden aktivizálódásnál meghívódjon  
+// percenként hivja a Mycron::exec rutint
+Route::get('/cron', function() {
+	if (file_exists('./storage/cronrun.txt')) {
+		$cronrun = file('./storage/cronrun.txt')[0]; 
+	} else {
+		$cronrun = -1;
+	}
+	if (date('i') != $cronrun) {
+		\App\Http\Controllers\MycronController::exec();
+		$fp = fopen('./storage/cronrun.txt','w+');
+		fwrite($fp, date('i'));
+		fclose($fp);
+	}	
+}); 
+
 // help
 Route::get('/help',[HelpController::class, 'show']);
 Route::get('/help/page/{name}',[HelpController::class, 'page']);

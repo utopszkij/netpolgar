@@ -96,6 +96,17 @@
 		return false;
 	}
 	
+	function showWaiting() {
+		console.log('showWaiting');
+		$('#waiting').show();
+		return true;
+	}
+
+	function hideWaiting() {
+		$("#waiting").hide();
+		return true;
+	}
+	
 	$(function() {
 		// türelem kérő animáció az a és button elemekre
 		// a profil képernyőn és login képernyőn ez nem kell
@@ -103,20 +114,31 @@
 		    (window.location.href.search('/login') >= 0)) {
 			return;
 		}
-		var w = $('a');
-		for (var i=0; i<w.length; i++) {
-			if (w[i].onclick == undefined) {
-				w[i].onclick = function() {$('#waiting').show(); return true};
-			}			
-		}
-		var w = $('button');
-		for (var i=0; i<w.length; i++) {
-			if (w[i].onclick == undefined) {
-				w[i].onclick = function() {$('#waiting').show(); return true};
-			}			
-		}
+		/* firefox és safari böngészőkben bajt okoz  :(  
+			ugyanis ezek a browser back használata esetén 
+			a cache -ból töltenek be ahol a div #waiting show állapotban van,
+			és ezt az alábbi script részt pedig nem hajtják újra végre.
+		*/	
+		var userAgent = navigator.userAgent;
+		var ci = userAgent.indexOf('Chrome');
+		var si = userAgent.indexOf('Safari');	
+		if ((ci > 0) & 
+		    ((si <= 0) | (ci < si))) {
+			var w = $('a');
+			for (var i=0; i<w.length; i++) {
+				if (w[i].onclick == undefined) {
+					w[i].onclick = showWaiting; 
+				}			
+			}
+			var w = $('button');
+			for (var i=0; i<w.length; i++) {
+				if (w[i].onclick == undefined) {
+					w[i].onclick = showWaiting;
+				}			
+			}
+			}
+		$("#waiting").hide();
 	});
-	
 </script>
 
 </div>
