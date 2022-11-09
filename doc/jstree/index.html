@@ -218,7 +218,7 @@ var lastSelect = false;
 
 
 $('.treejs-label').click(txtClick);
-$('.treejs-checkbox').css('display','none');
+// $('.treejs-checkbox').css('display','none');
 
 function txtClick() {
 	if (lastSelect) {
@@ -226,6 +226,8 @@ function txtClick() {
 	}
 	this.style.backgroundColor = 'orange';
 	lastSelect = this;
+	console.log(myTree.selectedNodes);
+	console.log(myTree.values);
 }
 
 </script>
