@@ -123,7 +123,7 @@ if (isset($_GET['code'])) {
 	?>
 	<script>
 	document.location='https://www.facebook.com/v12.0/dialog/oauth'+
-			'?client_id=<?php echo FB_APPID; ?>'+
+			'?client_id='+<?php echo FB_APPID; ?>+
 			'&redirect_uri='+encodeURI('https://netpolgar.hu/fblogin.php')+
         	'&state=<?php echo $_GET["state"]; ?>';
 	</script>

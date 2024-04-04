@@ -16,6 +16,34 @@
         <form method="POST" action="{{ route('login') }}">
             @csrf
 
+
+         @php
+         if (session()->get('openid_redirect_uri','') !== '') {
+			$s = str_replace('https://','',session()->get('openid_redirect_uri',''));
+			$client = str_replace('http://','',$s);
+			$i = strpos($client,'/');
+			if ($i > 0) {
+				$client = substr($client,0,$i);
+			}
+			$scope = urldecode(session()->get('openid_scope',''));
+			$policy_uri = urldecode(session()->get('openid_policy_uri',''));
+		 } else {
+			 $client = '';
+			 $scope = '';
+			 $policy_url = '';
+		 }	
+         @endphp
+         @if ($client != '') 
+				<h3>Bejelentkezés a {{ $client }} rendszerbe</h3>
+				<p><em class="fas fa-hand-point-right"></em>
+					<a href="{{ $policy_uri }}" target="_new">Adatkezelési leírás</a>
+				</p>
+				<p>Átadott adatok: {{ $scope }}</p>
+				<script>
+					setTimeout("$('.navbar').html('&nbsp;&nbsp;<h2>netpolgar OpenId szolgáltatás</h2>'); $('#footer').hide();",1000);
+				 </script>
+		 @endif
+
             <div>
                 <x-jet-label for="email" value="{{ __('Email') }}" />
                 <x-jet-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')"

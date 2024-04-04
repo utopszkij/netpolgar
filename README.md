@@ -27,6 +27,32 @@ Célja egy alternatív hierarchia mentes, egyenrangú autonóm egyedekből áll�
 
 Minden felhasználónak van egy fájl tároló területe. A felhasználók csoportokat hozhatnak létre, csatlakozhatnak mások által létrehozott csoportokhoz (a csatlakozás rendjét a csoport szabályzata határozza meg). A csoportoknak is van  file tárolójuk. Ezek a csoport tagjai számára elérhetőek, A csoportok projekteket (közösen megvalósított munkafolyamatokat, célkitűzéseket) indíthatnak. A projekteknek is van file területük, feladatok adhatóak meg, amik hez felelősök jelölhetők ki, nyilvántartható a feladatok teljesítésének folyamata. Ezek a projekt-gazda csoport tagjai számára elérhetőek. A felhasználók privát üzeneteket is küldhetnek egymásnak, üzenet küldhet egy csoport összes tagjának, projkt tagoknak is. Szellemi és anyagi termékek cseréjét, megosztását virtuális, alternatív fizetőeszközös web-es piactér segít, A felhasználók NET -es szavazásokat indíthatnak, ezek rendelhetőek csoporthoz, projekthez, kommentelhetnek, értékelhetnek, szavazhatnak, A rendszerhez bárki önként csatlakozhat, ingyenesen használhatja azt.
 
+### OpenId szolgáltatás
+
+A program OpenId szolgáltatást is nyujt.
+
+
+**/authorization** végpont
+
+GET paraméterek:
+
+- redirect_uri    OpenId client callback abszolut URL
+- scope           a kért user adatok. Értékek szoközzel szeparált listája
+                megngedett elemek: id name email email_verified picture
+- policy_uri      a kliens program adatkezelési leírására mutató abszolut url
+
+a netpolgar openId szolgáltatás visszahivja a redirect_uri -t **access_token** GET paramétert küldve
+
+**/userinfo** végpont
+
+GET paraméter:
+
+access_token    az /athorization hivás után visszakapott string
+
+return a **scope** ban kért user adatok JSON formában
+               
+
+
 ## technikai infok
 
 Sotware: Laravel  8.28.1 alapon készül. lásd: [laravel-readme.md](laravel-readme.md) és [laravel.com](http://laravel.com)

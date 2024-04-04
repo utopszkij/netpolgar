@@ -21,6 +21,7 @@ use App\Http\Controllers\FileController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\MailController;
 use App\Http\Controllers\HelpController;
+use App\Http\Controllers\OpenidController;
 
 /*
 |--------------------------------------------------------------------------
@@ -190,6 +191,10 @@ Route::get('/events/{eventId}/subscription',[EventController::class, 'subscripti
 Route::post('/events',[EventController::class, 'store']);
 Route::post('/events/{eventId}',[EventController::class, 'update']);
 
+// openid
+Route::get('/authorization',[OpenidController::class, 'authorization']);
+Route::get('/authorization2',[OpenidController::class, 'authorization'])->middleware('auth');
+Route::get('/userinfo',[OpenidController::class, 'userinfo'])->middleware('auth');
 
 
 /*----------------------------------
