@@ -26,14 +26,6 @@
 *           GOOGLE_APPID, GOOGLE_SECRET, GOOGLE_REDIRECT
 *           ha van laravel .env file; akkor abból olvassa ki ezeket 
 * 
-* OpenId szerüen is használható
-* ------------------------------
-* ?authorize=1
-*    GET|POST reditect_uri, policy_uri, state, 
-*    call redirect_uri  POST:  access_token
-* ?userinfo=1&access_token=xxxxxx
-*    GET|POST access_token
-*    return JSON {id, name, nickname, picture, email}
 * 
 */
 if (file_exists(__DIR__.'/../.env')) {
@@ -126,28 +118,7 @@ function getToken(string $code, string $state) {
 }	
 
 // main program
-if (isset($_GET['authorize'])) {
-		session_start();
-		$_SESSION['redirect_uri'] = $_GET['redirect_uri'];
-		$_SESSION['state'] = $_GET['state'];
-		// google login képernyő
-		$state = 'sid_'.session_id();	
-		?>
-		<script>
-		document.location = 'https://accounts.google.com/o/oauth2/v2/auth'+
-	   '?client_id='+<?php echo GOOGLE_APPID; ?>+
-	   '&response_type=code'+
-	   '&scope=openid%20email'+
-	   '&redirect_uri=<?php echo urlencode(GOOGLE_REDIRECT); ?>'+
-	   '&state=<?php echo $state; ?>';	
-		</script>
-		<?php
-		
-} else if (isset($_GET['userinfo'])) {
-		session_id($_GET['access_token']);
-		session_start();
-		return JSON_encode($_SESSION['userinfo']);
-} else if (isset($_GET['code'])) {
+if (isset($_GET['code'])) {
 	// google login callback
 	$token = false;
 	$code = $_GET['code'];
@@ -182,25 +153,12 @@ if (isset($_GET['authorize'])) {
 			$guser->id.'-'.md5($guser->id.FB_SECRET).'-'.
 			base64_encode($guser->email).'-'.
 			base64_encode($guser->picture);
-		if (substr($state,0,4) == 'sid_') {
-			session_id(substr($state,4,100));
-			session_start();
-			$_SESSION['userinfo'] = $guser;
-			?>
-			<script>
-				document.location = '<?php echo decode_uril($_SESSION["redirect_uri"]); ?>'+
-				'?access_token=<?php echo session_id(); ?>';						
-			</script>
-			<?php
-			
-		} else {	
-			?>
+		?>
 			<script>
 				document.location = '<?php echo $state; ?>'+
 				'?usercode=<?php echo $userCode; ?>';						
 			</script>
-			<?php
-		}
+		<?php
 	} else {
 		   echo 'Fatal error google invalid call not get access_token'.
 		   JSON_encode($token) ; exit();

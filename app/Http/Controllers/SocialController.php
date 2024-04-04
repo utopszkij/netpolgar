@@ -153,6 +153,23 @@ class SocialController extends Controller {
 					->update(["email_verified_at" => date('Y-m-d')]);
 				Auth::login($createUser);
 		   } 	 	
+		   
+		   // ha van a sessionban openid_redirect_uri akkor ennek kezelése
+		   if (session()->get('openid_redirect_uri','') != '') {
+			   $user = Auth::user();
+			   $redirect_uri = session()->get('openid_redirect_uri');
+			   $state = session()->get('openid_state');
+			   session()->put('openid_redirect_uri','');	
+			   session()->put('openid_state','');	
+			   session()->put('openid_policy_uri','');	
+			   $token = base64_encode($user->id.$user->name.$user->email);
+			   $token = str_replace('=','',$token);
+			   return redirect(urldecode($redirect_uri).
+					'?access_token='.$token.
+					'&state='.$state);
+		   }
+		   
+		   
 		} catch (Exception $exception) {
 			dd($exception->getMessage());
 		}	

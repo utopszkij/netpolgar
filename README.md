@@ -36,12 +36,14 @@ A program OpenId szolgáltatást is nyujt.
 
 GET paraméterek:
 
-- redirect_uri    OpenId client callback abszolut URL
-- scope           a kért user adatok. Értékek szoközzel szeparált listája
+- redirect_uri  OpenId client callback abszolut URL
+- scope         a kért user adatok. Értékek szoközzel szeparált listája
                 megngedett elemek: id name email email_verified picture
-- policy_uri      a kliens program adatkezelési leírására mutató abszolut url
+- policy_uri    a kliens program adatkezelési leírására mutató abszolut url
+- state         tetszőleges string, ezt is megkapja a redirect_uri
 
-a netpolgar openId szolgáltatás visszahivja a redirect_uri -t **access_token** GET paramétert küldve
+a netpolgar openId szolgáltatás visszahivja a redirect_uri -t 
+**access_token** és **state** GET paramétert küldve
 
 **/userinfo** végpont
 

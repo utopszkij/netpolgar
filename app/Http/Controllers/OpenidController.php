@@ -32,9 +32,8 @@ class OpenidController extends Controller {
 			if ($user) {
 				$token = base64_encode($user->id.$user->name.$user->email);
 				$token = str_replace('=','',$token);
-				
 				return redirect(urldecode($redirect_uri).
-				'?token='.$token.
+				'?access_token='.$token.
 				'&state='.$state);
 			}
 		} else {
@@ -55,11 +54,11 @@ class OpenidController extends Controller {
 			$token = base64_encode($user->id.$user->name.$user->email);
 			$token = str_replace('=','',$token);
 			session()->put('openid_redirect_uri','');
-			session()->put('openid_redirect_uri','');
+			session()->put('state','');
 			session()->put('openid_policy_uri','');
 			
 			return redirect(urldecode($redirect_uri).
-			'?token='.$token.
+			'?access_token='.$token.
 			'&state='.$state);
 		}
 	}
@@ -73,10 +72,17 @@ class OpenidController extends Controller {
 		$user = \Auth::user();
 		$access_token = '='.$request->input('access_token').'=';
 		$scope = session()->get('openid_scope','');	
-		session()->set('openid_scope','');	
+		session()->put('openid_scope','');	
 		$token = base64_encode($user->id.$user->name.$user->email);
+		if ($scope == '') {
+			$scope = 'id name';
+		}
+		
+		$access_token = $token;
+		
 		if (($user) && ($token === $access_token)) {
 			$result = new \stdClass();
+			$result->scope = $scope;
 			if (strpos(' '.$scope,'id') > 0) {
 				$result->id = $user->id;
 			}	
